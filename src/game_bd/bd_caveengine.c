@@ -3193,14 +3193,16 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  // ======================================================================================
 
 	case O_AMOEBA:
-	  // emulating BD1 amoeba+magic wall bug
+	  // emulating BD1 amoeba + magic wall bug
 	  if (cave->convert_amoeba_this_frame && amoeba_found_enclosed)
 	  {
 	    store(cave, x, y, cave->amoeba_enclosed_effect);
+
 	    break;
 	  }
 
 	  amoeba_count++;
+
 	  switch (cave->amoeba_state)
 	  {
 	    case GD_AM_TOO_BIG:
@@ -3215,6 +3217,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    case GD_AM_AWAKE:
 	      // if no amoeba found during THIS SCAN yet, which was able to grow, check this one.
 	      if (amoeba_found_enclosed)
+              {
 		// if still found enclosed, check all four directions, if this one is able to grow.
 		if (amoeba_eats(cave, x, y, GD_MV_UP) ||
 		    amoeba_eats(cave, x, y, GD_MV_DOWN) ||
@@ -3225,6 +3228,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		  amoeba_found_enclosed = FALSE;
 		  cave->amoeba_state = GD_AM_AWAKE;
 		}
+              }
 
 	      // if alive, check in which dir to grow (or not)
 	      if (cave->amoeba_state == GD_AM_AWAKE)
@@ -3234,22 +3238,27 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		  switch (gd_rand_int_range(cave->random, 0, 4))
 		  {
 		    // decided to grow, choose a random direction.
-		    case 0:    // let this be up. numbers indifferent.
+
+		    case 0:
+                      // let this be up. numbers indifferent.
 		      if (amoeba_eats(cave, x, y, GD_MV_UP))
 			store_dir(cave, x, y, GD_MV_UP, O_AMOEBA);
 		      break;
 
-		    case 1:    // down
+		    case 1:
+                      // down
 		      if (amoeba_eats(cave, x, y, GD_MV_DOWN))
 			store_dir(cave, x, y, GD_MV_DOWN, O_AMOEBA);
 		      break;
 
-		    case 2:    // left
+		    case 2:
+                      // left
 		      if (amoeba_eats(cave, x, y, GD_MV_LEFT))
 			store_dir(cave, x, y, GD_MV_LEFT, O_AMOEBA);
 		      break;
 
-		    case 3:    // right
+		    case 3:
+                      // right
 		      if (amoeba_eats(cave, x, y, GD_MV_RIGHT))
 			store_dir(cave, x, y, GD_MV_RIGHT, O_AMOEBA);
 		      break;
@@ -3263,14 +3272,18 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
 	case O_AMOEBA_2:
 	  amoeba_2_count++;
+
 	  // check if it is touching an amoeba, and explosion is enabled
 	  if (cave->amoeba_2_explodes_by_amoeba &&
-	      (is_like_element(cave, x, y, GD_MV_DOWN, O_AMOEBA) ||
-	       is_like_element(cave, x, y, GD_MV_UP, O_AMOEBA) ||
-	       is_like_element(cave, x, y, GD_MV_LEFT, O_AMOEBA) ||
+	      (is_like_element(cave, x, y, GD_MV_DOWN,  O_AMOEBA) ||
+	       is_like_element(cave, x, y, GD_MV_UP,    O_AMOEBA) ||
+	       is_like_element(cave, x, y, GD_MV_LEFT,  O_AMOEBA) ||
 	       is_like_element(cave, x, y, GD_MV_RIGHT, O_AMOEBA)))
+          {
 	    explode (cave, x, y);
+          }
 	  else
+          {
 	    switch (cave->amoeba_2_state)
 	    {
 	      case GD_AM_TOO_BIG:
@@ -3285,6 +3298,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      case GD_AM_AWAKE:
 		// if no amoeba found during THIS SCAN yet, which was able to grow, check this one.
 		if (amoeba_2_found_enclosed)
+                {
 		  if (amoeba_eats(cave, x, y, GD_MV_UP) ||
 		      amoeba_eats(cave, x, y, GD_MV_DOWN) ||
 		      amoeba_eats(cave, x, y, GD_MV_LEFT) ||
@@ -3294,38 +3308,46 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		    amoeba_2_found_enclosed = FALSE;
 		    cave->amoeba_2_state = GD_AM_AWAKE;
 		  }
+                }
 
 		// if it is alive, decide if it attempts to grow
 		if (cave->amoeba_2_state == GD_AM_AWAKE)
+                {
 		  if (gd_rand_int_range(cave->random, 0, 1000000) < cave->amoeba_2_growth_prob)
 		  {
 		    switch (gd_rand_int_range(cave->random, 0, 4))
 		    {
 		      // decided to grow, choose a random direction.
-		      case 0:    // let this be up. numbers indifferent.
+
+		      case 0:
+                        // let this be up. numbers indifferent.
 			if (amoeba_eats(cave, x, y, GD_MV_UP))
 			  store_dir(cave, x, y, GD_MV_UP, O_AMOEBA_2);
 			break;
 
-		      case 1:    // down
+		      case 1:
+                        // down
 			if (amoeba_eats(cave, x, y, GD_MV_DOWN))
 			  store_dir(cave, x, y, GD_MV_DOWN, O_AMOEBA_2);
 			break;
 
-		      case 2:    // left
+		      case 2:
+                        // left
 			if (amoeba_eats(cave, x, y, GD_MV_LEFT))
 			  store_dir(cave, x, y, GD_MV_LEFT, O_AMOEBA_2);
 			break;
 
-		      case 3:    // right
+		      case 3:
+                        // right
 			if (amoeba_eats(cave, x, y, GD_MV_RIGHT))
 			  store_dir(cave, x, y, GD_MV_RIGHT, O_AMOEBA_2);
 			break;
 		    }
 		  }
+                }
 		break;
-
 	    }
+          }
 	  break;
 
 	case O_ACID:
@@ -3338,36 +3360,39 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    // and if neighbours are eaten, put acid there.
 	    if (is_like_element(cave, x, y, GD_MV_UP, cave->acid_eats_this))
 	    {
-	      play_sound_of_element(cave, O_ACID, x, y);
 	      store_dir(cave, x, y, GD_MV_UP, O_ACID);
+	      play_sound_of_element(cave, O_ACID, x, y);
 	    }
 
 	    if (is_like_element(cave, x, y, GD_MV_DOWN, cave->acid_eats_this))
 	    {
-	      play_sound_of_element(cave, O_ACID, x, y);
 	      store_dir(cave, x, y, GD_MV_DOWN, O_ACID);
+	      play_sound_of_element(cave, O_ACID, x, y);
 	    }
 
 	    if (is_like_element(cave, x, y, GD_MV_LEFT, cave->acid_eats_this))
 	    {
-	      play_sound_of_element(cave, O_ACID, x, y);
 	      store_dir(cave, x, y, GD_MV_LEFT, O_ACID);
+	      play_sound_of_element(cave, O_ACID, x, y);
 	    }
 
 	    if (is_like_element(cave, x, y, GD_MV_RIGHT, cave->acid_eats_this))
 	    {
-	      play_sound_of_element(cave, O_ACID, x, y);
 	      store_dir(cave, x, y, GD_MV_RIGHT, O_ACID);
+	      play_sound_of_element(cave, O_ACID, x, y);
 	    }
 	  }
 	  break;
 
 	case O_WATER:
 	  found_water = TRUE;
+
 	  if (!cave->water_does_not_flow_down &&
 	      is_like_space(cave, x, y, GD_MV_DOWN))
+          {
 	    // emulating the odd behaviour in crdr
 	    store_dir(cave, x, y, GD_MV_DOWN, O_WATER_1);
+          }
 
 	  if (is_like_space(cave, x, y, GD_MV_UP))
 	    store_dir(cave, x, y, GD_MV_UP, O_WATER_1);
