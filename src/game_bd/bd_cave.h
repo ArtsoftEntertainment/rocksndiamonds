@@ -328,7 +328,8 @@ typedef struct _gd_c64_random_generator
 // Structure holding all data belonging to a cave.
 // ----------------------------------------------------------------------------
 
-#define GD_HIGHSCORE_NUM 20
+#define GD_HIGHSCORE_NUM		20
+#define GD_PLAYER_MEM_SIZE		16
 
 typedef struct _gd_cave
 {
@@ -617,7 +618,8 @@ typedef struct _gd_cave
   boolean sweet_eaten;                  // player ate sweet, he's strong. prob_sweet applies,
                                         // and also able to push chasing stones
   int player_x, player_y;               // Coordinates of player (for scrolling)
-  int px[16], py[16];                   // coordinates of player, for chasing stone
+  int player_x_mem[GD_PLAYER_MEM_SIZE]; // coordinates of player, for chasing stone
+  int player_y_mem[GD_PLAYER_MEM_SIZE];
   int key1, key2, key3;                 // The player is holding this number of keys of each color
   boolean diamond_key_collected;        // Key collected, so trapped diamonds convert to diamonds
   boolean inbox_flash_toggle;           // negated every scan. helps drawing inboxes, and making

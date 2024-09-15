@@ -2771,8 +2771,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
 	case O_CHASING_STONE:
 	  {
-	    int px = cave->px[0];
-	    int py = cave->py[0];
+	    int px = cave->player_x_mem[0];
+	    int py = cave->player_y_mem[0];
 	    boolean horizontal = gd_rand_boolean(cave->random);
 	    boolean dont_move = FALSE;
 	    int i = 3;
@@ -3928,14 +3928,14 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
   }
 
   // record coordinates of player for chasing stone
-  for (i = 0; i < ARRAY_SIZE(cave->px) - 1; i++)
+  for (i = 0; i < GD_PLAYER_MEM_SIZE - 1; i++)
   {
-    cave->px[i] = cave->px[i + 1];
-    cave->py[i] = cave->py[i + 1];
+    cave->player_x_mem[i] = cave->player_x_mem[i + 1];
+    cave->player_y_mem[i] = cave->player_y_mem[i + 1];
   }
 
-  cave->px[ARRAY_SIZE(cave->px) - 1] = cave->player_x;
-  cave->py[ARRAY_SIZE(cave->py) - 1] = cave->player_y;
+  cave->player_x_mem[GD_PLAYER_MEM_SIZE - 1] = cave->player_x;
+  cave->player_y_mem[GD_PLAYER_MEM_SIZE - 1] = cave->player_y;
 
   // SCHEDULING
 
