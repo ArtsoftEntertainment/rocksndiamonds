@@ -101,33 +101,6 @@ static const GdDirection twice[] =
   GD_MV_UP_LEFT_2
 };
 
-// sets timeout sound.
-void gd_cave_set_seconds_sound(GdCave *cave)
-{
-  // when not counting bonus time, timeout sounds will be played by main game engine;
-  // also skip timeout sounds when not using native sound engine
-  if (game_bd.game == NULL || game_bd.game->state_counter != GAME_INT_CHECK_BONUS_TIME ||
-      !game.use_native_bd_sound_engine)
-    return;
-
-  // this is an integer division, so 0 seconds can be 0.5 seconds...
-  // also, when this reaches 8, the player still has 8.9999 seconds.
-  // so the sound is played at almost t = 9s.
-  switch (cave->time / cave->timing_factor)
-  {
-    case 9: gd_sound_play(cave, GD_S_TIMEOUT_10, O_NONE, -1, -1); break;
-    case 8: gd_sound_play(cave, GD_S_TIMEOUT_9,  O_NONE, -1, -1); break;
-    case 7: gd_sound_play(cave, GD_S_TIMEOUT_8,  O_NONE, -1, -1); break;
-    case 6: gd_sound_play(cave, GD_S_TIMEOUT_7,  O_NONE, -1, -1); break;
-    case 5: gd_sound_play(cave, GD_S_TIMEOUT_6,  O_NONE, -1, -1); break;
-    case 4: gd_sound_play(cave, GD_S_TIMEOUT_5,  O_NONE, -1, -1); break;
-    case 3: gd_sound_play(cave, GD_S_TIMEOUT_4,  O_NONE, -1, -1); break;
-    case 2: gd_sound_play(cave, GD_S_TIMEOUT_3,  O_NONE, -1, -1); break;
-    case 1: gd_sound_play(cave, GD_S_TIMEOUT_2,  O_NONE, -1, -1); break;
-    case 0: gd_sound_play(cave, GD_S_TIMEOUT_1,  O_NONE, -1, -1); break;
-  }
-}
-
 // returns true if the element has a certain property
 static inline boolean has_property(int element, const int property)
 {
@@ -331,6 +304,33 @@ static void play_sound_of_element_pushing(GdCave *cave, GdElement element, int x
     default:
       // do nothing.
       break;
+  }
+}
+
+// sets timeout sound.
+void gd_cave_set_seconds_sound(GdCave *cave)
+{
+  // when not counting bonus time, timeout sounds will be played by main game engine;
+  // also skip timeout sounds when not using native sound engine
+  if (game_bd.game == NULL || game_bd.game->state_counter != GAME_INT_CHECK_BONUS_TIME ||
+      !game.use_native_bd_sound_engine)
+    return;
+
+  // this is an integer division, so 0 seconds can be 0.5 seconds...
+  // also, when this reaches 8, the player still has 8.9999 seconds.
+  // so the sound is played at almost t = 9s.
+  switch (cave->time / cave->timing_factor)
+  {
+    case 9: gd_sound_play(cave, GD_S_TIMEOUT_10, O_NONE, -1, -1); break;
+    case 8: gd_sound_play(cave, GD_S_TIMEOUT_9,  O_NONE, -1, -1); break;
+    case 7: gd_sound_play(cave, GD_S_TIMEOUT_8,  O_NONE, -1, -1); break;
+    case 6: gd_sound_play(cave, GD_S_TIMEOUT_7,  O_NONE, -1, -1); break;
+    case 5: gd_sound_play(cave, GD_S_TIMEOUT_6,  O_NONE, -1, -1); break;
+    case 4: gd_sound_play(cave, GD_S_TIMEOUT_5,  O_NONE, -1, -1); break;
+    case 3: gd_sound_play(cave, GD_S_TIMEOUT_4,  O_NONE, -1, -1); break;
+    case 2: gd_sound_play(cave, GD_S_TIMEOUT_3,  O_NONE, -1, -1); break;
+    case 1: gd_sound_play(cave, GD_S_TIMEOUT_2,  O_NONE, -1, -1); break;
+    case 0: gd_sound_play(cave, GD_S_TIMEOUT_1,  O_NONE, -1, -1); break;
   }
 }
 
