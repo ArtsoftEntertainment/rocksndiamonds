@@ -1735,6 +1735,7 @@ static int AutoPlayTapesExt(boolean initialize)
     "original tape",
     "em_random_bug",
     "screen_34x34",
+    "bd_old_engine",
 
     NULL
   };
@@ -1743,6 +1744,7 @@ static int AutoPlayTapesExt(boolean initialize)
     VERSION_IDENT(0,0,0,0),
     VERSION_IDENT(3,3,1,0),
     VERSION_IDENT(0,0,0,0),
+    VERSION_IDENT(4,4,0,0),
 
     -1
   };
@@ -1751,6 +1753,7 @@ static int AutoPlayTapesExt(boolean initialize)
     VERSION_IDENT(9,9,9,9),
     VERSION_IDENT(4,0,1,1),
     VERSION_IDENT(4,2,2,0),
+    VERSION_IDENT(4,4,0,0),
 
     -1
   };
@@ -1759,6 +1762,7 @@ static int AutoPlayTapesExt(boolean initialize)
     TAPE_PROPERTY_NONE,
     TAPE_PROPERTY_EM_RANDOM_BUG,
     TAPE_PROPERTY_NONE,
+    TAPE_PROPERTY_BD_OLD_ENGINE,
 
     -1
   };
@@ -2342,6 +2346,20 @@ static boolean PatchTape(struct TapeInfo *tape, char *mode)
     tape->scr_fieldx = scr_fieldx_new;
     tape->scr_fieldy = scr_fieldy_new;
   }
+  else if (strEqual(mode, "bd_old_engine") || strPrefix(mode, "bd_old_engine:"))
+  {
+    // this problem was introduced and fixed in version 4.4.0.0 pre-releases
+    if (tape->engine_version != VERSION_IDENT(4,4,0,0))
+    {
+      Print("This tape version cannot be patched against the old BD engine problem!\n");
+
+      return FALSE;
+    }
+
+    property_bitmask = TAPE_PROPERTY_BD_OLD_ENGINE;
+
+    use_property_bit = TRUE;
+  }
   else
   {
     Print("Unknown patch mode '%s'!\n", mode);
@@ -2352,7 +2370,7 @@ static boolean PatchTape(struct TapeInfo *tape, char *mode)
   // patching tapes using property bits may be used for several patch modes
   if (use_property_bit)
   {
-    byte property_bits = tape->property_bits;
+    unsigned short property_bits = tape->property_bits;
     boolean set_property_bit = (unpatch_tape ? FALSE : TRUE);
 
     if (set_property_bit)
@@ -2389,6 +2407,7 @@ void PatchTapes(void)
     Print("Supported patch modes:\n");
     Print("- \"em_random_bug\"   - use 64-bit random value bug for EM engine\n");
     Print("- \"screen_34x34\"    - force visible playfield size of 34 x 34\n");
+    Print("- \"bd_old_engine\"   - use old game engine version for BD engine\n");
     PrintLine("-", 79);
     Print("Supported modifiers:\n");
     Print("- add \":0\", \":off\" or \":clear\" to patch mode to un-patch tape file\n");
