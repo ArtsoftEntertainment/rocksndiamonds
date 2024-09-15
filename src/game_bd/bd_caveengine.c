@@ -1234,14 +1234,14 @@ static boolean do_teleporter(GdCave *cave, int px, int py, GdDirection player_mo
 // @return true if the push is possible.
 static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, boolean player_fire)
 {
-  boolean result;
   GdElement what = get_dir(cave, x, y, player_move);
 
   // gravity for falling wall, bladder, ...
   GdDirection grav_compat = cave->gravity_affects_all ? cave->gravity : GD_MV_DOWN;
 
-  result = FALSE;
+  boolean result = FALSE;
 
+  // do a switch on what element is being pushed to determine probability.
   switch (what)
   {
     case O_WAITING_STONE:
@@ -1258,9 +1258,7 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
       if (player_move == ccw_fourth[cave->gravity] ||
 	  player_move == cw_fourth[cave->gravity])
       {
-	int prob;
-
-	prob = 0;
+	int prob = 0;
 
 	// different probabilities for different elements.
 	switch (what)
@@ -1273,13 +1271,13 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 	  case O_CHASING_STONE:
 	    // chasing can be pushed if player is turbo
 	    if (cave->sweet_eaten)
-	      prob = 1000000;
+	      prob = 1000000; // with p = 1, always push
 	    break;
 
 	  case O_MEGA_STONE:
 	    // mega may(!) be pushed if player is turbo
 	    if (cave->mega_stones_pushable_with_sweet && cave->sweet_eaten)
-	      prob = 1000000;
+	      prob = 1000000; // p = 1, always push
 	    break;
 
 	  case O_STONE:
@@ -1301,7 +1299,9 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 	{
 	  // if decided that he will be able to push,
 	  store_dir(cave, x, y, twice[player_move], what);
-	  play_sound_of_element_pushing(cave, what, x, y);
+	  play_sound_of_element_pushing(cave, what,
+                                        x + gd_dx[player_move],
+                                        y + gd_dy[player_move]);
 	  result = TRUE;
 	}
       }
