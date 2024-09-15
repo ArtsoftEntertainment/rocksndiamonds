@@ -3420,25 +3420,40 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		get(cave, x, y) == O_V_EXPANDING_STEEL_WALL) &&
 	       cave->expanding_wall_changed))
 	  {
-	    if (is_like_space(cave, x, y, GD_MV_LEFT))
+            // special case: check both directions when using old engine
+            boolean check_both_directions = TRUE;
+
+	    if (check_both_directions && is_like_space(cave, x, y, GD_MV_LEFT))
 	    {
 	      store_dir(cave, x, y, GD_MV_LEFT, get(cave, x, y));
 	      play_sound_of_element(cave, get(cave, x, y), x, y);
+
+              // if using new engine, skip checking other direction (like "if ... else if ...")
+              check_both_directions = game_bd.game->use_old_engine;
 	    }
 
-	    if (is_like_space(cave, x, y, GD_MV_RIGHT)) {
+	    if (check_both_directions && is_like_space(cave, x, y, GD_MV_RIGHT))
+            {
 	      store_dir(cave, x, y, GD_MV_RIGHT, get(cave, x, y));
 	      play_sound_of_element(cave, get(cave, x, y), x, y);
 	    }
 	  }
 	  else
 	  {
-	    if (is_like_space(cave, x, y, GD_MV_UP)) {
+            // special case: check both directions when using old engine
+            boolean check_both_directions = TRUE;
+
+	    if (check_both_directions && is_like_space(cave, x, y, GD_MV_UP))
+            {
 	      store_dir(cave, x, y, GD_MV_UP, get(cave, x, y));
 	      play_sound_of_element(cave, get(cave, x, y), x, y);
+
+              // if using new engine, skip checking other direction (like "if ... else if ...")
+              check_both_directions = game_bd.game->use_old_engine;
 	    }
 
-	    if (is_like_space(cave, x, y, GD_MV_DOWN)) {
+	    if (check_both_directions && is_like_space(cave, x, y, GD_MV_DOWN))
+            {
 	      store_dir(cave, x, y, GD_MV_DOWN, get(cave, x, y));
 	      play_sound_of_element(cave, get(cave, x, y), x, y);
 	    }
