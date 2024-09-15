@@ -1237,7 +1237,7 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
   GdElement what = get_dir(cave, x, y, player_move);
 
   // gravity for falling wall, bladder, ...
-  GdDirection grav_compat = cave->gravity_affects_all ? cave->gravity : GD_MV_DOWN;
+  GdDirection grav_compat = (cave->gravity_affects_all ? cave->gravity : GD_MV_DOWN);
 
   boolean result = FALSE;
 
@@ -1515,7 +1515,8 @@ static void do_start_fall(GdCave *cave, int x, int y, GdDirection falling_direct
   // this is tagged as sloped up&left.
   // first check if the stone or diamond is coming from "up" (ie. opposite of gravity)
   // then check the direction to roll (left or right)
-  // this way, gravity can also be pointing right, and the above slope will work as one would expect
+  // this way, gravity can also be pointing right, and the above slope will work as one
+  // would expect
   else if (sloped(cave, x, y, falling_direction, opposite[falling_direction]))
   {
     // rolling down if sitting on a sloped object
@@ -1551,10 +1552,11 @@ static boolean do_fall_try_crush_voodoo(GdCave *cave, int x, int y, GdDirection 
   {
     // this is a 1stB-style vodo. explodes by stone, collects diamonds
     explode_dir(cave, x, y, fall_dir);
+
     return TRUE;
   }
-  else
-    return FALSE;
+
+  return FALSE;
 }
 
 // When the element at (x, y) is falling in the direction fall_dir,
@@ -1569,10 +1571,11 @@ static boolean do_fall_try_eat_voodoo(GdCave *cave, int x, int y, GdDirection fa
     // this is a 1stB-style voodoo. explodes by stone, collects diamonds
     player_eat_element(cave, O_DIAMOND, x, y, fall_dir);   // as if player got diamond
     store(cave, x, y, O_SPACE);    // diamond disappears
+
     return TRUE;
   }
-  else
-    return FALSE;
+
+  return FALSE;
 }
 
 // Element at (x, y) is falling. Try to crack nut under it.
@@ -1581,8 +1584,8 @@ static boolean do_fall_try_eat_voodoo(GdCave *cave, int x, int y, GdDirection fa
 // @param fall_dir The direction the element is falling in.
 // @param bouncing The element which it is converted to, if it has cracked a nut.
 // @return True, if nut is cracked.
-static boolean do_fall_try_crack_nut(GdCave *cave, int x, int y,
-				     GdDirection fall_dir, GdElement bouncing)
+static boolean do_fall_try_crack_nut(GdCave *cave, int x, int y, GdDirection fall_dir,
+                                     GdElement bouncing)
 {
   if (get_dir(cave, x, y, fall_dir) == O_NUT ||
       get_dir(cave, x, y, fall_dir) == O_NUT_F)
@@ -1595,8 +1598,8 @@ static boolean do_fall_try_crack_nut(GdCave *cave, int x, int y,
 
     return TRUE;
   }
-  else
-    return FALSE;
+
+  return FALSE;
 }
 
 // For a falling element, try if a magic wall is under it.
@@ -1605,8 +1608,7 @@ static boolean do_fall_try_crack_nut(GdCave *cave, int x, int y,
 // @param fall_dir The direction the element is falling to.
 // @param magic The element a magic wall turns it to.
 // @return If The element is processed by the magic wall.
-static boolean do_fall_try_magic(GdCave *cave, int x, int y,
-				 GdDirection fall_dir, GdElement magic)
+static boolean do_fall_try_magic(GdCave *cave, int x, int y, GdDirection fall_dir, GdElement magic)
 {
   if (get_dir(cave, x, y, fall_dir) == O_MAGIC_WALL)
   {
@@ -1631,8 +1633,8 @@ static boolean do_fall_try_magic(GdCave *cave, int x, int y,
 
     return TRUE;
   }
-  else
-    return FALSE;
+
+  return FALSE;
 }
 
 // For a falling element, test if an explodable element is under it;
@@ -1644,10 +1646,11 @@ static boolean do_fall_try_crush(GdCave *cave, int x, int y, GdDirection fall_di
   if (explodes_by_hit(cave, x, y, fall_dir))
   {
     explode_dir(cave, x, y, fall_dir);
+
     return TRUE;
   }
-  else
-    return FALSE;
+
+  return FALSE;
 }
 
 // For a falling element, try if a sloped element is under it.
@@ -1656,15 +1659,15 @@ static boolean do_fall_try_crush(GdCave *cave, int x, int y, GdDirection fall_di
 // If no rolling is possible, it is converted to a bouncing element.
 // So this always "does something" with the element, and this should be the last
 // function to call when checking what happens to a falling element.
-static boolean do_fall_roll_or_stop(GdCave *cave, int x, int y,
-				    GdDirection fall_dir, GdElement bouncing)
+static void do_fall_roll_or_stop(GdCave *cave, int x, int y, GdDirection fall_dir,
+                                 GdElement bouncing)
 {
   if (is_like_space(cave, x, y, fall_dir))
   {
     // falling further
     move(cave, x, y, fall_dir, get(cave, x, y));
 
-    return TRUE;
+    return;
   }
 
   // check if it is on a sloped element, and it can roll.
@@ -1674,7 +1677,8 @@ static boolean do_fall_roll_or_stop(GdCave *cave, int x, int y,
   // this is tagged as sloped up&left.
   // first check if the stone or diamond is coming from "up" (ie. opposite of gravity)
   // then check the direction to roll (left or right)
-  // this way, gravity can also be pointing right, and the above slope will work as one would expect
+  // this way, gravity can also be pointing right, and the above slope will work as one
+  // would expect
 
   if (sloped(cave, x, y, fall_dir, opposite[fall_dir]))
   {
@@ -1704,13 +1708,12 @@ static boolean do_fall_roll_or_stop(GdCave *cave, int x, int y,
       store(cave, x, y, bouncing);
     }
 
-    return TRUE;
+    return;
   }
 
   // any other element, stops
   play_sound_of_element(cave, get(cave, x, y), x, y);
   store(cave, x, y, bouncing);
-  return TRUE;
 }
 
 static void update_cave_speed(GdCave *cave)
@@ -1724,24 +1727,37 @@ static void update_cave_speed(GdCave *cave)
 
     case GD_SCHEDULING_BD1:
       if (!cave->intermission)
+      {
 	// non-intermissions
-	cave->speed = (88 + 3.66 * cave->c64_timing + (cave->ckdelay + cave->ckdelay_extra_for_animation) / 1000);
+        cave->speed = (88 + 3.66 * cave->c64_timing +
+                       (cave->ckdelay + cave->ckdelay_extra_for_animation) / 1000);
+      }
       else
+      {
 	// intermissions were quicker, as only lines 1-12 were processed by the engine.
-	cave->speed = (60 + 3.66 * cave->c64_timing + (cave->ckdelay + cave->ckdelay_extra_for_animation) / 1000);
+        cave->speed = (60 + 3.66 * cave->c64_timing +
+                       (cave->ckdelay + cave->ckdelay_extra_for_animation) / 1000);
+      }
       break;
 
     case GD_SCHEDULING_BD1_ATARI:
       // about 20ms/frame faster than c64 version
       if (!cave->intermission)
-	cave->speed = (74 + 3.2 * cave->c64_timing + (cave->ckdelay) / 1000);            // non-intermissions
+      {
+        // non-intermissions
+	cave->speed = (74 + 3.2 * cave->c64_timing + (cave->ckdelay) / 1000);
+      }
       else
-	cave->speed = (65 + 2.88 * cave->c64_timing + (cave->ckdelay) / 1000);        // for intermissions
+      {
+        // for intermissions
+	cave->speed = (65 + 2.88 * cave->c64_timing + (cave->ckdelay) / 1000);
+      }
       break;
 
     case GD_SCHEDULING_BD2:
       // 60 is a guess.
-      cave->speed = MAX(60 + (cave->ckdelay + cave->ckdelay_extra_for_animation)/1000, cave->c64_timing * 20);
+      cave->speed = MAX(60 + (cave->ckdelay + cave->ckdelay_extra_for_animation) / 1000,
+                        cave->c64_timing * 20);
       break;
 
     case GD_SCHEDULING_PLCK:
@@ -1791,7 +1807,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
   boolean start_signal;
 
   // gravity for falling wall, bladder, ...
-  GdDirection grav_compat = cave->gravity_affects_all ? cave->gravity : GD_MV_DOWN;
+  GdDirection grav_compat = (cave->gravity_affects_all ? cave->gravity : GD_MV_DOWN);
 
   // directions for o_something_1, 2, 3 and 4 (creatures)
   static const GdDirection creature_dir[] =
@@ -1815,7 +1831,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
   {
     O_DIRT,
     cave->biter_eat,
-    O_SPACE, O_STONE
+    O_SPACE,
+    O_STONE
   };
 
   boolean amoeba_sound, magic_sound;
@@ -1879,7 +1896,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
   // score collected this frame
   cave->score = 0;
 
-  // to implement buggy bd1 amoeba+magic wall behaviour
+  // to implement buggy bd1 amoeba + magic wall behaviour
   cave->convert_amoeba_this_frame = FALSE;
 
   // suicide only kills the active player
@@ -1963,18 +1980,20 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  if (cave->kill_player)
 	  {
 	    explode (cave, x, y);
+
 	    break;
 	  }
 
 	  cave->player_seen_ago = 0;
+
 	  // bd4 intermission caves have many players. so if one of them has exited,
 	  // do not change the flag anymore. so this if () is needed
 	  if (cave->player_state != GD_PL_EXITED)
 	    cave->player_state = GD_PL_LIVING;
 
 	  // check for pneumatic hammer things
-	  // 1) press fire, 2) have pneumatic hammer 4) space on left or right
-	  // for hammer 5) stand on something
+	  // 1) press fire, 2) have pneumatic hammer 4) space on left or right for hammer
+          // 5) stand on something
 	  if (player_fire && cave->got_pneumatic_hammer &&
 	      is_like_space(cave, x, y, player_move) &&
 	      !is_like_space(cave, x, y, GD_MV_DOWN))
@@ -1985,6 +2004,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      cave->pneumatic_hammer_active_delay = cave->pneumatic_hammer_frame;
 	      store_dir(cave, x, y, GD_MV_LEFT, O_PNEUMATIC_ACTIVE_LEFT);
 	      store(cave, x, y, O_PLAYER_PNEUMATIC_LEFT);
+
 	      break;    // finished.
 	    }
 
@@ -1994,6 +2014,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      cave->pneumatic_hammer_active_delay = cave->pneumatic_hammer_frame;
 	      store_dir(cave, x, y, GD_MV_RIGHT, O_PNEUMATIC_ACTIVE_RIGHT);
 	      store(cave, x, y, O_PLAYER_PNEUMATIC_RIGHT);
+
 	      break;    // finished.
 	    }
 	  }
@@ -2004,7 +2025,6 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    GdElement what = get_dir(cave, x, y, player_move);
 	    // O_NONE in this variable will mean that there is no change.
 	    GdElement remains = O_NONE;
-	    boolean push;
 
 	    // if we are 'eating' a teleporter, and the function returns true
 	    // (teleporting worked), break here
@@ -2012,7 +2032,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      break;
 
 	    // try to push element; if successful, break
-	    push = do_push(cave, x, y, player_move, player_fire);
+	    boolean push = do_push(cave, x, y, player_move, player_fire);
+
 	    if (push)
 	    {
 	      remains = O_SPACE;
@@ -2032,6 +2053,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		    store(cave, x, y, O_PLAYER_BOMB);
 		  else
 		    move(cave, x, y, player_move, O_PLAYER_BOMB);
+
 		  break;
 
 		case O_ROCKET_LAUNCHER:
@@ -2045,6 +2067,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		    store(cave, x, y, O_PLAYER_ROCKET_LAUNCHER);
 		  else
 		    move(cave, x, y, player_move, O_PLAYER_ROCKET_LAUNCHER);
+
 		  break;
 
 		case O_POT:
@@ -2063,6 +2086,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		  // get element - process others.
 		  // if cannot get, player_eat_element will return the same
 		  remains = player_eat_element(cave, what, x, y, player_move);
+
 		  break;
 	      }
 	    }
@@ -2097,14 +2121,16 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  break;
 
 	case O_PLAYER_BOMB:
-	  // much simpler; cannot steal stones
+          // much simpler; cannot snap-push stones
 	  if (cave->kill_player)
 	  {
 	    explode(cave, x, y);
+
 	    break;
 	  }
 
 	  cave->player_seen_ago = 0;
+
 	  // bd4 intermission caves have many players. so if one of them has exited,
 	  // do not change the flag anymore. so this if () is needed
 	  if (cave->player_state != GD_PL_EXITED)
@@ -2128,6 +2154,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		store(cave, x, y, O_PLAYER);
 		gd_sound_play(cave, GD_S_BOMB_PLACING, O_BOMB, x, y);
 	      }
+
 	      break;
 	    }
 
@@ -2162,10 +2189,12 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  if (cave->kill_player)
 	  {
 	    explode(cave, x, y);
+
 	    break;
 	  }
 
 	  cave->player_seen_ago = 0;
+
 	  // bd4 intermission caves have many players. so if one of them has exited,
 	  // do not change the flag anymore. so this if () is needed
 	  if (cave->player_state != GD_PL_EXITED)
@@ -2253,13 +2282,15 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  if (cave->kill_player)
 	  {
 	    explode(cave, x, y);
+
 	    break;
 	  }
 
-	  // stirring sound, if no other walking sound or explosion
+	  // stirring sound
 	  gd_sound_play(cave, GD_S_STIRRING, O_PLAYER_STIRRING, x, y);
 
 	  cave->player_seen_ago = 0;
+
 	  // bd4 intermission caves have many players. so if one of them has exited,
 	  // do not change the flag anymore. so this if () is needed
 	  if (cave->player_state != GD_PL_EXITED)
@@ -2281,16 +2312,19 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  if (cave->kill_player)
 	  {
 	    explode(cave, x, y);
+
 	    break;
 	  }
 
 	  cave->player_seen_ago = 0;
+
 	  if (cave->player_state != GD_PL_EXITED)
 	    cave->player_state = GD_PL_LIVING;
 
 	  // if hammering time is up, becomes a normal player again.
 	  if (cave->pneumatic_hammer_active_delay == 0)
 	    store(cave, x, y, O_PLAYER);
+
 	  break;
 
 	  // the active pneumatic hammer itself
