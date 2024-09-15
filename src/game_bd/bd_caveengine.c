@@ -743,15 +743,21 @@ static void cell_explode(GdCave *cave, int x, int y, GdElement explode_to)
     cave->voodoo_touched = TRUE;
 
   if (get(cave, x, y) == O_VOODOO && !cave->voodoo_disappear_in_explosion)
+  {
     // voodoo turns into a time penalty
     store(cave, x, y, O_TIME_PENALTY);
+  }
   else if (get(cave, x, y) == O_NITRO_PACK ||
 	   get(cave, x, y) == O_NITRO_PACK_F)
+  {
     // nitro pack inside an explosion - it is now triggered
     store(cave, x, y, O_NITRO_PACK_EXPLODE);
+  }
   else
+  {
     // for everything else
     store(cave, x, y, explode_to);
+  }
 }
 
 // A creature at (x, y) explodes to a 3x3 square.
