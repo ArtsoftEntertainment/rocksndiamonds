@@ -1972,9 +1972,9 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
       switch (get(cave, x, y))
       {
-	// ============================================================================
+	// ======================================================================================
 	//    P L A Y E R S
-	// ============================================================================
+	// ======================================================================================
 
 	case O_PLAYER:
 	  if (cave->kill_player)
@@ -2336,13 +2336,11 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
 	  if (cave->pneumatic_hammer_active_delay == 0)
 	  {
-	    GdElement new_elem;
-
 	    // pneumatic hammer element disappears
 	    store(cave, x, y, O_SPACE);
 
 	    // which is the new element which appears after that one is hammered?
-	    new_elem = gd_element_get_hammered(get_dir(cave, x, y, GD_MV_DOWN));
+	    GdElement new_elem = gd_element_get_hammered(get_dir(cave, x, y, GD_MV_DOWN));
 
 	    // if there is a new element, display it
 	    // O_NONE might be returned, for example if the element being
@@ -2352,20 +2350,21 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      store_dir(cave, x, y, GD_MV_DOWN, new_elem);
 
 	      // and if walls reappear, remember it in array
+              // y + 1 is down
 	      if (cave->hammered_walls_reappear)
 	      {
-		int wall_y;
+		int wall_y = (y + 1) % cave->h;
 
-		wall_y = (y + 1) % cave->h;
 		cave->hammered_reappear[wall_y][x] = cave->hammered_wall_reappear_frame;
 	      }
 	    }
 	  }
 	  break;
 
-	  // ============================================================================
+
+	  // ======================================================================================
 	  //    S T O N E S,   D I A M O N D S
-	  // ============================================================================
+	  // ======================================================================================
 
 	case O_STONE:           // standing stone
 	  do_start_fall(cave, x, y, cave->gravity, cave->stone_falling_effect);
@@ -2399,9 +2398,10 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  do_start_fall(cave, x, y, opposite[cave->gravity], O_FLYING_DIAMOND_F);
 	  break;
 
-	  // ============================================================================
+
+	  // ======================================================================================
 	  //    F A L L I N G    E L E M E N T S,    F L Y I N G   S T O N E S,   D I A M O N D S
-	  // ============================================================================
+	  // ======================================================================================
 
 	case O_DIRT_BALL_F:     // falling dirt ball
 	  if (!cave->gravity_disabled)
@@ -2519,9 +2519,10 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  }
 	  break;
 
-	  // ============================================================================
+
+	  // ======================================================================================
 	  //    N I T R O    P A C K
-	  // ============================================================================
+	  // ======================================================================================
 
 	case O_NITRO_PACK:      // standing nitro pack
 	  do_start_fall(cave, x, y, cave->gravity, O_NITRO_PACK_F);
@@ -2530,8 +2531,11 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	case O_NITRO_PACK_F:    // falling nitro pack
 	  if (!cave->gravity_disabled)
 	  {
-	    if (is_like_space(cave, x, y, cave->gravity))    // if space, falling further
-	      move(cave, x, y, cave->gravity, get(cave, x, y));
+	    if (is_like_space(cave, x, y, cave->gravity))
+            {
+              // if space, falling further
+	      move(cave, x, y, cave->gravity, O_NITRO_PACK_F);
+            }
 	    else if (do_fall_try_magic(cave, x, y, cave->gravity, cave->magic_nitro_pack_to))
 	    {
 	      // try magic wall; if true, function did the work
@@ -2539,12 +2543,14 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    else if (is_like_dirt(cave, x, y, cave->gravity))
 	    {
 	      // falling on a dirt, it does NOT explode - just stops at its place.
-	      play_sound_of_element(cave, O_NITRO_PACK, x, y);
 	      store(cave, x, y, O_NITRO_PACK);
+	      play_sound_of_element(cave, O_NITRO_PACK, x, y);
 	    }
 	    else
+            {
 	      // falling on any other element it explodes
 	      explode(cave, x, y);
+            }
 	  }
 	  break;
 
@@ -2552,9 +2558,10 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  explode(cave, x, y);
 	  break;
 
-	  // ============================================================================
+
+	  // ======================================================================================
 	  //    C R E A T U R E S
-	  // ============================================================================
+	  // ======================================================================================
 
 	case O_COW_1:
 	case O_COW_2:
@@ -2578,8 +2585,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
 	    base = O_COW_1;
 
-	    dir = get(cave, x, y)-base;    // facing where
-	    creature_move = cave->creatures_backwards ? creature_chdir : creature_dir;
+	    dir = get(cave, x, y) - base;    // facing where
+	    creature_move = (cave->creatures_backwards ? creature_chdir : creature_dir);
 
 	    // now change direction if backwards
 	    if (cave->creatures_backwards)
@@ -2597,11 +2604,20 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    }
 
 	    if (is_like_space(cave, x, y, creature_move[dirn]))
-	      move(cave, x, y, creature_move[dirn], base + dirn);    // turn and move to preferred dir
+            {
+              // turn and move to preferred dir
+	      move(cave, x, y, creature_move[dirn], base + dirn);
+            }
 	    else if (is_like_space(cave, x, y, creature_move[dir]))
-	      move(cave, x, y, creature_move[dir], base + dir);    // go on
+            {
+              // go on
+	      move(cave, x, y, creature_move[dir], base + dir);
+            }
 	    else
-	      store(cave, x, y, base + dirp);    // turn in place if nothing else possible
+            {
+              // turn in place if nothing else possible
+	      store(cave, x, y, base + dirp);
+            }
 	  }
 	  break;
 
@@ -2663,7 +2679,9 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      blows_up_flies(cave, x, y, GD_MV_UP) ||
 	      blows_up_flies(cave, x, y, GD_MV_LEFT) ||
 	      blows_up_flies(cave, x, y, GD_MV_RIGHT))
-	    explode (cave, x, y);
+          {
+	    explode(cave, x, y);
+          }
 	  // otherwise move
 	  else
 	  {
@@ -2689,7 +2707,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      base = O_ALT_BUTTER_1;
 
 	    dir = get(cave, x, y) - base;    // facing where
-	    creature_move = cave->creatures_backwards ? creature_chdir : creature_dir;
+	    creature_move = (cave->creatures_backwards ? creature_chdir : creature_dir);
 
 	    // now change direction if backwards
 	    if (cave->creatures_backwards)
@@ -2707,11 +2725,20 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    }
 
 	    if (is_like_space(cave, x, y, creature_move[dirn]))
-	      move(cave, x, y, creature_move[dirn], base + dirn);    // turn and move to preferred dir
+            {
+              // turn and move to preferred dir
+	      move(cave, x, y, creature_move[dirn], base + dirn);
+            }
 	    else if (is_like_space(cave, x, y, creature_move[dir]))
-	      move(cave, x, y, creature_move[dir], base + dir);    // go on
+            {
+              // go on
+	      move(cave, x, y, creature_move[dir], base + dir);
+            }
 	    else
-	      store(cave, x, y, base + dirp);    // turn in place if nothing else possible
+            {
+              // turn in place if nothing else possible
+	      store(cave, x, y, base + dirp);
+            }
 	  }
 	  break;
 
@@ -3129,9 +3156,10 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  }
 	  break;
 
-	  // ============================================================================
+
+	  // ======================================================================================
 	  //    A C T I V E    E L E M E N T S
-	  // ============================================================================
+	  // ======================================================================================
 
 	case O_AMOEBA:
 	  // emulating BD1 amoeba+magic wall bug
@@ -3522,9 +3550,10 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  }
 	  break;
 
-	  // ============================================================================
+
+	  // ======================================================================================
 	  //    C O N V E Y O R    B E L T S
-	  // ============================================================================
+	  // ======================================================================================
 
 	case O_CONVEYOR_RIGHT:
 	case O_CONVEYOR_LEFT:
@@ -3612,9 +3641,10 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  }
 	  break;
 
-	  // ============================================================================
+
+	  // ======================================================================================
 	  //    R O C K E T S
-	  // ============================================================================
+	  // ======================================================================================
 
 	case O_ROCKET_1:
 	  if (is_like_space(cave, x, y, GD_MV_RIGHT))
@@ -3644,9 +3674,10 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    explode(cave, x, y);
 	  break;
 
-	  // ============================================================================
+
+	  // ======================================================================================
 	  //    S I M P L E   C H A N G I N G;   E X P L O S I O N S
-	  // ============================================================================
+	  // ======================================================================================
 
 	case O_EXPLODE_5:
 	  store(cave, x, y, cave->explosion_effect);
