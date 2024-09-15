@@ -4692,6 +4692,10 @@ static void CopyNativeTape_BD_to_RND(struct LevelInfo *level)
 
   tape.bd_replay = TRUE;
 
+  // use old BD game engine if playing specifically tagged BD replays
+  if (leveldir_current->replay_with_old_engine)
+    tape.property_bits |= TAPE_PROPERTY_BD_OLD_ENGINE;
+
   // all time calculations only used to display approximate tape time
   int cave_speed = cave->speed;
   int milliseconds_game = 0;
@@ -9911,6 +9915,8 @@ void DumpTape(struct TapeInfo *tape)
   Print("Special tape properties: ");
   if (tape->property_bits == TAPE_PROPERTY_NONE)
     Print("[none]");
+  if (tape->property_bits & TAPE_PROPERTY_BD_OLD_ENGINE)
+    Print("[bd_old_engine]");
   if (tape->property_bits & TAPE_PROPERTY_EM_RANDOM_BUG)
     Print("[em_random_bug]");
   if (tape->property_bits & TAPE_PROPERTY_GAME_SPEED)

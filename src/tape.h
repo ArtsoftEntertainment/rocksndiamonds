@@ -38,7 +38,7 @@
 // values for tape properties stored in tape file
 #define TAPE_PROPERTY_NONE		0
 #define TAPE_PROPERTY_LEVEL_SOLVED	(1 << 0)
-#define TAPE_PROPERTY_UNUSED_BIT_1	(1 << 1)
+#define TAPE_PROPERTY_BD_OLD_ENGINE	(1 << 1)
 #define TAPE_PROPERTY_UNUSED_BIT_2	(1 << 2)
 #define TAPE_PROPERTY_UNUSED_BIT_3	(1 << 3)
 #define TAPE_PROPERTY_UNUSED_BIT_4	(1 << 4)

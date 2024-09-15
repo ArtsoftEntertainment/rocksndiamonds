@@ -10666,9 +10666,8 @@ int getBeltSwitchElementFromBeltNrAndBeltDir(int belt_nr, int belt_dir)
 
 boolean useOldEngine_BD(void)
 {
-  return (tape.playing &&
-          tape.bd_replay &&
-          leveldir_current->replay_with_old_engine);
+  // only use old BD game engine if playing specifically tagged tapes
+  return (tape.playing && (tape.property_bits & TAPE_PROPERTY_BD_OLD_ENGINE));
 }
 
 boolean swapTiles_EM(boolean is_pre_emc_cave)
