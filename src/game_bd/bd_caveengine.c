@@ -1298,10 +1298,16 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 	    gd_rand_int_range(cave->random, 0, 1000000) < prob)
 	{
 	  // if decided that he will be able to push,
-	  store_dir(cave, x, y, twice[player_move], what);
 	  play_sound_of_element_pushing(cave, what,
                                         x + gd_dx[player_move],
                                         y + gd_dy[player_move]);
+
+          // if pushed a stone, it "bounces". all other elements are simply pushed.
+          if (what == O_STONE)
+            store_dir(cave, x, y, twice[player_move], cave->stone_bouncing_effect);
+          else
+            store_dir(cave, x, y, twice[player_move], what);
+
 	  result = TRUE;
 	}
       }
