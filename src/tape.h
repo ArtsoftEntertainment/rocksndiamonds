@@ -37,14 +37,22 @@
 
 // values for tape properties stored in tape file
 #define TAPE_PROPERTY_NONE		0
-#define TAPE_PROPERTY_EM_RANDOM_BUG	(1 << 0)
-#define TAPE_PROPERTY_GAME_SPEED	(1 << 1)
-#define TAPE_PROPERTY_PAUSE_MODE	(1 << 2)
-#define TAPE_PROPERTY_SINGLE_STEP	(1 << 3)
-#define TAPE_PROPERTY_SNAPSHOT		(1 << 4)
-#define TAPE_PROPERTY_REPLAYED		(1 << 5)
-#define TAPE_PROPERTY_TAS_KEYS		(1 << 6)
-#define TAPE_PROPERTY_SMALL_GRAPHICS	(1 << 7)
+#define TAPE_PROPERTY_LEVEL_SOLVED	(1 << 0)
+#define TAPE_PROPERTY_UNUSED_BIT_1	(1 << 1)
+#define TAPE_PROPERTY_UNUSED_BIT_2	(1 << 2)
+#define TAPE_PROPERTY_UNUSED_BIT_3	(1 << 3)
+#define TAPE_PROPERTY_UNUSED_BIT_4	(1 << 4)
+#define TAPE_PROPERTY_UNUSED_BIT_5	(1 << 5)
+#define TAPE_PROPERTY_UNUSED_BIT_6	(1 << 6)
+#define TAPE_PROPERTY_UNUSED_BIT_7	(1 << 7)
+#define TAPE_PROPERTY_EM_RANDOM_BUG	(1 << 8)
+#define TAPE_PROPERTY_GAME_SPEED	(1 << 9)
+#define TAPE_PROPERTY_PAUSE_MODE	(1 << 10)
+#define TAPE_PROPERTY_SINGLE_STEP	(1 << 11)
+#define TAPE_PROPERTY_SNAPSHOT		(1 << 12)
+#define TAPE_PROPERTY_REPLAYED		(1 << 13)
+#define TAPE_PROPERTY_TAS_KEYS		(1 << 14)
+#define TAPE_PROPERTY_SMALL_GRAPHICS	(1 << 15)
 
 // values for score tape basename length (date, time, name hash, no extension)
 #define MAX_SCORE_TAPE_BASENAME_LEN	24
@@ -221,7 +229,7 @@ struct TapeInfo
   boolean use_mouse_actions;
 
   // bits to indicate which tape properties are stored in this tape
-  byte property_bits;
+  unsigned short property_bits;
 
   // special game_engine_flags;
   boolean bd_replay;

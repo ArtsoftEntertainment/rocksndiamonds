@@ -1754,7 +1754,7 @@ static int AutoPlayTapesExt(boolean initialize)
 
     -1
   };
-  static byte patch_property_bit[] =
+  static unsigned short patch_property_bit[] =
   {
     TAPE_PROPERTY_NONE,
     TAPE_PROPERTY_EM_RANDOM_BUG,
@@ -2280,14 +2280,14 @@ static boolean PatchTape(struct TapeInfo *tape, char *mode)
 
   if (strEqual(mode, "info"))
   {
-    Print("property bits == 0x%02x\n", tape->property_bits);
+    Print("property bits == 0x%04x\n", tape->property_bits);
 
     return FALSE;
   }
 
   boolean unpatch_tape = FALSE;
   boolean use_property_bit = FALSE;
-  byte property_bitmask = 0;
+  unsigned short property_bitmask = 0;
 
   if (strSuffix(mode, ":0") ||
       strSuffix(mode, ":off") ||

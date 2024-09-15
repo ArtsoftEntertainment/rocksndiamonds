@@ -9266,8 +9266,10 @@ static int LoadTape_HEAD(File *file, int chunk_size, struct TapeInfo *tape)
 
     setTapeActionFlags(tape, getFile8Bit(file));
 
-    tape->property_bits = getFile8Bit(file);
-    tape->solved = getFile8Bit(file);
+    tape->property_bits = getFile16BitBE(file);
+
+    // set flag for marking if this tape solves the level or not
+    tape->solved = (tape->property_bits & TAPE_PROPERTY_LEVEL_SOLVED) != 0;
 
     engine_version = getFileVersion(file);
     if (engine_version > 0)
@@ -9708,6 +9710,10 @@ static void SaveTape_HEAD(FILE *file, struct TapeInfo *tape)
     if (tape->player_participates[i])
       store_participating_players |= (1 << i);
 
+  // if this tape solves the level, set corresponding tape property bit
+  if (tape->solved)
+    tape->property_bits |= TAPE_PROPERTY_LEVEL_SOLVED;
+
   putFile32BitBE(file, tape->random_seed);
   putFile32BitBE(file, tape->date);
   putFile32BitBE(file, tape->length);
@@ -9716,8 +9722,7 @@ static void SaveTape_HEAD(FILE *file, struct TapeInfo *tape)
 
   putFile8Bit(file, getTapeActionValue(tape));
 
-  putFile8Bit(file, tape->property_bits);
-  putFile8Bit(file, tape->solved);
+  putFile16BitBE(file, tape->property_bits);
 
   putFileVersion(file, tape->engine_version);
 }

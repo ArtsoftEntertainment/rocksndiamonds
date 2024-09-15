@@ -17238,7 +17238,7 @@ static void GameUndo(int steps)
   if (!CheckEngineSnapshotList())
     return;
 
-  int tape_property_bits = tape.property_bits;
+  unsigned short tape_property_bits = tape.property_bits;
 
   LoadEngineSnapshot_Undo(steps);
 
@@ -17252,7 +17252,7 @@ static void GameRedo(int steps)
   if (!CheckEngineSnapshotList())
     return;
 
-  int tape_property_bits = tape.property_bits;
+  unsigned short tape_property_bits = tape.property_bits;
 
   LoadEngineSnapshot_Redo(steps);
 
