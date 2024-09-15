@@ -3486,24 +3486,13 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  break;
 
 	case O_SLIME:
-#if 1
-	  ; // to make compilers happy ...
-#else
-	  Info("Step[%03d]", cave->frame); // XXX
-#endif
-	  int rrr = gd_cave_c64_random(cave);
-#if 1
-#else
-	  Info(".Rand[%03d].Perm[%03d].Result[%d]\n", rrr, cave->slime_permeability_c64,
-	       (rrr & cave->slime_permeability_c64) == 0);
-#endif
-	  /*
-	   * unpredictable: gd_rand_int
-	   * predictable: c64 predictable random generator.
-	   *    for predictable, a random number is generated,
-	   *	whether or not it is even possible that the stone will be able to pass.
-	   */
-	  if (cave->slime_predictable ? ((rrr /* XXX */ & cave->slime_permeability_c64) == 0) : gd_rand_int_range(cave->random, 0, 1000000) < cave->slime_permeability)
+          // unpredictable: gd_rand_int_range
+          // predictable: c64 predictable random generator.
+          //    for predictable, a random number is generated,
+          //    whether or not it is even possible that the stone will be able to pass.
+          if (cave->slime_predictable ?
+              ((gd_cave_c64_random(cave) & cave->slime_permeability_c64) == 0) :
+              gd_rand_int_range(cave->random, 0, 1000000) < cave->slime_permeability)
 	  {
 	    GdDirection grav = cave->gravity;
 	    GdDirection oppos = opposite[cave->gravity];
@@ -3515,7 +3504,6 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      {
 		// output a falling xy under
 		store_dir(cave, x, y, grav, cave->slime_converts_1);
-
 		store_dir(cave, x, y, oppos, O_SPACE);
 		play_sound_of_element(cave, O_SLIME, x, y);
 	      }
