@@ -2330,6 +2330,10 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  // the active pneumatic hammer itself
 	case O_PNEUMATIC_ACTIVE_RIGHT:
 	case O_PNEUMATIC_ACTIVE_LEFT:
+          // pneumatic hammer sound
+          if (cave->pneumatic_hammer_active_delay > 0)
+            gd_sound_play(cave, GD_S_PNEUMATIC_HAMMER, O_PNEUMATIC_HAMMER, -1, -1);
+
 	  if (cave->pneumatic_hammer_active_delay == 0)
 	  {
 	    GdElement new_elem;
@@ -3937,10 +3941,6 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	(amoeba_2_count > 0 && cave->amoeba_2_state == GD_AM_AWAKE))
       play_sound_of_element(cave, O_AMOEBA, -1, -1);
   }
-
-  // pneumatic hammer sound - overrides everything.
-  if (cave->pneumatic_hammer_active_delay > 0)
-    gd_sound_play(cave, GD_S_PNEUMATIC_HAMMER, O_PNEUMATIC_HAMMER, -1, -1);
 
 
   // ============================================================================
