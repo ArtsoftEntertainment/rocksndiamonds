@@ -3959,8 +3959,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
   }
 
   // this loop finds the coordinates of the player. needed for scrolling and chasing stone.
-  // but we only do this if a living player was found. if not yet, the setup
-  // routine coordinates are used
+  // but we only do this if a living player was found. otherwise "stay" at current coordinates.
   if (cave->player_state == GD_PL_LIVING)
   {
     if (cave->active_is_first_found)
@@ -4009,8 +4008,10 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
   // SCHEDULING
 
-  // update timing calculated by iterating and counting elements
+  // updates based on the calculated explosions and per element ckdelays.
   update_cave_speed(cave);
+
+  // SPECIAL SOUNDS
 
   // cave 3 sounds. precedence is controlled by the sound_play function.
   // but we have to check amoeba&magic together as they had a different gritty sound when mixed
