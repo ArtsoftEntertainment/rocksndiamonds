@@ -763,6 +763,11 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   },
 
   {
+    EL_BDX_EXPLODING_3,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
+    &li.bd_explosion_3_turns_to,	EL_BDX_EXPLODING_4
+  },
+  {
     EL_BDX_EXPLODING_5,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
     &li.bd_explosion_turns_to,		EL_EMPTY
@@ -4452,6 +4457,7 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->bomb_explosion_effect		= LEVEL_TO_CAVE(level->bd_bomb_explosion_turns_to);
   cave->nitro_explosion_effect		= LEVEL_TO_CAVE(level->bd_nitro_explosion_turns_to);
   cave->explosion_effect		= LEVEL_TO_CAVE(level->bd_explosion_turns_to);
+  cave->explosion_3_effect		= LEVEL_TO_CAVE(level->bd_explosion_3_turns_to);
 
   cave->colorb				= level->bd_color_b;
   cave->color0				= level->bd_color_0;
@@ -4635,6 +4641,7 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_bomb_explosion_turns_to	= CAVE_TO_LEVEL(cave->bomb_explosion_effect);
   level->bd_nitro_explosion_turns_to	= CAVE_TO_LEVEL(cave->nitro_explosion_effect);
   level->bd_explosion_turns_to		= CAVE_TO_LEVEL(cave->explosion_effect);
+  level->bd_explosion_3_turns_to	= CAVE_TO_LEVEL(cave->explosion_3_effect);
 
   level->bd_color_b			= cave->colorb;
   level->bd_color_0			= cave->color0;

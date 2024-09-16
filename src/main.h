@@ -3887,6 +3887,7 @@ struct LevelInfo
   int bd_bomb_explosion_turns_to;	// BD bomb explosion changes to specified element
   int bd_nitro_explosion_turns_to;	// BD nitro pack explosion changes to specified element
   int bd_explosion_turns_to;		// BD other explosions change to specified element
+  int bd_explosion_3_turns_to;		// BD other explosions change to specified element, stage 3
   int bd_color_b;			// BD engine C64-style cave color (border)
   int bd_color_0;			// BD engine C64-style cave color (background)
   int bd_color_1;			// BD engine C64-style cave color (sand)

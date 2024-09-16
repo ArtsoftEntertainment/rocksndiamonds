@@ -495,6 +495,8 @@ typedef struct _gd_cave
   // effects
   GdElement explosion_effect;           // explosion converts to this element after its last stage.
                                         // diego effect.
+  GdElement explosion_3_effect;         // O_EXPLODE_3 converts to this element
+                                        // diego effect, for compatibility.
   GdElement diamond_birth_effect;       // a diamond birth converts to this element after its last
                                         // stage. diego effect.
   GdElement bomb_explosion_effect;      // bombs explode to this element. diego effect (almost).

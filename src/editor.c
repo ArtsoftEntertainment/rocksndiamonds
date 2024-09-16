@@ -658,6 +658,7 @@ enum
   GADGET_ID_BD_BOMB_EXPLOSION_TURNS_TO,
   GADGET_ID_BD_NITRO_EXPLOSION_TURNS_TO,
   GADGET_ID_BD_EXPLOSION_TURNS_TO,
+  GADGET_ID_BD_EXPLOSION_3_TURNS_TO,
   GADGET_ID_START_ELEMENT,
   GADGET_ID_ARTWORK_ELEMENT,
   GADGET_ID_EXPLOSION_ELEMENT,
@@ -1374,6 +1375,7 @@ enum
   ED_DRAWING_ID_BD_BOMB_EXPLOSION_TURNS_TO,
   ED_DRAWING_ID_BD_NITRO_EXPLOSION_TURNS_TO,
   ED_DRAWING_ID_BD_EXPLOSION_TURNS_TO,
+  ED_DRAWING_ID_BD_EXPLOSION_3_TURNS_TO,
   ED_DRAWING_ID_START_ELEMENT,
   ED_DRAWING_ID_ARTWORK_ELEMENT,
   ED_DRAWING_ID_EXPLOSION_ELEMENT,
@@ -5161,6 +5163,14 @@ static struct
     GADGET_ID_BD_EXPLOSION_TURNS_TO,		GADGET_ID_NONE,
     &level.bd_explosion_turns_to,		1, 1,
     "Explosion ends in:", NULL, NULL, NULL,	"Changes to this after explosion"
+  },
+  {
+    ED_DRAWING_ID_BD_EXPLOSION_3_TURNS_TO,
+    ED_AREA_1X1_SETTINGS_XPOS(0),		ED_AREA_1X1_SETTINGS_YPOS(2),
+    ED_AREA_1X1_SETTINGS_XOFF,			ED_AREA_1X1_SETTINGS_YOFF,
+    GADGET_ID_BD_EXPLOSION_3_TURNS_TO,		GADGET_ID_NONE,
+    &level.bd_explosion_3_turns_to,		1, 1,
+    "Explosion (3) ends in:", NULL, NULL, NULL,	"Changes to this after explosion (3)"
   },
 
   // ---------- level start element -------------------------------------------
@@ -12788,11 +12798,13 @@ static void DrawPropertiesConfig(void)
     {
       MapDrawingArea(ED_DRAWING_ID_BD_FIREFLY_1_EXPLODES_TO);
       MapDrawingArea(ED_DRAWING_ID_BD_EXPLOSION_TURNS_TO);
+      MapDrawingArea(ED_DRAWING_ID_BD_EXPLOSION_3_TURNS_TO);
     }
     else if (IS_BDX_FIREFLY_2(properties_element))
     {
       MapDrawingArea(ED_DRAWING_ID_BD_FIREFLY_2_EXPLODES_TO);
       MapDrawingArea(ED_DRAWING_ID_BD_EXPLOSION_TURNS_TO);
+      MapDrawingArea(ED_DRAWING_ID_BD_EXPLOSION_3_TURNS_TO);
     }
     else if (IS_BDX_BUTTERFLY_1(properties_element))
     {
@@ -12812,6 +12824,7 @@ static void DrawPropertiesConfig(void)
     {
       MapDrawingArea(ED_DRAWING_ID_BD_DRAGONFLY_EXPLODES_TO);
       MapDrawingArea(ED_DRAWING_ID_BD_EXPLOSION_TURNS_TO);
+      MapDrawingArea(ED_DRAWING_ID_BD_EXPLOSION_3_TURNS_TO);
     }
     else if (properties_element == EL_BDX_BOMB)
     {

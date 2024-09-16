@@ -1790,4 +1790,5 @@ void unscan_cave(GdCave *cave)
   cave->bomb_explosion_effect		= non_scanned_pair(cave->bomb_explosion_effect);
   cave->nitro_explosion_effect		= non_scanned_pair(cave->nitro_explosion_effect);
   cave->explosion_effect		= non_scanned_pair(cave->explosion_effect);
+  cave->explosion_3_effect		= non_scanned_pair(cave->explosion_3_effect);
 }

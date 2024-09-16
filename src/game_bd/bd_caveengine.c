@@ -3727,6 +3727,10 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  //    S I M P L E   C H A N G I N G;   E X P L O S I O N S
 	  // ======================================================================================
 
+	case O_EXPLODE_3:
+	  store(cave, x, y, cave->explosion_3_effect);
+	  break;
+
 	case O_EXPLODE_5:
 	  store(cave, x, y, cave->explosion_effect);
 	  break;
@@ -3844,7 +3848,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	case O_GHOST_EXPL_3:
 	case O_EXPLODE_1:
 	case O_EXPLODE_2:
-	case O_EXPLODE_3:
+	  // O_EXPLODE_3 is "effected"
 	case O_EXPLODE_4:
 	case O_PRE_CLOCK_1:
 	case O_PRE_CLOCK_2:

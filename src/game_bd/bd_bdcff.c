@@ -1131,7 +1131,7 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
 	      cave->stone_bouncing_effect =
                 non_scanned_pair(gd_get_element_from_string(params[1]));
 	    else if (strcasecmp(params[0], "EXPLOSION3S") == 0)
-	      cave->explosion_effect =
+	      cave->explosion_3_effect =
                 non_scanned_pair(gd_get_element_from_string(params[1]));
 	    // falling with one l...
 	    else if (strcasecmp(params[0], "STARTING_FALING_DIAMOND") == 0)

@@ -1340,10 +1340,8 @@ static int cave_copy_from_plck(GdCave *cave, const byte *data,
     cave->stone_bouncing_effect = bd1_import(data[0x1ea], 0x1ea);
     cave->diamond_falling_effect = bd1_import(data[0x1eb], 0x1eb);
 
-    // explosions: 0x1e was explosion 5, if this is set to default, we also do not read it,
-    // as in our engine this would cause an O_EXPLODE_5 to stay there.
-    if (data[0x1ec] != 0x1e)
-      cave->explosion_effect = bd1_import(data[0x1ec], 0x1ec);
+    // explosions: 0x1e was explosion 4.
+    cave->explosion_3_effect = bd1_import(data[0x1ec], 0x1ec);
 
     /*
       pointer to element graphic.

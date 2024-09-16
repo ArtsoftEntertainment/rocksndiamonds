@@ -2763,6 +2763,11 @@ const GdStructDescriptor gd_cave_properties[] =
     N_("This element appears in places where an explosion finishes.")
   },
   {
+    "EXPLOSION3S", GD_TYPE_EFFECT, 0,
+    N_("Explosion stage 3 to"), CAVE_OFFSET(explosion_3_effect), 1,
+    N_("This element appears as the next stage of explosion 3. Not recommended to change. Check explosion effects on the effects page for a better alternative.")
+  },
+  {
     "DIAMONDBIRTHEffect", GD_TYPE_EFFECT, 0,
     N_("Diamond births end in"), CAVE_OFFSET(diamond_birth_effect), 1,
     N_("When a diamond birth animation reaches its end, it will leave this element there. This can be used to change the element butterflies explode to.")
@@ -3206,6 +3211,7 @@ GdPropertyDefault gd_cave_defaults_gdash[] =
 
   // cave effects
   { CAVE_OFFSET(explosion_effect),				O_SPACE				},
+  { CAVE_OFFSET(explosion_3_effect),				O_EXPLODE_4			},
   { CAVE_OFFSET(diamond_birth_effect),				O_DIAMOND			},
   { CAVE_OFFSET(bomb_explosion_effect),				O_BRICK				},
   { CAVE_OFFSET(nitro_explosion_effect),			O_SPACE				},
