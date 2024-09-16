@@ -1171,12 +1171,17 @@ void gd_cave_correct_visible_size(GdCave *cave)
     cave->y2 = cave->h - 1;
 }
 
-/*
-  bd1 and similar engines had animation bits in cave data, to set which elements to animate
-  (firefly, butterfly, amoeba).
-  animating an element also caused some delay each frame; according to my measurements,
-  around 2.6 ms/element.
-*/
+// Add extra ckdelay to cave by checking the existence of some animated elements.
+//
+// BD1 and similar engines had animation bits in cave data, to set which elements to animate
+// (firefly, butterfly, amoeba).
+// animating an element also caused some delay each frame; according to my measurements,
+// around 2.6 ms/element.
+//
+// Also calculate the per iteration ckdelay value, as if we were iterating the cave.
+// So when setting up a cave for the first time, update_scheduling() can be called right after
+// calling this function, and it will immediately calculate the correct speed of the cave, even
+// without iterating it.
 static void cave_set_ckdelay_extra_for_animation(GdCave *cave)
 {
   int x, y;
@@ -1223,7 +1228,9 @@ static void cave_set_ckdelay_extra_for_animation(GdCave *cave)
     cave->ckdelay_extra_for_animation += 2600;
 }
 
-// do some init - setup some cave variables before the game.
+// Do some init - setup some cave variables before the game.
+// Put in a different function, so things which are not
+// important for the editor are not done when constructing the cave.
 void gd_cave_setup_for_game(GdCave *cave)
 {
   int x, y;
@@ -1276,10 +1283,10 @@ void gd_cave_setup_for_game(GdCave *cave)
     cave->hammered_reappear = gd_cave_map_new(cave, int);
 }
 
-// cave diamonds needed can be set to n<=0.
-// if so, count the diamonds at the time of the hatching, and decrement that value from
-// the number of diamonds found.
-// of course, this function is to be called from the cave engine, at the exact time of hatching.
+// Count diamonds in a cave, and set diamonds_needed accordingly.
+// Cave diamonds needed can be set to n <= 0. If so, count the diamonds at the time of the
+// hatching, and decrement that value from the number of diamonds found. Of course, this
+// function is to be called from the cave engine, at the exact time of hatching.
 void gd_cave_count_diamonds(GdCave *cave)
 {
   int x, y;
@@ -1299,19 +1306,20 @@ void gd_cave_count_diamonds(GdCave *cave)
   }
 }
 
-/*
-  takes a cave and a gfx buffer, and fills the buffer with cell indexes.
-  the indexes might change if bonus life flash is active (small lines in
-  "SPACE" cells),
-  for the paused state (which is used in gdash but not in sdash) - yellowish
-  color.
-  also one can select the animation frame (0..7) to draw the cave on. so the
-  caller manages
-  increasing that.
-
-  if a cell is changed, it is flagged with GD_REDRAW; the flag can be cleared
-  by the caller.
-*/
+// Draw a cave into a gfx buffer (integer map) - set the cave cell index from the png.
+//
+// Takes a cave and a gfx buffer, and fills the buffer with cell indexes.
+// The indexes might change if bonus life flash is active (small lines in "SPACE" cells),
+// for the paused state (which is used in gdash but not in sdash) - yellowish color.
+// Also one can select the animation frame (0..7) to draw the cave on. So the caller manages
+// increasing that.
+// If a cell is changed, it is flagged with GD_REDRAW; the flag can be cleared by the caller.
+//
+// @param gfx_buffer A map, which must be the same size as the map of the cave.
+// @param bonus_life_flash Set to true, if the player got a bonus life.
+//                         The space element will change accordingly.
+// @param animcycle Animation cycle - an integer between 0 and 7 to select animated frames.
+// @param hate_invisible_outbox Show invisible outboxes as visible (blinking) ones.
 void gd_drawcave_game(const GdCave *cave,
 		      int **element_buffer, int **last_element_buffer,
 		      int **drawing_buffer, int **last_drawing_buffer, int **gfx_buffer,
