@@ -4238,6 +4238,9 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	cave->creatures_backwards = !cave->creatures_backwards;
     }
 
+    if (cave->player_state == GD_PL_NOT_YET)
+      cave->player_state = GD_PL_LIVING;
+
     gd_sound_play(cave, GD_S_CRACKING, O_INBOX, -1, -1);
   }
 
