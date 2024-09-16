@@ -3796,12 +3796,24 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  break;
 
 	case O_INBOX:
+	  cave->player_seen_ago = 0;
 	  if (cave->hatched && !inbox_toggle)    // if it is time of birth
 	    store(cave, x, y, O_PRE_PL_1);
 	  inbox_toggle = !inbox_toggle;
 	  break;
 
+	case O_PRE_PL_1:
+	  cave->player_seen_ago = 0;
+	  store(cave, x, y, O_PRE_PL_2);
+	  break;
+
+	case O_PRE_PL_2:
+	  cave->player_seen_ago = 0;
+	  store(cave, x, y, O_PRE_PL_3);
+	  break;
+
 	case O_PRE_PL_3:
+	  cave->player_seen_ago = 0;
 	  store(cave, x, y, O_PLAYER);
 	  break;
 
@@ -3834,8 +3846,6 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	case O_EXPLODE_2:
 	case O_EXPLODE_3:
 	case O_EXPLODE_4:
-	case O_PRE_PL_1:
-	case O_PRE_PL_2:
 	case O_PRE_CLOCK_1:
 	case O_PRE_CLOCK_2:
 	case O_PRE_CLOCK_3:
