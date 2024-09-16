@@ -4051,7 +4051,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
   // PLAYER
 
-  // check if player is alive.
+  // check if player is alive. (delay reduced from 15 to 1 to faster detect game over)
   if ((cave->player_state == GD_PL_LIVING && cave->player_seen_ago > 1) || cave->kill_player)
     cave->player_state = GD_PL_DIED;
 
@@ -4061,20 +4061,22 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
   // AMOEBA
 
-  // check flags after evaluating.
   if (cave->amoeba_state == GD_AM_AWAKE)
   {
+    // check flags after evaluating.
     if (amoeba_count >= cave->amoeba_max_count)
       cave->amoeba_state = GD_AM_TOO_BIG;
+
     if (amoeba_found_enclosed)
       cave->amoeba_state = GD_AM_ENCLOSED;
-    }
+  }
 
   // amoeba can also be turned into diamond by magic wall
   if (cave->magic_wall_stops_amoeba && cave->magic_wall_state == GD_MW_ACTIVE)
     cave->amoeba_state = GD_AM_ENCLOSED;
 
   // AMOEBA 2
+
   if (cave->amoeba_2_state == GD_AM_AWAKE)
   {
     // check flags after evaluating.
@@ -4098,14 +4100,14 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
   // only decrement time when player is already born.
   if (cave->hatched)
   {
-    int secondsbefore, secondsafter;
+    int secondsbefore = cave->time / cave->timing_factor;
 
-    secondsbefore = cave->time / cave->timing_factor;
     cave->time -= cave->speed;
     if (cave->time <= 0)
       cave->time = 0;
 
-    secondsafter = cave->time / cave->timing_factor;
+    int secondsafter = cave->time / cave->timing_factor;
+
     if (cave->time / cave->timing_factor < 10)
       // if less than 10 seconds, no walking sound, but play explosion sound
       gd_sound_play(cave, GD_S_NONE, O_NONE, -1, -1);
@@ -4271,10 +4273,10 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
   // set these for drawing.
   cave->last_direction = player_move;
 
-  // here we remember last movements for animation. this is needed here,
-  // as animation is in sync with the game, not the keyboard directly.
-  // (for example, after exiting the cave, the player was "running" in the
-  // original, till bonus points were counted for remaining time and so on.
+  // here we remember last movements for animation. this is needed here, as animation
+  // is in sync with the game, not the keyboard directly. (for example, after exiting
+  // the cave, the player was "running" in the original, till bonus points were counted
+  // for remaining time and so on.
   if (player_move == GD_MV_LEFT ||
       player_move == GD_MV_UP_LEFT ||
       player_move == GD_MV_DOWN_LEFT)
