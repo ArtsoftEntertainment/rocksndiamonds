@@ -3615,25 +3615,21 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  // first, check for gravity and running belts.
 	  if (!cave->gravity_disabled && cave->conveyor_belts_active)
 	  {
-	    const GdDirection *dir;
-	    boolean left;
-
 	    // decide direction
-	    left = get(cave, x, y) != O_CONVEYOR_RIGHT;
+	    boolean left = (get(cave, x, y) != O_CONVEYOR_RIGHT);
 	    if (cave->conveyor_belts_direction_changed)
 	      left = !left;
-	    dir = left ? ccw_eighth : cw_eighth;
+
+	    const GdDirection *dir = (left ? ccw_eighth : cw_eighth);
 
 	    // CHECK IF IT CONVEYS THE ELEMENT ABOVE IT
-	    // if gravity is normal, and the conveyor belt has something
-	    // ABOVE which can be moved
+	    //
+	    // if gravity is normal, and the conveyor belt has something ABOVE which can be moved
 	    // OR
-	    // the gravity is up, so anything that should float now goes
-	    // DOWN and touches the conveyor
-	    if ((cave->gravity == GD_MV_DOWN &&
-		 moved_by_conveyor_top(cave, x, y, GD_MV_UP)) ||
-		(cave->gravity == GD_MV_UP &&
-		 moved_by_conveyor_bottom(cave, x, y, GD_MV_UP)))
+	    // the gravity is up, so anything that should float now goes DOWN and touches the
+	    // conveyor
+	    if ((cave->gravity == GD_MV_DOWN && moved_by_conveyor_top(cave, x, y, GD_MV_UP)) ||
+		(cave->gravity == GD_MV_UP   && moved_by_conveyor_bottom(cave, x, y, GD_MV_UP)))
 	    {
 	      if (is_like_space(cave, x, y, dir[GD_MV_UP]))
 	      {
@@ -3662,10 +3658,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    }
 
 	    // CHECK IF IT CONVEYS THE ELEMENT BELOW IT
-	    if ((cave->gravity == GD_MV_UP &&
-		 moved_by_conveyor_top(cave, x, y, GD_MV_DOWN)) ||
-		(cave->gravity == GD_MV_DOWN &&
-		 moved_by_conveyor_bottom(cave, x, y, GD_MV_DOWN)))
+	    if ((cave->gravity == GD_MV_UP   && moved_by_conveyor_top(cave, x, y, GD_MV_DOWN)) ||
+		(cave->gravity == GD_MV_DOWN && moved_by_conveyor_bottom(cave, x, y, GD_MV_DOWN)))
 	    {
 	      if (is_like_space(cave, x, y, dir[GD_MV_DOWN]))
 	      {
