@@ -3759,12 +3759,12 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  {
 	    static GdElement ghost_explode[] =
 	    {
-	      O_SPACE, O_SPACE, O_DIRT, O_DIRT, O_CLOCK, O_CLOCK, O_PRE_OUTBOX,
-	      O_BOMB, O_BOMB, O_PLAYER, O_GHOST, O_BLADDER, O_DIAMOND, O_SWEET,
-	      O_WAITING_STONE, O_BITER_1
+	      O_SPACE, O_SPACE, O_DIRT, O_DIRT, O_CLOCK, O_CLOCK, O_PRE_OUTBOX, O_BOMB,
+	      O_BOMB, O_PLAYER, O_GHOST, O_BLADDER, O_DIAMOND, O_SWEET, O_WAITING_STONE, O_BITER_1
 	    };
 
-	    store(cave, x, y, ghost_explode[gd_rand_int_range(cave->random, 0, ARRAY_SIZE(ghost_explode))]);
+	    store(cave, x, y, ghost_explode[gd_rand_int_range(cave->random, 0,
+                                                              ARRAY_SIZE(ghost_explode))]);
 	  }
 	  break;
 
@@ -3787,12 +3787,12 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
 	case O_PRE_OUTBOX:
 	  if (cave->gate_open) // if no more diamonds needed
-	    store(cave, x, y, O_OUTBOX);    // open outbox
+	    store(cave, x, y, O_OUTBOX);         // open outbox
 	  break;
 
 	case O_PRE_INVIS_OUTBOX:
-	  if (cave->gate_open)    // if no more diamonds needed
-	    store(cave, x, y, O_INVIS_OUTBOX);    // open outbox. invisible one :P
+	  if (cave->gate_open) // if no more diamonds needed
+	    store(cave, x, y, O_INVIS_OUTBOX);   // open outbox. invisible one :P
 	  break;
 
 	case O_INBOX:
@@ -3877,6 +3877,14 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    play_sound_of_element(cave, O_BLADDER_SPENDER, x, y);
 	  }
 	  break;
+
+        case O_MAGIC_WALL:
+          // the magic wall is handled by the elements which fall onto the wall.
+          break;
+
+        case O_LAVA:
+          // lava is handled by the store() routine.
+          break;
 
 	default:
 	  // other inanimate elements that do nothing
