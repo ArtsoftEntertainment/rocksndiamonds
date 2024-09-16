@@ -3569,10 +3569,9 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    // try falling if space under.
 	    int yy;
 
+            // yy < y + cave->h is to check everything OVER the wall - since caves wrap around !!
 	    for (yy = y + 1; yy < y + cave->h; yy++)
-	      // yy < y + cave->h is to check everything OVER the wall - since caves wrap around !!
-	      if (get(cave, x, yy) != O_SPACE)
-		// stop cycle when other than space
+	      if (!is_like_space(cave, x, yy, GD_MV_STILL))   // stop cycle when other than space
 		break;
 
 	    // if scanning stopped by a player... start falling!
@@ -3587,27 +3586,23 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  break;
 
 	case O_FALLING_WALL_F:
-	  switch (get_dir(cave, x, y, grav_compat))
-	  {
-	    case O_PLAYER:
-	    case O_PLAYER_GLUED:
-	    case O_PLAYER_BOMB:
-	      // if player under, it explodes - the falling wall, not the player!
-	      explode(cave, x, y);
-	      break;
-
-	    case O_SPACE:
-	      // continue falling
-	      move(cave, x, y, grav_compat, O_FALLING_WALL_F);
-	      break;
-
-	    default:
-	      // stop
-	      play_sound_of_element(cave, get(cave, x, y), x, y);
-	      store(cave, x, y, O_FALLING_WALL);
-	      break;
-	  }
-	  break;
+          if (is_player_dir(cave, x, y, grav_compat))
+          {
+            // if player under, it explodes - the falling wall, not the player!
+            explode(cave, x, y);
+          }
+          else if (is_like_space(cave, x, y, grav_compat))
+          {
+            // continue falling
+            move(cave, x, y, grav_compat, O_FALLING_WALL_F);
+          }
+          else
+          {
+            // stop falling
+            play_sound_of_element(cave, O_FALLING_WALL_F, x, y);
+            store(cave, x, y, O_FALLING_WALL);
+          }
+          break;
 
 
 	  // ======================================================================================
