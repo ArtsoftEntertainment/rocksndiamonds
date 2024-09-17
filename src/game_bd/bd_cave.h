@@ -580,12 +580,12 @@ typedef struct _gd_cave
 
   int speed;                            // Time between game cycles in ms
   int c64_timing;                       // a ckdelay value for the level this cave is rendered for
-  int ckdelay;                          // ckdelay value for the current iteration
+  int ckdelay_current;                  // ckdelay value for the current iteration
   int ckdelay_extra_for_animation;      // bd1 and similar engines had animation bits in cave data,
                                         // to set which elements to animate (firefly, butterfly,
                                         // amoeba).
                                         // animating an element also caused some delay each frame;
-                                        //  according to my measurements, around 2.6 ms/element.
+                                        // according to my measurements, around 2.6 ms/element.
 
   int frame;  // XXX
 

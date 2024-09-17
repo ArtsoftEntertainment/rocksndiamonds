@@ -1841,13 +1841,13 @@ void gd_update_scheduling_cave_speed(GdCave *cave)
       {
 	// non-intermissions
         cave->speed = (88 + 3.66 * cave->c64_timing +
-                       (cave->ckdelay + cave->ckdelay_extra_for_animation) / 1000);
+                       (cave->ckdelay_current + cave->ckdelay_extra_for_animation) / 1000);
       }
       else
       {
 	// intermissions were quicker, as only lines 1-12 were processed by the engine.
         cave->speed = (60 + 3.66 * cave->c64_timing +
-                       (cave->ckdelay + cave->ckdelay_extra_for_animation) / 1000);
+                       (cave->ckdelay_current + cave->ckdelay_extra_for_animation) / 1000);
       }
       break;
 
@@ -1856,36 +1856,36 @@ void gd_update_scheduling_cave_speed(GdCave *cave)
       if (!cave->intermission)
       {
         // non-intermissions
-	cave->speed = (74 + 3.2 * cave->c64_timing + (cave->ckdelay) / 1000);
+	cave->speed = (74 + 3.2 * cave->c64_timing + (cave->ckdelay_current) / 1000);
       }
       else
       {
         // for intermissions
-	cave->speed = (65 + 2.88 * cave->c64_timing + (cave->ckdelay) / 1000);
+	cave->speed = (65 + 2.88 * cave->c64_timing + (cave->ckdelay_current) / 1000);
       }
       break;
 
     case GD_SCHEDULING_BD2:
       // 60 is a guess.
-      cave->speed = MAX(60 + (cave->ckdelay + cave->ckdelay_extra_for_animation) / 1000,
+      cave->speed = MAX(60 + (cave->ckdelay_current + cave->ckdelay_extra_for_animation) / 1000,
                         cave->c64_timing * 20);
       break;
 
     case GD_SCHEDULING_PLCK:
       // 65 is totally empty cave in construction kit, with delay = 0)
-      cave->speed = MAX(65 + cave->ckdelay / 1000, cave->c64_timing * 20);
+      cave->speed = MAX(65 + cave->ckdelay_current / 1000, cave->c64_timing * 20);
       break;
 
     case GD_SCHEDULING_BD2_PLCK_ATARI:
       // a really fast engine; timing works like c64 plck.
       // 40 ms was measured in the construction kit, with delay = 0
-      cave->speed = MAX(40 + cave->ckdelay / 1000, cave->c64_timing * 20);
+      cave->speed = MAX(40 + cave->ckdelay_current / 1000, cave->c64_timing * 20);
       break;
 
     case GD_SCHEDULING_CRDR:
       if (cave->hammered_walls_reappear) // this made the engine very slow.
-	cave->ckdelay += 60000;
-      cave->speed = MAX(130 + cave->ckdelay / 1000, cave->c64_timing * 20);
+	cave->ckdelay_current += 60000;
+      cave->speed = MAX(130 + cave->ckdelay_current / 1000, cave->c64_timing * 20);
       break;
 
     case GD_SCHEDULING_MAX:

@@ -766,7 +766,7 @@ static void creature_explode(GdCave *cave, int x, int y, GdElement explode_to)
   int xx, yy;
 
   // the processing of an explosion took pretty much time: processing 3x3 = 9 elements
-  cave->ckdelay += 1200;
+  cave->ckdelay_current += 1200;
   gd_sound_play(cave, GD_S_EXPLODING, get(cave, x, y), x, y);
 
   for (yy = y - 1; yy <= y + 1; yy++)
@@ -780,7 +780,7 @@ static void nitro_explode(GdCave *cave, int x, int y)
   int xx, yy;
 
   // the processing of an explosion took pretty much time: processing 3x3 = 9 elements
-  cave->ckdelay += 1200;
+  cave->ckdelay_current += 1200;
   gd_sound_play(cave, GD_S_NITRO_PACK_EXPLODING, get(cave, x, y), x, y);
 
   for (yy = y - 1; yy <= y + 1; yy++)
@@ -801,7 +801,7 @@ static void voodoo_explode(GdCave *cave, int x, int y)
     cave->voodoo_touched = TRUE;
 
   // the processing of an explosion took pretty much time: processing 3x3 = 9 elements
-  cave->ckdelay += 1000;
+  cave->ckdelay_current += 1000;
   gd_sound_play(cave, GD_S_VOODOO_EXPLODING, get(cave, x, y), x, y);
 
   // voodoo explodes to 3x3 steel
@@ -836,7 +836,7 @@ static void cell_explode_skip_voodoo(GdCave *cave, const int x, const int y, con
 static void ghost_explode(GdCave *cave, const int x, const int y)
 {
   // the processing of an explosion took pretty much time: processing 5 elements
-  cave->ckdelay += 650;
+  cave->ckdelay_current += 650;
   gd_sound_play(cave, GD_S_GHOST_EXPLODING, get(cave, x, y), x, y);
 
   cell_explode_skip_voodoo(cave, x,     y,     O_GHOST_EXPL_1);
@@ -850,7 +850,7 @@ static void ghost_explode(GdCave *cave, const int x, const int y)
 static void bomb_explode(GdCave *cave, const int x, const int y)
 {
   // the processing of an explosion took pretty much time: processing 5 elements
-  cave->ckdelay += 650;
+  cave->ckdelay_current += 650;
   gd_sound_play(cave, GD_S_BOMB_EXPLODING, get(cave, x, y), x, y);
 
   cell_explode_skip_voodoo(cave, x,     y,     O_BOMB_EXPL_1);
@@ -1872,7 +1872,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
   amoeba_count = 0;
   amoeba_2_count = 0;
   found_water = FALSE;
-  cave->ckdelay = 0;
+  cave->ckdelay_current = 0;
   time_decrement_sec = 0;
 
   // check whether to scan the first and last line
@@ -1902,7 +1902,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
       }
 
       // add the ckdelay correction value for every element seen.
-      cave->ckdelay += gd_element_properties[get(cave, x, y)].ckdelay;
+      cave->ckdelay_current += gd_element_properties[get(cave, x, y)].ckdelay;
 
       switch (get(cave, x, y))
       {
@@ -4255,7 +4255,7 @@ void set_initial_cave_speed(GdCave *cave)
     for (x = 0; x < cave->w; x++)
     {
       // add the ckdelay correction value for every element seen.
-      cave->ckdelay += gd_element_properties[get(cave, x, y)].ckdelay;
+      cave->ckdelay_current += gd_element_properties[get(cave, x, y)].ckdelay;
     }
   }
 
