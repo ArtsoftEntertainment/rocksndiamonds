@@ -3943,7 +3943,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
   // SCHEDULING
 
   // updates based on the calculated explosions and per element ckdelays.
-  update_cave_speed(cave);
+  gd_update_scheduling_cave_speed(cave);
 
   // SPECIAL SOUNDS
 
@@ -4260,5 +4260,5 @@ void set_initial_cave_speed(GdCave *cave)
   }
 
   // update timing calculated by iterating and counting elements
-  update_cave_speed(cave);
+  gd_update_scheduling_cave_speed(cave);
 }

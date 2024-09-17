@@ -1179,9 +1179,9 @@ void gd_cave_correct_visible_size(GdCave *cave)
 // around 2.6 ms/element.
 //
 // Also calculate the per iteration ckdelay value, as if we were iterating the cave.
-// So when setting up a cave for the first time, update_scheduling() can be called right after
-// calling this function, and it will immediately calculate the correct speed of the cave, even
-// without iterating it.
+// So when setting up a cave for the first time, gd_update_scheduling_cave_speed() can be called
+// right after calling this function, and it will immediately calculate the correct speed of the
+// cave, even without iterating it.
 static void cave_set_ckdelay_extra_for_animation(GdCave *cave)
 {
   int x, y;
@@ -1772,7 +1772,7 @@ boolean gd_caveset_has_levels(void)
 }
 
 // set all elements in a cave to their non-scanned counterparts
-void unscan_cave(GdCave *cave)
+void gd_unscan_cave(GdCave *cave)
 {
   if (cave == NULL || cave->map == NULL)
     return;
@@ -1827,7 +1827,7 @@ void unscan_cave(GdCave *cave)
   cave->explosion_3_effect		= non_scanned_pair(cave->explosion_3_effect);
 }
 
-void update_cave_speed(GdCave *cave)
+void gd_update_scheduling_cave_speed(GdCave *cave)
 {
   // update timing calculated by iterating and counting elements which were slow to process on c64
   switch (cave->scheduling)
