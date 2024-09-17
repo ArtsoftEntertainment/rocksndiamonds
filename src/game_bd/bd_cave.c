@@ -1296,9 +1296,27 @@ void gd_cave_count_diamonds(GdCave *cave)
   if (cave->diamonds_needed <= 0)
   {
     for (y = 0; y < cave->h; y++)
+    {
       for (x = 0; x < cave->w; x++)
-	if (cave->map[y][x] == O_DIAMOND)
-	  cave->diamonds_needed++;
+      {
+        switch (cave->map[y][x])
+        {
+          case O_DIAMOND:
+          case O_DIAMOND_F:
+          case O_FLYING_DIAMOND:
+          case O_FLYING_DIAMOND_F:
+            cave->diamonds_needed++;
+            break;
+
+          case O_SKELETON:
+            cave->diamonds_needed += cave->skeletons_worth_diamonds;
+            break;
+
+          default:
+            break;
+        }
+      }
+    }
 
     // if still below zero, let this be 0, so gate will be open immediately
     if (cave->diamonds_needed < 0)
