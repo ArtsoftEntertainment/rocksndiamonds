@@ -1829,11 +1829,18 @@ void gd_unscan_cave(GdCave *cave)
 
 void gd_update_scheduling_cave_speed(GdCave *cave)
 {
-  // update timing calculated by iterating and counting elements which were slow to process on c64
+  // SCHEDULING
+
+  // update timing calculated by iterating and counting elements which were slow to process on c64.
+  // some caves were delay loop based.
+  // some had proper timing routine - but if the cave was too complex,
+  // it ran slower than the time requested.
+  // this is were MAX() is used, to select the slower.
+
   switch (cave->scheduling)
   {
     case GD_SCHEDULING_MILLISECONDS:
-      // cave->speed already contains the milliseconds value, do not touch it
+      // speed already contains the milliseconds value, do not touch it
       break;
 
     case GD_SCHEDULING_BD1:
@@ -1856,12 +1863,12 @@ void gd_update_scheduling_cave_speed(GdCave *cave)
       if (!cave->intermission)
       {
         // non-intermissions
-	cave->speed = (74 + 3.2 * cave->ckdelay + (cave->ckdelay_current) / 1000);
+	cave->speed = (74 + 3.2 * cave->ckdelay + cave->ckdelay_current / 1000);
       }
       else
       {
         // for intermissions
-	cave->speed = (65 + 2.88 * cave->ckdelay + (cave->ckdelay_current) / 1000);
+	cave->speed = (65 + 2.88 * cave->ckdelay + cave->ckdelay_current / 1000);
       }
       break;
 
@@ -1872,7 +1879,7 @@ void gd_update_scheduling_cave_speed(GdCave *cave)
       break;
 
     case GD_SCHEDULING_PLCK:
-      // 65 is totally empty cave in construction kit, with delay = 0)
+      // 65 is totally empty cave in construction kit, with delay = 0
       cave->speed = MAX(65 + cave->ckdelay_current / 1000, cave->ckdelay * 20);
       break;
 
@@ -1889,6 +1896,7 @@ void gd_update_scheduling_cave_speed(GdCave *cave)
       break;
 
     case GD_SCHEDULING_MAX:
+      // to avoid compiler warning
       break;
   }
 }

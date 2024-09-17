@@ -1561,7 +1561,9 @@ GdCave *gd_cave_new_rendered(const GdCave *data, const int level, const unsigned
 
   // check if we use c64 ckdelay or milliseconds for timing
   if (cave->scheduling == GD_SCHEDULING_MILLISECONDS)
+  {
     cave->speed = data->level_speed[level];        // exact timing
+  }
   else
   {
     // delay loop based timing... set something for first iteration,
