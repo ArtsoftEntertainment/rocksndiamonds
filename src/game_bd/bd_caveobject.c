@@ -1570,7 +1570,7 @@ GdCave *gd_cave_new_rendered(const GdCave *data, const int level, const unsigned
 
     // this one may be used by iterate routine to calculate actual delay
     // if c64scheduling is selected
-    cave->c64_timing = data->level_ckdelay[level];
+    cave->ckdelay = data->level_ckdelay[level];
   }
 
   gd_cave_correct_visible_size(cave);
