@@ -744,4 +744,6 @@ boolean gd_caveset_has_levels(void);
 
 void unscan_cave(GdCave *cave);
 
+void update_cave_speed(GdCave *cave);
+
 #endif	// BD_CAVE_H
