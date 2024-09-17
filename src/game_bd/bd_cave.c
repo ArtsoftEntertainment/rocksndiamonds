@@ -1233,9 +1233,7 @@ static void cave_set_ckdelay_extra_for_animation(GdCave *cave)
 // important for the editor are not done when constructing the cave.
 void gd_cave_setup_for_game(GdCave *cave)
 {
-  int x, y;
-
-  cave_set_ckdelay_extra_for_animation(cave);
+  int i, x, y;
 
   // find the player which will be the one to scroll to at the beginning of the game
   // (before the player's birth)
@@ -1270,9 +1268,16 @@ void gd_cave_setup_for_game(GdCave *cave)
     }
   }
 
+  for (i = 0; i < GD_PLAYER_MEM_SIZE; i++)
+  {
+    cave->player_x_mem[i] = cave->player_x;
+    cave->player_y_mem[i] = cave->player_y;
+  }
+
   // select number of milliseconds (for pal and ntsc)
   cave->timing_factor = cave->pal_timing ? 1200 : 1000;
 
+  // apply timing factor to time values
   cave->time			*= cave->timing_factor;
   cave->magic_wall_time		*= cave->timing_factor;
   cave->amoeba_time		*= cave->timing_factor;
@@ -1281,6 +1286,9 @@ void gd_cave_setup_for_game(GdCave *cave)
 
   if (cave->hammered_walls_reappear)
     cave->hammered_reappear = gd_cave_map_new(cave, int);
+
+  // set speed
+  cave_set_ckdelay_extra_for_animation(cave);
 }
 
 // Count diamonds in a cave, and set diamonds_needed accordingly.
