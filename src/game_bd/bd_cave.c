@@ -1288,7 +1288,15 @@ void gd_cave_setup_for_game(GdCave *cave)
     cave->hammered_reappear = gd_cave_map_new(cave, int);
 
   // set speed
+
+  // set extra cave speed delay for certain game elements
   cave_set_ckdelay_extra_for_animation(cave);
+
+  if (game_bd.game == NULL || !game_bd.game->use_old_engine)   // new game engine only
+  {
+    // set initial cave speed according to scheduling type (using the above extra delay)
+    gd_update_scheduling_cave_speed(cave);
+  }
 }
 
 // Count diamonds in a cave, and set diamonds_needed accordingly.
