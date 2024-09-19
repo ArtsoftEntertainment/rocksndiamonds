@@ -626,21 +626,24 @@ GdCave *gd_cave_new_from_cave(const GdCave *orig)
   return cave;
 }
 
-/*
-  Put an object to the specified position.
-  Performs range checking.
-  If wraparound objects are selected, wraps around x coordinates, with or without lineshift.
-  (The y coordinate is not wrapped, as it did not work like that on the c64)
-  order is a pointer to the GdObject describing this object. Thus the editor can identify
-  which cell was created by which object.
-*/
+// Put an element to the specified position.
+// Performs range checking.
+// If wraparound objects are selected, wraps around x coordinates, with or without lineshift.
+// (The y coordinate is not wrapped, as it did not work like that on the c64.)
+// Order is a pointer to the GdObject describing this object which sets this element of the map.
+// Thus the editor can identify which cell was created by which object.
+//
+// @param x The x coordinate to draw at.
+// @param y The y coordinate to draw at.
+// @param element The element to draw.
+// @param order_idx Index the object which draws this element, or -1 if none.
 void gd_cave_store_rc(GdCave *cave, int x, int y, const GdElement element, const void *order)
 {
   // if we do not need to draw, exit now
   if (element == O_NONE)
     return;
 
-  // check bounds
+  // if objects wrap around (mainly in imported caves), correct the coordinates
   if (cave->wraparound_objects)
   {
     if (cave->lineshift)
@@ -682,6 +685,7 @@ void gd_cave_store_rc(GdCave *cave, int x, int y, const GdElement element, const
 
   // if the above wraparound code fixed the coordinates, this will always be true.
   // but see the above comment for lineshifting y coordinate
+  // (if lineshift drawing is enabled, y might be negative or overflow)
   if (x >= 0 && x < cave->w && y >= 0 && y < cave->h)
   {
     cave->map[y][x] = element;
@@ -1360,17 +1364,17 @@ void gd_drawcave_game(const GdCave *cave,
 		      int **covered_buffer,
 		      boolean bonus_life_flash, int animcycle, boolean hate_invisible_outbox)
 {
-  static int player_blinking = 0;
-  static int player_tapping = 0;
+  static boolean player_blinking = FALSE;
+  static boolean player_tapping = FALSE;
   int elemmapping[O_MAX_ALL];
   int elemdrawing[O_MAX_ALL];
   int x, y, map, draw;
 
-  if (cave->last_direction)
+  if (cave->last_direction != GD_MV_STILL)
   {
     // he is moving, so stop blinking and tapping.
-    player_blinking = 0;
-    player_tapping = 0;
+    player_blinking = FALSE;
+    player_tapping = FALSE;
   }
   else
   {
@@ -1379,7 +1383,7 @@ void gd_drawcave_game(const GdCave *cave,
     {
       // blinking and tapping is started at the beginning of animation sequences.
       // 1/4 chance of blinking, every sequence.
-      player_blinking = gd_random_int_range(0, 4) == 0;
+      player_blinking = (gd_random_int_range(0, 4) == 0);
 
       // 1/16 chance of starting or stopping tapping.
       if (gd_random_int_range(0, 16) == 0)
@@ -1399,20 +1403,40 @@ void gd_drawcave_game(const GdCave *cave,
     elemdrawing[O_SPACE] = gd_element_properties[O_FAKE_BONUS].image_game;
   }
 
-  elemmapping[O_MAGIC_WALL] = (cave->magic_wall_state == GD_MW_ACTIVE ? O_MAGIC_WALL : O_BRICK);
-  elemdrawing[O_MAGIC_WALL] = gd_element_properties[cave->magic_wall_state == GD_MW_ACTIVE ? O_MAGIC_WALL : O_BRICK].image_game;
+  elemmapping[O_MAGIC_WALL] = (cave->magic_wall_state == GD_MW_ACTIVE ?
+                               O_MAGIC_WALL :
+                               O_BRICK);
+  elemdrawing[O_MAGIC_WALL] = gd_element_properties[cave->magic_wall_state == GD_MW_ACTIVE ?
+                                                    O_MAGIC_WALL :
+                                                    O_BRICK].image_game;
 
-  elemmapping[O_CREATURE_SWITCH] = (cave->creatures_backwards ? O_CREATURE_SWITCH_ON : O_CREATURE_SWITCH);
-  elemdrawing[O_CREATURE_SWITCH] = gd_element_properties[cave->creatures_backwards ? O_CREATURE_SWITCH_ON : O_CREATURE_SWITCH].image_game;
+  elemmapping[O_CREATURE_SWITCH] = (cave->creatures_backwards ?
+                                    O_CREATURE_SWITCH_ON :
+                                    O_CREATURE_SWITCH);
+  elemdrawing[O_CREATURE_SWITCH] = gd_element_properties[cave->creatures_backwards ?
+                                                         O_CREATURE_SWITCH_ON :
+                                                         O_CREATURE_SWITCH].image_game;
 
-  elemmapping[O_EXPANDING_WALL_SWITCH] = (cave->expanding_wall_changed ? O_EXPANDING_WALL_SWITCH_VERT : O_EXPANDING_WALL_SWITCH_HORIZ);
-  elemdrawing[O_EXPANDING_WALL_SWITCH] = gd_element_properties[cave->expanding_wall_changed ? O_EXPANDING_WALL_SWITCH_VERT : O_EXPANDING_WALL_SWITCH_HORIZ].image_game;
+  elemmapping[O_EXPANDING_WALL_SWITCH] = (cave->expanding_wall_changed ?
+                                          O_EXPANDING_WALL_SWITCH_VERT :
+                                          O_EXPANDING_WALL_SWITCH_HORIZ);
+  elemdrawing[O_EXPANDING_WALL_SWITCH] = gd_element_properties[cave->expanding_wall_changed ?
+                                                               O_EXPANDING_WALL_SWITCH_VERT :
+                                                               O_EXPANDING_WALL_SWITCH_HORIZ].image_game;
 
-  elemmapping[O_GRAVITY_SWITCH] = (cave->gravity_switch_active ? O_GRAVITY_SWITCH_ACTIVE : O_GRAVITY_SWITCH);
-  elemdrawing[O_GRAVITY_SWITCH] = gd_element_properties[cave->gravity_switch_active ? O_GRAVITY_SWITCH_ACTIVE : O_GRAVITY_SWITCH].image_game;
+  elemmapping[O_GRAVITY_SWITCH] = (cave->gravity_switch_active ?
+                                   O_GRAVITY_SWITCH_ACTIVE :
+                                   O_GRAVITY_SWITCH);
+  elemdrawing[O_GRAVITY_SWITCH] = gd_element_properties[cave->gravity_switch_active ?
+                                                        O_GRAVITY_SWITCH_ACTIVE :
+                                                        O_GRAVITY_SWITCH].image_game;
 
-  elemmapping[O_REPLICATOR_SWITCH] = (cave->replicators_active ? O_REPLICATOR_SWITCH_ON : O_REPLICATOR_SWITCH_OFF);
-  elemdrawing[O_REPLICATOR_SWITCH] = gd_element_properties[cave->replicators_active ? O_REPLICATOR_SWITCH_ON : O_REPLICATOR_SWITCH_OFF].image_game;
+  elemmapping[O_REPLICATOR_SWITCH] = (cave->replicators_active ?
+                                      O_REPLICATOR_SWITCH_ON :
+                                      O_REPLICATOR_SWITCH_OFF);
+  elemdrawing[O_REPLICATOR_SWITCH] = gd_element_properties[cave->replicators_active ?
+                                                           O_REPLICATOR_SWITCH_ON :
+                                                           O_REPLICATOR_SWITCH_OFF].image_game;
 
   if (cave->replicators_active)
     // if the replicators are active, animate them.
@@ -1422,8 +1446,12 @@ void gd_drawcave_game(const GdCave *cave,
     // if the replicators are inactive, do not animate them.
     elemdrawing[O_REPLICATOR] = ABS(elemdrawing[O_REPLICATOR]);
 
-  elemmapping[O_CONVEYOR_SWITCH] = (cave->conveyor_belts_active ? O_CONVEYOR_SWITCH_ON : O_CONVEYOR_SWITCH_OFF);
-  elemdrawing[O_CONVEYOR_SWITCH] = gd_element_properties[cave->conveyor_belts_active ? O_CONVEYOR_SWITCH_ON : O_CONVEYOR_SWITCH_OFF].image_game;
+  elemmapping[O_CONVEYOR_SWITCH] = (cave->conveyor_belts_active ?
+                                    O_CONVEYOR_SWITCH_ON :
+                                    O_CONVEYOR_SWITCH_OFF);
+  elemdrawing[O_CONVEYOR_SWITCH] = gd_element_properties[cave->conveyor_belts_active ?
+                                                         O_CONVEYOR_SWITCH_ON :
+                                                         O_CONVEYOR_SWITCH_OFF].image_game;
 
   if (cave->conveyor_belts_direction_changed)
   {
@@ -1455,6 +1483,7 @@ void gd_drawcave_game(const GdCave *cave,
     elemmapping[O_CONVEYOR_LEFT]  += offset;
     elemmapping[O_CONVEYOR_RIGHT] += offset;
   }
+
   if (!cave->conveyor_belts_active)
   {
     // if they are not running, do not animate them.
@@ -1471,6 +1500,7 @@ void gd_drawcave_game(const GdCave *cave,
     elemdrawing[O_PLAYER_PNEUMATIC_RIGHT] += 2;
   }
 
+  // player
   if ((cave->last_direction) == GD_MV_STILL)
   {
     // player is idle.
@@ -1534,16 +1564,24 @@ void gd_drawcave_game(const GdCave *cave,
     elemdrawing[O_PLAYER_ROCKET_LAUNCHER] = draw;
   }
 
-  elemmapping[O_INBOX] = (cave->inbox_flash_toggle ? O_INBOX_OPEN : O_INBOX_CLOSED);
-  elemdrawing[O_INBOX] = gd_element_properties[cave->inbox_flash_toggle ? O_OUTBOX_OPEN : O_OUTBOX_CLOSED].image_game;
+  elemmapping[O_INBOX] = (cave->inbox_flash_toggle ?
+                          O_INBOX_OPEN :
+                          O_INBOX_CLOSED);
+  elemdrawing[O_INBOX] = gd_element_properties[cave->inbox_flash_toggle ?
+                                               O_OUTBOX_OPEN :
+                                               O_OUTBOX_CLOSED].image_game;
 
-  elemmapping[O_OUTBOX] = (cave->inbox_flash_toggle ? O_OUTBOX_OPEN : O_OUTBOX_CLOSED);
-  elemdrawing[O_OUTBOX] = gd_element_properties[cave->inbox_flash_toggle ? O_OUTBOX_OPEN : O_OUTBOX_CLOSED].image_game;
+  elemmapping[O_OUTBOX] = (cave->inbox_flash_toggle ?
+                           O_OUTBOX_OPEN :
+                           O_OUTBOX_CLOSED);
+  elemdrawing[O_OUTBOX] = gd_element_properties[cave->inbox_flash_toggle ?
+                                                O_OUTBOX_OPEN :
+                                                O_OUTBOX_CLOSED].image_game;
 
-  // hack, not fit into gd_element_properties
-  elemmapping[O_BITER_SWITCH] = O_BITER_SWITCH_1 + cave->biter_delay_frame;
-  // hack, not fit into gd_element_properties
-  elemdrawing[O_BITER_SWITCH] = gd_element_properties[O_BITER_SWITCH].image_game + cave->biter_delay_frame;
+  // hack, cannot do this with gd_element_properties
+  elemmapping[O_BITER_SWITCH] = (O_BITER_SWITCH_1 + cave->biter_delay_frame);
+  elemdrawing[O_BITER_SWITCH] = (gd_element_properties[O_BITER_SWITCH].image_game +
+                                 cave->biter_delay_frame);
 
   // visual effects
   elemmapping[O_DIRT] = cave->dirt_looks_like;
@@ -1564,10 +1602,7 @@ void gd_drawcave_game(const GdCave *cave,
   {
     elemmapping[O_PRE_INVIS_OUTBOX] = elemmapping[O_PRE_OUTBOX];
     elemmapping[O_INVIS_OUTBOX] = elemmapping[O_OUTBOX];
-  }
 
-  if (hate_invisible_outbox)
-  {
     elemdrawing[O_PRE_INVIS_OUTBOX] = elemdrawing[O_PRE_OUTBOX];
     elemdrawing[O_INVIS_OUTBOX] = elemdrawing[O_OUTBOX];
   }
@@ -1580,15 +1615,15 @@ void gd_drawcave_game(const GdCave *cave,
 
       // if covered, real element is not important
       if (covered_buffer[y][x])
+      {
 	map = O_COVERED;
-      else
-	map = elemmapping[actual];
-
-      // if covered, real element is not important
-      if (covered_buffer[y][x])
 	draw = gd_element_properties[O_COVERED].image_game;
+      }
       else
+      {
+	map = elemmapping[actual];
 	draw = elemdrawing[actual];
+      }
 
       // draw special graphics if player is pushing something
       if (use_bd_pushing_graphics() &&
@@ -1601,14 +1636,15 @@ void gd_drawcave_game(const GdCave *cave,
 	if (!use_bd_smooth_movements() || last_element_buffer[y][x] != O_SPACE)
 	{
 	  if (cave->last_direction == GD_MV_LEFT)
+          {
 	    map = O_PLAYER_PUSH_LEFT;
-	  else
-	    map = O_PLAYER_PUSH_RIGHT;
-
-	  if (cave->last_direction == GD_MV_LEFT)
 	    draw = elemdrawing[O_PLAYER_PUSH_LEFT];
+          }
 	  else
+          {
+	    map = O_PLAYER_PUSH_RIGHT;
 	    draw = elemdrawing[O_PLAYER_PUSH_RIGHT];
+          }
 	}
       }
 
@@ -1633,15 +1669,15 @@ void gd_drawcave_game(const GdCave *cave,
   }
 }
 
-/*
-  cave time is rounded _UP_ to seconds. so at the exact moment when it
-  changes from
-  2sec remaining to 1sec remaining, the player has exactly one second.
-  when it changes
-  to zero, it is the exact moment of timeout.
-
-  internal time is milliseconds (or 1200 milliseconds for pal timing).
-*/
+// Convert cave time stored in milliseconds to a visible time in seconds.
+// Internal time may be in real milliseconds or "1200 milliseconds/second" for PAL timing
+// for pal timing. This is taken into account by this function.
+// Cave time returned is rounded _UP_ to seconds. So at the exact moment when it changes from
+// 2sec remaining to 1sec remaining, the player has exactly one second. When it changes to zero,
+// it is the exact moment of timeout.
+//
+// @param internal_time The internal time variable of the cave.
+// @return The time value in seconds, which can be shown to the user.
 int gd_cave_time_show(const GdCave *cave, int internal_time)
 {
   return (internal_time + cave->timing_factor - 1) / cave->timing_factor;
@@ -1696,12 +1732,13 @@ void gd_replay_store_movement(GdReplay *replay, GdDirection player_move,
   }
 }
 
-// calculate adler checksum for a rendered cave; this can be used for more caves.
+// Calculate adler checksum for a rendered cave; this can be used for more caves.
 void gd_cave_adler_checksum_more(GdCave *cave, unsigned int *a, unsigned int *b)
 {
   int x, y;
 
   for (y = 0; y < cave->h; y++)
+  {
     for (x = 0; x < cave->w; x++)
     {
       *a += gd_element_properties[cave->map[y][x]].character;
@@ -1710,9 +1747,10 @@ void gd_cave_adler_checksum_more(GdCave *cave, unsigned int *a, unsigned int *b)
       *a %= 65521;
       *b %= 65521;
     }
+  }
 }
 
-// calculate adler checksum for a single rendered cave.
+// Calculate adler checksum for a single rendered cave
 unsigned int gd_cave_adler_checksum(GdCave *cave)
 {
   unsigned int a = 1;
