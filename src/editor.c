@@ -898,6 +898,10 @@ enum
   GADGET_ID_CHANGE_BY_DIRECT_ACT,
   GADGET_ID_CHANGE_BY_OTHER_ACT,
 
+  // color picker identifiers
+
+  GADGET_ID_COLOR_PICKER,
+
   NUM_STATIC_GADGET_IDS
 };
 
@@ -1414,6 +1418,17 @@ enum
 
 #define ED_DRAWING_ID_EDITOR_FIRST	ED_DRAWING_ID_RANDOM_BACKGROUND
 #define ED_DRAWING_ID_EDITOR_LAST	ED_DRAWING_ID_RANDOM_BACKGROUND
+
+// values for color picker gadgets
+enum
+{
+  ED_COLORPICKER_ID_PICK_COLOR,
+
+  ED_NUM_COLORPICKERS
+};
+
+#define ED_COLORPICKER_ID_FIRST		ED_COLORPICKER_ID_PICK_COLOR
+#define ED_COLORPICKER_ID_LAST		ED_COLORPICKER_ID_PICK_COLOR
 
 
 // ----------------------------------------------------------------------------
@@ -5408,6 +5423,24 @@ static struct
   },
 };
 
+static struct
+{
+  int gadget_type_id;
+  int x, y;
+  int gadget_id;
+  int *value;
+  char *infotext;
+} colorpicker_info[ED_NUM_COLORPICKERS] =
+{
+  {
+    ED_COLORPICKER_ID_PICK_COLOR,
+    8, 40,
+    GADGET_ID_COLOR_PICKER,
+    NULL,
+    "Select color"
+  },
+};
+
 
 // ----------------------------------------------------------------------------
 // some internally used variables
@@ -5479,6 +5512,7 @@ static void HandleRadiobuttons(struct GadgetInfo *);
 static void HandleCheckbuttons(struct GadgetInfo *);
 static void HandleControlButtons(struct GadgetInfo *);
 static void HandleDrawingAreaInfo(struct GadgetInfo *);
+static void HandleColorPickerGadgets(struct GadgetInfo *);
 static void PrintEditorGadgetInfoText(struct GadgetInfo *);
 static boolean AskToCopyAndModifyLevelTemplate(void);
 static boolean getDrawModeHiRes(void);
@@ -9428,6 +9462,49 @@ static void CreateRadiobuttonGadgets(void)
   }
 }
 
+static void CreateColorPickerGadgets(void)
+{
+  int i;
+
+  for (i = 0; i < ED_NUM_COLORPICKERS; i++)
+  {
+    struct GraphicInfo *gd = &graphic_info[IMG_EDITOR_INPUT_COLORPICKER];
+    int gd_x1 = gd->src_x;
+    int gd_y1 = gd->src_y;
+    int gd_x2 = gd->src_x + gd->active_xoffset;
+    int gd_y2 = gd->src_y + gd->active_yoffset;
+    struct GadgetInfo *gi;
+    unsigned int event_mask = GD_EVENT_COLOR_PICKER_LEAVING;
+    int id = colorpicker_info[i].gadget_id;
+    int type_id = colorpicker_info[i].gadget_type_id;
+
+    if (type_id != i)
+      Fail("'colorpicker_info' structure corrupted at index %d -- please fix", i);
+
+    gi = CreateGadget(GDI_CUSTOM_ID, id,
+		      GDI_CUSTOM_TYPE_ID, type_id,
+		      GDI_INFO_TEXT, colorpicker_info[i].infotext,
+		      GDI_X, SX + ED_SETTINGS_X(colorpicker_info[i].x),
+		      GDI_Y, SY + ED_SETTINGS_Y(colorpicker_info[i].y),
+		      GDI_TYPE, GD_TYPE_COLOR_PICKER,
+		      GDI_DESIGN_UNPRESSED, gd->bitmap, gd_x1, gd_y1,
+		      GDI_DESIGN_PRESSED, gd->bitmap, gd_x2, gd_y2,
+		      GDI_BORDER_SIZE, gd->border_size, gd->border_size,
+		      GDI_DESIGN_WIDTH, gd->width,
+		      GDI_DESIGN_HEIGHT, gd->height,
+		      GDI_EVENT_MASK, event_mask,
+		      GDI_CALLBACK_INFO, HandleEditorGadgetInfoText,
+		      GDI_CALLBACK_ACTION, HandleColorPickerGadgets,
+		      GDI_CALLBACK_ACTION_ALWAYS, TRUE,
+		      GDI_END);
+
+    if (gi == NULL)
+      Fail("cannot create gadget");
+
+    level_editor_gadget[id] = gi;
+  }
+}
+
 void CreateLevelEditorGadgets(void)
 {
   // force EDITOR font inside level editor
@@ -9471,6 +9548,7 @@ void CreateLevelEditorGadgets(void)
   CreateGraphicbuttonGadgets();
   CreateTextbuttonGadgets();
   CreateDrawingAreas();
+  CreateColorPickerGadgets();
 
   ResetFontStatus();
 }
@@ -9806,6 +9884,13 @@ static void MapCheckbuttonGadget(int id)
     DrawText(x_right, y, checkbutton_info[id].text_right, font_nr);
 
   ModifyGadget(gi, GDI_CHECKED, *checkbutton_info[id].value, GDI_END);
+
+  MapGadget(gi);
+}
+
+static void MapColorPickerGadget(int id)
+{
+  struct GadgetInfo *gi = level_editor_gadget[colorpicker_info[id].gadget_id];
 
   MapGadget(gi);
 }
@@ -16898,7 +16983,7 @@ static void HandleGraphicbuttonGadgets(struct GadgetInfo *gi)
   else if (type_id >= ED_GRAPHICBUTTON_ID_PICK_FIRST ||
 	   type_id <= ED_GRAPHICBUTTON_ID_PICK_LAST)
   {
-    Warn("color picker not implemented yet");
+    MapColorPickerGadget(ED_COLORPICKER_ID_PICK_COLOR);
   }
 }
 
@@ -17031,6 +17116,16 @@ static void HandleCheckbuttons(struct GadgetInfo *gi)
        type_id != ED_CHECKBUTTON_ID_CUSTOM_USE_TEMPLATE_2) ||
       type_id == ED_CHECKBUTTON_ID_STICK_ELEMENT)
     return;
+
+  level.changed = TRUE;
+}
+
+static void HandleColorPickerGadgets(struct GadgetInfo *gi)
+{
+  int type_id = gi->custom_type_id;
+
+  if (type_id == ED_COLORPICKER_ID_PICK_COLOR)
+    DrawLevelConfigWindow();
 
   level.changed = TRUE;
 }

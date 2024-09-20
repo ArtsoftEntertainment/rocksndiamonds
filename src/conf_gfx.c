@@ -8145,6 +8145,14 @@ struct ConfigInfo image_config[] =
   { "editor.input.textarea.active_xoffset",		"-100"				},
   { "editor.input.textarea.border_size",		"3"				},
 
+  { "editor.input.colorpicker",				"RocksDoor.png"			},
+  { "editor.input.colorpicker.x",			"324"				},
+  { "editor.input.colorpicker.y",			"60"				},
+  { "editor.input.colorpicker.width",			"52"				},
+  { "editor.input.colorpicker.height",			"20"				},
+  { "editor.input.colorpicker.active_xoffset",		"-100"				},
+  { "editor.input.colorpicker.border_size",		"3"				},
+
   { "editor.cascade_list",				"RocksMore.png"			},
   { "editor.cascade_list.xpos",				"9"				},
   { "editor.cascade_list.ypos",				"8"				},
