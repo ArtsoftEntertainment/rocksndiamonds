@@ -31,6 +31,7 @@
 #define GD_TYPE_SELECTBOX		(1 << 9)
 #define GD_TYPE_SCROLLBAR_VERTICAL	(1 << 10)
 #define GD_TYPE_SCROLLBAR_HORIZONTAL	(1 << 11)
+#define GD_TYPE_COLOR_PICKER		(1 << 12)
 
 #define GD_TYPE_BUTTON			(GD_TYPE_NORMAL_BUTTON | \
 					 GD_TYPE_TEXT_BUTTON | \
@@ -53,6 +54,7 @@
 #define GD_EVENT_INFO_ENTERING		(1 << 7)
 #define GD_EVENT_INFO_LEAVING		(1 << 8)
 #define GD_EVENT_PIXEL_PRECISE		(1 << 9)
+#define GD_EVENT_COLOR_PICKER_LEAVING	(1 << 10)
 
 // gadget button states
 #define GD_BUTTON_UNPRESSED		0
@@ -61,6 +63,8 @@
 // gadget structure constants
 #define MAX_GADGET_TEXTSIZE		1024
 #define MAX_INFO_TEXTSIZE		1024
+#define COLOR_PICKER_WIDTH		256
+#define COLOR_PICKER_HEIGHT		300
 
 // gadget creation tags
 #define GDI_END				0
@@ -93,29 +97,30 @@
 #define GDI_BORDER_SIZE			27
 #define GDI_BORDER_SIZE_SELECTBUTTON	28
 #define GDI_DESIGN_WIDTH		29
-#define GDI_DECORATION_DESIGN		30
-#define GDI_DECORATION_POSITION		31
-#define GDI_DECORATION_SIZE		32
-#define GDI_DECORATION_SHIFTING		33
-#define GDI_DECORATION_MASKED		34
-#define GDI_EVENT_MASK			35
-#define GDI_EVENT			36
-#define GDI_CALLBACK_INFO		37
-#define GDI_CALLBACK_ACTION		38
-#define GDI_AREA_SIZE			39
-#define GDI_ITEM_SIZE			40
-#define GDI_SCROLLBAR_ITEMS_MAX		41
-#define GDI_SCROLLBAR_ITEMS_VISIBLE	42
-#define GDI_SCROLLBAR_ITEM_POSITION	43
-#define GDI_WHEEL_AREA_X		44
-#define GDI_WHEEL_AREA_Y		45
-#define GDI_WHEEL_AREA_WIDTH		46
-#define GDI_WHEEL_AREA_HEIGHT		47
-#define GDI_INFO_TEXT			48
-#define GDI_ACTIVE			49
-#define GDI_DIRECT_DRAW			50
-#define GDI_OVERLAY_TOUCH_BUTTON	51
-#define GDI_CALLBACK_ACTION_ALWAYS	52
+#define GDI_DESIGN_HEIGHT		30
+#define GDI_DECORATION_DESIGN		31
+#define GDI_DECORATION_POSITION		32
+#define GDI_DECORATION_SIZE		33
+#define GDI_DECORATION_SHIFTING		34
+#define GDI_DECORATION_MASKED		35
+#define GDI_EVENT_MASK			36
+#define GDI_EVENT			37
+#define GDI_CALLBACK_INFO		38
+#define GDI_CALLBACK_ACTION		39
+#define GDI_AREA_SIZE			40
+#define GDI_ITEM_SIZE			41
+#define GDI_SCROLLBAR_ITEMS_MAX		42
+#define GDI_SCROLLBAR_ITEMS_VISIBLE	43
+#define GDI_SCROLLBAR_ITEM_POSITION	44
+#define GDI_WHEEL_AREA_X		45
+#define GDI_WHEEL_AREA_Y		46
+#define GDI_WHEEL_AREA_WIDTH		47
+#define GDI_WHEEL_AREA_HEIGHT		48
+#define GDI_INFO_TEXT			49
+#define GDI_ACTIVE			50
+#define GDI_DIRECT_DRAW			51
+#define GDI_OVERLAY_TOUCH_BUTTON	52
+#define GDI_CALLBACK_ACTION_ALWAYS	53
 
 // gadget deactivation hack
 #define GDI_ACTIVE_POS(a)		((a) < 0 ? POS_OFFSCREEN : (a))
@@ -127,7 +132,8 @@ struct GadgetBorder
 {
   int xsize, ysize;			// size of gadget border
   int xsize_selectbutton;		// for selectbox gadgets
-  int width;				// for selectbox/text input gadgets
+  int width;				// for variable sized gadgets
+  int height;				// for variable sized gadgets
 };
 
 struct GadgetDesign
@@ -307,6 +313,7 @@ boolean anyTextAreaGadgetActive(void);
 boolean anySelectboxGadgetActive(void);
 boolean anyScrollbarGadgetActive(void);
 boolean anyTextGadgetActive(void);
+boolean anyColorPickerGadgetActive(void);
 
 void ClickOnGadget(struct GadgetInfo *, int);
 

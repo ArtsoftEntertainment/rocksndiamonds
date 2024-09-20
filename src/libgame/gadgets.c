@@ -166,6 +166,16 @@ static struct GadgetInfo *getGadgetInfoFromMousePosition(int mx, int my,
       return gi;
   }
 
+  // color pickers may overlap other active gadgets, so check them first
+  for (gi = gadget_list_first_entry; gi != NULL; gi = gi->next)
+  {
+    if (gi->mapped && gi->active &&
+	gi->type & GD_TYPE_COLOR_PICKER &&
+	mx >= gi->x && mx < gi->x + gi->width &&
+	my >= gi->y && my < gi->y + gi->height)
+      return gi;
+  }
+
   // check all other gadgets
   for (gi = gadget_list_first_entry; gi != NULL; gi = gi->next)
   {
@@ -828,6 +838,79 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
       }
       break;
 
+    case GD_TYPE_COLOR_PICKER:
+      {
+	int i;
+	int border_x = gi->border.xsize;
+	int border_y = gi->border.ysize;
+	int x = gi->x;
+	int y = gi->y;
+	int width  = gi->width;
+	int height = gi->height;
+	int xsize = (width  - 2 * border_x) / border_x + 1;
+	int ysize = (height - 2 * border_y) / border_y + 1;
+
+	// top left part of gadget border
+	BlitBitmapOnBackground(gd->bitmap, drawto, gd->x, gd->y,
+			       border_x, border_y, x, y);
+
+	// top middle part of gadget border
+	for (i = 0; i < xsize; i++)
+	  BlitBitmapOnBackground(gd->bitmap, drawto, gd->x + border_x, gd->y,
+				 border_x, border_y,
+				 x + border_x + i * border_x, y);
+
+	// top right part of gadget border
+	BlitBitmapOnBackground(gd->bitmap, drawto,
+			       gd->x + gi->border.width - border_x, gd->y,
+			       border_x, border_y,
+			       x + width - border_x, y);
+
+	// left and right part of gadget border for each row
+	for (i = 0; i < ysize; i++)
+	{
+	  BlitBitmapOnBackground(gd->bitmap, drawto, gd->x, gd->y + border_y,
+				 border_x, border_y,
+				 x, y + border_y + i * border_y);
+	  BlitBitmapOnBackground(gd->bitmap, drawto,
+				 gd->x + gi->border.width - border_x,
+				 gd->y + border_y,
+				 border_x, border_y,
+				 x + width - border_x,
+				 y + border_y + i * border_y);
+	}
+
+	// bottom left part of gadget border
+	BlitBitmapOnBackground(gd->bitmap, drawto,
+			       gd->x, gd->y + gi->border.height - border_y,
+			       border_x, border_y,
+			       x, y + height - border_y);
+
+	// bottom middle part of gadget border
+	for (i = 0; i < xsize; i++)
+	  BlitBitmapOnBackground(gd->bitmap, drawto,
+				 gd->x + border_x,
+				 gd->y + gi->border.height - border_y,
+				 border_x, border_y,
+				 x + border_x + i * border_x,
+				 y + height - border_y);
+
+	// bottom right part of gadget border
+	BlitBitmapOnBackground(gd->bitmap, drawto,
+			       gd->x + gi->border.width - border_x,
+			       gd->y + gi->border.height - border_y,
+			       border_x, border_y,
+			       x + width - border_x,
+			       y + height - border_y);
+
+	ClearRectangleOnBackground(drawto,
+				   x + border_x,
+				   y + border_y,
+				   width - 2 * border_x,
+				   height - 2 * border_y);
+      }
+      break;
+
     default:
       return;
   }
@@ -1191,6 +1274,10 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
 	gi->border.width = va_arg(ap, int);
 	break;
 
+      case GDI_DESIGN_HEIGHT:
+	gi->border.height = va_arg(ap, int);
+	break;
+
       case GDI_DECORATION_DESIGN:
 	gi->deco.design.bitmap = va_arg(ap, Bitmap *);
 	gi->deco.design.x = va_arg(ap, int);
@@ -1503,6 +1590,13 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
     // always start with unselected text area (which is potentially cropped)
     gi->textarea.full_open = FALSE;
   }
+
+
+  if (gi->type & GD_TYPE_COLOR_PICKER)
+  {
+    gi->width  = COLOR_PICKER_WIDTH;
+    gi->height = COLOR_PICKER_HEIGHT;
+  }
 }
 
 void ModifyGadget(struct GadgetInfo *gi, int first_tag, ...)
@@ -1620,6 +1714,10 @@ static void MapGadgetExt(struct GadgetInfo *gi, boolean redraw)
 
   if (redraw)
     DrawGadget(gi, DG_UNPRESSED, DG_BUFFERED);
+
+  // when mapping color picker gadget, automatically activate it
+  if (gi->type & GD_TYPE_COLOR_PICKER)
+    last_gi = gi;
 }
 
 void MapGadget(struct GadgetInfo *gi)
@@ -1712,6 +1810,11 @@ boolean anySelectboxGadgetActive(void)
 boolean anyScrollbarGadgetActive(void)
 {
   return (last_gi && (last_gi->type & GD_TYPE_SCROLLBAR) && last_gi->mapped);
+}
+
+boolean anyColorPickerGadgetActive(void)
+{
+  return (last_gi && (last_gi->type & GD_TYPE_COLOR_PICKER) && last_gi->mapped);
 }
 
 boolean anyTextGadgetActive(void)
@@ -1835,13 +1938,14 @@ boolean HandleGadgets(int mx, int my, int button)
      new_gi->type & GD_TYPE_SELECTBOX && new_gi->selectbox.open &&
      insideSelectboxLine(new_gi, mx, my));
 
-  // if mouse button pressed outside text or selectbox gadget, deactivate it
-  if (anyTextGadgetActive() &&
+  // if mouse button pressed outside text, selectbox or color picker gadget, deactivate it
+  if ((anyTextGadgetActive() || anyColorPickerGadgetActive()) &&
       (gadget_pressed_off_borders ||
        (gadget_pressed_inside_select_line && !mouse_inside_select_area)))
   {
     struct GadgetInfo *gi = last_gi;
-    boolean gadget_changed = ((gi->event_mask & GD_EVENT_TEXT_LEAVING) != 0);
+    boolean gadget_changed = ((gi->event_mask & GD_EVENT_TEXT_LEAVING) != 0 ||
+                              (gi->event_mask & GD_EVENT_COLOR_PICKER_LEAVING) != 0);
 
     // check if text input gadget has changed its value
     if (gi->type & GD_TYPE_TEXT_INPUT)
@@ -1867,9 +1971,16 @@ boolean HandleGadgets(int mx, int my, int button)
     if (gi->type & GD_TYPE_SELECTBOX)
       gadget_changed = FALSE;
 
+    // color picker does not select color when closed by clicking outside
+    if (gi->type & GD_TYPE_COLOR_PICKER)
+      gadget_changed = FALSE;
+
     DrawGadget(gi, DG_UNPRESSED, gi->direct_draw);
 
-    gi->event.type = GD_EVENT_TEXT_LEAVING;
+    if (gi->type & GD_TYPE_COLOR_PICKER)
+      gi->event.type = GD_EVENT_COLOR_PICKER_LEAVING;
+    else
+      gi->event.type = GD_EVENT_TEXT_LEAVING;
 
     if (!(gi->type & GD_TYPE_SELECTBOX))
       DoGadgetCallbackAction(gi, gadget_changed);
@@ -1934,7 +2045,8 @@ boolean HandleGadgets(int mx, int my, int button)
       pressed_my = 0;
     }
     else if (!(gi->type & GD_TYPE_TEXT_INPUT ||
-	       gi->type & GD_TYPE_TEXT_AREA))	    // text input stays open
+	       gi->type & GD_TYPE_TEXT_AREA ||
+	       gi->type & GD_TYPE_COLOR_PICKER))    // text input and color picker stays open
       last_gi = NULL;
   }
 
@@ -2315,7 +2427,8 @@ boolean HandleGadgets(int mx, int my, int button)
 
     if (deactivate_gadget &&
 	!(gi->type & GD_TYPE_TEXT_INPUT ||
-	  gi->type & GD_TYPE_TEXT_AREA))	    // text input stays open
+	  gi->type & GD_TYPE_TEXT_AREA ||
+	  gi->type & GD_TYPE_COLOR_PICKER))	    // text input and color picker stays open
       DrawGadget(gi, DG_UNPRESSED, gi->direct_draw);
 
     gi->state = GD_BUTTON_UNPRESSED;
