@@ -765,6 +765,13 @@ enum
   GADGET_ID_NEXT_CHANGE_PAGE,
   GADGET_ID_COPY_CHANGE_PAGE,
   GADGET_ID_PASTE_CHANGE_PAGE,
+  GADGET_ID_BD_COLOR_PICK_B,
+  GADGET_ID_BD_COLOR_PICK_0,
+  GADGET_ID_BD_COLOR_PICK_1,
+  GADGET_ID_BD_COLOR_PICK_2,
+  GADGET_ID_BD_COLOR_PICK_3,
+  GADGET_ID_BD_COLOR_PICK_4,
+  GADGET_ID_BD_COLOR_PICK_5,
 
   // gadgets for scrolling of drawing area
 
@@ -1159,12 +1166,22 @@ enum
   ED_GRAPHICBUTTON_ID_NEXT_CHANGE_PAGE,
   ED_GRAPHICBUTTON_ID_COPY_CHANGE_PAGE,
   ED_GRAPHICBUTTON_ID_PASTE_CHANGE_PAGE,
+  ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_B,
+  ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_0,
+  ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_1,
+  ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_2,
+  ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_3,
+  ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_4,
+  ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_5,
 
   ED_NUM_GRAPHICBUTTONS
 };
 
 #define ED_GRAPHICBUTTON_ID_CHANGE_FIRST  ED_GRAPHICBUTTON_ID_PREV_CHANGE_PAGE
 #define ED_GRAPHICBUTTON_ID_CHANGE_LAST   ED_GRAPHICBUTTON_ID_PASTE_CHANGE_PAGE
+
+#define ED_GRAPHICBUTTON_ID_PICK_FIRST    ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_B
+#define ED_GRAPHICBUTTON_ID_PICK_LAST     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_5
 
 // values for checkbutton gadgets
 enum
@@ -3654,6 +3671,55 @@ static struct
     -1,						ED_ELEMENT_SETTINGS_YPOS(14),
     GADGET_ID_PASTE_CHANGE_PAGE,		GADGET_ID_COPY_CHANGE_PAGE,
     NULL, NULL,					"Paste settings to this change page"
+  },
+  {
+    ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_B,
+    IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
+    -1,						ED_ENGINE_SETTINGS_YPOS(1),
+    GADGET_ID_BD_COLOR_PICK_B,			GADGET_ID_BD_COLOR_TEXT_B,
+    NULL, NULL,					"Pick border color (not used)"
+  },
+  {
+    ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_0,
+    IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
+    -1,						ED_ENGINE_SETTINGS_YPOS(2),
+    GADGET_ID_BD_COLOR_PICK_0,			GADGET_ID_BD_COLOR_TEXT_0,
+    NULL, NULL,					"Pick background color (C64 graphics)"
+  },
+  {
+    ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_1,
+    IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
+    -1,						ED_ENGINE_SETTINGS_YPOS(3),
+    GADGET_ID_BD_COLOR_PICK_1,			GADGET_ID_BD_COLOR_TEXT_1,
+    NULL, NULL,					"Pick sand color (C64 graphics)"
+  },
+  {
+    ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_2,
+    IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
+    -1,						ED_ENGINE_SETTINGS_YPOS(4),
+    GADGET_ID_BD_COLOR_PICK_2,			GADGET_ID_BD_COLOR_TEXT_2,
+    NULL, NULL,					"Pick steel wall color (C64 graphics)"
+  },
+  {
+    ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_3,
+    IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
+    -1,						ED_ENGINE_SETTINGS_YPOS(5),
+    GADGET_ID_BD_COLOR_PICK_3,			GADGET_ID_BD_COLOR_TEXT_3,
+    NULL, NULL,					"Pick wall color (C64 graphics)"
+  },
+  {
+    ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_4,
+    IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
+    -1,						ED_ENGINE_SETTINGS_YPOS(6),
+    GADGET_ID_BD_COLOR_PICK_4,			GADGET_ID_BD_COLOR_TEXT_4,
+    NULL, NULL,					"Pick amoeba color (C64 graphics)"
+  },
+  {
+    ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_5,
+    IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
+    -1,						ED_ENGINE_SETTINGS_YPOS(7),
+    GADGET_ID_BD_COLOR_PICK_5,			GADGET_ID_BD_COLOR_TEXT_5,
+    NULL, NULL,					"Pick slime color (C64 graphics)"
   },
 };
 
@@ -8831,6 +8897,8 @@ static void CreateTextInputGadgets(void)
       Fail("cannot create gadget");
 
     level_editor_gadget[id] = gi;
+    right_gadget_border[id] =
+      getRightGadgetBorder(gi, textinput_info[i].text_right);
   }
 }
 
@@ -11686,6 +11754,10 @@ static void DrawEngineConfigColors(void)
     // draw text input gadgets
     for (i = ED_TEXTINPUT_ID_COLORS_FIRST; i <= ED_TEXTINPUT_ID_COLORS_LAST; i++)
       MapTextInputGadget(i);
+
+    // draw graphic button gadgets
+    for (i = ED_GRAPHICBUTTON_ID_PICK_FIRST; i <= ED_GRAPHICBUTTON_ID_PICK_LAST; i++)
+      MapGraphicbuttonGadget(i);
   }
 
   for (i = 0; i < MAX_BD_COLORS; i++)
@@ -16822,6 +16894,11 @@ static void HandleGraphicbuttonGadgets(struct GadgetInfo *gi)
     }
 
     DrawPropertiesWindow();
+  }
+  else if (type_id >= ED_GRAPHICBUTTON_ID_PICK_FIRST ||
+	   type_id <= ED_GRAPHICBUTTON_ID_PICK_LAST)
+  {
+    Warn("color picker not implemented yet");
   }
 }
 
