@@ -45,6 +45,303 @@ static void (*PlayGadgetSoundActivating)(void) = NULL;
 static void (*PlayGadgetSoundSelecting)(void) = NULL;
 
 
+// RGB/HSV conversions by David H from https://stackoverflow.com/questions/3018313/
+
+// A bunch of magic numbers for UI positioning (used by DrawColorPicker() and its functions)
+#define CP_GADGET_WIDTH		(256)
+#define CP_GADGET_HEIGHT	(300)
+#define CP_MAIN_GRADIENT_WIDTH	(CP_GADGET_WIDTH)
+#define CP_MAIN_GRADIENT_HEIGHT	(CP_GADGET_WIDTH)
+#define CP_SAMPLE_BOX_WIDTH	(CP_GADGET_HEIGHT - CP_GADGET_WIDTH)
+#define CP_SAMPLE_BOX_HEIGHT	(CP_SAMPLE_BOX_WIDTH)
+#define CP_HUE_GRADIENT_WIDTH	(CP_GADGET_WIDTH - CP_SAMPLE_BOX_WIDTH)
+#define CP_HUE_GRADIENT_HEIGHT	(CP_SAMPLE_BOX_HEIGHT / 2)
+#define CP_INDICATOR_SIZE	(3)
+
+// Start of David H's conversion code
+typedef struct
+{
+  double r;       // a fraction between 0 and 1
+  double g;       // a fraction between 0 and 1
+  double b;       // a fraction between 0 and 1
+} RGBColor;
+
+typedef struct
+{
+  double h;       // angle in degrees
+  double s;       // a fraction between 0 and 1
+  double v;       // a fraction between 0 and 1
+} HSVColor;
+
+static HSVColor rgb_to_hsv(RGBColor in)
+{
+  HSVColor out;
+  double min, max, delta;
+
+  min = in.r < in.g ? in.r : in.g;
+  min = min  < in.b ? min  : in.b;
+
+  max = in.r > in.g ? in.r : in.g;
+  max = max  > in.b ? max  : in.b;
+
+  out.v = max;                  // v
+  delta = max - min;
+
+  if (delta < 0.00001)
+  {
+    out.s = 0;
+    out.h = 0; // undefined, maybe nan?
+
+    return out;
+  }
+
+  if (max > 0.0)
+  {
+    // NOTE: if Max is == 0, this divide would cause a crash
+    out.s = (delta / max);      // s
+  }
+  else
+  {
+    // if max is 0, then r = g = b = 0
+    // s = 0, h is undefined
+    out.s = 0.0;
+    out.h = NAN;                            // its now undefined
+
+    return out;
+  }
+
+  if (in.r >= max)                          // > is bogus, just keeps compilor happy
+    out.h = (in.g - in.b) / delta;          // between yellow & magenta
+  else if (in.g >= max)
+    out.h = 2.0 + (in.b - in.r) / delta;    // between cyan & yellow
+  else
+    out.h = 4.0 + (in.r - in.g) / delta;    // between magenta & cyan
+
+  out.h *= 60.0;                            // degrees
+
+  if (out.h < 0.0)
+    out.h += 360.0;
+
+  return out;
+}
+
+static RGBColor hsv_to_rgb(HSVColor in)
+{
+  double hh, p, q, t, ff;
+  RGBColor out;
+  int i;
+
+  if (in.s <= 0.0)
+  {
+    // < is bogus, just shuts up warnings
+    out.r = in.v;
+    out.g = in.v;
+    out.b = in.v;
+
+    return out;
+  }
+
+  hh = in.h;
+  if (hh >= 360.0)
+    hh = 0.0;
+
+  hh /= 60.0;
+  i = (int)hh;
+  ff = hh - i;
+  p = in.v * (1.0 - in.s);
+  q = in.v * (1.0 - (in.s * ff));
+  t = in.v * (1.0 - (in.s * (1.0 - ff)));
+
+  switch (i)
+  {
+    case 0:
+      out.r = in.v;
+      out.g = t;
+      out.b = p;
+      break;
+
+    case 1:
+      out.r = q;
+      out.g = in.v;
+      out.b = p;
+      break;
+
+    case 2:
+      out.r = p;
+      out.g = in.v;
+      out.b = t;
+      break;
+
+    case 3:
+      out.r = p;
+      out.g = q;
+      out.b = in.v;
+      break;
+
+    case 4:
+      out.r = t;
+      out.g = p;
+      out.b = in.v;
+      break;
+
+    case 5:
+    default:
+      out.r = in.v;
+      out.g = p;
+      out.b = q;
+      break;
+  }
+
+  return out;
+}
+// End of David H's conversion code
+
+static HSVColor cp_color_hsv = { 180.0, 1.0, 1.0 };	// use some sane default values
+
+enum
+{
+  CP_STATE_NONE,
+  CP_STATE_GRADIENT_CHANGE,
+  CP_STATE_SLIDER_CHANGE,
+  CP_STATE_SAMPLE_BOX,
+};
+
+static SDL_Color from_RGBColor(RGBColor rgb_color)
+{
+  SDL_Color color =
+  {
+    rgb_color.r * 255,
+    rgb_color.g * 255,
+    rgb_color.b * 255,
+    0xff
+  };
+
+  return color;
+}
+
+static void set_pixel(SDL_Surface *surface, SDL_Color color, int x, int y)
+{
+  ((char *)surface->pixels)[(x + y * surface->w) * 4    ] = color.r;
+  ((char *)surface->pixels)[(x + y * surface->w) * 4 + 1] = color.g;
+  ((char *)surface->pixels)[(x + y * surface->w) * 4 + 2] = color.b;
+  ((char *)surface->pixels)[(x + y * surface->w) * 4 + 3] = color.a;
+}
+
+static void DrawColorPicker_Gradient(SDL_Surface *surface, double hue)
+{
+  int xsize = CP_MAIN_GRADIENT_WIDTH;
+  int ysize = CP_MAIN_GRADIENT_HEIGHT;
+  int xpos = 0;
+  int ypos = 0;
+  int x, y;
+
+  for (y = 0; y < ysize; y++)
+  {
+    for (x = 0; x < xsize; x++)
+    {
+      HSVColor hsv_color =
+      {
+        hue,
+        (double) x / xsize,
+        1.0 - ((double) y / ysize),
+      };
+
+      set_pixel(surface, from_RGBColor(hsv_to_rgb(hsv_color)), xpos + x, ypos + y);
+    }
+  }
+}
+
+static void DrawColorPicker_HueGradient(SDL_Surface *surface)
+{
+  int xsize = CP_HUE_GRADIENT_WIDTH;
+  int ysize = CP_HUE_GRADIENT_HEIGHT;
+  int xpos = 0;
+  int ypos = CP_MAIN_GRADIENT_HEIGHT;
+  int x, y;
+
+  for (y = 0; y < ysize; y++)
+  {
+    for (x = 0; x < xsize; x++)
+    {
+      HSVColor hsv_color =
+      {
+        (double) x / xsize * 360,
+        1.0,
+        1.0,
+      };
+
+      set_pixel(surface, from_RGBColor(hsv_to_rgb(hsv_color)), xpos + x, ypos + y);
+    }
+  }
+}
+
+static void DrawColorPicker_SampleBox(SDL_Surface *surface, SDL_Color color)
+{
+  SDL_Rect draw_rect =
+  {
+    CP_HUE_GRADIENT_WIDTH,
+    CP_MAIN_GRADIENT_HEIGHT,
+    CP_SAMPLE_BOX_WIDTH,
+    CP_SAMPLE_BOX_HEIGHT,
+  };
+  Pixel pixel = SDL_MapRGB(surface->format, color.r, color.g, color.b);
+
+  SDL_FillRect(surface, &draw_rect, pixel);
+}
+
+static void DrawColorPicker_ColorText(int x, int y, int font_nr)
+{
+  RGBColor rgb_color = hsv_to_rgb(cp_color_hsv);
+  char text[128];
+
+  sprintf(text, "#%02x%02x%02x",
+          (int) (rgb_color.r * 255),
+          (int) (rgb_color.g * 255),
+          (int) (rgb_color.b * 255));
+
+  DrawText(x, y, text, font_nr);
+}
+
+static void DrawColorPicker(struct GadgetInfo *gi)
+{
+  int x = gi->x + gi->border.xsize;
+  int y = gi->y + gi->border.ysize;;
+  int font_nr = gi->font;
+  int font_height = getFontHeight(font_nr);
+  int font_padding = (CP_HUE_GRADIENT_HEIGHT - font_height) / 2;
+  int xsize = CP_GADGET_WIDTH;
+  int ysize = CP_GADGET_HEIGHT;
+  int xsize_main = CP_MAIN_GRADIENT_WIDTH;
+  int ysize_main = CP_MAIN_GRADIENT_HEIGHT;
+  int xsize_hue  = CP_HUE_GRADIENT_WIDTH;
+  int ysize_hue  = CP_HUE_GRADIENT_HEIGHT;
+  int x_main = x + (xsize_main - 1) * cp_color_hsv.s;
+  int y_main = y + (ysize_main - 1) * (1.0 - cp_color_hsv.v);
+  int x_hue = x + ((cp_color_hsv.h / 360.0) * xsize_hue);
+  int y_hue = y + ysize_main;
+  int x_text = x + font_padding;
+  int y_text = y + ysize_main + ysize_hue + font_padding;
+  SDL_Surface *surface = SDL_CreateRGBSurface(0, xsize, ysize, 32,
+                                              0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
+
+  DrawColorPicker_Gradient(surface, cp_color_hsv.h);
+  DrawColorPicker_HueGradient(surface);
+  DrawColorPicker_SampleBox(surface, from_RGBColor(hsv_to_rgb(cp_color_hsv)));
+
+  SDLBlitSurface(surface, drawto->surface, 0, 0, xsize, ysize, x, y);
+  SDL_FreeSurface(surface);
+
+  // draw color position indicator
+  FillRectangle(drawto, x_main - 1, y, CP_INDICATOR_SIZE, ysize_main, BLACK_PIXEL);
+  FillRectangle(drawto, x, y_main - 1, xsize_main, CP_INDICATOR_SIZE, BLACK_PIXEL);
+
+  // draw color slider
+  FillRectangle(drawto, x_hue - 1, y_hue, CP_INDICATOR_SIZE, ysize_hue, BLACK_PIXEL);
+
+  // draw color RGB value
+  DrawColorPicker_ColorText(x_text, y_text, font_nr);
+}
+
 void InitGadgetsSoundCallback(void (*activating_function)(void),
 			      void (*selecting_function)(void))
 {
@@ -908,6 +1205,8 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 				   y + border_y,
 				   width - 2 * border_x,
 				   height - 2 * border_y);
+
+        DrawColorPicker(gi);
       }
       break;
 
@@ -1388,6 +1687,18 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
 	gi->callback_action = va_arg(ap, gadget_function);
 	break;
 
+      case GDI_COLOR_NR:
+	gi->colorpicker.nr = va_arg(ap, int);
+	break;
+
+      case GDI_COLOR_TYPE:
+	gi->colorpicker.type = va_arg(ap, int);
+	break;
+
+      case GDI_COLOR_VALUE:
+	gi->colorpicker.value = va_arg(ap, int);
+	break;
+
       default:
 	Fail("HandleGadgetTags(): unknown tag %d", tag);
     }
@@ -1594,8 +1905,17 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
 
   if (gi->type & GD_TYPE_COLOR_PICKER)
   {
-    gi->width  = COLOR_PICKER_WIDTH;
-    gi->height = COLOR_PICKER_HEIGHT;
+    gi->width  = CP_GADGET_WIDTH  + 2 * gi->border.xsize;
+    gi->height = CP_GADGET_HEIGHT + 2 * gi->border.ysize;
+
+    RGBColor cp_color_rgb =
+    {
+      ((gi->colorpicker.value >> 16) & 255) / 255.0,
+      ((gi->colorpicker.value >>  8) & 255) / 255.0,
+      ((gi->colorpicker.value      ) & 255) / 255.0,
+    };
+
+    cp_color_hsv = rgb_to_hsv(cp_color_rgb);
   }
 }
 
@@ -1973,7 +2293,7 @@ boolean HandleGadgets(int mx, int my, int button)
 
     // color picker does not select color when closed by clicking outside
     if (gi->type & GD_TYPE_COLOR_PICKER)
-      gadget_changed = FALSE;
+      gi->colorpicker.value = -1;
 
     DrawGadget(gi, DG_UNPRESSED, gi->direct_draw);
 
@@ -2137,6 +2457,48 @@ boolean HandleGadgets(int mx, int my, int button)
 
       if (gi->selectbox.current_index != old_index)
 	DrawGadget(gi, DG_PRESSED, gi->direct_draw);
+    }
+    else if (gi->type & GD_TYPE_COLOR_PICKER && button)
+    {
+      static int state = CP_STATE_NONE;
+      int xsize_main = CP_MAIN_GRADIENT_WIDTH;
+      int ysize_main = CP_MAIN_GRADIENT_HEIGHT;
+      int xsize_hue  = CP_HUE_GRADIENT_WIDTH;
+      int ysize_hue  = CP_HUE_GRADIENT_HEIGHT;
+      int xpos = mx - gi->x - gi->border.xsize;
+      int ypos = my - gi->y - gi->border.ysize;
+
+      if (!motion_status)
+        state = (ypos < ysize_main ? CP_STATE_GRADIENT_CHANGE :
+                 xpos < xsize_hue && ypos < ysize_main + ysize_hue ? CP_STATE_SLIDER_CHANGE :
+                 xpos >= xsize_hue && ypos >= ysize_main ? CP_STATE_SAMPLE_BOX :
+                 CP_STATE_NONE);
+
+      if (state == CP_STATE_GRADIENT_CHANGE)
+      {
+        cp_color_hsv.s = (double)MIN(MAX(0, xpos), xsize_main) / xsize_main;
+        cp_color_hsv.v = 1.0 - (double)MIN(MAX(0, ypos), ysize_main) / ysize_main;
+
+        DrawColorPicker(gi);
+      }
+      else if (state == CP_STATE_SLIDER_CHANGE)
+      {
+        cp_color_hsv.h = (double)MIN(MAX(0, xpos), xsize_hue) / xsize_hue * 360.0;
+
+        DrawColorPicker(gi);
+      }
+      else if (state == CP_STATE_SAMPLE_BOX)
+      {
+        RGBColor rgb_color = hsv_to_rgb(cp_color_hsv);
+        int color = ((int)(rgb_color.r * 255) << 16 |
+                     (int)(rgb_color.g * 255) << 8  |
+                     (int)(rgb_color.b * 255));
+
+        gi->event.type = GD_EVENT_COLOR_PICKER_LEAVING;
+        gi->colorpicker.value = color;
+
+        DoGadgetCallbackAction(gi, TRUE);
+      }
     }
   }
 

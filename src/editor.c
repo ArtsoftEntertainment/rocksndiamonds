@@ -127,10 +127,11 @@
 #define ED_ENGINE_TABS_YSTART		(ED_SETTINGS_ENGINE_TABS_Y)
 #define ED_ENGINE_SETTINGS_XSTART	(ED_SETTINGS_ENGINE_TABS_X +	\
 					 ED_SETTINGS_TABS_XOFFSET)
-#define ED_ENGINE_SETTINGS_YSTART	(ED_SETTINGS_ENGINE_TABS_Y +	\
+#define ED_ENGINE_SETTINGS_YSTART_0	(ED_SETTINGS_ENGINE_TABS_Y +	\
 					 ED_TABBUTTON_YSIZE +		\
 					 ED_GADGET_TINY_DISTANCE +	\
-					 ED_TAB_BAR_HEIGHT +		\
+					 ED_TAB_BAR_HEIGHT)
+#define ED_ENGINE_SETTINGS_YSTART	(ED_ENGINE_SETTINGS_YSTART_0 +	\
 					 ED_SETTINGS_TABS_YOFFSET +	\
 					 getFontHeight(FONT_TEXT_1) +	\
 					 ED_GADGET_TEXT_DISTANCE)
@@ -402,6 +403,15 @@
 					 ED_ELEMENTLIST_YSIZE -		\
 					 2 * ED_SCROLLBUTTON2_YSIZE)
 
+#define COLORPICKER_X		(editor.settings.colorpicker.x)
+#define COLORPICKER_Y		(editor.settings.colorpicker.y)
+#define COLORPICKER_X_REDEFINED (COLORPICKER_X != -1)
+#define COLORPICKER_Y_REDEFINED (COLORPICKER_Y != -1)
+#define COLORPICKER_XPOS	SX + (COLORPICKER_X_REDEFINED ? COLORPICKER_X : \
+				      ED_ENGINE_SETTINGS_XSTART)
+#define COLORPICKER_YPOS	SY + (COLORPICKER_Y_REDEFINED ? COLORPICKER_Y : \
+				      ED_ENGINE_SETTINGS_YSTART_0 + ED_GADGET_TEXT_DISTANCE)
+
 // values for ClearEditorGadgetInfoText() and HandleEditorGadgetInfoText()
 #define INFOTEXT_FONT		FONT_TEXT_2
 #define INFOTEXT_XSIZE		SXSIZE
@@ -409,9 +419,10 @@
 #define INFOTEXT_YSIZE_FULL	(INFOTEXT_YSIZE + ED_GADGET_SMALL_DISTANCE)
 #define INFOTEXT_X		(editor.settings.tooltip.x)
 #define INFOTEXT_Y		(editor.settings.tooltip.y)
-#define INFOTEXT_XY_REDEFINED	(INFOTEXT_X != -1 || INFOTEXT_Y != -1)
-#define INFOTEXT_XPOS		SX + (INFOTEXT_XY_REDEFINED ? INFOTEXT_X : 0)
-#define INFOTEXT_YPOS		SY + (INFOTEXT_XY_REDEFINED ? INFOTEXT_Y : \
+#define INFOTEXT_X_REDEFINED	(INFOTEXT_X != -1)
+#define INFOTEXT_Y_REDEFINED	(INFOTEXT_Y != -1)
+#define INFOTEXT_XPOS		SX + (INFOTEXT_X_REDEFINED ? INFOTEXT_X : 0)
+#define INFOTEXT_YPOS		SY + (INFOTEXT_Y_REDEFINED ? INFOTEXT_Y : \
 				      SYSIZE - INFOTEXT_YSIZE)
 
 
@@ -5429,14 +5440,15 @@ static struct
   int x, y;
   int gadget_id;
   int *value;
+  int color_type;
   char *infotext;
 } colorpicker_info[ED_NUM_COLORPICKERS] =
 {
   {
     ED_COLORPICKER_ID_PICK_COLOR,
-    8, 40,
+    -1, -1,
     GADGET_ID_COLOR_PICKER,
-    NULL,
+    NULL, -1,
     "Select color"
   },
 };
@@ -9477,6 +9489,10 @@ static void CreateColorPickerGadgets(void)
     unsigned int event_mask = GD_EVENT_COLOR_PICKER_LEAVING;
     int id = colorpicker_info[i].gadget_id;
     int type_id = colorpicker_info[i].gadget_type_id;
+    int x = (colorpicker_info[i].x != -1 ? SX + ED_SETTINGS_X(colorpicker_info[i].x) :
+             COLORPICKER_XPOS);
+    int y = (colorpicker_info[i].y != -1 ? SY + ED_SETTINGS_Y(colorpicker_info[i].y) :
+             COLORPICKER_YPOS);
 
     if (type_id != i)
       Fail("'colorpicker_info' structure corrupted at index %d -- please fix", i);
@@ -9484,9 +9500,10 @@ static void CreateColorPickerGadgets(void)
     gi = CreateGadget(GDI_CUSTOM_ID, id,
 		      GDI_CUSTOM_TYPE_ID, type_id,
 		      GDI_INFO_TEXT, colorpicker_info[i].infotext,
-		      GDI_X, SX + ED_SETTINGS_X(colorpicker_info[i].x),
-		      GDI_Y, SY + ED_SETTINGS_Y(colorpicker_info[i].y),
+		      GDI_X, x,
+		      GDI_Y, y,
 		      GDI_TYPE, GD_TYPE_COLOR_PICKER,
+		      GDI_TEXT_FONT, FONT_INPUT_2,
 		      GDI_DESIGN_UNPRESSED, gd->bitmap, gd_x1, gd_y1,
 		      GDI_DESIGN_PRESSED, gd->bitmap, gd_x2, gd_y2,
 		      GDI_BORDER_SIZE, gd->border_size, gd->border_size,
@@ -9888,9 +9905,14 @@ static void MapCheckbuttonGadget(int id)
   MapGadget(gi);
 }
 
-static void MapColorPickerGadget(int id)
+static void MapColorPickerGadget(int id, int color_nr)
 {
   struct GadgetInfo *gi = level_editor_gadget[colorpicker_info[id].gadget_id];
+  int color = gd_color_get_rgb(*bd_color[color_nr]);
+
+  ModifyGadget(gi, GDI_COLOR_NR, color_nr, GDI_END);
+  ModifyGadget(gi, GDI_COLOR_TYPE, level.bd_color_type, GDI_END);
+  ModifyGadget(gi, GDI_COLOR_VALUE, color, GDI_END);
 
   MapGadget(gi);
 }
@@ -16983,7 +17005,7 @@ static void HandleGraphicbuttonGadgets(struct GadgetInfo *gi)
   else if (type_id >= ED_GRAPHICBUTTON_ID_PICK_FIRST ||
 	   type_id <= ED_GRAPHICBUTTON_ID_PICK_LAST)
   {
-    MapColorPickerGadget(ED_COLORPICKER_ID_PICK_COLOR);
+    MapColorPickerGadget(ED_COLORPICKER_ID_PICK_COLOR, type_id - ED_GRAPHICBUTTON_ID_PICK_FIRST);
   }
 }
 
@@ -17125,7 +17147,12 @@ static void HandleColorPickerGadgets(struct GadgetInfo *gi)
   int type_id = gi->custom_type_id;
 
   if (type_id == ED_COLORPICKER_ID_PICK_COLOR)
+  {
+    if (gi->colorpicker.value != -1)
+      *bd_color[gi->colorpicker.nr] = gi->colorpicker.value;
+
     DrawLevelConfigWindow();
+  }
 
   level.changed = TRUE;
 }

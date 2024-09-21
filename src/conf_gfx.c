@@ -11149,6 +11149,8 @@ struct ConfigInfo image_config[] =
   { "editor.settings.tabs.2nd_yoffset",			"64"				},
   { "editor.settings.tabs.draw_xoffset",		"0"				},
   { "editor.settings.tabs.draw_yoffset",		"8"				},
+  { "editor.settings.colorpicker.x",			"-1"				},
+  { "editor.settings.colorpicker.y",			"-1"				},
   { "editor.settings.tooltip.x",			"-1"				},
   { "editor.settings.tooltip.y",			"-1"				},
 

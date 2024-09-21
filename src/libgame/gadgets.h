@@ -63,8 +63,6 @@
 // gadget structure constants
 #define MAX_GADGET_TEXTSIZE		1024
 #define MAX_INFO_TEXTSIZE		1024
-#define COLOR_PICKER_WIDTH		256
-#define COLOR_PICKER_HEIGHT		300
 
 // gadget creation tags
 #define GDI_END				0
@@ -121,6 +119,9 @@
 #define GDI_DIRECT_DRAW			51
 #define GDI_OVERLAY_TOUCH_BUTTON	52
 #define GDI_CALLBACK_ACTION_ALWAYS	53
+#define GDI_COLOR_NR			54
+#define GDI_COLOR_TYPE			55
+#define GDI_COLOR_VALUE			56
 
 // gadget deactivation hack
 #define GDI_ACTIVE_POS(a)		((a) < 0 ? POS_OFFSCREEN : (a))
@@ -245,6 +246,13 @@ struct GadgetWheelArea
   int width, height;			// active area for wheel (size)
 };
 
+struct GadgetColorPicker
+{
+  int nr;				// color slot (if using several colors)
+  int type;				// color type (RGB, C64, C64DTV, Atari)
+  int value;				// color value
+};
+
 struct GadgetInfo
 {
   boolean deactivated;			// flag to deactivate gadget
@@ -285,6 +293,7 @@ struct GadgetInfo
   struct GadgetSelectbox selectbox;	// fields for selectbox gadget
   struct GadgetScrollbar scrollbar;	// fields for scrollbar gadget
   struct GadgetWheelArea wheelarea;	// fields for scroll wheel area
+  struct GadgetColorPicker colorpicker;	// fields for color picker gadget
   struct GadgetInfo *next;		// next list entry
 };
 

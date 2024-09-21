@@ -3507,6 +3507,7 @@ struct EditorSettingsInfo
 
   struct EditorTabsInfo tabs;
 
+  struct XY colorpicker;
   struct XY tooltip;
 };
 
