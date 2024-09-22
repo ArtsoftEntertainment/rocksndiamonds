@@ -624,6 +624,12 @@ static inline boolean el_explosion(const int element)
   return has_property(element, P_EXPLOSION);
 }
 
+static inline boolean el_destroying(const int element)
+{
+  return (el_growing(element) ||
+          el_explosion(element));
+}
+
 static inline boolean el_smooth_movable(const int element)
 {
   // special case of non-moving player
@@ -676,7 +682,7 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
     draw_from = game->drawing_buffer[new_y][new_x];
 
     // handle special case of player running into enemy/explosion from top or left side
-    if (el_player(tile_last) && (el_growing(tile_from) || el_explosion(tile_from)))
+    if (el_player(tile_last) && el_destroying(tile_from))
       tile_from = tile_last;
 
     // handle special case of player digging or snapping clock (which gets replaced by sand)
