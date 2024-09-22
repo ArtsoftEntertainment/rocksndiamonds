@@ -1279,7 +1279,7 @@ GdElementProperty gd_element_properties[] =
   },    // is not a real player! so active x, y will not find it. no P_PLAYER bit!
   {
     O_PLAYER_STIRRING, O_PLAYER_STIRRING, N_("Player stirring"),
-    P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER,
+    P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER | P_PLAYER_STIRRING,
     "GUYSTIRRING", 0, 256, -256, -256
   },
 

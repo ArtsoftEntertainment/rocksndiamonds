@@ -493,6 +493,12 @@ boolean is_player(const GdCave *cave, const int x, const int y)
   return has_property(get(cave, x, y), P_PLAYER);
 }
 
+// returns true if the element is a player stirring the pot
+boolean is_player_stirring(const GdCave *cave, const int x, const int y)
+{
+  return has_property(get(cave, x, y), P_PLAYER_STIRRING);
+}
+
 // returns true if the element is a player (normal player, player glued, player with bomb) (+ dir)
 static inline boolean is_player_dir(const GdCave *cave, const int x, const int y,
 				    const GdDirection dir)
