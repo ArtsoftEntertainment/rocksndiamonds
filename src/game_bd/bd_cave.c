@@ -1344,6 +1344,24 @@ void gd_cave_count_diamonds(GdCave *cave)
   }
 }
 
+// returns true if the element has a certain property
+static inline boolean has_property(const int element, const int property)
+{
+  return (gd_element_properties[element].properties & property) != 0;
+}
+
+// returns true if the element is a player
+static inline boolean el_player(const int element)
+{
+  return has_property(element, P_PLAYER);
+}
+
+// returns true if the element is pushable
+static inline boolean el_pushable(const int element)
+{
+  return has_property(element, P_PUSHABLE);
+}
+
 // Draw a cave into a gfx buffer (integer map) - set the cave cell index from the png.
 //
 // Takes a cave and a gfx buffer, and fills the buffer with cell indexes.
@@ -1634,7 +1652,9 @@ void gd_drawcave_game(const GdCave *cave,
 	// special check needed when smooth game element movements selected in setup menu:
 	// last element must either be player (before pushing) or pushable element (while pushing)
 	// (extra check needed to prevent pushing animation when moving towards pushable element)
-	if (!use_bd_smooth_movements() || last_element_buffer[y][x] != O_SPACE)
+	if (!use_bd_smooth_movements() ||
+            el_player(last_element_buffer[y][x]) ||
+            el_pushable(last_element_buffer[y][x]))
 	{
 	  if (cave->last_direction == GD_MV_LEFT)
           {
