@@ -554,6 +554,12 @@ static inline boolean el_player(const int element)
   return has_property(element, P_PLAYER);
 }
 
+// returns true if the element is a player who is pushing some element
+static inline boolean el_player_pushing(const int element)
+{
+  return has_property(element, P_PLAYER_PUSHING);
+}
+
 #if 0
 // returns true if the element is walkable
 static inline boolean el_walkable(const int element)
@@ -707,7 +713,7 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
     }
 
     // player killed by lava or explosion was standing still before moving into lava or enemy
-    if (el_player(tile_from))
+    if (el_player(tile_from) && !el_player_pushing(draw_from))
       draw_from = (dir_from == GD_MV_LEFT  ? O_PLAYER_LEFT  :
                    dir_from == GD_MV_RIGHT ? O_PLAYER_RIGHT :
                    dir_from == GD_MV_UP    ? O_PLAYER_UP    :

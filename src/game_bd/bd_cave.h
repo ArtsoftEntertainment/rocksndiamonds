@@ -120,6 +120,7 @@ enum _element_property_enum
   E_P_VISUAL_EFFECT,            // if the element can use a visual effect.
 				// used to check consistency of the code
   E_P_PLAYER,                   // easier to find out if it is a player element
+  E_P_PLAYER_PUSHING,           // player pushing some element
   E_P_PLAYER_STIRRING,          // player stirring the pot
   E_P_MOVED_BY_CONVEYOR_TOP,    // can be moved by conveyor belt
   E_P_MOVED_BY_CONVEYOR_BOTTOM, // can be moved UNDER the conveyor belt
@@ -165,6 +166,7 @@ enum _element_property_enum
 #define P_CAN_BE_HAMMERED		(1 << E_P_CAN_BE_HAMMERED)
 #define P_VISUAL_EFFECT			(1 << E_P_VISUAL_EFFECT)
 #define P_PLAYER			(1 << E_P_PLAYER)
+#define P_PLAYER_PUSHING		(1 << E_P_PLAYER_PUSHING)
 #define P_PLAYER_STIRRING		(1 << E_P_PLAYER_STIRRING)
 #define P_MOVED_BY_CONVEYOR_TOP		(1 << E_P_MOVED_BY_CONVEYOR_TOP)
 #define P_MOVED_BY_CONVEYOR_BOTTOM	(1 << E_P_MOVED_BY_CONVEYOR_BOTTOM)

@@ -1770,12 +1770,12 @@ GdElementProperty gd_element_properties[] =
   },
   {
     O_PLAYER_PUSH_LEFT, O_PLAYER_PUSH_LEFT, N_("Player, pushing left"),
-    P_PLAYER,
+    P_PLAYER | P_PLAYER_PUSHING,
     NULL, 0, 392, -392, -392
   },
   {
     O_PLAYER_PUSH_RIGHT, O_PLAYER_PUSH_RIGHT, N_("Player, pushing right"),
-    P_PLAYER,
+    P_PLAYER | P_PLAYER_PUSHING,
     NULL, 0, 400, -400, -400
   },
   {
