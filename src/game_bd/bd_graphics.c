@@ -677,7 +677,8 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   boolean is_moving_from = (dir_from != GD_MV_STILL);
   boolean is_moving_to   = (dir_to   != GD_MV_STILL);
   boolean is_moving = (is_moving_from || is_moving_to);
-  boolean is_diagonal_movement = (dx_from != 0 && dy_from != 0);
+  boolean is_diagonal_movement_from = (dx_from != 0 && dy_from != 0);
+  boolean is_diagonal_movement_to = (dx_to != 0 && dy_to != 0);
   boolean use_smooth_movements = use_bd_smooth_movements();
 
   // if element is moving away from this tile, determine element that is moving
@@ -806,7 +807,7 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
 
   // ---------- 2nd step: draw element that is moving away from this tile  ----------
 
-  if (is_moving_from && !is_diagonal_movement)
+  if (is_moving_from && !is_diagonal_movement_from)	// skip if source moving diagonally
   {
     struct GraphicInfo_BD *g = &graphic_info_bd_object[draw_from][frame];
     Bitmap *tile_bitmap = gd_get_tile_bitmap(g->bitmap);
@@ -830,6 +831,9 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
 
   if (is_moving_to)
   {
+    if (is_diagonal_movement_to)	// no smooth movement if target moving diagonally
+      dx_to = dy_to = 0;
+
     struct GraphicInfo_BD *g = &graphic_info_bd_object[draw_to][frame];
     Bitmap *tile_bitmap = gd_get_tile_bitmap(g->bitmap);
     int xsize = (dx_to != 0 ? cell_size - shift : cell_size);
