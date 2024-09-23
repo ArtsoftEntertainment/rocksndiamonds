@@ -746,9 +746,9 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
 
   // do not use smooth movement animation for game elements that cannot move smoothly
   // (but handle special case of player digging or snapping diggable element, like sand)
-  if (!el_smooth_movable(tile_from) &&
-      !el_smooth_movable(tile_to) &&
-      !el_diggable(tile_last))
+  if (!(is_moving_from && el_smooth_movable(tile_from)) &&
+      !(is_moving_to   && el_smooth_movable(tile_to)) &&
+      !(is_moving_to   && el_diggable(tile_last)))
     use_smooth_movements = FALSE;
 
 #if DO_GFX_SANITY_CHECK
