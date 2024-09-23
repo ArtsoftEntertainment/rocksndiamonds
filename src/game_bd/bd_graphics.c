@@ -670,9 +670,12 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   int tile_to = tile;		// target element if element is moving
   int draw_to = draw;		// target element if element is moving
   int frame = game->animcycle;
+  int dx_from = gd_dx[dir_from];
+  int dy_from = gd_dy[dir_from];
   boolean is_moving_from = (dir_from != GD_MV_STILL);
   boolean is_moving_to   = (dir_to   != GD_MV_STILL);
   boolean is_moving = (is_moving_from || is_moving_to);
+  boolean is_diagonal_movement = (dx_from != 0 && dy_from != 0);
   boolean use_smooth_movements = use_bd_smooth_movements();
 
   // if element is moving away from this tile, determine element that is moving
@@ -803,18 +806,16 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
 
   // ---------- 2nd step: draw element that is moving away from this tile  ----------
 
-  if (is_moving_from)
+  if (is_moving_from && !is_diagonal_movement)
   {
     struct GraphicInfo_BD *g = &graphic_info_bd_object[draw_from][frame];
     Bitmap *tile_bitmap = gd_get_tile_bitmap(g->bitmap);
-    int dx = (dir_from == GD_MV_LEFT ? -1 : dir_from == GD_MV_RIGHT ? +1 : 0);
-    int dy = (dir_from == GD_MV_UP   ? -1 : dir_from == GD_MV_DOWN  ? +1 : 0);
-    int xsize = (dx != 0 ? shift : cell_size);
-    int ysize = (dy != 0 ? shift : cell_size);
-    int gx = g->src_x + (dx < 0 ? cell_size - shift : 0);
-    int gy = g->src_y + (dy < 0 ? cell_size - shift : 0);
-    int tx = sx + (dx < 0 ? 0 : dx > 0 ? cell_size - shift : 0);
-    int ty = sy + (dy < 0 ? 0 : dy > 0 ? cell_size - shift : 0);
+    int xsize = (dx_from != 0 ? shift : cell_size);
+    int ysize = (dy_from != 0 ? shift : cell_size);
+    int gx = g->src_x + (dx_from < 0 ? cell_size - shift : 0);
+    int gy = g->src_y + (dy_from < 0 ? cell_size - shift : 0);
+    int tx = sx + (dx_from < 0 ? 0 : dx_from > 0 ? cell_size - shift : 0);
+    int ty = sy + (dy_from < 0 ? 0 : dy_from > 0 ? cell_size - shift : 0);
 
     if (!el_diggable(tile))
       blit_bitmap = BlitBitmapMasked;
