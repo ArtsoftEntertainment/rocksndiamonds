@@ -672,6 +672,8 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   int frame = game->animcycle;
   int dx_from = gd_dx[dir_from];
   int dy_from = gd_dy[dir_from];
+  int dx_to = gd_dx[dir_to];
+  int dy_to = gd_dy[dir_to];
   boolean is_moving_from = (dir_from != GD_MV_STILL);
   boolean is_moving_to   = (dir_to   != GD_MV_STILL);
   boolean is_moving = (is_moving_from || is_moving_to);
@@ -830,14 +832,12 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   {
     struct GraphicInfo_BD *g = &graphic_info_bd_object[draw_to][frame];
     Bitmap *tile_bitmap = gd_get_tile_bitmap(g->bitmap);
-    int dx = (dir_to == GD_MV_LEFT ? +1 : dir_to == GD_MV_RIGHT ? -1 : 0);
-    int dy = (dir_to == GD_MV_UP   ? +1 : dir_to == GD_MV_DOWN  ? -1 : 0);
-    int xsize = (dx != 0 ? cell_size - shift : cell_size);
-    int ysize = (dy != 0 ? cell_size - shift : cell_size);
-    int gx = g->src_x + (dx < 0 ? shift : 0);
-    int gy = g->src_y + (dy < 0 ? shift : 0);
-    int tx = sx + (dx < 0 ? 0 : dx > 0 ? shift : 0);
-    int ty = sy + (dy < 0 ? 0 : dy > 0 ? shift : 0);
+    int xsize = (dx_to != 0 ? cell_size - shift : cell_size);
+    int ysize = (dy_to != 0 ? cell_size - shift : cell_size);
+    int gx = g->src_x + (dx_to > 0 ? shift : 0);
+    int gy = g->src_y + (dy_to > 0 ? shift : 0);
+    int tx = sx + (dx_to > 0 ? 0 : dx_to < 0 ? shift : 0);
+    int ty = sy + (dy_to > 0 ? 0 : dy_to < 0 ? shift : 0);
 
     if (is_moving_from)
       blit_bitmap = BlitBitmapMasked;
@@ -846,8 +846,8 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
     // (special case required if "space" element is graphically defined as non-black)
     if (tile == O_SPACE && el_diggable(tile_last))
     {
-      gx = (dx != 0 ? shift - gx : gx);
-      gy = (dy != 0 ? shift - gy : gy);
+      gx = (dx_to != 0 ? shift - gx : gx);
+      gy = (dy_to != 0 ? shift - gy : gy);
     }
 
     blit_bitmap(tile_bitmap, dest, gx, gy, xsize, ysize, tx, ty);
