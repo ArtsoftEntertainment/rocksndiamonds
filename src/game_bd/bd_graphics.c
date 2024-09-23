@@ -688,7 +688,7 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
     draw_from = game->drawing_buffer[new_y][new_x];
 
     // handle special case of player running into enemy/explosion from top or left side
-    if (el_player(tile_last) && el_destroying(tile_from))
+    if (el_player(tile_last) && !el_player(tile) && el_destroying(tile_from))
       tile_from = tile_last;
 
     // handle special case of player digging or snapping clock (which gets replaced by sand)
