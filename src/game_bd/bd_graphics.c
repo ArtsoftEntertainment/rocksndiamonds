@@ -681,10 +681,8 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   // if element is moving away from this tile, determine element that is moving
   if (is_moving_from)
   {
-    int dx = (dir_from == GD_MV_LEFT ? -1 : dir_from == GD_MV_RIGHT ? +1 : 0);
-    int dy = (dir_from == GD_MV_UP   ? -1 : dir_from == GD_MV_DOWN  ? +1 : 0);
-    int new_x = cave->getx(cave, x + dx, y + dy);
-    int new_y = cave->gety(cave, x + dx, y + dy);
+    int new_x = cave->getx(cave, x + dx_from, y + dy_from);
+    int new_y = cave->gety(cave, x + dx_from, y + dy_from);
     int new_dir_to = game->dir_buffer_to[new_y][new_x];
 
     tile_from = game->element_buffer[new_y][new_x];
