@@ -489,8 +489,27 @@ static const char *gd_engines[] =
   "CrLi"
 };
 
-// to convert predictable slime values to bit masks
-static int slime_shift_msb(int c64_data)
+// Take a slime predictability byte, and convert it to a bitmask.
+// Used for caves created with the original construction kit.
+// (This conversion method is used by the new game engine.)
+static int slime_plck_new(int c64_data)
+{
+  const int values[] = { 0x00, 0x10, 0x18, 0x38, 0x3c, 0x7c, 0x7e, 0xfe, 0xff };
+
+  if (c64_data > ARRAY_SIZE(values))
+  {
+    Warn("Invalid PLCK slime permeability value %x", c64_data);
+
+    return 0xff;
+  }
+
+  return values[c64_data];
+}
+
+// Take a slime predictability byte, and convert it to a bitmask.
+// Used for caves created with the original construction kit.
+// (This conversion method was used by the old game engine.)
+static int slime_plck_old(int c64_data)
 {
   int i, perm;
 
@@ -1281,7 +1300,8 @@ static int cave_copy_from_plck(GdCave *cave, const byte *data,
 
     cave->level_ckdelay[i] = data[0x1b8];
     cave->level_magic_wall_time[i] = data[0x1c6];
-    cave->level_slime_permeability_c64[i] = slime_shift_msb(data[0x1c2]);
+    cave->level_slime_permeability_c64[i] = slime_plck_new(data[0x1c2]);
+    cave->level_slime_permeability_old[i] = slime_plck_old(data[0x1c2]);
   }
 
   if (format == GD_FORMAT_PLC_ATARI)
@@ -1403,7 +1423,8 @@ static int cave_copy_from_dlb(GdCave *cave, const byte *data, int remaining_byte
       cave->level_amoeba_time[i] = 999;
 
     cave->level_magic_wall_time[i] = data[7];
-    cave->level_slime_permeability_c64[i] = slime_shift_msb(data[5]);
+    cave->level_slime_permeability_c64[i] = slime_plck_new(data[5]);
+    cave->level_slime_permeability_old[i] = slime_plck_old(data[5]);
   }
 
   cave->diamond_value = data[3];

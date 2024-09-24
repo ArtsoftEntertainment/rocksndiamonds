@@ -3162,6 +3162,7 @@ GdPropertyDefault gd_cave_defaults_gdash[] =
   { CAVE_OFFSET(slime_predictable),				TRUE				},
   { CAVE_OFFSET(level_slime_seed_c64),				-1				},
   { CAVE_OFFSET(level_slime_permeability_c64),			0				},
+  { CAVE_OFFSET(level_slime_permeability_old),			0				},
   { CAVE_OFFSET(level_slime_permeability),			1000000				},
   { CAVE_OFFSET(slime_eats_1),					O_DIAMOND			},
   { CAVE_OFFSET(slime_converts_1),				O_DIAMOND_F			},

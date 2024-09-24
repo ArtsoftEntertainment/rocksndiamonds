@@ -1458,6 +1458,11 @@ GdCave *gd_cave_new_rendered(const GdCave *data, const int level, const unsigned
   cave->hatching_delay_time    = data->level_hatching_delay_time[level];
   cave->hatching_delay_frame   = data->level_hatching_delay_frame[level];
 
+  // if using old game engine and old slime permeability value is defined, use that
+  if (game_bd.game != NULL && game_bd.game->use_old_engine &&
+      data->level_slime_permeability_old[level] != 0)
+    cave->slime_permeability_c64 = data->level_slime_permeability_old[level];
+
   if (!cave->map)
   {
     // if we have no map, fill with predictable random generator.

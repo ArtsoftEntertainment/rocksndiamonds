@@ -454,6 +454,7 @@ typedef struct _gd_cave
 
   int level_slime_permeability[5];      // true random slime
   int level_slime_permeability_c64[5];  // Appearing in bd 2
+  int level_slime_permeability_old[5];  // Appearing in bd 2 (only used by old engine)
   int level_slime_seed_c64[5];          // predictable slime random seed
   boolean slime_predictable;            // predictable random start for slime. yes for plck.
   boolean slime_correct_random;         // correct random number generator for rendered caves
