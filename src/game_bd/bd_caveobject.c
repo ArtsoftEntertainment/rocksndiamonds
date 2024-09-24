@@ -66,7 +66,7 @@ char *gd_object_get_bdcff(const GdObject *object)
     case GD_MAZE:
     case GD_MAZE_UNICURSAL:
     case GD_MAZE_BRAID:
-      switch(object->type)
+      switch (object->type)
       {
 	case GD_MAZE:
 	  type = "perfect";

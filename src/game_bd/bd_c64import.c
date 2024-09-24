@@ -1814,7 +1814,7 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
   cave->acid_spread_ratio = data[0x38] / 255.0 * 1E6 + 0.5;
 
   cave->acid_eats_this = import_table_crdr[data[0x39]];
-  switch(data[0x3a] & 3)
+  switch (data[0x3a] & 3)
   {
     case 0: cave->gravity = GD_MV_UP; break;
     case 1: cave->gravity = GD_MV_DOWN; break;
@@ -2561,7 +2561,7 @@ List *gd_caveset_import_from_buffer (const byte *buf, size_t length)
 	else
 	  snprintf(newcave->name, sizeof(newcave->name), _("Cave %c"), 'A' + cavenum);
 
-	switch(format)
+	switch (format)
 	{
 	  case GD_FORMAT_BD1:
 	  case GD_FORMAT_BD1_ATARI:

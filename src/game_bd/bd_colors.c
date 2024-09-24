@@ -658,7 +658,7 @@ GdColor gd_color_get_from_hsv(double h, double s, double v)
   q *= 255;
   t *= 255;
 
-  switch(hi)
+  switch (hi)
   {
     case 0: return gd_color_get_from_rgb(v, t, p);
     case 1: return gd_color_get_from_rgb(q, v, p);
