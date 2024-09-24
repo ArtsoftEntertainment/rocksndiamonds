@@ -3423,36 +3423,39 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    // space under the slime? elements may pass from top to bottom then.
 	    if (is_like_space(cave, x, y, grav))
 	    {
+	      int what_x = getx(cave, x + gd_dx[oppos], y + gd_dy[oppos]);
+	      int what_y = gety(cave, x + gd_dx[oppos], y + gd_dy[oppos]);
+
 	      if (get_dir(cave, x, y, oppos) == cave->slime_eats_1)
 	      {
 		// output a falling xy under
-		store_dir(cave, x, y, grav, cave->slime_converts_1);
+		store_dir(cave, what_x, what_y, twice[grav], cave->slime_converts_1);
 		store_dir(cave, x, y, oppos, O_SPACE);
 		play_sound_of_element(cave, O_SLIME, x, y);
 	      }
 	      else if (get_dir(cave, x, y, oppos) == cave->slime_eats_2)
 	      {
-		store_dir(cave, x, y, grav, cave->slime_converts_2);
+		store_dir(cave, what_x, what_y, twice[grav], cave->slime_converts_2);
 		store_dir(cave, x, y, oppos, O_SPACE);
 		play_sound_of_element(cave, O_SLIME, x, y);
 	      }
 	      else if (get_dir(cave, x, y, oppos) == cave->slime_eats_3)
 	      {
-		store_dir(cave, x, y, grav, cave->slime_converts_3);
+		store_dir(cave, what_x, what_y, twice[grav], cave->slime_converts_3);
 		store_dir(cave, x, y, oppos, O_SPACE);
 		play_sound_of_element(cave, O_SLIME, x, y);
 	      }
 	      else if (get_dir(cave, x, y, oppos) == O_WAITING_STONE)
 	      {
 		// waiting stones pass without awakening
-		store_dir(cave, x, y, grav, O_WAITING_STONE);
+		store_dir(cave, what_x, what_y, twice[grav], O_WAITING_STONE);
 		store_dir(cave, x, y, oppos, O_SPACE);
 		play_sound_of_element(cave, O_SLIME, x, y);
 	      }
 	      else if (get_dir(cave, x, y, oppos) == O_CHASING_STONE)
 	      {
 		// chasing stones pass
-		store_dir(cave, x, y, grav, O_CHASING_STONE);
+		store_dir(cave, what_x, what_y, twice[grav], O_CHASING_STONE);
 		store_dir(cave, x, y, oppos, O_SPACE);
 		play_sound_of_element(cave, O_SLIME, x, y);
 	      }
@@ -3462,23 +3465,26 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      // or space over the slime? elements may pass from bottom to up then.
 	      if (is_like_space(cave, x, y, oppos))
 	      {
+		int what_x = getx(cave, x + gd_dx[grav], y + gd_dy[grav]);
+		int what_y = gety(cave, x + gd_dx[grav], y + gd_dy[grav]);
+
 		if (get_dir(cave, x, y, grav) == O_BLADDER)
 		{
 		  // bladders move UP the slime
 		  store_dir(cave, x, y, grav, O_SPACE);
-		  store_dir(cave, x, y, oppos, O_BLADDER_1);
+		  store_dir(cave, what_x, what_y, twice[oppos], O_BLADDER_1);
 		  play_sound_of_element(cave, O_SLIME, x, y);
 		}
 		else if (get_dir(cave, x, y, grav) == O_FLYING_STONE)
 		{
 		  store_dir(cave, x, y, grav, O_SPACE);
-		  store_dir(cave, x, y, oppos, O_FLYING_STONE_F);
+		  store_dir(cave, what_x, what_y, twice[oppos], O_FLYING_STONE_F);
 		  play_sound_of_element(cave, O_SLIME, x, y);
 		}
 		else if (get_dir(cave, x, y, grav) == O_FLYING_DIAMOND)
 		{
 		  store_dir(cave, x, y, grav, O_SPACE);
-		  store_dir(cave, x, y, oppos, O_FLYING_DIAMOND_F);
+		  store_dir(cave, what_x, what_y, twice[oppos], O_FLYING_DIAMOND_F);
 		  play_sound_of_element(cave, O_SLIME, x, y);
 		}
 	      }
