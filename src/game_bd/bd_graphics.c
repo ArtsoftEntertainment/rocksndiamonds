@@ -679,6 +679,7 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   boolean is_moving = (is_moving_from || is_moving_to);
   boolean is_diagonal_movement_from = (dx_from != 0 && dy_from != 0);
   boolean is_diagonal_movement_to = (dx_to != 0 && dy_to != 0);
+  boolean is_double_movement = (dir_from > GD_MV_TWICE);
   boolean use_smooth_movements = use_bd_smooth_movements();
 
   // if element is moving away from this tile, determine element that is moving
@@ -690,6 +691,13 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
 
     tile_from = game->element_buffer[new_y][new_x];
     draw_from = game->drawing_buffer[new_y][new_x];
+
+    if (is_double_movement)
+    {
+      // for magic wall or slime, use source tile instead of target tile
+      tile_from = tile_last;
+      draw_from = draw_last;
+    }
 
     // handle special case of player running into enemy/explosion from top or left side
     if (el_player(tile_last) && !el_player(tile) && el_destroying(tile_from))

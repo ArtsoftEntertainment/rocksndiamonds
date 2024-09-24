@@ -645,30 +645,11 @@ static inline boolean is_like_dirt(const GdCave *cave, const int x, const int y,
 // store from/to directions in special buffers for smooth movement animations
 static inline void store_dir_buffer(GdCave *cave, const int x, const int y, const GdDirection dir)
 {
-  int old_x = x;
-  int old_y = y;
+  int new_x = getx(cave, x + gd_dx[dir], y + gd_dy[dir]);
+  int new_y = gety(cave, x + gd_dx[dir], y + gd_dy[dir]);
 
-  // raw values without range correction
-  int raw_x = x + gd_dx[dir];
-  int raw_y = y + gd_dy[dir];
-
-  // final values with range correction
-  int new_x = getx(cave, raw_x, raw_y);
-  int new_y = gety(cave, raw_x, raw_y);
-  int new_dir = (dir > GD_MV_TWICE ? dir - GD_MV_TWICE : dir);
-
-  // if tile is moving two steps at once, correct old position
-  if (dir > GD_MV_TWICE)
-  {
-    raw_x = x + gd_dx[new_dir];
-    raw_y = y + gd_dy[new_dir];
-
-    old_x = getx(cave, raw_x, raw_y);
-    old_y = gety(cave, raw_x, raw_y);
-  }
-
-  game_bd.game->dir_buffer_from[old_y][old_x] = new_dir;
-  game_bd.game->dir_buffer_to[new_y][new_x] = new_dir;
+  game_bd.game->dir_buffer_from[y][x] = dir;
+  game_bd.game->dir_buffer_to[new_y][new_x] = dir;
 }
 
 // Store an element at a given position; lava absorbs everything.
@@ -1241,6 +1222,8 @@ static boolean do_teleporter(GdCave *cave, int px, int py, GdDirection player_mo
 static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, boolean player_fire)
 {
   GdElement what = get_dir(cave, x, y, player_move);
+  int what_x = getx(cave, x + gd_dx[player_move], y + gd_dy[player_move]);
+  int what_y = gety(cave, x + gd_dx[player_move], y + gd_dy[player_move]);
 
   // gravity for falling wall, bladder, ...
   GdDirection grav_compat = (cave->gravity_affects_all ? cave->gravity : GD_MV_DOWN);
@@ -1310,9 +1293,9 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 
           // if pushed a stone, it "bounces". all other elements are simply pushed.
           if (what == O_STONE)
-            store_dir(cave, x, y, twice[player_move], cave->stone_bouncing_effect);
+            store_dir(cave, what_x, what_y, player_move, cave->stone_bouncing_effect);
           else
-            store_dir(cave, x, y, twice[player_move], what);
+            store_dir(cave, what_x, what_y, player_move, what);
 
 	  result = TRUE;
 	}
@@ -1437,7 +1420,7 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 	    if (is_like_space(cave, x, y, twice[player_move]))
 	    {
 	      // yes, so push.
-	      store_dir(cave, x, y, twice[player_move], O_BOX);
+	      store_dir(cave, what_x, what_y, player_move, O_BOX);
 	      result = TRUE;
 	      gd_sound_play(cave, GD_S_BOX_PUSHING, what, x, y);
 	    }
