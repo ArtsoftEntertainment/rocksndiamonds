@@ -1328,20 +1328,20 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
           // pushing bladder down
 	  if (is_like_space(cave, x, y, twice[player_move]))
           {
-	    store_dir(cave, x, y, twice[player_move], O_BLADDER);
+	    store_dir(cave, what_x, what_y, player_move, O_BLADDER);
             result = TRUE;
           }
 	  // if no space to push down, maybe left (down-left to player)
 	  else if (is_like_space(cave, x, y, cw_eighth[grav_compat]))
           {
 	    // left is "down, turned right (cw)"
-	    store_dir(cave, x, y, cw_eighth[grav_compat], O_BLADDER);
+	    store_dir(cave, what_x, what_y, cw_fourth[grav_compat], O_BLADDER);
             result = TRUE;
           }
 	  // if not, maybe right (down-right to player)
 	  else if (is_like_space(cave, x, y, ccw_eighth[grav_compat]))
           {
-	    store_dir(cave, x, y, ccw_eighth[grav_compat], O_BLADDER);
+	    store_dir(cave, what_x, what_y, ccw_fourth[grav_compat], O_BLADDER);
             result = TRUE;
           }
 	}
@@ -1356,19 +1356,19 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
           // pushing it left
 	  if (is_like_space(cave, x, y, twice[cw_fourth[grav_compat]]))
           {
-	    store_dir(cave, x, y, twice[cw_fourth[grav_compat]], O_BLADDER);
+	    store_dir(cave, what_x, what_y, player_move, O_BLADDER);
             result = TRUE;
           }
           // maybe down, and player will move left
 	  else if (is_like_space(cave, x, y, cw_eighth[grav_compat]))
           {
-	    store_dir(cave, x, y, cw_eighth[grav_compat], O_BLADDER);
+	    store_dir(cave, what_x, what_y, grav_compat, O_BLADDER);
             result = TRUE;
           }
           // maybe up, and player will move left
 	  else if (is_like_space(cave, x, y, cw_eighth[player_move]))
           {
-	    store_dir(cave, x, y, cw_eighth[player_move], O_BLADDER);
+	    store_dir(cave, what_x, what_y, opposite[grav_compat], O_BLADDER);
             result = TRUE;
           }
 	}
@@ -1383,19 +1383,19 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
           // pushing it right
 	  if (is_like_space(cave, x, y, twice[player_move]))
           {
-	    store_dir(cave, x, y, twice[player_move], O_BLADDER);
+	    store_dir(cave, what_x, what_y, player_move, O_BLADDER);
             result = TRUE;
           }
           // maybe down, and player will move right
 	  else if (is_like_space(cave, x, y, ccw_eighth[grav_compat]))
           {
-	    store_dir(cave, x, y, ccw_eighth[grav_compat], O_BLADDER);
+	    store_dir(cave, what_x, what_y, grav_compat, O_BLADDER);
             result = TRUE;
           }
           // maybe up, and player will move right
 	  else if (is_like_space(cave, x, y, ccw_eighth[player_move]))
           {
-	    store_dir(cave, x, y, ccw_eighth[player_move], O_BLADDER);
+	    store_dir(cave, what_x, what_y, opposite[grav_compat], O_BLADDER);
             result = TRUE;
           }
 	}
