@@ -211,6 +211,7 @@ static const GdElement import_table_crli[0x80] =
 static const char bd_internal_character_encoding[] =
   "            ,!./0123456789:*<=>  ABCDEFGHIJKLMNOPQRSTUVWXYZ( ) _";
 
+// Set engine parameters to BD1 defaults in cave.
 GdPropertyDefault gd_defaults_bd1[] =
 {
   { CAVE_OFFSET(level_amoeba_threshold),			200			},
@@ -228,10 +229,10 @@ GdPropertyDefault gd_defaults_bd1[] =
   { CAVE_OFFSET(creatures_backwards),				FALSE			},
   { CAVE_OFFSET(creatures_direction_auto_change_on_start),	FALSE			},
   { CAVE_OFFSET(creatures_direction_auto_change_time),		0			},
-  { CAVE_OFFSET(level_hatching_delay_time[0]),			2			},
+  { CAVE_OFFSET(level_hatching_delay_time),			2			},
   { CAVE_OFFSET(intermission_instantlife),			TRUE			},
   { CAVE_OFFSET(intermission_rewardlife),			FALSE			},
-  { CAVE_OFFSET(magic_wall_stops_amoeba),			TRUE			},
+  { CAVE_OFFSET(magic_wall_stops_amoeba),			FALSE			},
   { CAVE_OFFSET(magic_wall_breakscan),				TRUE			},
   { CAVE_OFFSET(magic_timer_zero_is_infinite),			TRUE			},
   { CAVE_OFFSET(magic_timer_wait_for_hatching),			FALSE			},
@@ -249,6 +250,7 @@ GdPropertyDefault gd_defaults_bd1[] =
   { -1 },
 };
 
+// Set engine parameters to BD2 defaults in cave.
 GdPropertyDefault gd_defaults_bd2[] =
 {
   { CAVE_OFFSET(level_amoeba_threshold),			200			},
@@ -266,7 +268,7 @@ GdPropertyDefault gd_defaults_bd2[] =
   { CAVE_OFFSET(creatures_backwards),				FALSE			},
   { CAVE_OFFSET(creatures_direction_auto_change_on_start),	FALSE			},
   { CAVE_OFFSET(creatures_direction_auto_change_time),		0			},
-  { CAVE_OFFSET(level_hatching_delay_time[0]),			2			},
+  { CAVE_OFFSET(level_hatching_delay_time),			2			},
   { CAVE_OFFSET(intermission_instantlife),			TRUE			},
   { CAVE_OFFSET(intermission_rewardlife),			FALSE			},
   // marek roth bd inside faq 3.0
@@ -287,6 +289,7 @@ GdPropertyDefault gd_defaults_bd2[] =
   { -1 },
 };
 
+// Set engine parameters to Construction Kit defaults in cave.
 GdPropertyDefault gd_defaults_plck[] =
 {
   { CAVE_OFFSET(amoeba_growth_prob),				31250			},
@@ -304,7 +307,7 @@ GdPropertyDefault gd_defaults_plck[] =
   { CAVE_OFFSET(creatures_backwards),				FALSE			},
   { CAVE_OFFSET(creatures_direction_auto_change_on_start),	FALSE			},
   { CAVE_OFFSET(creatures_direction_auto_change_time),		0			},
-  { CAVE_OFFSET(level_hatching_delay_time[0]),			2			},
+  { CAVE_OFFSET(level_hatching_delay_time),			2			},
   { CAVE_OFFSET(intermission_instantlife),			TRUE			},
   { CAVE_OFFSET(intermission_rewardlife),			FALSE			},
   { CAVE_OFFSET(magic_wall_stops_amoeba),			FALSE			},
@@ -323,6 +326,7 @@ GdPropertyDefault gd_defaults_plck[] =
   { -1 },
 };
 
+// Set engine parameters to 1stB defaults in cave.
 GdPropertyDefault gd_defaults_1stb[] =
 {
   { CAVE_OFFSET(amoeba_growth_prob),				31250			},
@@ -333,10 +337,10 @@ GdPropertyDefault gd_defaults_1stb[] =
   { CAVE_OFFSET(wraparound_objects),				TRUE			},
   { CAVE_OFFSET(voodoo_collects_diamonds),			TRUE			},
   { CAVE_OFFSET(voodoo_dies_by_stone),				TRUE			},
-  { CAVE_OFFSET(voodoo_disappear_in_explosion),			FALSE			},
+  { CAVE_OFFSET(voodoo_disappear_in_explosion),			TRUE			},
   { CAVE_OFFSET(voodoo_any_hurt_kills_player),			FALSE			},
   { CAVE_OFFSET(creatures_direction_auto_change_on_start),	TRUE			},
-  { CAVE_OFFSET(level_hatching_delay_time[0]),			2			},
+  { CAVE_OFFSET(level_hatching_delay_time),			2			},
   { CAVE_OFFSET(intermission_instantlife),			FALSE			},
   { CAVE_OFFSET(intermission_rewardlife),			TRUE			},
   { CAVE_OFFSET(magic_timer_zero_is_infinite),			TRUE			},
@@ -359,6 +363,7 @@ GdPropertyDefault gd_defaults_1stb[] =
   { -1 },
 };
 
+// Set engine parameters to Crazy Dream 7 defaults in cave.
 GdPropertyDefault gd_defaults_crdr_7[] =
 {
   { CAVE_OFFSET(amoeba_growth_prob),				31250			},
@@ -369,10 +374,10 @@ GdPropertyDefault gd_defaults_crdr_7[] =
   { CAVE_OFFSET(wraparound_objects),				TRUE			},
   { CAVE_OFFSET(voodoo_collects_diamonds),			TRUE			},
   { CAVE_OFFSET(voodoo_dies_by_stone),				TRUE			},
-  { CAVE_OFFSET(voodoo_disappear_in_explosion),			FALSE			},
+  { CAVE_OFFSET(voodoo_disappear_in_explosion),			TRUE			},
   { CAVE_OFFSET(voodoo_any_hurt_kills_player),			FALSE			},
   { CAVE_OFFSET(creatures_direction_auto_change_on_start),	FALSE			},
-  { CAVE_OFFSET(level_hatching_delay_time[0]),			2			},
+  { CAVE_OFFSET(level_hatching_delay_time),			2			},
   { CAVE_OFFSET(intermission_instantlife),			FALSE			},
   { CAVE_OFFSET(intermission_rewardlife),			TRUE			},
   { CAVE_OFFSET(magic_timer_zero_is_infinite),			FALSE			},
@@ -391,14 +396,17 @@ GdPropertyDefault gd_defaults_crdr_7[] =
   // not immediately to diamond, but with animation
   { CAVE_OFFSET(amoeba_enclosed_effect),			O_PRE_DIA_1		},
   { CAVE_OFFSET(water_does_not_flow_down),			TRUE			},
+
   // in crdr, skeletons can also be used to open the gate
   { CAVE_OFFSET(skeletons_worth_diamonds),			1			},
+
   // the intermission "survive" needs this flag
   { CAVE_OFFSET(gravity_affects_all),				FALSE			},
 
   { -1 },
 };
 
+// Set engine parameters to Crazy Light defaults in cave.
 GdPropertyDefault gd_defaults_crli[] =
 {
   { CAVE_OFFSET(amoeba_growth_prob),				31250			},
@@ -409,10 +417,10 @@ GdPropertyDefault gd_defaults_crli[] =
   { CAVE_OFFSET(wraparound_objects),				TRUE			},
   { CAVE_OFFSET(voodoo_collects_diamonds),			TRUE			},
   { CAVE_OFFSET(voodoo_dies_by_stone),				TRUE			},
-  { CAVE_OFFSET(voodoo_disappear_in_explosion),			FALSE			},
+  { CAVE_OFFSET(voodoo_disappear_in_explosion),			TRUE			},
   { CAVE_OFFSET(voodoo_any_hurt_kills_player),			FALSE			},
   { CAVE_OFFSET(creatures_direction_auto_change_on_start),	FALSE			},
-  { CAVE_OFFSET(level_hatching_delay_time[0]),			2			},
+  { CAVE_OFFSET(level_hatching_delay_time),			2			},
   { CAVE_OFFSET(intermission_instantlife),			FALSE			},
   { CAVE_OFFSET(intermission_rewardlife),			TRUE			},
   { CAVE_OFFSET(magic_timer_zero_is_infinite),			FALSE			},
@@ -432,6 +440,43 @@ GdPropertyDefault gd_defaults_crli[] =
 
   { -1 },
 };
+
+// Set engine parameters to some defaults in cave.
+GdPropertyDefault *gd_get_engine_default_array(GdEngine engine)
+{
+  switch (engine)
+  {
+    case GD_ENGINE_BD1:
+      return gd_defaults_bd1;
+      break;
+
+    case GD_ENGINE_BD2:
+      return gd_defaults_bd2;
+      break;
+
+    case GD_ENGINE_PLCK:
+      return gd_defaults_plck;
+      break;
+
+    case GD_ENGINE_1STB:
+      return gd_defaults_1stb;
+      break;
+
+    case GD_ENGINE_CRDR7:
+      return gd_defaults_crdr_7;
+      break;
+
+    case GD_ENGINE_CRLI:
+      return gd_defaults_crli;
+      break;
+
+      // to avoid compiler warning
+    case GD_ENGINE_INVALID:
+      break;
+  }
+
+  return gd_defaults_bd1;
+}
 
 // used for bdcff engine flag.
 static const char *gd_engines[] =
@@ -499,42 +544,6 @@ static GdElement crazylight_import(byte c, int i)
   return O_UNKNOWN;
 }
 
-GdPropertyDefault *gd_get_engine_default_array(GdEngine engine)
-{
-  switch(engine)
-  {
-    case GD_ENGINE_BD1:
-      return gd_defaults_bd1;
-      break;
-
-    case GD_ENGINE_BD2:
-      return gd_defaults_bd2;
-      break;
-
-    case GD_ENGINE_PLCK:
-      return gd_defaults_plck;
-      break;
-
-    case GD_ENGINE_1STB:
-      return gd_defaults_1stb;
-      break;
-
-    case GD_ENGINE_CRDR7:
-      return gd_defaults_crdr_7;
-      break;
-
-    case GD_ENGINE_CRLI:
-      return gd_defaults_crli;
-      break;
-
-      // to avoid compiler warning
-    case GD_ENGINE_INVALID:
-      break;
-  }
-
-  return gd_defaults_bd1;
-}
-
 void gd_cave_set_engine_defaults(GdCave *cave, GdEngine engine)
 {
   gd_cave_set_defaults_from_array(cave, gd_get_engine_default_array(engine));
@@ -556,7 +565,7 @@ void gd_cave_set_engine_defaults(GdCave *cave, GdEngine engine)
     cave->level_ckdelay[1] = 8;    // 160ms
     cave->level_ckdelay[2] = 7;    // 140ms
     cave->level_ckdelay[3] = 6;    // 120ms
-    cave->level_ckdelay[4] = 6;    // 120ms (!) not faster than level4
+    cave->level_ckdelay[4] = 6;    // 120ms (!) same as level 4
   }
 }
 
