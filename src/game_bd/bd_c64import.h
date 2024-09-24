@@ -20,9 +20,6 @@
 #include "bd_cave.h"
 
 
-extern const char gd_bd_internal_chars[];
-extern const GdElement gd_crazylight_import_table[];
-
 // file formats
 typedef enum _gd_cavefile_format
 {
@@ -64,8 +61,6 @@ typedef enum _gd_engine
   GD_ENGINE_CRLI,
   GD_ENGINE_INVALID,    // fake
 } GdEngine;
-
-extern const char *gd_engines[];
 
 GdCavefileFormat gd_caveset_imported_get_format(const unsigned char *buf);
 List* gd_caveset_import_from_buffer (const unsigned char *buf, size_t length);

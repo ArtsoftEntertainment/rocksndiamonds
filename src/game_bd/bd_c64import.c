@@ -21,7 +21,7 @@
 static boolean gd_import_as_all_caves_selectable = TRUE;
 
 // conversion table for imported bd1 caves.
-static const GdElement bd1_import_table[] =
+static const GdElement import_table_bd1[0x40] =
 {
   /*  0 */ O_SPACE, O_DIRT, O_BRICK, O_MAGIC_WALL,
   /*  4 */ O_PRE_OUTBOX, O_OUTBOX, O_STEEL_EXPLODABLE, O_STEEL,
@@ -43,7 +43,7 @@ static const GdElement bd1_import_table[] =
 };
 
 // conversion table for imported plck caves.
-static const GdElement plck_import_nybble[] =
+static const GdElement import_table_plck[0x10] =
 {
   /*  0 */ O_STONE, O_DIAMOND, O_MAGIC_WALL, O_BRICK,
   /*  4 */ O_STEEL, O_H_EXPANDING_WALL, O_VOODOO, O_DIRT,
@@ -52,7 +52,7 @@ static const GdElement plck_import_nybble[] =
 };
 
 // conversion table for imported 1stb caves.
-static const GdElement firstboulder_import_table[] =
+static const GdElement import_table_1stb[0x80] =
 {
   /*  0 */ O_SPACE, O_DIRT, O_BRICK, O_MAGIC_WALL,
   /*  4 */ O_PRE_OUTBOX, O_OUTBOX, O_PRE_INVIS_OUTBOX, O_INVIS_OUTBOX,
@@ -90,7 +90,7 @@ static const GdElement firstboulder_import_table[] =
 };
 
 // conversion table for imported crazy dream caves.
-static const GdElement crazydream_import_table[] =
+static const GdElement import_table_crdr[0x100] =
 {
   /*  0 */ O_SPACE, O_DIRT, O_BRICK, O_MAGIC_WALL,
   /*  4 */ O_PRE_OUTBOX, O_OUTBOX, O_PRE_INVIS_OUTBOX, O_INVIS_OUTBOX,
@@ -165,7 +165,7 @@ static const GdElement crazydream_import_table[] =
 
 // conversion table for imported 1stb caves.
 // @todo check O_PRE_DIA_0 and O_EXPLODE_0
-const GdElement gd_crazylight_import_table[] =
+static const GdElement import_table_crli[0x80] =
 {
   /*  0 */ O_SPACE, O_DIRT, O_BRICK, O_MAGIC_WALL,
   /*  4 */ O_PRE_OUTBOX, O_OUTBOX, O_PRE_INVIS_OUTBOX, O_INVIS_OUTBOX,
@@ -204,6 +204,12 @@ const GdElement gd_crazylight_import_table[] =
   /* 78 */ O_BITER_1, O_BITER_2, O_BITER_3, O_BITER_4,
   /* 7c */ O_BITER_1_scanned, O_BITER_2_scanned, O_BITER_3_scanned, O_BITER_4_scanned,
 };
+
+// Internal character (letter) codes in c64 games.
+// Used for converting names of caves imported from crli and other types of binary data.
+// Missing: "triple line" after >, diamond between ()s, player's head after ).
+static const char bd_internal_character_encoding[] =
+  "            ,!./0123456789:*<=>  ABCDEFGHIJKLMNOPQRSTUVWXYZ( ) _";
 
 GdPropertyDefault gd_defaults_bd1[] =
 {
@@ -427,15 +433,8 @@ GdPropertyDefault gd_defaults_crli[] =
   { -1 },
 };
 
-
-// internal character (letter) codes in c64 games.
-// missing: "triple line" after >, diamond between ()s, player's head after )
-// used for converting names of caves imported from crli and other types of binary data
-const char gd_bd_internal_chars[] =
-  "            ,!./0123456789:*<=>  ABCDEFGHIJKLMNOPQRSTUVWXYZ( ) _";
-
 // used for bdcff engine flag.
-const char *gd_engines[] =
+static const char *gd_engines[] =
 {
   "BD1",
   "BD2",
@@ -461,8 +460,8 @@ static int slime_shift_msb(int c64_data)
 
 static GdElement bd1_import(byte c, int i)
 {
-  if (c < ARRAY_SIZE(bd1_import_table))
-    return non_scanned_pair(bd1_import_table[c]);
+  if (c < ARRAY_SIZE(import_table_bd1))
+    return non_scanned_pair(import_table_bd1[c]);
 
   Warn("Invalid BD1 element in imported file at cave data %d: %d", i, c);
 
@@ -482,8 +481,8 @@ static GdElement deluxecaves_1_import(byte c, int i)
 
 static GdElement firstboulder_import(byte c, int i)
 {
-  if (c < ARRAY_SIZE(firstboulder_import_table))
-    return non_scanned_pair(firstboulder_import_table[c]);
+  if (c < ARRAY_SIZE(import_table_1stb))
+    return non_scanned_pair(import_table_1stb[c]);
 
   Warn("Invalid 1stB element in imported file at cave data %d: %d", i, c);
 
@@ -492,8 +491,8 @@ static GdElement firstboulder_import(byte c, int i)
 
 static GdElement crazylight_import(byte c, int i)
 {
-  if (c < ARRAY_SIZE(gd_crazylight_import_table))
-    return non_scanned_pair(gd_crazylight_import_table[c]);
+  if (c < ARRAY_SIZE(import_table_crli))
+    return non_scanned_pair(import_table_crli[c]);
 
   Warn("Invalid CrLi element in imported file at cave data %d: %d", i, c);
 
@@ -1116,8 +1115,8 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
 	{
 	  for (x = 0; x < cave->w; x += 2)
 	  {
-	    cave->map[y][x]     = plck_import_nybble[data[index + 3 + n] >> 4];    // msb 4 bits
-	    cave->map[y][x + 1] = plck_import_nybble[data[index + 3 + n] % 16];    // lsb 4 bits
+	    cave->map[y][x]     = import_table_plck[data[index + 3 + n] >> 4];    // msb 4 bits
+	    cave->map[y][x + 1] = import_table_plck[data[index + 3 + n] % 16];    // lsb 4 bits
 	    n++;
 	  }
 	}
@@ -1320,10 +1319,10 @@ static int cave_copy_from_plck(GdCave *cave, const byte *data,
     for (x = 0; x < cave->w; x += 2)
     {
       // msb 4 bits: we do not check index ranges, as >>4 and %16 will result in 0..15
-      cave->map[y][x]     = plck_import_nybble[data[((y + 1) % cave->h) * 20 + x / 2] >> 4];
+      cave->map[y][x]     = import_table_plck[data[((y + 1) % cave->h) * 20 + x / 2] >> 4];
 
       // lsb 4 bits
-      cave->map[y][x + 1] = plck_import_nybble[data[((y + 1) % cave->h) * 20 + x / 2] % 16];
+      cave->map[y][x + 1] = import_table_plck[data[((y + 1) % cave->h) * 20 + x / 2] % 16];
     }
   }
 
@@ -1501,9 +1500,9 @@ static int cave_copy_from_dlb(GdCave *cave, const byte *data, int remaining_byte
     for (x = 0; x < cave->w; x += 2)
     {
       // msb 4 bits
-      cave->map[y][x]     = plck_import_nybble[decomp[((y - 1) * cave->w + x) / 2] >> 4];
+      cave->map[y][x]     = import_table_plck[decomp[((y - 1) * cave->w + x) / 2] >> 4];
       // lsb 4 bits
-      cave->map[y][x + 1] = plck_import_nybble[decomp[((y - 1) * cave->w + x) / 2] % 16];
+      cave->map[y][x + 1] = import_table_plck[decomp[((y - 1) * cave->w + x) / 2] % 16];
     }
   }
 
@@ -1535,7 +1534,7 @@ static int cave_copy_from_1stb(GdCave *cave, const byte *data, int remaining_byt
 
     // import cave name; a conversion table is used for each character
     if (c < 0x40)
-      c = gd_bd_internal_chars[c];
+      c = bd_internal_character_encoding[c];
     else if (c == 0x74)
       c = ' ';
     else if (c == 0x76)
@@ -1666,7 +1665,7 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
 
     // import cave name; a conversion table is used for each character
     if (c < 0x40)
-      c = gd_bd_internal_chars[c];
+      c = bd_internal_character_encoding[c];
     else if (c == 0x74)
       c = ' ';
     else if (c == 0x76)
@@ -1773,19 +1772,19 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
   cave->biter_delay_frame	= data[0x24];
   cave->magic_wall_stops_amoeba	= data[0x25] == 0;    // negated!!
 
-  cave->bomb_explosion_effect	= crazydream_import_table[data[0x26]];
-  cave->explosion_effect	= crazydream_import_table[data[0x27]];
-  cave->stone_bouncing_effect	= crazydream_import_table[data[0x28]];
-  cave->diamond_birth_effect	= crazydream_import_table[data[0x29]];
-  cave->magic_diamond_to	= crazydream_import_table[data[0x2a]];
+  cave->bomb_explosion_effect	= import_table_crdr[data[0x26]];
+  cave->explosion_effect	= import_table_crdr[data[0x27]];
+  cave->stone_bouncing_effect	= import_table_crdr[data[0x28]];
+  cave->diamond_birth_effect	= import_table_crdr[data[0x29]];
+  cave->magic_diamond_to	= import_table_crdr[data[0x2a]];
 
-  cave->bladder_converts_by	= crazydream_import_table[data[0x2b]];
-  cave->diamond_falling_effect	= crazydream_import_table[data[0x2c]];
-  cave->biter_eat		= crazydream_import_table[data[0x2d]];
-  cave->slime_eats_1		= crazydream_import_table[data[0x2e]];
-  cave->slime_converts_1	= crazydream_import_table[data[0x2e] + 3];
-  cave->slime_eats_2		= crazydream_import_table[data[0x2f]];
-  cave->slime_converts_2	= crazydream_import_table[data[0x2f] + 3];
+  cave->bladder_converts_by	= import_table_crdr[data[0x2b]];
+  cave->diamond_falling_effect	= import_table_crdr[data[0x2c]];
+  cave->biter_eat		= import_table_crdr[data[0x2d]];
+  cave->slime_eats_1		= import_table_crdr[data[0x2e]];
+  cave->slime_converts_1	= import_table_crdr[data[0x2e] + 3];
+  cave->slime_eats_2		= import_table_crdr[data[0x2f]];
+  cave->slime_converts_2	= import_table_crdr[data[0x2f] + 3];
 
   cave->diagonal_movements		= (data[0x34] & 1) != 0;
   cave->gravity_change_time		= data[0x35];
@@ -1805,7 +1804,7 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
   // 1e6, probabilities are stored as int
   cave->acid_spread_ratio = data[0x38] / 255.0 * 1E6 + 0.5;
 
-  cave->acid_eats_this = crazydream_import_table[data[0x39]];
+  cave->acid_eats_this = import_table_crdr[data[0x39]];
   switch(data[0x3a] & 3)
   {
     case 0: cave->gravity = GD_MV_UP; break;
@@ -1821,7 +1820,7 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
   //    cave->expanding_wall_looks_like... data[0x3b]
   for (i = 0; i < 4; i++)
   {
-    cave->random_fill[i] = crazydream_import_table[data[0x41 + i]];
+    cave->random_fill[i] = import_table_crdr[data[0x41 + i]];
     cave->random_fill_probability[i] = data[0x45 + i];
   }
 
@@ -1841,7 +1840,7 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
     switch (data[index])
     {
       case 1:    // point
-	elem = crazydream_import_table[data[index + 1]];
+	elem = import_table_crdr[data[index + 1]];
 	x1 = data[index + 2];
 	y1 = data[index + 3];
 	if (x1 >= cave->w || y1 >= cave->h)
@@ -1853,7 +1852,7 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
 	break;
 
       case 2: // rectangle
-	elem = crazydream_import_table[data[index + 1]];
+	elem = import_table_crdr[data[index + 1]];
 	x1 = data[index + 2];
 	y1 = data[index + 3];
 	x2 = x1 + data[index + 4] - 1;
@@ -1883,13 +1882,13 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
 	  Warn("invalid filled rectangle coordinates %d,%d %d,%d at byte %d", x1, y1, x2, y2, index);
 
 	// border and inside of fill is the same element.
-	cave->objects = list_append(cave->objects, gd_object_new_filled_rectangle(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, crazydream_import_table[data[index + 1]], crazydream_import_table[data[index + 1]]));
+	cave->objects = list_append(cave->objects, gd_object_new_filled_rectangle(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, import_table_crdr[data[index + 1]], import_table_crdr[data[index + 1]]));
 
 	index += 6;
 	break;
 
       case 4: // line
-	elem = crazydream_import_table[data[index + 1]];
+	elem = import_table_crdr[data[index + 1]];
 	if (elem == O_UNKNOWN)
 	  Warn("unknown element at %d: %x", index + 1, data[index + 1]);
 
@@ -1964,7 +1963,7 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
 	break;
 
       case 11: // raster
-	elem = crazydream_import_table[data[index + 1]];
+	elem = import_table_crdr[data[index + 1]];
 	x1 = data[index + 2];
 	y1 = data[index + 3];
 	dx = data[index + 4];
@@ -2192,7 +2191,7 @@ static int cave_copy_from_crli(GdCave *cave, const byte *data, int remaining_byt
 
       // import cave name; a conversion table is used for each character
       if (c < 0x40)
-	c = gd_bd_internal_chars[c];
+	c = bd_internal_character_encoding[c];
       else if (c == 0x74)
 	c = ' ';
       else if (c == 0x76)
