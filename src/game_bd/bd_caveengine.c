@@ -3736,16 +3736,22 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  break;
 
 	case O_PRE_PL_1:
+          if (!cave->hatched)                    // no player birth before hatching
+            break;
 	  cave->player_seen_ago = 0;
 	  store(cave, x, y, O_PRE_PL_2);
 	  break;
 
 	case O_PRE_PL_2:
+          if (!cave->hatched)                    // no player birth before hatching
+            break;
 	  cave->player_seen_ago = 0;
 	  store(cave, x, y, O_PRE_PL_3);
 	  break;
 
 	case O_PRE_PL_3:
+          if (!cave->hatched)                    // no player birth before hatching
+            break;
 	  cave->player_seen_ago = 0;
 	  store(cave, x, y, O_PLAYER);
 	  break;
