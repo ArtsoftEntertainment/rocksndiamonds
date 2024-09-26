@@ -2331,7 +2331,9 @@ static void UpdateGameControlValues(void)
 	      level.game_engine_type == GAME_ENGINE_TYPE_MM ?
 	      game_mm.kettles_still_needed :
 	      game.gems_still_needed);
-  int gems_needed = level.gems_needed;
+  int gems_needed = (level.game_engine_type == GAME_ENGINE_TYPE_BD ?
+		     game_bd.game->cave->diamonds_needed :
+		     level.gems_needed);
   int gems_collected = (level.game_engine_type == GAME_ENGINE_TYPE_BD ?
 			game_bd.game->cave->diamonds_collected :
 			gems_needed - gems);
