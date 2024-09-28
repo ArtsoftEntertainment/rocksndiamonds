@@ -3845,9 +3845,9 @@ static int LoadLevel_MicroChunk(File *file, struct LevelFileConfigInfo *conf,
   }
   else		// constant size configuration data (1, 2 or 4 bytes)
   {
-    int value = (byte_mask == CONF_MASK_1_BYTE ? getFile8Bit   (file) :
-		 byte_mask == CONF_MASK_2_BYTE ? getFile16BitBE(file) :
-		 byte_mask == CONF_MASK_4_BYTE ? getFile32BitBE(file) : 0);
+    int value = (byte_mask == CONF_MASK_1_BYTE ? (byte)  getFile8Bit   (file) :
+		 byte_mask == CONF_MASK_2_BYTE ? (short) getFile16BitBE(file) :
+		 byte_mask == CONF_MASK_4_BYTE ? (int)   getFile32BitBE(file) : 0);
 
     for (i = 0; conf[i].data_type != -1; i++)
     {
