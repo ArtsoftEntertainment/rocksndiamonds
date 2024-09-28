@@ -4002,6 +4002,11 @@ void InitGame(void)
   // special case: set custom artwork setting to initial value
   game.use_masked_elements = game.use_masked_elements_initial;
 
+  // negative number of gems only supported in BD engine
+  if (level.game_engine_type != GAME_ENGINE_TYPE_BD)
+    if (game.gems_still_needed < 0)
+      game.gems_still_needed = 0;
+
   for (i = 0; i < NUM_BELTS; i++)
   {
     game.belt_dir[i] = MV_NONE;
