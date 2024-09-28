@@ -667,7 +667,7 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   {
     EL_BDX_PLAYER,			-1,
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(5),
-    &li.bd_push_mega_rock_with_sweet,	FALSE
+    &li.bd_push_heavy_rock_with_sweet,	FALSE
   },
   {
     EL_BDX_PLAYER,			-1,
@@ -811,7 +811,7 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   {
     EL_BDX_MAGIC_WALL,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(4),
-    &li.bd_magic_wall_mega_rock_to,	EL_BDX_NITRO_PACK_FALLING
+    &li.bd_magic_wall_heavy_rock_to,	EL_BDX_NITRO_PACK_FALLING
   },
   {
     EL_BDX_MAGIC_WALL,			-1,
@@ -821,7 +821,7 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   {
     EL_BDX_MAGIC_WALL,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(6),
-    &li.bd_magic_wall_nitro_pack_to,	EL_BDX_MEGA_ROCK_FALLING
+    &li.bd_magic_wall_nitro_pack_to,	EL_BDX_HEAVY_ROCK_FALLING
   },
   {
     EL_BDX_MAGIC_WALL,			-1,
@@ -4343,7 +4343,7 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->active_is_first_found		= level->bd_topmost_player_active;
   cave->pushing_stone_prob		= level->bd_pushing_prob            * 10000;
   cave->pushing_stone_prob_sweet	= level->bd_pushing_prob_with_sweet * 10000;
-  cave->mega_stones_pushable_with_sweet	= level->bd_push_mega_rock_with_sweet;
+  cave->mega_stones_pushable_with_sweet	= level->bd_push_heavy_rock_with_sweet;
   cave->snap_element			= LEVEL_TO_CAVE(level->bd_snap_element);
 
   // element properties
@@ -4361,7 +4361,7 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
 
   cave->magic_diamond_to		= LEVEL_TO_CAVE(level->bd_magic_wall_diamond_to);
   cave->magic_stone_to			= LEVEL_TO_CAVE(level->bd_magic_wall_rock_to);
-  cave->magic_mega_stone_to		= LEVEL_TO_CAVE(level->bd_magic_wall_mega_rock_to);
+  cave->magic_mega_stone_to		= LEVEL_TO_CAVE(level->bd_magic_wall_heavy_rock_to);
   cave->magic_nut_to			= LEVEL_TO_CAVE(level->bd_magic_wall_nut_to);
   cave->magic_nitro_pack_to		= LEVEL_TO_CAVE(level->bd_magic_wall_nitro_pack_to);
   cave->magic_flying_diamond_to		= LEVEL_TO_CAVE(level->bd_magic_wall_flying_diamond_to);
@@ -4527,7 +4527,7 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_topmost_player_active	= cave->active_is_first_found;
   level->bd_pushing_prob		= cave->pushing_stone_prob       / 10000;
   level->bd_pushing_prob_with_sweet	= cave->pushing_stone_prob_sweet / 10000;
-  level->bd_push_mega_rock_with_sweet	= cave->mega_stones_pushable_with_sweet;
+  level->bd_push_heavy_rock_with_sweet	= cave->mega_stones_pushable_with_sweet;
   level->bd_snap_element		= CAVE_TO_LEVEL(cave->snap_element);
 
   // element properties
@@ -4545,7 +4545,7 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
 
   level->bd_magic_wall_diamond_to	= CAVE_TO_LEVEL(cave->magic_diamond_to);
   level->bd_magic_wall_rock_to		= CAVE_TO_LEVEL(cave->magic_stone_to);
-  level->bd_magic_wall_mega_rock_to	= CAVE_TO_LEVEL(cave->magic_mega_stone_to);
+  level->bd_magic_wall_heavy_rock_to	= CAVE_TO_LEVEL(cave->magic_mega_stone_to);
   level->bd_magic_wall_nut_to		= CAVE_TO_LEVEL(cave->magic_nut_to);
   level->bd_magic_wall_nitro_pack_to	= CAVE_TO_LEVEL(cave->magic_nitro_pack_to);
   level->bd_magic_wall_flying_diamond_to= CAVE_TO_LEVEL(cave->magic_flying_diamond_to);

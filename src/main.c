@@ -6673,9 +6673,9 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Flying rock"
   },
   {
-    "bdx_mega_rock",
-    "bdx_mega_rock",
-    "Mega rock"
+    "bdx_heavy_rock",
+    "bdx_heavy_rock",
+    "Heavy rock"
   },
   {
     "bdx_rock_glued",
@@ -7258,9 +7258,9 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Flying rock (flying)"
   },
   {
-    "bdx_mega_rock.falling",
-    "bdx_mega_rock",
-    "Mega rock (falling)"
+    "bdx_heavy_rock.falling",
+    "bdx_heavy_rock",
+    "Heavy rock (falling)"
   },
   {
     "bdx_diamond.falling",
@@ -7748,14 +7748,14 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Flying rock (flying) (scanned)"
   },
   {
-    "bdx_mega_rock.scanned",
-    "bdx_mega_rock",
-    "Mega rock (scanned)"
+    "bdx_heavy_rock.scanned",
+    "bdx_heavy_rock",
+    "Heavy rock (scanned)"
   },
   {
-    "bdx_mega_rock.falling.scanned",
-    "bdx_mega_rock",
-    "Mega rock (falling) (scanned)"
+    "bdx_heavy_rock.falling.scanned",
+    "bdx_heavy_rock",
+    "Heavy rock (falling) (scanned)"
   },
   {
     "bdx_diamond.scanned",

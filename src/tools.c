@@ -6306,15 +6306,15 @@ bd_object_mapping_list[] =
   },
   {
     O_MEGA_STONE,				TRUE,
-    EL_BDX_MEGA_ROCK,				-1, -1
+    EL_BDX_HEAVY_ROCK,				-1, -1
   },
   {
     O_MEGA_STONE_F,				TRUE,
-    EL_BDX_MEGA_ROCK_FALLING,			-1, -1
+    EL_BDX_HEAVY_ROCK_FALLING,			-1, -1
   },
   {
     O_MEGA_STONE_F,				FALSE,
-    EL_BDX_MEGA_ROCK,				ACTION_FALLING, -1
+    EL_BDX_HEAVY_ROCK,				ACTION_FALLING, -1
   },
   {
     O_DIAMOND,					TRUE,
@@ -7485,11 +7485,11 @@ bd_object_mapping_list[] =
   },
   {
     O_MEGA_STONE_scanned,			TRUE,
-    EL_BDX_MEGA_ROCK_SCANNED,			-1, -1
+    EL_BDX_HEAVY_ROCK_SCANNED,			-1, -1
   },
   {
     O_MEGA_STONE_F_scanned,			TRUE,
-    EL_BDX_MEGA_ROCK_FALLING_SCANNED,		-1, -1
+    EL_BDX_HEAVY_ROCK_FALLING_SCANNED,		-1, -1
   },
   {
     O_DIAMOND_scanned,				TRUE,

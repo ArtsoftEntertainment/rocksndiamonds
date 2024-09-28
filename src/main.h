@@ -2131,7 +2131,7 @@
 #define EL_BDX_INVISIBLE_EXIT_CLOSED		1292
 #define EL_BDX_INVISIBLE_EXIT_OPEN		1293
 #define EL_BDX_FLYING_ROCK			1294
-#define EL_BDX_MEGA_ROCK			1295
+#define EL_BDX_HEAVY_ROCK			1295
 #define EL_BDX_ROCK_GLUED			1296
 #define EL_BDX_FLYING_DIAMOND			1297
 #define EL_BDX_DIAMOND_GLUED			1298
@@ -2253,7 +2253,7 @@
 #define EL_BDX_SAND_LOOSE_FALLING		1409
 #define EL_BDX_ROCK_FALLING			1410
 #define EL_BDX_FLYING_ROCK_FLYING		1411
-#define EL_BDX_MEGA_ROCK_FALLING		1412
+#define EL_BDX_HEAVY_ROCK_FALLING		1412
 #define EL_BDX_DIAMOND_FALLING			1413
 #define EL_BDX_FLYING_DIAMOND_FLYING		1414
 #define EL_BDX_NUT_FALLING			1415
@@ -2354,8 +2354,8 @@
 #define EL_BDX_ROCK_FALLING_SCANNED		1507
 #define EL_BDX_FLYING_ROCK_SCANNED		1508
 #define EL_BDX_FLYING_ROCK_FLYING_SCANNED	1509
-#define EL_BDX_MEGA_ROCK_SCANNED		1510
-#define EL_BDX_MEGA_ROCK_FALLING_SCANNED	1511
+#define EL_BDX_HEAVY_ROCK_SCANNED		1510
+#define EL_BDX_HEAVY_ROCK_FALLING_SCANNED	1511
 #define EL_BDX_DIAMOND_SCANNED			1512
 #define EL_BDX_DIAMOND_FALLING_SCANNED		1513
 #define EL_BDX_FLYING_DIAMOND_SCANNED		1514
@@ -3798,7 +3798,7 @@ struct LevelInfo
   int bd_snap_element;			// BD element that is created when player is snapping
   int bd_pushing_prob;			// BD player probability to push rocks
   int bd_pushing_prob_with_sweet;	// BD player probability to push rocks after eating sweet
-  boolean bd_push_mega_rock_with_sweet;	// BD player can push mega rocks after eating sweet
+  boolean bd_push_heavy_rock_with_sweet;// BD player can push heavy rocks after eating sweet
   boolean bd_magic_wall_zero_infinite;	// BD magic wall with timer of zero runs infinitely
   boolean bd_magic_wall_wait_hatching;	// BD magic wall waits for player's birth
   boolean bd_magic_wall_stops_amoeba;	// BD magic wall can stop amoeba and turn to diamonds
@@ -3806,7 +3806,7 @@ struct LevelInfo
   int bd_magic_wall_time;		// BD magic wall time
   int bd_magic_wall_diamond_to;		// BD magic wall turns diamonds to specified element
   int bd_magic_wall_rock_to;		// BD magic wall turns rocks to specified element
-  int bd_magic_wall_mega_rock_to;	// BD magic wall turns mega rocks to specified element
+  int bd_magic_wall_heavy_rock_to;	// BD magic wall turns heavy rocks to specified element
   int bd_magic_wall_nut_to;		// BD magic wall turns nuts to specified element
   int bd_magic_wall_nitro_pack_to;	// BD magic wall turns nitro packs to specified element
   int bd_magic_wall_flying_diamond_to;	// BD magic wall turns flying diamonds to specified element

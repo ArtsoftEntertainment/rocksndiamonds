@@ -1,6 +1,6 @@
 This magic wall converts rocks into diamonds and vice versa. Note that
-a magic wall can only be activated for some limited time. It can also turn mega
-rocks into nitro packs, nitro packs into mega rocks. Even flying diamonds and
+a magic wall can only be activated for some limited time. It can also turn heavy
+rocks into nitro packs, nitro packs into heavy rocks. Even flying diamonds and
 rocks pass them to be converted into each other, but they do that from bottom to
 up, of course.
 
