@@ -170,6 +170,14 @@ static void play_sound_of_element(GdCave *cave, GdElement element, int x, int y)
       gd_sound_play(cave, GD_S_MEGA_STONE_IMPACT, element, x, y);
       break;
 
+    case O_LIGHT_STONE:
+      gd_sound_play(cave, GD_S_LIGHT_STONE_FALLING, element, x, y);
+      break;
+
+    case O_LIGHT_STONE_F:
+      gd_sound_play(cave, GD_S_LIGHT_STONE_IMPACT, element, x, y);
+      break;
+
     case O_NITRO_PACK:
       gd_sound_play(cave, GD_S_NITRO_PACK_FALLING, element, x, y);
       break;
@@ -283,6 +291,10 @@ static void play_sound_of_element_pushing(GdCave *cave, GdElement element, int x
 
     case O_MEGA_STONE:
       gd_sound_play(cave, GD_S_MEGA_STONE_PUSHING, element, x, y);
+      break;
+
+    case O_LIGHT_STONE:
+      gd_sound_play(cave, GD_S_LIGHT_STONE_PUSHING, element, x, y);
       break;
 
     case O_WAITING_STONE:
@@ -1238,6 +1250,7 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
     case O_NITRO_PACK:
     case O_CHASING_STONE:
     case O_MEGA_STONE:
+    case O_LIGHT_STONE:
     case O_FLYING_STONE:
     case O_NUT:
       // pushing some kind of stone or nut
@@ -1267,6 +1280,11 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 	    // mega may(!) be pushed if player is turbo
 	    if (cave->mega_stones_pushable_with_sweet && cave->sweet_eaten)
 	      prob = 1000000; // p = 1, always push
+	    break;
+
+	  case O_LIGHT_STONE:
+	    // light stones are light, can always push
+	    prob = 1000000;
 	    break;
 
 	  case O_STONE:
@@ -2297,6 +2315,10 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  do_start_fall(cave, x, y, cave->gravity, O_MEGA_STONE_F);
 	  break;
 
+	case O_LIGHT_STONE:     // standing light_stone
+	  do_start_fall(cave, x, y, cave->gravity, O_LIGHT_STONE_F);
+	  break;
+
 	case O_DIAMOND:         // standing diamond
 	  do_start_fall(cave, x, y, cave->gravity, cave->diamond_falling_effect);
 	  break;
@@ -2371,6 +2393,25 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      break;
 
 	    do_fall_roll_or_stop(cave, x, y, cave->gravity, O_MEGA_STONE);
+	  }
+	  break;
+
+	case O_LIGHT_STONE_F:    // falling light stone
+	  if (!cave->gravity_disabled)
+	  {
+	    if (do_fall_try_crush_voodoo(cave, x, y, cave->gravity))
+	      break;
+
+	    if (do_fall_try_crack_nut(cave, x, y, cave->gravity, O_LIGHT_STONE))
+	      break;
+
+	    if (do_fall_try_magic(cave, x, y, cave->gravity, cave->magic_light_stone_to))
+	      break;
+
+	    if (do_fall_try_crush(cave, x, y, cave->gravity))
+	      break;
+
+	    do_fall_roll_or_stop(cave, x, y, cave->gravity, O_LIGHT_STONE);
 	  }
 	  break;
 

@@ -46,6 +46,7 @@ enum _generated_cells_indexes
   i_h_expanding_steel_wall,
   i_v_expanding_steel_wall,
   i_mega_stone_falling,
+  i_light_stone_falling,
   i_time_penalty,
   i_biter_1,
   i_biter_2,
@@ -347,6 +348,26 @@ GdElementProperty gd_element_properties[] =
     O_MEGA_STONE_F_scanned, O_MEGA_STONE_F, N_("Mega stone, falling (scanned)"),
     P_SCANNED,
     "SCANN_MEGABOULDERf", 0, i_mega_stone_falling, i_mega_stone_falling, 272
+  },
+  {
+    O_LIGHT_STONE, O_LIGHT_STONE_scanned, N_("Light stone"),
+    P_SLOPED | P_MOVED_BY_CONVEYOR_TOP | P_PUSHABLE | P_CAN_FALL,
+    "LIGHTBOULDER", 0, 359, 359, 359, 156
+  },    // has ckdelay
+  {
+    O_LIGHT_STONE_scanned, O_LIGHT_STONE, N_("Light stone (scanned)"),
+    P_SCANNED,
+    "SCANN_LIGHTBOULDER", 0, 359, 359, 359
+  },
+  {
+    O_LIGHT_STONE_F, O_LIGHT_STONE_F_scanned, N_("Light stone, falling"),
+    P_FALLING,
+    "LIGHTBOULDERf", 0, i_light_stone_falling, i_light_stone_falling, 359, 156
+  },    // has ckdelay
+  {
+    O_LIGHT_STONE_F_scanned, O_LIGHT_STONE_F, N_("Light stone, falling (scanned)"),
+    P_SCANNED,
+    "SCANN_LIGHTBOULDERf", 0, i_light_stone_falling, i_light_stone_falling, 359
   },
   {
     O_DIAMOND, O_DIAMOND_scanned, N_("Diamond"),
@@ -2481,6 +2502,11 @@ const GdStructDescriptor gd_cave_properties[] =
     N_("If a mega stone falls into the magic wall, it will drop this element.")
   },
   {
+    "MagicWallProperties.lightstoneto", GD_TYPE_ELEMENT, 0,
+    N_("Light stone to"), CAVE_OFFSET(magic_light_stone_to), 1,
+    N_("If a light stone falls into the magic wall, it will drop this element.")
+  },
+  {
     "MagicWallProperties.nitropackto", GD_TYPE_ELEMENT, 0,
     N_("Nitro pack to"), CAVE_OFFSET(magic_nitro_pack_to), 1,
     N_("If a nitro pack falls into the magic wall, it will be turned to this element.")
@@ -3112,6 +3138,7 @@ GdPropertyDefault gd_cave_defaults_gdash[] =
   { CAVE_OFFSET(magic_diamond_to),				O_STONE_F			},
   { CAVE_OFFSET(magic_stone_to),				O_DIAMOND_F			},
   { CAVE_OFFSET(magic_mega_stone_to),				O_NITRO_PACK_F			},
+  { CAVE_OFFSET(magic_light_stone_to),				O_LIGHT_STONE_F			},
   { CAVE_OFFSET(magic_nitro_pack_to),				O_MEGA_STONE_F			},
   { CAVE_OFFSET(magic_nut_to),					O_NUT_F				},
   { CAVE_OFFSET(magic_flying_stone_to),				O_FLYING_DIAMOND_F 		},

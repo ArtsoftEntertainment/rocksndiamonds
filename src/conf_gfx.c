@@ -812,6 +812,14 @@ struct ConfigInfo image_config[] =
   { "bdx_heavy_rock.falling.EDITOR.xpos",		"2"				},
   { "bdx_heavy_rock.falling.EDITOR.ypos",		"3"				},
 
+  { "bdx_light_rock",					"RocksBD.png"			},
+  { "bdx_light_rock.xpos",				"11"				},
+  { "bdx_light_rock.ypos",				"4"				},
+  { "bdx_light_rock.frames",				"1"				},
+  { "bdx_light_rock.falling.EDITOR",			"RocksBD2.png"			},
+  { "bdx_light_rock.falling.EDITOR.xpos",		"5"				},
+  { "bdx_light_rock.falling.EDITOR.ypos",		"3"				},
+
   { "bdx_rock_glued",					UNDEFINED_FILENAME		},
   { "bdx_rock_glued.clone_from",			"bd_rock"			},
   { "bdx_rock_glued.EDITOR",				"RocksBD2.png"			},

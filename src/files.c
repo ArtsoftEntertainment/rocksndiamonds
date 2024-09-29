@@ -816,21 +816,26 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   {
     EL_BDX_MAGIC_WALL,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(5),
-    &li.bd_magic_wall_nut_to,		EL_BDX_NUT_FALLING
+    &li.bd_magic_wall_light_rock_to,	EL_BDX_LIGHT_ROCK_FALLING
   },
   {
     EL_BDX_MAGIC_WALL,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(6),
-    &li.bd_magic_wall_nitro_pack_to,	EL_BDX_HEAVY_ROCK_FALLING
+    &li.bd_magic_wall_nut_to,		EL_BDX_NUT_FALLING
   },
   {
     EL_BDX_MAGIC_WALL,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(7),
-    &li.bd_magic_wall_flying_diamond_to, EL_BDX_FLYING_ROCK_FLYING
+    &li.bd_magic_wall_nitro_pack_to,	EL_BDX_HEAVY_ROCK_FALLING
   },
   {
     EL_BDX_MAGIC_WALL,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(8),
+    &li.bd_magic_wall_flying_diamond_to, EL_BDX_FLYING_ROCK_FLYING
+  },
+  {
+    EL_BDX_MAGIC_WALL,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(9),
     &li.bd_magic_wall_flying_rock_to,	EL_BDX_FLYING_DIAMOND_FLYING
   },
 
@@ -4362,6 +4367,7 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->magic_diamond_to		= LEVEL_TO_CAVE(level->bd_magic_wall_diamond_to);
   cave->magic_stone_to			= LEVEL_TO_CAVE(level->bd_magic_wall_rock_to);
   cave->magic_mega_stone_to		= LEVEL_TO_CAVE(level->bd_magic_wall_heavy_rock_to);
+  cave->magic_light_stone_to		= LEVEL_TO_CAVE(level->bd_magic_wall_light_rock_to);
   cave->magic_nut_to			= LEVEL_TO_CAVE(level->bd_magic_wall_nut_to);
   cave->magic_nitro_pack_to		= LEVEL_TO_CAVE(level->bd_magic_wall_nitro_pack_to);
   cave->magic_flying_diamond_to		= LEVEL_TO_CAVE(level->bd_magic_wall_flying_diamond_to);
@@ -4546,6 +4552,7 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_magic_wall_diamond_to	= CAVE_TO_LEVEL(cave->magic_diamond_to);
   level->bd_magic_wall_rock_to		= CAVE_TO_LEVEL(cave->magic_stone_to);
   level->bd_magic_wall_heavy_rock_to	= CAVE_TO_LEVEL(cave->magic_mega_stone_to);
+  level->bd_magic_wall_light_rock_to	= CAVE_TO_LEVEL(cave->magic_light_stone_to);
   level->bd_magic_wall_nut_to		= CAVE_TO_LEVEL(cave->magic_nut_to);
   level->bd_magic_wall_nitro_pack_to	= CAVE_TO_LEVEL(cave->magic_nitro_pack_to);
   level->bd_magic_wall_flying_diamond_to= CAVE_TO_LEVEL(cave->magic_flying_diamond_to);

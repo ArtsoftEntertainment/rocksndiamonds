@@ -7238,6 +7238,11 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Magic wall"
   },
   {
+    "bdx_light_rock",
+    "bdx_light_rock",
+    "Light rock"
+  },
+  {
     "bdx_sand_ball.falling",
     "bdx_sand_ball",
     "Sand ball (falling)"
@@ -7261,6 +7266,11 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "bdx_heavy_rock.falling",
     "bdx_heavy_rock",
     "Heavy rock (falling)"
+  },
+  {
+    "bdx_light_rock.falling",
+    "bdx_light_rock",
+    "Light rock (falling)"
   },
   {
     "bdx_diamond.falling",
@@ -7756,6 +7766,16 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "bdx_heavy_rock.falling.scanned",
     "bdx_heavy_rock",
     "Heavy rock (falling) (scanned)"
+  },
+  {
+    "bdx_light_rock.scanned",
+    "bdx_light_rock",
+    "Light rock (scanned)"
+  },
+  {
+    "bdx_light_rock.falling.scanned",
+    "bdx_light_rock",
+    "Light rock (falling) (scanned)"
   },
   {
     "bdx_diamond.scanned",

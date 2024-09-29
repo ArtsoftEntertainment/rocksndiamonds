@@ -525,6 +525,7 @@ typedef struct _gd_cave
   GdElement magic_stone_to;             // magic wall converts falling stone to
   GdElement magic_diamond_to;           // magic wall converts falling diamond to
   GdElement magic_mega_stone_to;        // magic wall converts a falling mega stone to
+  GdElement magic_light_stone_to;       // magic wall converts a falling light stone to
   GdElement magic_nitro_pack_to;        // magic wall converts a falling nitro pack to
   GdElement magic_nut_to;               // magic wall converts a falling nut to
   GdElement magic_flying_stone_to;      // flying stones are converted to

@@ -6317,6 +6317,18 @@ bd_object_mapping_list[] =
     EL_BDX_HEAVY_ROCK,				ACTION_FALLING, -1
   },
   {
+    O_LIGHT_STONE,				TRUE,
+    EL_BDX_LIGHT_ROCK,				-1, -1
+  },
+  {
+    O_LIGHT_STONE_F,				TRUE,
+    EL_BDX_LIGHT_ROCK_FALLING,			-1, -1
+  },
+  {
+    O_LIGHT_STONE_F,				FALSE,
+    EL_BDX_LIGHT_ROCK,				ACTION_FALLING, -1
+  },
+  {
     O_DIAMOND,					TRUE,
     EL_BDX_DIAMOND,				-1, -1
   },
@@ -7490,6 +7502,14 @@ bd_object_mapping_list[] =
   {
     O_MEGA_STONE_F_scanned,			TRUE,
     EL_BDX_HEAVY_ROCK_FALLING_SCANNED,		-1, -1
+  },
+  {
+    O_LIGHT_STONE_scanned,			TRUE,
+    EL_BDX_LIGHT_ROCK_SCANNED,			-1, -1
+  },
+  {
+    O_LIGHT_STONE_F_scanned,			TRUE,
+    EL_BDX_LIGHT_ROCK_FALLING_SCANNED,		-1, -1
   },
   {
     O_DIAMOND_scanned,				TRUE,

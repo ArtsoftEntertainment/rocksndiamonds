@@ -1854,6 +1854,7 @@ void gd_unscan_cave(GdCave *cave)
   cave->magic_diamond_to		= non_scanned_pair(cave->magic_diamond_to);
   cave->magic_stone_to			= non_scanned_pair(cave->magic_stone_to);
   cave->magic_mega_stone_to		= non_scanned_pair(cave->magic_mega_stone_to);
+  cave->magic_light_stone_to		= non_scanned_pair(cave->magic_light_stone_to);
   cave->magic_nut_to			= non_scanned_pair(cave->magic_nut_to);
   cave->magic_nitro_pack_to		= non_scanned_pair(cave->magic_nitro_pack_to);
   cave->magic_flying_diamond_to		= non_scanned_pair(cave->magic_flying_diamond_to);

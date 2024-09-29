@@ -15633,6 +15633,7 @@ static int getSoundAction_BD(int sample)
   {
     case GD_S_STONE_PUSHING:
     case GD_S_MEGA_STONE_PUSHING:
+    case GD_S_LIGHT_STONE_PUSHING:
     case GD_S_FLYING_STONE_PUSHING:
     case GD_S_WAITING_STONE_PUSHING:
     case GD_S_CHASING_STONE_PUSHING:
@@ -15644,6 +15645,7 @@ static int getSoundAction_BD(int sample)
 
     case GD_S_STONE_FALLING:
     case GD_S_MEGA_STONE_FALLING:
+    case GD_S_LIGHT_STONE_FALLING:
     case GD_S_FLYING_STONE_FALLING:
     case GD_S_NUT_FALLING:
     case GD_S_DIRT_BALL_FALLING:
@@ -15654,6 +15656,7 @@ static int getSoundAction_BD(int sample)
 
     case GD_S_STONE_IMPACT:
     case GD_S_MEGA_STONE_IMPACT:
+    case GD_S_LIGHT_STONE_IMPACT:
     case GD_S_FLYING_STONE_IMPACT:
     case GD_S_NUT_IMPACT:
     case GD_S_DIRT_BALL_IMPACT:
