@@ -105,7 +105,6 @@ struct EngineSnapshotInfo_BD
 extern struct GameInfo_BD game_bd;
 extern struct LevelInfo_BD native_bd_level;
 extern struct GraphicInfo_BD graphic_info_bd_object[O_MAX_ALL][8];
-extern struct GraphicInfo_BD graphic_info_bd_color_template;
 extern struct EngineSnapshotInfo_BD engine_snapshot_bd;
 
 void bd_open_all(void);
@@ -130,9 +129,6 @@ boolean LoadNativeLevel_BD(char *, int, boolean);
 boolean SaveNativeLevel_BD(char *);
 void DumpLevelset_BD(void);
 
-void PreparePreviewTileBitmap_BD(Bitmap *, int);
-void SetPreviewTileBitmapReference_BD(Bitmap *);
-Bitmap *GetPreviewTileBitmap_BD(Bitmap *);
 Bitmap *GetColoredBitmapFromTemplate_BD(Bitmap *);
 
 unsigned int InitEngineRandom_BD(int);
@@ -144,8 +140,6 @@ boolean use_bd_smooth_movements(void);
 boolean use_bd_pushing_graphics(void);
 boolean use_bd_up_down_graphics(void);
 boolean use_bd_falling_sounds(void);
-
-boolean hasColorTemplate_BD(void);
 
 Bitmap **GetTitleScreenBitmaps_BD(void);
 void CoverScreen_BD(void);

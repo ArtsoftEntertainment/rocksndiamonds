@@ -6950,9 +6950,6 @@ struct ConfigInfo image_config[] =
   { "graphic_7",					UNDEFINED_FILENAME		},
   { "graphic_8",					UNDEFINED_FILENAME		},
 
-  // game graphics template for level-specific colors for native BD levels
-  { "bdx_game_graphics_color_template",			UNDEFINED_FILENAME		},
-
 #include "conf_chr.c"	// include auto-generated data structure definitions
 #include "conf_cus.c"	// include auto-generated data structure definitions
 #include "conf_grp.c"	// include auto-generated data structure definitions

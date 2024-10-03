@@ -3398,14 +3398,6 @@ static void ShowEnvelopeRequest(char *text, unsigned int req_state, int action)
   game.envelope_active = FALSE;
 }
 
-static Bitmap *GetPreviewTileBitmap(Bitmap *bitmap)
-{
-  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
-    return GetPreviewTileBitmap_BD(bitmap);
-
-  return bitmap;
-}
-
 static void DrawPreviewElement(int dst_x, int dst_y, int element, int tilesize)
 {
   if (IS_MM_WALL(element))
@@ -3419,9 +3411,6 @@ static void DrawPreviewElement(int dst_x, int dst_y, int element, int tilesize)
     int graphic = el2preimg(element);
 
     getSizedGraphicSource(graphic, 0, tilesize, &src_bitmap, &src_x, &src_y);
-
-    // for BD style levels, maybe use bitmap with level-specific colors
-    src_bitmap = GetPreviewTileBitmap(src_bitmap);
 
     BlitBitmap(src_bitmap, drawto, src_x, src_y, tilesize, tilesize,
 	       dst_x, dst_y);
@@ -3845,35 +3834,8 @@ void DrawPreviewPlayers(void)
   }
 }
 
-static void PreparePreviewTileBitmap(void)
-{
-  // check if special preview bitmap with level-specific colors should be created
-  if (level.game_engine_type != GAME_ENGINE_TYPE_BD)
-    return;
-
-  // use original sized bitmap (else reduced color palette is lost by downscaling)
-  int original_tilesize = MAX(MINI_TILESIZE, preview.tile_size);
-  int scale_down_factor = original_tilesize / preview.tile_size;
-  Bitmap *src_bitmap;
-  int src_x, src_y;
-  int element_template = EL_BDX_GAME_GRAPHICS_COLOR_TEMPLATE;
-  int graphic_template = el2preimg(element_template);
-  int element_default = EL_BDX_ROCK;
-  int graphic_default = el2preimg(element_default);
-
-  // create special preview bitmap and scale it down to preview tile size
-  getSizedGraphicSource(graphic_template, 0, original_tilesize, &src_bitmap, &src_x, &src_y);
-  PreparePreviewTileBitmap_BD(src_bitmap, scale_down_factor);
-
-  // force using special preview bitmap to replace original preview bitmap
-  getSizedGraphicSource(graphic_default, 0, preview.tile_size, &src_bitmap, &src_x, &src_y);
-  SetPreviewTileBitmapReference_BD(src_bitmap);
-}
-
 void DrawPreviewLevelInitial(void)
 {
-  PreparePreviewTileBitmap();	// only needed for native BD style levels
-
   DrawPreviewLevelExt(TRUE);
   DrawPreviewPlayers();
 }
@@ -11146,23 +11108,6 @@ void InitGraphicInfo_BD(void)
       g_bd->frame = frame;
     }
   }
-
-  // game graphics template for level-specific colors for native BD levels
-  int graphic = IMG_BDX_GAME_GRAPHICS_COLOR_TEMPLATE;
-  struct GraphicInfo_BD *g_bd = &graphic_info_bd_color_template;
-  Bitmap *src_bitmap;
-  int src_x, src_y;
-
-  getGraphicSourceExt(graphic, 0, &src_bitmap, &src_x, &src_y, FALSE);
-
-  g_bd->bitmap = src_bitmap;
-  g_bd->src_x  = src_x;
-  g_bd->src_y  = src_y;
-  g_bd->width  = TILEX;
-  g_bd->height = TILEY;
-
-  g_bd->graphic = graphic;
-  g_bd->frame = 0;
 }
 
 void InitGraphicInfo_EM(void)

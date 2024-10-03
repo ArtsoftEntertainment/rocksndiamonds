@@ -39,11 +39,6 @@
 #define GD_KEY_CHAR		12
 #define GD_COMMENT_CHAR		13
 
-// pointer to tile bitmap (which may be prepared with level-specific colors)
-static Bitmap *gd_tile_bitmap = NULL;
-// pointer to reference tile bitmap (without level-specific colors)
-static Bitmap *gd_tile_bitmap_reference = NULL;
-
 // optional title screen bitmaps (foreground and background)
 static Bitmap *gd_title_screen_bitmaps[2] = { NULL, NULL };
 
@@ -62,8 +57,6 @@ static int cell_size = 0;
 
 // graphic info for game objects/frames and players/actions/frames
 struct GraphicInfo_BD graphic_info_bd_object[O_MAX_ALL][8];
-// graphic info for game graphics template for level-specific colors
-struct GraphicInfo_BD graphic_info_bd_color_template;
 
 static inline int c64_png_colors(int r, int g, int b, int a)
 {
@@ -368,11 +361,6 @@ static boolean surface_has_c64_colors(SDL_Surface *surface)
   return has_c64_colors;
 }
 
-boolean gd_bitmap_has_c64_colors(Bitmap *bitmap)
-{
-  return surface_has_c64_colors(bitmap->surface);
-}
-
 // sets one of the colors in the indexed palette of an sdl surface to a GdColor.
 static void set_surface_palette_color(SDL_Surface *surface, int index, GdColor col)
 {
@@ -486,60 +474,6 @@ static Bitmap *get_tile_bitmap_c64(GdCave *cave, SDL_Surface *surface)
   tile_bitmap_c64 = SDLGetBitmapFromSurface_WithMaskedColor(surface, bg_r, bg_g, bg_b);
 
   return tile_bitmap_c64;
-}
-
-void gd_prepare_tile_bitmap(GdCave *cave, Bitmap *bitmap, int scale_down_factor)
-{
-  static SDL_Surface *tile_surface_c64 = NULL;
-  static Bitmap *gd_tile_bitmap_original = NULL;
-  static int scale_down_factor_last = -1;
-
-  if (program.headless)
-    return;
-
-  // check if tile bitmap has changed (different artwork or tile size selected)
-  if (bitmap != gd_tile_bitmap_original || scale_down_factor != scale_down_factor_last)
-  {
-    // check if tile bitmap has limited C64 style colors
-    tile_surface_c64 = get_tile_surface_c64(bitmap->surface, scale_down_factor);
-
-    // store original tile bitmap from current artwork set and scaling factor
-    gd_tile_bitmap_original = bitmap;
-    scale_down_factor_last = scale_down_factor;
-
-    // store reference tile bitmap from current artwork set (may be changed later)
-    gd_tile_bitmap_reference = bitmap;
-  }
-
-  // check if tile bitmap should be colored for next game
-  if (tile_surface_c64 != NULL)
-  {
-    // set tile bitmap to bitmap with level-specific colors
-    gd_tile_bitmap = get_tile_bitmap_c64(cave, tile_surface_c64);
-  }
-  else
-  {
-    // no special tile bitmap available for this artwork set
-    gd_tile_bitmap = NULL;
-  }
-}
-
-void gd_set_tile_bitmap_reference(Bitmap *bitmap)
-{
-  gd_tile_bitmap_reference = bitmap;
-}
-
-Bitmap *gd_get_tile_bitmap(Bitmap *bitmap)
-{
-  // if no special tile bitmap available, keep using default tile bitmap
-  if (gd_tile_bitmap == NULL)
-    return bitmap;
-
-  // if default bitmap refers to tile bitmap, use special tile bitmap
-  if (bitmap == gd_tile_bitmap_reference)
-    return gd_tile_bitmap;
-
-  return bitmap;
 }
 
 Bitmap *gd_get_colored_bitmap_from_template(Bitmap *template_bitmap)
@@ -795,9 +729,8 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   if (!is_moving || !use_smooth_movements)
   {
     struct GraphicInfo_BD *g = &graphic_info_bd_object[draw][frame];
-    Bitmap *tile_bitmap = gd_get_tile_bitmap(g->bitmap);
 
-    blit_bitmap(tile_bitmap, dest, g->src_x, g->src_y, cell_size, cell_size, sx, sy);
+    blit_bitmap(g->bitmap, dest, g->src_x, g->src_y, cell_size, cell_size, sx, sy);
 
     return;
   }
@@ -812,9 +745,8 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
     boolean digging_tile = ((el_can_dig(tile) || tile == O_SPACE) && el_diggable(tile_last));
     int draw_back = (!is_moving_to ? draw : digging_tile ? draw_last : O_SPACE);
     struct GraphicInfo_BD *g = &graphic_info_bd_object[draw_back][frame];
-    Bitmap *tile_bitmap = gd_get_tile_bitmap(g->bitmap);
 
-    blit_bitmap(tile_bitmap, dest, g->src_x, g->src_y, cell_size, cell_size, sx, sy);
+    blit_bitmap(g->bitmap, dest, g->src_x, g->src_y, cell_size, cell_size, sx, sy);
   }
 
   // get shifted position between cave fields the game element is moving from/to
@@ -826,7 +758,6 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   if (is_moving_from && !is_diagonal_movement_from)	// skip if source moving diagonally
   {
     struct GraphicInfo_BD *g = &graphic_info_bd_object[draw_from][frame];
-    Bitmap *tile_bitmap = gd_get_tile_bitmap(g->bitmap);
     int xsize = (dx_from != 0 ? shift : cell_size);
     int ysize = (dy_from != 0 ? shift : cell_size);
     int gx = g->src_x + (dx_from < 0 ? cell_size - shift : 0);
@@ -837,7 +768,7 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
     if (!el_diggable(tile))
       blit_bitmap = BlitBitmapMasked;
 
-    blit_bitmap(tile_bitmap, dest, gx, gy, xsize, ysize, tx, ty);
+    blit_bitmap(g->bitmap, dest, gx, gy, xsize, ysize, tx, ty);
 
     // when using dynamic scheduling (mainly BD1 levels), redraw tile in next frame
     game->gfx_buffer[y][x] |= GD_REDRAW;
@@ -851,7 +782,6 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
       dx_to = dy_to = 0;
 
     struct GraphicInfo_BD *g = &graphic_info_bd_object[draw_to][frame];
-    Bitmap *tile_bitmap = gd_get_tile_bitmap(g->bitmap);
     int xsize = (dx_to != 0 ? cell_size - shift : cell_size);
     int ysize = (dy_to != 0 ? cell_size - shift : cell_size);
     int gx = g->src_x + (dx_to > 0 ? shift : 0);
@@ -870,7 +800,7 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
       gy = (dy_to != 0 ? shift - gy : gy);
     }
 
-    blit_bitmap(tile_bitmap, dest, gx, gy, xsize, ysize, tx, ty);
+    blit_bitmap(g->bitmap, dest, gx, gy, xsize, ysize, tx, ty);
 
     // when using dynamic scheduling (mainly BD1 levels), redraw tile in next frame
     game->gfx_buffer[y][x] |= GD_REDRAW;

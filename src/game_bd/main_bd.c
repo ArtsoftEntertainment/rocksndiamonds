@@ -286,34 +286,6 @@ static void UpdateGameDoorValues_BD(void)
   }
 }
 
-static void PrepareGameTileBitmap_BD(void)
-{
-  struct GraphicInfo_BD *g_template = &graphic_info_bd_color_template;
-  struct GraphicInfo_BD *g_default  = &graphic_info_bd_object[O_STONE][0];
-
-  // prepare bitmap using cave ready for playing (may have changed colors)
-  gd_prepare_tile_bitmap(game_bd.game->cave, g_template->bitmap, 1);
-
-  // set reference bitmap which should be replaced with prepared bitmap
-  gd_set_tile_bitmap_reference(g_default->bitmap);
-}
-
-void PreparePreviewTileBitmap_BD(Bitmap *bitmap, int scale_down_factor)
-{
-  // prepare bitmap using cave from file (with originally defined colors)
-  gd_prepare_tile_bitmap(native_bd_level.cave, bitmap, scale_down_factor);
-}
-
-void SetPreviewTileBitmapReference_BD(Bitmap *bitmap)
-{
-  gd_set_tile_bitmap_reference(bitmap);
-}
-
-Bitmap *GetPreviewTileBitmap_BD(Bitmap *bitmap)
-{
-  return gd_get_tile_bitmap(bitmap);
-}
-
 Bitmap *GetColoredBitmapFromTemplate_BD(Bitmap *bitmap)
 {
   return gd_get_colored_bitmap_from_template(bitmap);
@@ -366,9 +338,6 @@ void InitGameEngine_BD(void)
 
   // first iteration loads and prepares the cave (may change colors)
   play_game_func(game_bd.game, 0);
-
-  // prepare tile bitmap with level-specific colors, if available
-  PrepareGameTileBitmap_BD();
 
   // fast-forward game engine to selected state (covered or uncovered)
   while (game_bd.game->state_counter < next_state)
@@ -505,11 +474,6 @@ boolean use_bd_falling_sounds(void)
 {
   return ((setup.bd_falling_sounds == STATE_TRUE) ||
 	  (setup.bd_falling_sounds == STATE_AUTO && game.use_native_bd_sound_engine));
-}
-
-boolean hasColorTemplate_BD(void)
-{
-  return gd_bitmap_has_c64_colors(graphic_info_bd_color_template.bitmap);
 }
 
 Bitmap **GetTitleScreenBitmaps_BD(void)
