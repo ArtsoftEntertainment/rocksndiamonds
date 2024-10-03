@@ -342,6 +342,17 @@ static void DrawColorPicker(struct GadgetInfo *gi)
   DrawColorPicker_ColorText(x_text, y_text, font_nr);
 }
 
+static void SelectColorPickerColor(struct GadgetInfo *gi)
+{
+  RGBColor rgb_color = hsv_to_rgb(cp_color_hsv);
+  int color = ((int)(rgb_color.r * 255) << 16 |
+               (int)(rgb_color.g * 255) << 8  |
+               (int)(rgb_color.b * 255));
+
+  gi->event.type = GD_EVENT_COLOR_PICKER_LEAVING;
+  gi->colorpicker.value = color;
+}
+
 void InitGadgetsSoundCallback(void (*activating_function)(void),
 			      void (*selecting_function)(void))
 {
@@ -2489,13 +2500,7 @@ boolean HandleGadgets(int mx, int my, int button)
       }
       else if (state == CP_STATE_SAMPLE_BOX)
       {
-        RGBColor rgb_color = hsv_to_rgb(cp_color_hsv);
-        int color = ((int)(rgb_color.r * 255) << 16 |
-                     (int)(rgb_color.g * 255) << 8  |
-                     (int)(rgb_color.b * 255));
-
-        gi->event.type = GD_EVENT_COLOR_PICKER_LEAVING;
-        gi->colorpicker.value = color;
+        SelectColorPickerColor(gi);
 
         DoGadgetCallbackAction(gi, TRUE);
       }
@@ -2843,7 +2848,8 @@ boolean HandleGadgetsKeyInput(Key key)
   if (gi == NULL || gi->deactivated || !gi->mapped ||
       !(gi->type & GD_TYPE_TEXT_INPUT ||
 	gi->type & GD_TYPE_TEXT_AREA ||
-	gi->type & GD_TYPE_SELECTBOX))
+	gi->type & GD_TYPE_SELECTBOX ||
+	gi->type & GD_TYPE_COLOR_PICKER))
     return FALSE;
 
   if (key == KSYM_Escape)
@@ -2882,8 +2888,23 @@ boolean HandleGadgetsKeyInput(Key key)
 
       StopTextInput();
     }
+    else if (anyColorPickerGadgetActive())
+    {
+      boolean gadget_changed = ((gi->event_mask & GD_EVENT_COLOR_PICKER_LEAVING) != 0);
+
+      // color picker does not select color when closed by Escape key
+      gi->colorpicker.value = -1;
+
+      DrawGadget(gi, DG_UNPRESSED, gi->direct_draw);
+
+      gi->event.type = GD_EVENT_COLOR_PICKER_LEAVING;
+
+      DoGadgetCallbackAction(gi, gadget_changed);
+
+      last_gi = NULL;
+    }
   }
-  else if (key == KSYM_Return)	// valid for both text input and selectbox
+  else if (key == KSYM_Return)	// valid for both text input, selectbox and color picker
   {
     boolean gadget_changed = ((gi->event_mask & GD_EVENT_TEXT_RETURN) != 0);
 
@@ -2911,6 +2932,12 @@ boolean HandleGadgetsKeyInput(Key key)
       insertCharIntoTextArea(gi, '\n');
 
       DrawGadget(gi, DG_PRESSED, gi->direct_draw);
+    }
+    else if (gi->type & GD_TYPE_COLOR_PICKER)
+    {
+      gadget_changed = ((gi->event_mask & GD_EVENT_COLOR_PICKER_LEAVING) != 0);
+
+      SelectColorPickerColor(gi);
     }
     else
     {
