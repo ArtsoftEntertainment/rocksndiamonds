@@ -2963,6 +2963,7 @@ enum
   GFX_ARG_STACKED_YFACTOR,
   GFX_ARG_STACKED_XOFFSET,
   GFX_ARG_STACKED_YOFFSET,
+  GFX_ARG_COLOR_TEMPLATE,
 
   NUM_GFX_ARGS
 };
@@ -4336,6 +4337,8 @@ struct GraphicInfo
   int stacked_yfactor;
   int stacked_xoffset;
   int stacked_yoffset;
+
+  boolean color_template;		// optional setting for color template images
 
   boolean use_image_size;		// use image size as default width and height
 };

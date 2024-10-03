@@ -1726,6 +1726,9 @@ static void set_graphic_parameters_ext(int graphic, int *parameter,
   g->stacked_yfactor = parameter[GFX_ARG_STACKED_YFACTOR];
   g->stacked_xoffset = parameter[GFX_ARG_STACKED_XOFFSET];
   g->stacked_yoffset = parameter[GFX_ARG_STACKED_YOFFSET];
+
+  // this is only used for optional color template images
+  g->color_template = parameter[GFX_ARG_COLOR_TEMPLATE];
 }
 
 static void set_graphic_parameters(int graphic)
