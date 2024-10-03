@@ -16700,7 +16700,7 @@ static void HandleTextInputGadgets(struct GadgetInfo *gi)
 
     *bd_color[pos] = gd_color_get_from_string(bd_color_text[pos]);
 
-    DrawColorBox_BD(pos);
+    DrawEditModeWindow();
   }
 
   // do not mark level as modified for certain non-level-changing gadgets
@@ -16791,7 +16791,7 @@ static void HandleSelectboxGadgets(struct GadgetInfo *gi)
     }
 
     // update BD color palette gadgets depending on BD color type
-    DrawLevelConfigWindow();
+    DrawEditModeWindow();
   }
   else if (type_id >= ED_SELECTBOX_ID_COLORS_FIRST &&
 	   type_id <= ED_SELECTBOX_ID_COLORS_LAST)
@@ -16800,7 +16800,7 @@ static void HandleSelectboxGadgets(struct GadgetInfo *gi)
 
     *bd_color[pos] = gd_c64_color(bd_color_c64[pos]);
 
-    DrawColorBox_BD(pos);
+    DrawEditModeWindow();
   }
 
   // do not mark level as modified for certain non-level-changing gadgets
@@ -16969,7 +16969,7 @@ static void HandleTextbuttonGadgets(struct GadgetInfo *gi)
     SetRandomLevelColors_BD(level.bd_color_type);
 
     // update BD color palette gadgets after setting random colors
-    DrawLevelConfigWindow();
+    DrawEditModeWindow();
   }
 }
 
@@ -17167,7 +17167,7 @@ static void HandleColorPickerGadgets(struct GadgetInfo *gi)
     if (gi->colorpicker.value != -1)
       *bd_color[gi->colorpicker.nr] = gi->colorpicker.value;
 
-    DrawLevelConfigWindow();
+    DrawEditModeWindow();
   }
 
   level.changed = TRUE;
