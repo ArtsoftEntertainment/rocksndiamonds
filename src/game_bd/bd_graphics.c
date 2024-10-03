@@ -335,32 +335,6 @@ boolean gd_scroll(GdGame *game, boolean exact_scroll, boolean immediate)
   return player_out_of_window(game, player_x, player_y);
 }
 
-// returns true, if the given surface seems to be a c64 imported image.
-static boolean surface_has_c64_colors(SDL_Surface *surface)
-{
-  boolean has_c64_colors = TRUE;	// default: assume C64 colors
-  const unsigned char *p;
-  int x, y;
-
-  if (surface->format->BytesPerPixel != 4)
-    return FALSE;
-
-  SDL_LockSurface(surface);
-
-  for (y = 0; y < surface->h && has_c64_colors; y++)
-  {
-    p = ((unsigned char *)surface->pixels) + y * surface->pitch;
-
-    for (x = 0; x < surface->w * surface->format->BytesPerPixel && has_c64_colors; x++)
-      if (p[x] != 0 && p[x] != 255)
-	has_c64_colors = FALSE;
-  }
-
-  SDL_UnlockSurface(surface);
-
-  return has_c64_colors;
-}
-
 // sets one of the colors in the indexed palette of an sdl surface to a GdColor.
 static void set_surface_palette_color(SDL_Surface *surface, int index, GdColor col)
 {
@@ -385,9 +359,6 @@ static SDL_Surface *get_tile_surface_c64(SDL_Surface *surface, int scale_down_fa
   int height = surface->h;
   int out = 0;
   int x, y;
-
-  if (!surface_has_c64_colors(surface))
-    return NULL;
 
   if (surface->format->BytesPerPixel != 4)
     Fail("C64 style surface has wrong color depth -- should not happen");
