@@ -89,6 +89,9 @@ void CreateImageTextures(int);
 void FreeAllImageTextures(void);
 void ScaleImage(int, int);
 
+void ResetColorTemplateImage(int);
+void CreateImgesFromColorTemplate(int, Bitmap * (*color_bitmap_function)(Bitmap *));
+
 void FreeAllImages(void);
 
 #endif	// IMAGE_H

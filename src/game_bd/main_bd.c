@@ -314,6 +314,11 @@ Bitmap *GetPreviewTileBitmap_BD(Bitmap *bitmap)
   return gd_get_tile_bitmap(bitmap);
 }
 
+Bitmap *GetColoredBitmapFromTemplate_BD(Bitmap *bitmap)
+{
+  return gd_get_colored_bitmap_from_template(bitmap);
+}
+
 unsigned int InitEngineRandom_BD(int seed)
 {
   if (seed == NEW_RANDOMIZE)

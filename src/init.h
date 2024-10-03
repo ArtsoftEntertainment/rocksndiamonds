@@ -40,6 +40,10 @@ void InitGfxBuffers(void);
 void InitGadgets(void);
 void InitImageTextures(void);
 
+boolean hasColorTemplate(void);
+void InitColorTemplateImages(void);
+void InitColorTemplateImagesIfNeeded(void);
+
 void InitNetworkServer(void);
 
 void DisplayExitMessage(char *, va_list);

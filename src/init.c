@@ -344,6 +344,42 @@ static void InitBitmapPointers(void)
       graphic_info[i].bitmap = graphic_info[i].bitmaps[IMG_BITMAP_STANDARD];
 }
 
+boolean hasColorTemplate(void)
+{
+  int num_images = getImageListSize();
+  int i;
+
+  for (i = 0; i < num_images; i++)
+    if (graphic_info[i].color_template)
+      return TRUE;
+
+  return FALSE;
+}
+
+void InitColorTemplateImages(void)
+{
+  int num_images = getImageListSize();
+  int i;
+
+  // if graphic is marked as "color template", reset using colored bitmaps
+  for (i = 0; i < num_images; i++)
+    if (graphic_info[i].color_template)
+      ResetColorTemplateImage(i);
+
+  // if graphic is marked as "color template", re-color all scaled bitmaps
+  for (i = 0; i < num_images; i++)
+    if (graphic_info[i].color_template)
+      CreateImgesFromColorTemplate(i, GetColoredBitmapFromTemplate_BD);
+
+  InitImageTextures();
+}
+
+void InitColorTemplateImagesIfNeeded(void)
+{
+  if (hasColorTemplate())
+    InitColorTemplateImages();
+}
+
 void InitImageTextures(void)
 {
   static int texture_graphics[] =

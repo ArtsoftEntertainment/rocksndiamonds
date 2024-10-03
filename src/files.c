@@ -8133,6 +8133,8 @@ static void LoadLevel_LoadAndInit(struct NetworkLevelInfo *network_level)
   LoadLevel_InitSettings(&level);
 
   LoadLevel_InitNativeEngines(&level);
+
+  InitColorTemplateImagesIfNeeded();
 }
 
 void LoadLevel(int nr)

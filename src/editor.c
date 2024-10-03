@@ -10087,6 +10087,7 @@ static void DrawEditModeWindowExt(boolean remap_toolbox_gadgets)
   if (remap_toolbox_gadgets)
   {
     SetCurrentLevelColors_BD();
+    InitColorTemplateImagesIfNeeded();
 
     ModifyEditorElementList();
     RedrawDrawingElements();
@@ -11830,7 +11831,7 @@ static void DrawEngineConfigColors(void)
 {
   int i;
 
-  if (!hasColorTemplate_BD())
+  if (!hasColorTemplate())
   {
     int font_nr = FONT_TEXT_1;
     int font_height = getFontHeight(font_nr);

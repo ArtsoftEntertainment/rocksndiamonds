@@ -407,6 +407,61 @@ void ScaleImage(int pos, int zoom_factor)
   }
 }
 
+void ResetColorTemplateImage(int pos)
+{
+  ImageInfo *img_info = getImageInfoEntryFromImageID(pos);
+
+  if (img_info->template == NULL)
+  {
+    // image color template not yet defined -- copy from original bitmap
+    Bitmap *orig_bitmap = img_info->bitmaps[IMG_BITMAP_PTR_ORIGINAL];
+
+    img_info->template = ZoomBitmap(orig_bitmap, orig_bitmap->width, orig_bitmap->height);
+  }
+
+  img_info->contains_color_images = FALSE;
+}
+
+void CreateImgesFromColorTemplate(int pos, Bitmap * (*color_bitmap_function)(Bitmap *))
+{
+  ImageInfo *img_info = getImageInfoEntryFromImageID(pos);
+  int i;
+
+  if (img_info->contains_color_images)
+    return;
+
+  Bitmap *colored_bitmap = color_bitmap_function(img_info->template);
+
+  if (colored_bitmap != NULL)
+  {
+    // (re-)create all bitmaps from color template bitmap
+    for (i = 0; i < NUM_IMG_BITMAPS; i++)
+    {
+      Bitmap *old_bitmap = img_info->bitmaps[i];
+
+      if (old_bitmap == NULL)
+        continue;
+
+      // create new surfaces (with previous size) (this does not create textures)
+      Bitmap *new_bitmap = ZoomBitmap(colored_bitmap, old_bitmap->width, old_bitmap->height);
+
+      // free old surfaces
+      SDL_FreeSurface(old_bitmap->surface);
+      SDL_FreeSurface(old_bitmap->surface_masked);
+
+      // copy newly created surfaces from new bitmap
+      old_bitmap->surface        = new_bitmap->surface;
+      old_bitmap->surface_masked = new_bitmap->surface_masked;
+
+      // free empty new bitmap structure
+      checked_free(new_bitmap);
+    }
+  }
+
+  // (also set if coloring failed, to prevent repeating for all graphics using this image)
+  img_info->contains_color_images = TRUE;
+}
+
 void FreeAllImages(void)
 {
   FreeCustomArtworkLists(image_info);

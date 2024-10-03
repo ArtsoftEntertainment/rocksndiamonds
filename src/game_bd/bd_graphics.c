@@ -542,6 +542,14 @@ Bitmap *gd_get_tile_bitmap(Bitmap *bitmap)
   return bitmap;
 }
 
+Bitmap *gd_get_colored_bitmap_from_template(Bitmap *template_bitmap)
+{
+  SDL_Surface *template_surface = get_tile_surface_c64(template_bitmap->surface, 1);
+  Bitmap *colored_bitmap = get_tile_bitmap_c64(native_bd_level.cave, template_surface);
+
+  return colored_bitmap;
+}
+
 // returns true if the element has a certain property
 static inline boolean has_property(const int element, const int property)
 {

@@ -133,6 +133,7 @@ void DumpLevelset_BD(void);
 void PreparePreviewTileBitmap_BD(Bitmap *, int);
 void SetPreviewTileBitmapReference_BD(Bitmap *);
 Bitmap *GetPreviewTileBitmap_BD(Bitmap *);
+Bitmap *GetColoredBitmapFromTemplate_BD(Bitmap *);
 
 unsigned int InitEngineRandom_BD(int);
 void InitGameEngine_BD(void);

@@ -37,6 +37,7 @@ boolean gd_bitmap_has_c64_colors(Bitmap *bitmap);
 void gd_prepare_tile_bitmap(GdCave *cave, Bitmap *bitmap, int scale_down_factor);
 void gd_set_tile_bitmap_reference(Bitmap *bitmap);
 Bitmap *gd_get_tile_bitmap(Bitmap *bitmap);
+Bitmap *gd_get_colored_bitmap_from_template(Bitmap *template_bitmap);
 
 int gd_drawcave(Bitmap *dest, GdGame *gameplay, boolean);
 boolean gd_scroll(GdGame *gameplay, boolean exact_scroll, boolean immediate);
