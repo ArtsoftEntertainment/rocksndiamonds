@@ -38,6 +38,7 @@ void RedoLevelEditorOperation(void);
 
 void SetDefaultLevelColorType_BD(void);
 void SetDefaultLevelColors_BD(void);
+void SetCurrentLevelColors_BD(void);
 void SetRandomLevelColors_BD(int);
 
 #endif

@@ -10086,6 +10086,8 @@ static void DrawEditModeWindowExt(boolean remap_toolbox_gadgets)
 {
   if (remap_toolbox_gadgets)
   {
+    SetCurrentLevelColors_BD();
+
     ModifyEditorElementList();
     RedrawDrawingElements();
   }
@@ -11765,6 +11767,20 @@ void SetDefaultLevelColors_BD(void)
 
   for (i = 0; i < MAX_BD_COLORS; i++)
     bd_color_default[i] = *bd_color[i];
+}
+
+void SetCurrentLevelColors_BD(void)
+{
+  struct LevelInfo_BD *level_bd = level.native_bd_level;
+  GdCave *cave = level_bd->cave;
+
+  cave->colorb = level.bd_color_b;
+  cave->color0 = level.bd_color_0;
+  cave->color1 = level.bd_color_1;
+  cave->color2 = level.bd_color_2;
+  cave->color3 = level.bd_color_3;
+  cave->color4 = level.bd_color_4;
+  cave->color5 = level.bd_color_5;
 }
 
 void SetRandomLevelColors_BD(int bd_color_type)
