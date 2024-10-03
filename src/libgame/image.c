@@ -24,6 +24,7 @@ struct ImageInfo
   int original_width;			// original image file width
   int original_height;			// original image file height
 
+  boolean contains_color_images;	// set after coloring images from template
   boolean contains_small_images;	// set after adding small images
   boolean contains_textures;		// set after adding GPU textures
   boolean scaled_up;			// set after scaling up
@@ -32,6 +33,8 @@ struct ImageInfo
   int game_tile_size;			// tile size as resized for game
 
   char *leveldir;			// level set when image was loaded
+
+  Bitmap *template;			// optional BD style template bitmap
 };
 typedef struct ImageInfo ImageInfo;
 
@@ -55,6 +58,7 @@ static void *Load_Image(char *filename)
   img_info->original_width  = img_info->bitmaps[IMG_BITMAP_STANDARD]->width;
   img_info->original_height = img_info->bitmaps[IMG_BITMAP_STANDARD]->height;
 
+  img_info->contains_color_images = FALSE;
   img_info->contains_small_images = FALSE;
   img_info->contains_textures = FALSE;
   img_info->scaled_up = FALSE;
@@ -63,6 +67,8 @@ static void *Load_Image(char *filename)
   img_info->game_tile_size = 0;		// will be set later
 
   img_info->leveldir = NULL;		// will be set later
+
+  img_info->template = NULL;		// may be set later
 
   return img_info;
 }
@@ -78,6 +84,9 @@ static void FreeImage(void *ptr)
   for (i = 0; i < NUM_IMG_BITMAPS; i++)
     if (image->bitmaps[i])
       FreeBitmap(image->bitmaps[i]);
+
+  if (image->template)
+    FreeBitmap(image->template);
 
   if (image->source_filename)
     free(image->source_filename);
