@@ -240,6 +240,26 @@ static SDL_Color get_sdl_from_rgb(RGBColor color_rgb)
   return color_sdl;
 }
 
+static int get_int_from_hsv(HSVColor color_hsv)
+{
+  return get_int_from_rgb(get_rgb_from_hsv(color_hsv));
+}
+
+static HSVColor get_hsv_from_int(int color_int)
+{
+  return get_hsv_from_rgb(get_rgb_from_int(color_int));
+}
+
+static SDL_Color get_sdl_from_hsv(HSVColor color_hsv)
+{
+  return get_sdl_from_rgb(get_rgb_from_hsv(color_hsv));
+}
+
+static SDL_Color get_sdl_from_int(int color_int)
+{
+  return get_sdl_from_rgb(get_rgb_from_int(color_int));
+}
+
 static void set_pixel(SDL_Surface *surface, SDL_Color color, int x, int y)
 {
   ((char *)surface->pixels)[(x + y * surface->w) * 4    ] = color.r;
@@ -267,7 +287,7 @@ static void DrawColorPicker_Gradient(SDL_Surface *surface, double hue)
         1.0 - ((double) y / ysize),
       };
 
-      set_pixel(surface, get_sdl_from_rgb(get_rgb_from_hsv(hsv_color)), xpos + x, ypos + y);
+      set_pixel(surface, get_sdl_from_hsv(hsv_color), xpos + x, ypos + y);
     }
   }
 }
@@ -291,7 +311,7 @@ static void DrawColorPicker_HueGradient(SDL_Surface *surface)
         1.0,
       };
 
-      set_pixel(surface, get_sdl_from_rgb(get_rgb_from_hsv(hsv_color)), xpos + x, ypos + y);
+      set_pixel(surface, get_sdl_from_hsv(hsv_color), xpos + x, ypos + y);
     }
   }
 }
@@ -317,7 +337,7 @@ static void DrawColorPicker_Table(SDL_Surface *surface, struct GadgetInfo *gi)
       };
       int pos = y * table_size + x;
       int value = values[pos];
-      SDL_Color color = get_sdl_from_rgb(get_rgb_from_int(value));
+      SDL_Color color = get_sdl_from_int(value);
       Pixel pixel = SDL_MapRGB(surface->format, color.r, color.g, color.b);
 
       SDL_FillRect(surface, &draw_rect, pixel);
@@ -462,7 +482,7 @@ static void SelectColorPickerColor(struct GadgetInfo *gi)
 {
   if (gi->colorpicker.count == 0)		// RGB colors
   {
-    gi->colorpicker.value = get_int_from_rgb(get_rgb_from_hsv(cp_color_hsv));
+    gi->colorpicker.value = get_int_from_hsv(cp_color_hsv);
     gi->event.type = GD_EVENT_COLOR_PICKER_LEAVING;
   }
 }
@@ -2063,7 +2083,7 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
     gi->height = CP_GADGET_HEIGHT + 2 * gi->border.ysize;
 
     if (gi->colorpicker.count == 0)		// RGB colors
-      cp_color_hsv = get_hsv_from_rgb(get_rgb_from_int(gi->colorpicker.value));
+      cp_color_hsv = get_hsv_from_int(gi->colorpicker.value);
 
     // always start with closed color picker
     gi->colorpicker.open = FALSE;
