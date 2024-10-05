@@ -728,7 +728,7 @@ GdScheduling gd_scheduling_from_string(const char *str);
 void gd_drawcave_game(const GdCave *cave,
 		      int **element_buffer, int **last_element_buffer,
 		      int **drawing_buffer, int **last_drawing_buffer, int **gfx_buffer,
-		      int **covered_buffer,
+		      int **covered_buffer, int **dir_buffer_from, int **dir_buffer_to,
 		      boolean bonus_life_flash, int animcycle, boolean hate_invisible_outbox);
 
 // function to copy a GdString

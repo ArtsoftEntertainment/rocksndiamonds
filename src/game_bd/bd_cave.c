@@ -1379,7 +1379,7 @@ static inline boolean el_pushable(const int element)
 void gd_drawcave_game(const GdCave *cave,
 		      int **element_buffer, int **last_element_buffer,
 		      int **drawing_buffer, int **last_drawing_buffer, int **gfx_buffer,
-		      int **covered_buffer,
+		      int **covered_buffer, int **dir_buffer_from, int **dir_buffer_to,
 		      boolean bonus_life_flash, int animcycle, boolean hate_invisible_outbox)
 {
   static boolean player_blinking = FALSE;
@@ -1630,6 +1630,7 @@ void gd_drawcave_game(const GdCave *cave,
     for (x = cave->x1; x <= cave->x2; x++)
     {
       GdElement actual = cave->map[y][x];
+      int dir_to = dir_buffer_to[y][x];
 
       // if covered, real element is not important
       if (covered_buffer[y][x])
@@ -1641,6 +1642,24 @@ void gd_drawcave_game(const GdCave *cave,
       {
 	map = elemmapping[actual];
 	draw = elemdrawing[actual];
+      }
+
+      // draw special graphics if element is moving
+      if (dir_to == GD_MV_LEFT || dir_to == GD_MV_RIGHT)
+      {
+        if (actual == O_STONE || actual == O_STONE_F)
+        {
+          if (dir_to == GD_MV_LEFT)
+          {
+	    map = O_STONE_MOVE_LEFT;
+	    draw = elemdrawing[O_STONE_MOVE_LEFT];
+          }
+          else
+          {
+	    map = O_STONE_MOVE_RIGHT;
+	    draw = elemdrawing[O_STONE_MOVE_RIGHT];
+          }
+        }
       }
 
       // draw special graphics if player is pushing something (but not while stirring the pot)

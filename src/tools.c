@@ -7892,6 +7892,22 @@ bd_object_mapping_list[] =
     O_BITER_SWITCH_4,				FALSE,
     EL_BDX_BITER_SWITCH_4,			-1, -1
   },
+  {
+    O_STONE_MOVE_LEFT,				FALSE,
+    EL_BDX_ROCK,				ACTION_MOVING, MV_BIT_LEFT
+  },
+  {
+    O_STONE_MOVE_RIGHT,				FALSE,
+    EL_BDX_ROCK,				ACTION_MOVING, MV_BIT_RIGHT
+  },
+  {
+    O_STONE_PUSH_LEFT,				FALSE,
+    EL_BDX_ROCK,				ACTION_PUSHING, MV_BIT_LEFT
+  },
+  {
+    O_STONE_PUSH_RIGHT,				FALSE,
+    EL_BDX_ROCK,				ACTION_PUSHING, MV_BIT_RIGHT
+  },
 
   {
     -1,						FALSE,

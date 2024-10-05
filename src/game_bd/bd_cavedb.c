@@ -1892,6 +1892,27 @@ GdElementProperty gd_element_properties[] =
   },
 
   {
+    O_STONE_MOVE_LEFT, O_STONE_MOVE_LEFT, N_("Stone, moved left"),
+    0,
+    NULL, 0, 1, 1, 1,
+  },
+  {
+    O_STONE_MOVE_RIGHT, O_STONE_MOVE_RIGHT, N_("Stone, moved right"),
+    0,
+    NULL, 0, 1, 1, 1,
+  },
+  {
+    O_STONE_PUSH_LEFT, O_STONE_PUSH_LEFT, N_("Stone, pushed left"),
+    0,
+    NULL, 0, 1, 1, 1,
+  },
+  {
+    O_STONE_PUSH_RIGHT, O_STONE_PUSH_RIGHT, N_("Stone, pushed right"),
+    0,
+    NULL, 0, 1, 1, 1,
+  },
+
+  {
     O_QUESTION_MARK, O_QUESTION_MARK, NULL,
     0,
     NULL, 0, 70, 70, 70

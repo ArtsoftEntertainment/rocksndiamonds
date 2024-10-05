@@ -644,7 +644,7 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
   if (game->element_buffer && game->drawing_buffer && game->gfx_buffer)
     gd_drawcave_game(game->cave, game->element_buffer, game->last_element_buffer,
 		     game->drawing_buffer, game->last_drawing_buffer, game->gfx_buffer,
-		     game->covered_buffer,
+		     game->covered_buffer, game->dir_buffer_from, game->dir_buffer_to,
 		     game->bonus_life_flash != 0, game->animcycle, setup.bd_show_invisible_outbox);
 
   game->state_counter = counter_next;
