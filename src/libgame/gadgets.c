@@ -296,7 +296,77 @@ static void DrawColorPicker_HueGradient(SDL_Surface *surface)
   }
 }
 
-static void DrawColorPicker_SampleBox(SDL_Surface *surface, SDL_Color color)
+static void DrawColorPicker_Table(SDL_Surface *surface, struct GadgetInfo *gi)
+{
+  int *values = gi->colorpicker.values;
+  int count = gi->colorpicker.count;
+  int table_size = sqrt(count);
+  int box_size = CP_GADGET_WIDTH / table_size;
+  int x, y;
+
+  for (y = 0; y < table_size; y++)
+  {
+    for (x = 0; x < table_size; x++)
+    {
+      SDL_Rect draw_rect =
+      {
+        x * box_size,
+        y * box_size,
+        box_size,
+        box_size,
+      };
+      int pos = y * table_size + x;
+      int value = values[pos];
+      SDL_Color color = from_RGBColor(int_to_rgb(value));
+      Pixel pixel = SDL_MapRGB(surface->format, color.r, color.g, color.b);
+
+      SDL_FillRect(surface, &draw_rect, pixel);
+    }
+  }
+}
+
+static void DrawColorPicker_ColorMarker(struct GadgetInfo *gi)
+{
+  if (gi->colorpicker.count == 0)	// RGB colors
+  {
+    int x = gi->x + gi->border.xsize;
+    int y = gi->y + gi->border.ysize;
+    int xsize_main = CP_MAIN_GRADIENT_WIDTH;
+    int ysize_main = CP_MAIN_GRADIENT_HEIGHT;
+    int xsize_hue  = CP_HUE_GRADIENT_WIDTH;
+    int ysize_hue  = CP_HUE_GRADIENT_HEIGHT;
+    int x_main = x + (xsize_main - 1) * cp_color_hsv.s;
+    int y_main = y + (ysize_main - 1) * (1.0 - cp_color_hsv.v);
+    int x_hue = x + ((cp_color_hsv.h / 360.0) * xsize_hue);
+    int y_hue = y + ysize_main;
+
+    // draw color position indicator
+    FillRectangle(drawto, x_main - 1, y, CP_INDICATOR_SIZE, ysize_main, BLACK_PIXEL);
+    FillRectangle(drawto, x, y_main - 1, xsize_main, CP_INDICATOR_SIZE, BLACK_PIXEL);
+
+    // draw color slider
+    FillRectangle(drawto, x_hue - 1, y_hue, CP_INDICATOR_SIZE, ysize_hue, BLACK_PIXEL);
+  }
+  else					// indexed colors
+  {
+    int count = gi->colorpicker.count;
+    int table_size = sqrt(count);
+    int box_size = CP_GADGET_WIDTH / table_size;
+    int pos = gi->colorpicker.value;
+    int xpos = pos % table_size;
+    int ypos = pos / table_size;
+    int x = gi->x + gi->border.xsize + xpos * box_size;
+    int y = gi->y + gi->border.ysize + ypos * box_size;
+
+    // draw color position indicator
+    FillRectangle(drawto, x - 1, y - 1, box_size + 2, CP_INDICATOR_SIZE, BLACK_PIXEL);
+    FillRectangle(drawto, x + box_size - 1, y - 1, CP_INDICATOR_SIZE, box_size + 2, BLACK_PIXEL);
+    FillRectangle(drawto, x - 1, y + box_size - 1, box_size + 2, CP_INDICATOR_SIZE, BLACK_PIXEL);
+    FillRectangle(drawto, x - 1, y - 1, CP_INDICATOR_SIZE, box_size + 2, BLACK_PIXEL);
+  }
+}
+
+static void DrawColorPicker_SampleBox(SDL_Surface *surface, struct GadgetInfo *gi)
 {
   SDL_Rect draw_rect =
   {
@@ -305,68 +375,96 @@ static void DrawColorPicker_SampleBox(SDL_Surface *surface, SDL_Color color)
     CP_SAMPLE_BOX_WIDTH,
     CP_SAMPLE_BOX_HEIGHT,
   };
+
+  RGBColor color_rgb;
+
+  if (gi->colorpicker.count == 0)	// RGB colors
+  {
+    color_rgb = hsv_to_rgb(cp_color_hsv);
+  }
+  else					// indexed colors
+  {
+    int *values = gi->colorpicker.values;
+    int value = values[gi->colorpicker.value];
+
+    color_rgb = int_to_rgb(value);
+  }
+
+  SDL_Color color = from_RGBColor(color_rgb);
   Pixel pixel = SDL_MapRGB(surface->format, color.r, color.g, color.b);
 
   SDL_FillRect(surface, &draw_rect, pixel);
 }
 
-static void DrawColorPicker_ColorText(int x, int y, int font_nr)
-{
-  RGBColor rgb_color = hsv_to_rgb(cp_color_hsv);
-  char text[128];
-
-  sprintf(text, "#%02x%02x%02x",
-          (int) (rgb_color.r * 255),
-          (int) (rgb_color.g * 255),
-          (int) (rgb_color.b * 255));
-
-  DrawText(x, y, text, font_nr);
-}
-
-static void DrawColorPicker(struct GadgetInfo *gi)
+static void DrawColorPicker_ColorText(struct GadgetInfo *gi)
 {
   int x = gi->x + gi->border.xsize;
   int y = gi->y + gi->border.ysize;;
   int font_nr = gi->font;
   int font_height = getFontHeight(font_nr);
   int font_padding = (CP_HUE_GRADIENT_HEIGHT - font_height) / 2;
-  int xsize = CP_GADGET_WIDTH;
-  int ysize = CP_GADGET_HEIGHT;
-  int xsize_main = CP_MAIN_GRADIENT_WIDTH;
   int ysize_main = CP_MAIN_GRADIENT_HEIGHT;
-  int xsize_hue  = CP_HUE_GRADIENT_WIDTH;
   int ysize_hue  = CP_HUE_GRADIENT_HEIGHT;
-  int x_main = x + (xsize_main - 1) * cp_color_hsv.s;
-  int y_main = y + (ysize_main - 1) * (1.0 - cp_color_hsv.v);
-  int x_hue = x + ((cp_color_hsv.h / 360.0) * xsize_hue);
-  int y_hue = y + ysize_main;
   int x_text = x + font_padding;
   int y_text = y + ysize_main + ysize_hue + font_padding;
-  SDL_Surface *surface = SDL_CreateRGBSurface(0, xsize, ysize, 32,
-                                              0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
 
-  DrawColorPicker_Gradient(surface, cp_color_hsv.h);
-  DrawColorPicker_HueGradient(surface);
-  DrawColorPicker_SampleBox(surface, from_RGBColor(hsv_to_rgb(cp_color_hsv)));
+  if (gi->colorpicker.count == 0)
+  {
+    RGBColor rgb_color = hsv_to_rgb(cp_color_hsv);
+    char text[128];
+
+    sprintf(text, "#%02x%02x%02x",
+            (int) (rgb_color.r * 255),
+            (int) (rgb_color.g * 255),
+            (int) (rgb_color.b * 255));
+
+    DrawText(x_text, y_text, text, font_nr);
+  }
+  else
+  {
+    DrawText(x_text, y_text, gi->colorpicker.names[gi->colorpicker.value], font_nr);
+  }
+}
+
+static void DrawColorPicker(struct GadgetInfo *gi)
+{
+  SDL_Surface *surface;
+  int x = gi->x + gi->border.xsize;
+  int y = gi->y + gi->border.ysize;;
+  int xsize = CP_GADGET_WIDTH;
+  int ysize = CP_GADGET_HEIGHT;
+
+  surface = SDL_CreateRGBSurface(0, xsize, ysize, 32, 0x0000ff, 0x00ff00, 0xff0000, 0);
+
+  if (gi->colorpicker.count == 0)
+  {
+    DrawColorPicker_Gradient(surface, cp_color_hsv.h);
+    DrawColorPicker_HueGradient(surface);
+  }
+  else
+  {
+    DrawColorPicker_Table(surface, gi);
+  }
+
+  DrawColorPicker_SampleBox(surface, gi);
 
   SDLBlitSurface(surface, drawto->surface, 0, 0, xsize, ysize, x, y);
   SDL_FreeSurface(surface);
 
-  // draw color position indicator
-  FillRectangle(drawto, x_main - 1, y, CP_INDICATOR_SIZE, ysize_main, BLACK_PIXEL);
-  FillRectangle(drawto, x, y_main - 1, xsize_main, CP_INDICATOR_SIZE, BLACK_PIXEL);
-
-  // draw color slider
-  FillRectangle(drawto, x_hue - 1, y_hue, CP_INDICATOR_SIZE, ysize_hue, BLACK_PIXEL);
+  // draw color marker
+  DrawColorPicker_ColorMarker(gi);
 
   // draw color RGB value
-  DrawColorPicker_ColorText(x_text, y_text, font_nr);
+  DrawColorPicker_ColorText(gi);
 }
 
 static void SelectColorPickerColor(struct GadgetInfo *gi)
 {
-  gi->event.type = GD_EVENT_COLOR_PICKER_LEAVING;
-  gi->colorpicker.value = rgb_to_int(hsv_to_rgb(cp_color_hsv));
+  if (gi->colorpicker.count == 0)		// RGB colors
+  {
+    gi->colorpicker.value = rgb_to_int(hsv_to_rgb(cp_color_hsv));
+    gi->event.type = GD_EVENT_COLOR_PICKER_LEAVING;
+  }
 }
 
 void InitGadgetsSoundCallback(void (*activating_function)(void),
@@ -1744,6 +1842,18 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
 	gi->colorpicker.value = va_arg(ap, int);
 	break;
 
+      case GDI_COLOR_VALUES:
+	gi->colorpicker.values = va_arg(ap, int *);
+	break;
+
+      case GDI_COLOR_NAMES:
+	gi->colorpicker.names = va_arg(ap, char **);
+	break;
+
+      case GDI_COLOR_COUNT:
+	gi->colorpicker.count = va_arg(ap, int);
+	break;
+
       default:
 	Fail("HandleGadgetTags(): unknown tag %d", tag);
     }
@@ -1947,13 +2057,13 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
     gi->textarea.full_open = FALSE;
   }
 
-
   if (gi->type & GD_TYPE_COLOR_PICKER)
   {
     gi->width  = CP_GADGET_WIDTH  + 2 * gi->border.xsize;
     gi->height = CP_GADGET_HEIGHT + 2 * gi->border.ysize;
 
-    cp_color_hsv = rgb_to_hsv(int_to_rgb(gi->colorpicker.value));
+    if (gi->colorpicker.count == 0)		// RGB colors
+      cp_color_hsv = rgb_to_hsv(int_to_rgb(gi->colorpicker.value));
 
     // always start with closed color picker
     gi->colorpicker.open = FALSE;
@@ -2511,27 +2621,44 @@ boolean HandleGadgets(int mx, int my, int button)
       int ysize_main = CP_MAIN_GRADIENT_HEIGHT;
       int xsize_hue  = CP_HUE_GRADIENT_WIDTH;
       int ysize_hue  = CP_HUE_GRADIENT_HEIGHT;
-      int xpos = mx - gi->x - gi->border.xsize;
-      int ypos = my - gi->y - gi->border.ysize;
+      int x = mx - gi->x - gi->border.xsize;
+      int y = my - gi->y - gi->border.ysize;
+      int x_hue  = MIN(MAX(0, x), xsize_hue - 1);
+      int x_main = MIN(MAX(0, x), xsize_main - 1);
+      int y_main = MIN(MAX(0, y), ysize_main - 1);
 
       if (!motion_status)
-        state = (ypos < ysize_main ? CP_STATE_GRADIENT_CHANGE :
-                 xpos < xsize_hue && ypos < ysize_main + ysize_hue ? CP_STATE_SLIDER_CHANGE :
-                 xpos >= xsize_hue && ypos >= ysize_main ? CP_STATE_SAMPLE_BOX :
+        state = (y < ysize_main ? CP_STATE_GRADIENT_CHANGE :
+                 x < xsize_hue && y < ysize_main + ysize_hue ? CP_STATE_SLIDER_CHANGE :
+                 x >= xsize_hue && y >= ysize_main ? CP_STATE_SAMPLE_BOX :
                  CP_STATE_NONE);
 
       if (state == CP_STATE_GRADIENT_CHANGE)
       {
-        cp_color_hsv.s = (double)MIN(MAX(0, xpos), xsize_main) / xsize_main;
-        cp_color_hsv.v = 1.0 - (double)MIN(MAX(0, ypos), ysize_main) / ysize_main;
+        if (gi->colorpicker.count == 0)		// RGB colors
+        {
+          cp_color_hsv.s =       (double)x_main / xsize_main;
+          cp_color_hsv.v = 1.0 - (double)y_main / ysize_main;
+        }
+        else					// indexed colors
+        {
+          int count = gi->colorpicker.count;
+          int table_size = sqrt(count);
+          int box_size = CP_GADGET_WIDTH / table_size;
+
+          gi->colorpicker.value = (y_main / box_size * table_size + x_main / box_size);
+        }
 
         DrawColorPicker(gi);
       }
       else if (state == CP_STATE_SLIDER_CHANGE)
       {
-        cp_color_hsv.h = (double)MIN(MAX(0, xpos), xsize_hue) / xsize_hue * 360.0;
+        if (gi->colorpicker.count == 0)		// RGB colors
+        {
+          cp_color_hsv.h = (double)x_hue / xsize_hue * 360.0;
 
-        DrawColorPicker(gi);
+          DrawColorPicker(gi);
+        }
       }
       else if (state == CP_STATE_SAMPLE_BOX)
       {

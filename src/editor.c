@@ -411,6 +411,8 @@
 				      ED_ENGINE_SETTINGS_XSTART)
 #define COLORPICKER_YPOS	SY + (COLORPICKER_Y_REDEFINED ? COLORPICKER_Y : \
 				      ED_ENGINE_SETTINGS_YSTART_0 + ED_GADGET_TEXT_DISTANCE)
+#define COLORPICKER_C64_VALUES	16
+#define COLORPICKER_MAX_VALUES	256
 
 // values for ClearEditorGadgetInfoText() and HandleEditorGadgetInfoText()
 #define INFOTEXT_FONT		FONT_TEXT_2
@@ -1715,7 +1717,7 @@ static boolean levelset_copy_level_template = FALSE;
 static int levelset_save_mode = LEVELSET_SAVE_MODE_UPDATE;
 
 #define MAX_BD_COLORS			7
-#define MAX_BD_COLOR_TEXT_LEN		10
+#define MAX_BD_COLOR_TEXT_LEN		12
 
 static int bd_color_type_default = GD_COLOR_TYPE_RGB;
 static int bd_color_type_last = GD_COLOR_TYPE_RGB;
@@ -9922,12 +9924,64 @@ static void MapCheckbuttonGadget(int id)
 
 static void MapColorPickerGadget(int id, int color_nr)
 {
+  static int color_values[COLORPICKER_MAX_VALUES] = { 0 };
+  static char *color_names[COLORPICKER_MAX_VALUES] = { NULL };
   struct GadgetInfo *gi = level_editor_gadget[colorpicker_info[id].gadget_id];
-  int color = gd_color_get_rgb(*bd_color[color_nr]);
+  int color_type = level.bd_color_type;
+  int bd_color_value = *bd_color[color_nr];
+  int color_value_rgb = gd_color_get_rgb(bd_color_value);
+  int color_value_index = bd_color_value & 0xff;
+  int color_value = (color_type == GD_COLOR_TYPE_RGB ? color_value_rgb : color_value_index);
+  int color_count;
+  int i;
 
-  ModifyGadget(gi, GDI_COLOR_NR, color_nr, GDI_END);
-  ModifyGadget(gi, GDI_COLOR_TYPE, level.bd_color_type, GDI_END);
-  ModifyGadget(gi, GDI_COLOR_VALUE, color, GDI_END);
+  if (color_type == GD_COLOR_TYPE_C64)
+  {
+    color_count = COLORPICKER_C64_VALUES;
+
+    for (i = 0; i < color_count; i++)
+    {
+      int color = gd_c64_color(i);
+
+      color_values[i] = gd_color_get_rgb(color);
+      setString(&color_names[i], gd_color_get_string(color));
+    }
+  }
+  else if (color_type == GD_COLOR_TYPE_C64DTV)
+  {
+    color_count = COLORPICKER_MAX_VALUES;
+
+    for (i = 0; i < color_count; i++)
+    {
+      int color = gd_c64dtv_color(i);
+
+      color_values[i] = gd_color_get_rgb(color);
+      setString(&color_names[i], gd_color_get_string(color));
+    }
+  }
+  else if (color_type == GD_COLOR_TYPE_ATARI)
+  {
+    color_count = COLORPICKER_MAX_VALUES;
+
+    for (i = 0; i < color_count; i++)
+    {
+      int color = gd_atari_color(i);
+
+      color_values[i] = gd_color_get_rgb(color);
+      setString(&color_names[i], gd_color_get_string(color));
+    }
+  }
+  else		// GD_COLOR_TYPE_RGB
+  {
+    color_count = 0;
+  }
+
+  ModifyGadget(gi, GDI_COLOR_NR,     color_nr,     GDI_END);
+  ModifyGadget(gi, GDI_COLOR_TYPE,   color_type,   GDI_END);
+  ModifyGadget(gi, GDI_COLOR_VALUE,  color_value,  GDI_END);
+  ModifyGadget(gi, GDI_COLOR_VALUES, color_values, GDI_END);
+  ModifyGadget(gi, GDI_COLOR_NAMES,  color_names,  GDI_END);
+  ModifyGadget(gi, GDI_COLOR_COUNT,  color_count,  GDI_END);
 
   MapGadget(gi);
 }
@@ -11874,11 +11928,11 @@ static void DrawEngineConfigColors(void)
     // draw text input gadgets
     for (i = ED_TEXTINPUT_ID_COLORS_FIRST; i <= ED_TEXTINPUT_ID_COLORS_LAST; i++)
       MapTextInputGadget(i);
-
-    // draw graphic button gadgets
-    for (i = ED_GRAPHICBUTTON_ID_PICK_FIRST; i <= ED_GRAPHICBUTTON_ID_PICK_LAST; i++)
-      MapGraphicbuttonGadget(i);
   }
+
+  // draw graphic button gadgets
+  for (i = ED_GRAPHICBUTTON_ID_PICK_FIRST; i <= ED_GRAPHICBUTTON_ID_PICK_LAST; i++)
+    MapGraphicbuttonGadget(i);
 
   for (i = 0; i < MAX_BD_COLORS; i++)
     DrawColorBox_BD(i);
@@ -17179,7 +17233,7 @@ static void HandleColorPickerGadgets(struct GadgetInfo *gi)
   if (type_id == ED_COLORPICKER_ID_PICK_COLOR)
   {
     if (gi->colorpicker.value != -1)
-      *bd_color[gi->colorpicker.nr] = gi->colorpicker.value;
+      *bd_color[gi->colorpicker.nr] = (gi->colorpicker.type << 24) + gi->colorpicker.value;
 
     DrawEditModeWindow();
   }

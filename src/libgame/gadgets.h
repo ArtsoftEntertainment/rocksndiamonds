@@ -122,6 +122,9 @@
 #define GDI_COLOR_NR			54
 #define GDI_COLOR_TYPE			55
 #define GDI_COLOR_VALUE			56
+#define GDI_COLOR_VALUES		57
+#define GDI_COLOR_NAMES			58
+#define GDI_COLOR_COUNT			59
 
 // gadget deactivation hack
 #define GDI_ACTIVE_POS(a)		((a) < 0 ? POS_OFFSCREEN : (a))
@@ -250,7 +253,10 @@ struct GadgetColorPicker
 {
   int nr;				// color slot (if using several colors)
   int type;				// color type (RGB, C64, C64DTV, Atari)
-  int value;				// color value
+  int value;				// color value (RGB or index position)
+  int *values;				// array of color values (always RGB)
+  char **names;				// array of color names
+  int count;				// number of color values/names in above arrays
 
   // runtime values
   boolean open;				// opening state of color picker
