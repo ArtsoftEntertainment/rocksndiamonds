@@ -1500,6 +1500,8 @@ struct SetupInfo
   boolean show_titlescreen;
   boolean quick_doors;
   boolean team_mode;
+  boolean handicap;
+  boolean skip_levels;
   boolean allow_skipping_levels;
   boolean increment_levels;
   boolean auto_play_next_level;

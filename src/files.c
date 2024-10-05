@@ -10820,6 +10820,14 @@ static struct TokenInfo global_setup_tokens[] =
     &setup.team_mode,				"team_mode"
   },
   {
+    TYPE_SWITCH,
+    &setup.handicap,				"handicap"
+  },
+  {
+    TYPE_SWITCH,
+    &setup.skip_levels,				"skip_levels"
+  },
+  {
     TYPE_SWITCH_3_STATES,
     &setup.allow_skipping_levels,		"allow_skipping_levels"
   },
@@ -11787,7 +11795,9 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->show_titlescreen = TRUE;
   si->quick_doors = FALSE;
   si->team_mode = FALSE;
-  si->allow_skipping_levels = STATE_ASK;
+  si->handicap = TRUE;
+  si->skip_levels = TRUE;
+  si->allow_skipping_levels = ARG_UNDEFINED_VALUE;
   si->increment_levels = TRUE;
   si->auto_play_next_level = TRUE;
   si->count_score_after_game = TRUE;
@@ -12372,6 +12382,13 @@ static void LoadSetup_SpecialPostProcessing(void)
   // make sure that scroll delay value stays inside valid range
   setup.scroll_delay_value =
     MIN(MAX(MIN_SCROLL_DELAY, setup.scroll_delay_value), MAX_SCROLL_DELAY);
+
+  if (setup.allow_skipping_levels == ARG_UNDEFINED_VALUE)
+  {
+    // if undefined, set from previously used setup options for same purpose
+    setup.allow_skipping_levels = (setup.handicap && setup.skip_levels ? STATE_ASK :
+                                   setup.handicap ? STATE_FALSE : STATE_TRUE);
+  }
 }
 
 void LoadSetup_Default(void)

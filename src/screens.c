@@ -7743,6 +7743,15 @@ static void ToggleUseApiServerIfNeeded(void)
   }
 }
 
+static void UpdateHandicapAndSkipLevels(void)
+{
+  // these setup options are obsolete and not used anymore;
+  // update them anyway for testing with older game versions
+
+  setup.handicap    = (setup.allow_skipping_levels != STATE_TRUE);
+  setup.skip_levels = (setup.allow_skipping_levels != STATE_FALSE);
+}
+
 static void ModifyGameSpeedIfNeeded(void)
 {
   if (strEqual(setup.vsync_mode, STR_VSYNC_MODE_OFF) ||
@@ -8599,6 +8608,10 @@ static void changeSetupValue(int screen_pos, int setup_info_pos_raw, int dx)
   if (si->value == &setup.sound_simple ||
       si->value == &setup.sound_loops)
     ToggleMenuSoundsIfNeeded();
+
+  // update old setup options from new setup options
+  if (si->value == &setup.allow_skipping_levels)
+    UpdateHandicapAndSkipLevels();
 }
 
 static struct TokenInfo *getSetupInfoFinal(struct TokenInfo *setup_info_orig)
