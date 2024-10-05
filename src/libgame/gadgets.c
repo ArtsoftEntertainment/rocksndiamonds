@@ -73,7 +73,7 @@ typedef struct
   double v;       // a fraction between 0 and 1
 } HSVColor;
 
-static HSVColor rgb_to_hsv(RGBColor in)
+static HSVColor get_hsv_from_rgb(RGBColor in)
 {
   HSVColor out;
   double min, max, delta;
@@ -125,7 +125,7 @@ static HSVColor rgb_to_hsv(RGBColor in)
   return out;
 }
 
-static RGBColor hsv_to_rgb(HSVColor in)
+static RGBColor get_rgb_from_hsv(HSVColor in)
 {
   double hh, p, q, t, ff;
   RGBColor out;
@@ -206,7 +206,7 @@ enum
   CP_STATE_SAMPLE_BOX,
 };
 
-static RGBColor int_to_rgb(int color_int)
+static RGBColor get_rgb_from_int(int color_int)
 {
   RGBColor color_rgb =
   {
@@ -218,7 +218,7 @@ static RGBColor int_to_rgb(int color_int)
   return color_rgb;
 }
 
-static int rgb_to_int(RGBColor color_rgb)
+static int get_int_from_rgb(RGBColor color_rgb)
 {
   int color_int = ((int)(color_rgb.r * 255) << 16 |
                    (int)(color_rgb.g * 255) << 8  |
@@ -227,17 +227,17 @@ static int rgb_to_int(RGBColor color_rgb)
   return color_int;
 }
 
-static SDL_Color from_RGBColor(RGBColor rgb_color)
+static SDL_Color get_sdl_from_rgb(RGBColor color_rgb)
 {
-  SDL_Color color =
+  SDL_Color color_sdl =
   {
-    rgb_color.r * 255,
-    rgb_color.g * 255,
-    rgb_color.b * 255,
+    color_rgb.r * 255,
+    color_rgb.g * 255,
+    color_rgb.b * 255,
     0xff
   };
 
-  return color;
+  return color_sdl;
 }
 
 static void set_pixel(SDL_Surface *surface, SDL_Color color, int x, int y)
@@ -267,7 +267,7 @@ static void DrawColorPicker_Gradient(SDL_Surface *surface, double hue)
         1.0 - ((double) y / ysize),
       };
 
-      set_pixel(surface, from_RGBColor(hsv_to_rgb(hsv_color)), xpos + x, ypos + y);
+      set_pixel(surface, get_sdl_from_rgb(get_rgb_from_hsv(hsv_color)), xpos + x, ypos + y);
     }
   }
 }
@@ -291,7 +291,7 @@ static void DrawColorPicker_HueGradient(SDL_Surface *surface)
         1.0,
       };
 
-      set_pixel(surface, from_RGBColor(hsv_to_rgb(hsv_color)), xpos + x, ypos + y);
+      set_pixel(surface, get_sdl_from_rgb(get_rgb_from_hsv(hsv_color)), xpos + x, ypos + y);
     }
   }
 }
@@ -317,7 +317,7 @@ static void DrawColorPicker_Table(SDL_Surface *surface, struct GadgetInfo *gi)
       };
       int pos = y * table_size + x;
       int value = values[pos];
-      SDL_Color color = from_RGBColor(int_to_rgb(value));
+      SDL_Color color = get_sdl_from_rgb(get_rgb_from_int(value));
       Pixel pixel = SDL_MapRGB(surface->format, color.r, color.g, color.b);
 
       SDL_FillRect(surface, &draw_rect, pixel);
@@ -380,17 +380,17 @@ static void DrawColorPicker_SampleBox(SDL_Surface *surface, struct GadgetInfo *g
 
   if (gi->colorpicker.count == 0)	// RGB colors
   {
-    color_rgb = hsv_to_rgb(cp_color_hsv);
+    color_rgb = get_rgb_from_hsv(cp_color_hsv);
   }
   else					// indexed colors
   {
     int *values = gi->colorpicker.values;
     int value = values[gi->colorpicker.value];
 
-    color_rgb = int_to_rgb(value);
+    color_rgb = get_rgb_from_int(value);
   }
 
-  SDL_Color color = from_RGBColor(color_rgb);
+  SDL_Color color = get_sdl_from_rgb(color_rgb);
   Pixel pixel = SDL_MapRGB(surface->format, color.r, color.g, color.b);
 
   SDL_FillRect(surface, &draw_rect, pixel);
@@ -410,7 +410,7 @@ static void DrawColorPicker_ColorText(struct GadgetInfo *gi)
 
   if (gi->colorpicker.count == 0)
   {
-    RGBColor rgb_color = hsv_to_rgb(cp_color_hsv);
+    RGBColor rgb_color = get_rgb_from_hsv(cp_color_hsv);
     char text[128];
 
     sprintf(text, "#%02x%02x%02x",
@@ -462,7 +462,7 @@ static void SelectColorPickerColor(struct GadgetInfo *gi)
 {
   if (gi->colorpicker.count == 0)		// RGB colors
   {
-    gi->colorpicker.value = rgb_to_int(hsv_to_rgb(cp_color_hsv));
+    gi->colorpicker.value = get_int_from_rgb(get_rgb_from_hsv(cp_color_hsv));
     gi->event.type = GD_EVENT_COLOR_PICKER_LEAVING;
   }
 }
@@ -2063,7 +2063,7 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
     gi->height = CP_GADGET_HEIGHT + 2 * gi->border.ysize;
 
     if (gi->colorpicker.count == 0)		// RGB colors
-      cp_color_hsv = rgb_to_hsv(int_to_rgb(gi->colorpicker.value));
+      cp_color_hsv = get_hsv_from_rgb(get_rgb_from_int(gi->colorpicker.value));
 
     // always start with closed color picker
     gi->colorpicker.open = FALSE;
