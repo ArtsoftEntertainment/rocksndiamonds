@@ -1717,8 +1717,8 @@ static int levelset_save_mode = LEVELSET_SAVE_MODE_UPDATE;
 #define MAX_BD_COLORS			7
 #define MAX_BD_COLOR_TEXT_LEN		10
 
-static boolean bd_color_type_changed = FALSE;
 static int bd_color_type_default = GD_COLOR_TYPE_RGB;
+static int bd_color_type_last = GD_COLOR_TYPE_RGB;
 static int bd_color_c64[MAX_BD_COLORS];
 static char bd_color_text[MAX_BD_COLORS][MAX_BD_COLOR_TEXT_LEN + 1];
 static int bd_color_default[MAX_BD_COLORS];
@@ -11845,28 +11845,6 @@ static void DrawEngineConfigColors(void)
     return;
   }
 
-  if (bd_color_type_changed)
-  {
-    if (level.bd_color_type != GD_COLOR_TYPE_RGB && level.bd_color_type != GetCommonColorType_BD())
-    {
-      // color type switched to non-RGB colors, but using different color type => reset colors
-
-      if (level.bd_color_type == bd_color_type_default)
-      {
-	// color type switched to same color type as default colors => reset to defaults
-	for (i = 0; i < MAX_BD_COLORS; i++)
-	  *bd_color[i] = bd_color_default[i];
-      }
-      else
-      {
-	// color type switched to different color type as default colors => use random colors
-	SetRandomLevelColors_BD(level.bd_color_type);
-      }
-    }
-
-    bd_color_type_changed = FALSE;
-  }
-
   // copy level colors to either C64-style color index or color text
   for (i = 0; i < MAX_BD_COLORS; i++)
   {
@@ -11879,6 +11857,9 @@ static void DrawEngineConfigColors(void)
     else
       snprintf(bd_color_text[i], sizeof(bd_color_text[i]), "%s", gd_color_get_string(bd_color_x));
   }
+
+  // store last color type
+  bd_color_type_last = level.bd_color_type;
 
   MapSelectboxGadget(ED_SELECTBOX_ID_BD_COLOR_TYPE);
 
@@ -16790,20 +16771,36 @@ static void HandleSelectboxGadgets(struct GadgetInfo *gi)
   }
   else if (type_id == ED_SELECTBOX_ID_BD_COLOR_TYPE)
   {
-    bd_color_type_changed = TRUE;
-
-    if (level.bd_color_type != GD_COLOR_TYPE_RGB && level.bd_color_type != GetCommonColorType_BD())
+    if (level.bd_color_type != GD_COLOR_TYPE_RGB &&
+        level.bd_color_type != GetCommonColorType_BD())
     {
       // color type switched to non-RGB colors, but using different color type => reset colors
       char *message = (level.bd_color_type == bd_color_type_default ?
 		       "This will reset colors to defaults! Continue?" :
 		       "This will reset colors to random colors! Continue?");
 
-      if (!Request(message, REQ_ASK))
+      if (Request(message, REQ_ASK))
       {
-	// keep current RGB colors
-	level.bd_color_type = GD_COLOR_TYPE_RGB;
-	bd_color_type_changed = FALSE;
+        // color type switched to non-RGB colors, but using different color type => reset colors
+
+        if (level.bd_color_type == bd_color_type_default)
+        {
+          int i;
+
+          // color type switched to same color type as default colors => reset to defaults
+          for (i = 0; i < MAX_BD_COLORS; i++)
+            *bd_color[i] = bd_color_default[i];
+        }
+        else
+        {
+          // color type switched to different color type as default colors => use random colors
+          SetRandomLevelColors_BD(level.bd_color_type);
+        }
+      }
+      else
+      {
+        // restore last color type
+	level.bd_color_type = bd_color_type_last;
       }
     }
 
