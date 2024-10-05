@@ -1079,8 +1079,12 @@ struct ConfigInfo image_config[] =
   { "bdx_gate_3.ypos",					"3"				},
   { "bdx_gate_3.frames",				"1"				},
 
-  { "bdx_lava",						UNDEFINED_FILENAME		},
-  { "bdx_lava.clone_from",				"acid"				},
+  { "bdx_lava",						"RocksElements.png"		},
+  { "bdx_lava.xpos",					"12"				},
+  { "bdx_lava.ypos",					"7"				},
+  { "bdx_lava.frames",					"4"				},
+  { "bdx_lava.delay",					"4"				},
+  { "bdx_lava.global_sync",				"true"				},
 
   { "bdx_sweet",					"RocksBD.png"			},
   { "bdx_sweet.xpos",					"5"				},
