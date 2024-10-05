@@ -41,5 +41,6 @@ boolean TapeIsPlaying_ReplayBD(void);
 
 boolean isLevelEditorFastStart(void);
 boolean useOldEngine_BD(void);
+boolean getTimePlayed_BD(void);
 
 #endif	// IMPORT_BD_H

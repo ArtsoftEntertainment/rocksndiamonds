@@ -10668,6 +10668,11 @@ boolean useOldEngine_BD(void)
   return (tape.playing && (tape.property_bits & TAPE_PROPERTY_BD_OLD_ENGINE));
 }
 
+boolean getTimePlayed_BD(void)
+{
+  return TimePlayed;
+}
+
 boolean swapTiles_EM(boolean is_pre_emc_cave)
 {
   return is_pre_emc_cave && leveldir_current->use_emc_tiles;

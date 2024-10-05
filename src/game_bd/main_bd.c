@@ -278,6 +278,9 @@ static void UpdateGameDoorValues_BD(void)
   game_bd.gems_still_needed = gems_still_needed;
   game_bd.score = game_bd.game->player_score;
 
+  if (game.no_level_time_limit)
+    game_bd.time_left = getTimePlayed_BD();
+
   if (game.LevelSolved)
   {
     // update time and score in panel while counting bonus time
