@@ -206,6 +206,27 @@ enum
   CP_STATE_SAMPLE_BOX,
 };
 
+static RGBColor int_to_rgb(int color_int)
+{
+  RGBColor color_rgb =
+  {
+    ((color_int >> 16) & 255) / 255.0,
+    ((color_int >>  8) & 255) / 255.0,
+    ((color_int      ) & 255) / 255.0,
+  };
+
+  return color_rgb;
+}
+
+static int rgb_to_int(RGBColor color_rgb)
+{
+  int color_int = ((int)(color_rgb.r * 255) << 16 |
+                   (int)(color_rgb.g * 255) << 8  |
+                   (int)(color_rgb.b * 255));
+
+  return color_int;
+}
+
 static SDL_Color from_RGBColor(RGBColor rgb_color)
 {
   SDL_Color color =
@@ -344,13 +365,8 @@ static void DrawColorPicker(struct GadgetInfo *gi)
 
 static void SelectColorPickerColor(struct GadgetInfo *gi)
 {
-  RGBColor rgb_color = hsv_to_rgb(cp_color_hsv);
-  int color = ((int)(rgb_color.r * 255) << 16 |
-               (int)(rgb_color.g * 255) << 8  |
-               (int)(rgb_color.b * 255));
-
   gi->event.type = GD_EVENT_COLOR_PICKER_LEAVING;
-  gi->colorpicker.value = color;
+  gi->colorpicker.value = rgb_to_int(hsv_to_rgb(cp_color_hsv));
 }
 
 void InitGadgetsSoundCallback(void (*activating_function)(void),
@@ -1937,14 +1953,7 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
     gi->width  = CP_GADGET_WIDTH  + 2 * gi->border.xsize;
     gi->height = CP_GADGET_HEIGHT + 2 * gi->border.ysize;
 
-    RGBColor cp_color_rgb =
-    {
-      ((gi->colorpicker.value >> 16) & 255) / 255.0,
-      ((gi->colorpicker.value >>  8) & 255) / 255.0,
-      ((gi->colorpicker.value      ) & 255) / 255.0,
-    };
-
-    cp_color_hsv = rgb_to_hsv(cp_color_rgb);
+    cp_color_hsv = rgb_to_hsv(int_to_rgb(gi->colorpicker.value));
 
     // always start with closed color picker
     gi->colorpicker.open = FALSE;
