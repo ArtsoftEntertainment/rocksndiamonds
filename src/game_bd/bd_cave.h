@@ -561,6 +561,8 @@ typedef struct _gd_cave
   boolean infinite_rockets;             // if true, the player which got a rocket launcher will be
                                         // able to launch an infinite number of rockets
 
+  boolean buggy_teleporter;		// use old, buggy teleporter behavior
+
   // internal variables, used during the game. private data :)
 
   // returns range corrected x/y position (points to perfect or line shifting get function)

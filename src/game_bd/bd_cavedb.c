@@ -2283,6 +2283,11 @@ const GdStructDescriptor gd_cave_properties[] =
     N_("Infinite rockets"), CAVE_OFFSET(infinite_rockets), 1,
     N_("If it is true, the player is able to launch an infinite number of rockets. Otherwise every rocket launcher contains only a single rocket.")
   },
+  {
+    "Teleporter.buggy", GD_TYPE_BOOLEAN, 0,
+    N_("Buggy teleporter"), CAVE_OFFSET(buggy_teleporter), 1,
+    N_("If it is true, the player can only enter a teleporter from two sides (right and bottom side). Otherwise, the teleporter works as expected, and the player can enter from all four sides.")
+  },
 
   // pneumatic hammer
   {
@@ -3209,6 +3214,9 @@ GdPropertyDefault gd_cave_defaults_gdash[] =
 
   // bladder
   { CAVE_OFFSET(bladder_converts_by),				O_VOODOO			},
+
+  // teleporter
+  { CAVE_OFFSET(buggy_teleporter),				TRUE				},
 
   // SOUND
   { CAVE_OFFSET(amoeba_sound),					TRUE				},

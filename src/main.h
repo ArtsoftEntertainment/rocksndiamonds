@@ -3868,6 +3868,7 @@ struct LevelInfo
   boolean bd_hammer_walls_reappear;	// BD hammered walls are reappearing after some delay
   int bd_hammer_walls_reappear_delay;	// BD hammer time for reappearing walls (in BD frames)
   boolean bd_infinite_rockets;		// BD rocket launcher has infinite number of rockets
+  boolean bd_buggy_teleporter;		// BD teleporter setting to implement buggy behaviour
   int bd_num_skeletons_needed_for_pot;	// BD skeletons amount must be collected to use a pot
   int bd_skeleton_worth_num_diamonds;	// BD skeleton collected is worth this number of diamonds
   int bd_expanding_wall_looks_like;	// BD expanding wall looks like this other game element

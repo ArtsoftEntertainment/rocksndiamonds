@@ -1023,6 +1023,12 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   },
 
   {
+    EL_BDX_TELEPORTER,			-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
+    &li.bd_buggy_teleporter,		FALSE
+  },
+
+  {
     EL_BDX_SKELETON,			-1,
     TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
     &li.bd_num_skeletons_needed_for_pot, 5
@@ -4432,6 +4438,8 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
 
   cave->infinite_rockets		= level->bd_infinite_rockets;
 
+  cave->buggy_teleporter		= level->bd_buggy_teleporter;
+
   cave->skeletons_needed_for_pot	= level->bd_num_skeletons_needed_for_pot;
   cave->skeletons_worth_diamonds	= level->bd_skeleton_worth_num_diamonds;
 
@@ -4616,6 +4624,8 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_hammer_walls_reappear_delay	= cave->hammered_wall_reappear_frame;
 
   level->bd_infinite_rockets		= cave->infinite_rockets;
+
+  level->bd_buggy_teleporter		= cave->buggy_teleporter;
 
   level->bd_num_skeletons_needed_for_pot= cave->skeletons_needed_for_pot;
   level->bd_skeleton_worth_num_diamonds	= cave->skeletons_worth_diamonds;

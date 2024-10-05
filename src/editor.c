@@ -870,6 +870,7 @@ enum
   GADGET_ID_BD_WATER_CANNOT_FLOW_DOWN,
   GADGET_ID_BD_HAMMER_WALLS_REAPPEAR,
   GADGET_ID_BD_INFINITE_ROCKETS,
+  GADGET_ID_BD_BUGGY_TELEPORTER,
   GADGET_ID_BD_CREATURES_START_BACKWARDS,
   GADGET_ID_BD_CREATURES_TURN_ON_HATCHING,
   GADGET_ID_BD_GRAVITY_SWITCH_ACTIVE,
@@ -1270,6 +1271,7 @@ enum
   ED_CHECKBUTTON_ID_BD_WATER_CANNOT_FLOW_DOWN,
   ED_CHECKBUTTON_ID_BD_HAMMER_WALLS_REAPPEAR,
   ED_CHECKBUTTON_ID_BD_INFINITE_ROCKETS,
+  ED_CHECKBUTTON_ID_BD_BUGGY_TELEPORTER,
   ED_CHECKBUTTON_ID_BD_CREATURES_START_BACKWARDS,
   ED_CHECKBUTTON_ID_BD_CREATURES_TURN_ON_HATCHING,
   ED_CHECKBUTTON_ID_BD_GRAVITY_SWITCH_ACTIVE,
@@ -4417,6 +4419,14 @@ static struct
     &level.bd_infinite_rockets,
     NULL, NULL,
     "Infinite rockets",				"Rocket launcher has infinite rockets"
+  },
+  {
+    ED_CHECKBUTTON_ID_BD_BUGGY_TELEPORTER,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(0),
+    GADGET_ID_BD_BUGGY_TELEPORTER,		GADGET_ID_NONE,
+    &level.bd_buggy_teleporter,
+    NULL, NULL,
+    "Use buggy teleporter",			"Teleporter only works from two sides"
   },
   {
     ED_CHECKBUTTON_ID_BD_CREATURES_START_BACKWARDS,
@@ -12689,6 +12699,7 @@ static boolean checkPropertiesConfig(int element)
       element == EL_BDX_HEAVY_ROCK ||
       element == EL_BDX_BOMB ||
       element == EL_BDX_ROCKET_LAUNCHER ||
+      element == EL_BDX_TELEPORTER ||
       element == EL_BDX_NITRO_PACK ||
       element == EL_BDX_SWEET ||
       element == EL_BDX_VOODOO_DOLL ||
@@ -13149,6 +13160,11 @@ static void DrawPropertiesConfig(void)
   if (properties_element == EL_BDX_ROCKET_LAUNCHER)
   {
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_INFINITE_ROCKETS);
+  }
+
+  if (properties_element == EL_BDX_TELEPORTER)
+  {
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_BUGGY_TELEPORTER);
   }
 
   if (properties_element == EL_BDX_CREATURE_SWITCH)

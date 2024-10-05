@@ -1183,9 +1183,9 @@ static GdElement player_eat_element(GdCave *cave, const GdElement element, int x
 // @return True, if the player is teleported, false, if no suitable teleporter found.
 static boolean do_teleporter(GdCave *cave, int px, int py, GdDirection player_move)
 {
-  // start at teleporter position (not at player position!)
-  int tx_start = px + gd_dx[player_move];
-  int ty_start = py + gd_dy[player_move];
+  // start at teleporter position (not at player position!) unless using buggy behaviour
+  int tx_start = px + (cave->buggy_teleporter ? 0 : gd_dx[player_move]);
+  int ty_start = py + (cave->buggy_teleporter ? 0 : gd_dy[player_move]);
   int tx = tx_start;
   int ty = ty_start;
 
