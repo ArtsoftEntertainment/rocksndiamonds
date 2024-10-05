@@ -17054,6 +17054,8 @@ static void HandleTextbuttonGadgets(struct GadgetInfo *gi)
 
     // update BD color palette gadgets after setting random colors
     DrawEditModeWindow();
+
+    level.changed = TRUE;
   }
 }
 
