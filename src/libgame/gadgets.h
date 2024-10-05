@@ -251,6 +251,9 @@ struct GadgetColorPicker
   int nr;				// color slot (if using several colors)
   int type;				// color type (RGB, C64, C64DTV, Atari)
   int value;				// color value
+
+  // runtime values
+  boolean open;				// opening state of color picker
 };
 
 struct GadgetInfo

@@ -1158,66 +1158,84 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 	int xsize = (width  - 2 * border_x) / border_x + 1;
 	int ysize = (height - 2 * border_y) / border_y + 1;
 
-	// top left part of gadget border
-	BlitBitmapOnBackground(gd->bitmap, drawto, gd->x, gd->y,
-			       border_x, border_y, x, y);
-
-	// top middle part of gadget border
-	for (i = 0; i < xsize; i++)
-	  BlitBitmapOnBackground(gd->bitmap, drawto, gd->x + border_x, gd->y,
-				 border_x, border_y,
-				 x + border_x + i * border_x, y);
-
-	// top right part of gadget border
-	BlitBitmapOnBackground(gd->bitmap, drawto,
-			       gd->x + gi->border.width - border_x, gd->y,
-			       border_x, border_y,
-			       x + width - border_x, y);
-
-	// left and right part of gadget border for each row
-	for (i = 0; i < ysize; i++)
+	if (pressed)
 	{
-	  BlitBitmapOnBackground(gd->bitmap, drawto, gd->x, gd->y + border_y,
-				 border_x, border_y,
-				 x, y + border_y + i * border_y);
-	  BlitBitmapOnBackground(gd->bitmap, drawto,
-				 gd->x + gi->border.width - border_x,
-				 gd->y + border_y,
-				 border_x, border_y,
-				 x + width - border_x,
-				 y + border_y + i * border_y);
-	}
+          if (!gi->colorpicker.open)
+          {
+	    gi->colorpicker.open = TRUE;
 
-	// bottom left part of gadget border
-	BlitBitmapOnBackground(gd->bitmap, drawto,
-			       gd->x, gd->y + gi->border.height - border_y,
-			       border_x, border_y,
-			       x, y + height - border_y);
+            // save background under color picker
+            BlitBitmap(drawto, gfx.field_save_buffer, x, y, width, height, x, y);
+          }
 
-	// bottom middle part of gadget border
-	for (i = 0; i < xsize; i++)
-	  BlitBitmapOnBackground(gd->bitmap, drawto,
-				 gd->x + border_x,
-				 gd->y + gi->border.height - border_y,
-				 border_x, border_y,
-				 x + border_x + i * border_x,
-				 y + height - border_y);
+          // top left part of gadget border
+          BlitBitmapOnBackground(gd->bitmap, drawto, gd->x, gd->y,
+                                 border_x, border_y, x, y);
 
-	// bottom right part of gadget border
-	BlitBitmapOnBackground(gd->bitmap, drawto,
-			       gd->x + gi->border.width - border_x,
-			       gd->y + gi->border.height - border_y,
-			       border_x, border_y,
-			       x + width - border_x,
-			       y + height - border_y);
+          // top middle part of gadget border
+          for (i = 0; i < xsize; i++)
+            BlitBitmapOnBackground(gd->bitmap, drawto, gd->x + border_x, gd->y,
+                                   border_x, border_y,
+                                   x + border_x + i * border_x, y);
 
-	ClearRectangleOnBackground(drawto,
-				   x + border_x,
-				   y + border_y,
-				   width - 2 * border_x,
-				   height - 2 * border_y);
+          // top right part of gadget border
+          BlitBitmapOnBackground(gd->bitmap, drawto,
+                                 gd->x + gi->border.width - border_x, gd->y,
+                                 border_x, border_y,
+                                 x + width - border_x, y);
 
-        DrawColorPicker(gi);
+          // left and right part of gadget border for each row
+          for (i = 0; i < ysize; i++)
+          {
+            BlitBitmapOnBackground(gd->bitmap, drawto, gd->x, gd->y + border_y,
+                                   border_x, border_y,
+                                   x, y + border_y + i * border_y);
+            BlitBitmapOnBackground(gd->bitmap, drawto,
+                                   gd->x + gi->border.width - border_x,
+                                   gd->y + border_y,
+                                   border_x, border_y,
+                                   x + width - border_x,
+                                   y + border_y + i * border_y);
+          }
+
+          // bottom left part of gadget border
+          BlitBitmapOnBackground(gd->bitmap, drawto,
+                                 gd->x, gd->y + gi->border.height - border_y,
+                                 border_x, border_y,
+                                 x, y + height - border_y);
+
+          // bottom middle part of gadget border
+          for (i = 0; i < xsize; i++)
+            BlitBitmapOnBackground(gd->bitmap, drawto,
+                                   gd->x + border_x,
+                                   gd->y + gi->border.height - border_y,
+                                   border_x, border_y,
+                                   x + border_x + i * border_x,
+                                   y + height - border_y);
+
+          // bottom right part of gadget border
+          BlitBitmapOnBackground(gd->bitmap, drawto,
+                                 gd->x + gi->border.width - border_x,
+                                 gd->y + gi->border.height - border_y,
+                                 border_x, border_y,
+                                 x + width - border_x,
+                                 y + height - border_y);
+
+          ClearRectangleOnBackground(drawto,
+                                     x + border_x,
+                                     y + border_y,
+                                     width - 2 * border_x,
+                                     height - 2 * border_y);
+
+          DrawColorPicker(gi);
+        }
+	else if (gi->colorpicker.open)
+	{
+	  gi->colorpicker.open = FALSE;
+
+	  // restore background under color picker
+          BlitBitmap(gfx.field_save_buffer, drawto, x, y, width, height, x, y);
+        }
       }
       break;
 
@@ -1927,6 +1945,9 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
     };
 
     cp_color_hsv = rgb_to_hsv(cp_color_rgb);
+
+    // always start with closed color picker
+    gi->colorpicker.open = FALSE;
   }
 }
 
@@ -2048,7 +2069,12 @@ static void MapGadgetExt(struct GadgetInfo *gi, boolean redraw)
 
   // when mapping color picker gadget, automatically activate it
   if (gi->type & GD_TYPE_COLOR_PICKER)
+  {
+    if (redraw)
+      DrawGadget(gi, DG_PRESSED, DG_BUFFERED);
+
     last_gi = gi;
+  }
 }
 
 void MapGadget(struct GadgetInfo *gi)
