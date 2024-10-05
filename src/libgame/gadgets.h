@@ -130,6 +130,20 @@
 #define GDI_ACTIVE_POS(a)		((a) < 0 ? POS_OFFSCREEN : (a))
 
 
+typedef struct
+{
+  double r;       // a fraction between 0 and 1
+  double g;       // a fraction between 0 and 1
+  double b;       // a fraction between 0 and 1
+} RGBColor;
+
+typedef struct
+{
+  double h;       // angle in degrees
+  double s;       // a fraction between 0 and 1
+  double v;       // a fraction between 0 and 1
+} HSVColor;
+
 typedef void (*gadget_function)(void *);
 
 struct GadgetBorder
@@ -260,6 +274,7 @@ struct GadgetColorPicker
 
   // runtime values
   boolean open;				// opening state of color picker
+  HSVColor color_hsv;			// current color value in HSV format
 };
 
 struct GadgetInfo

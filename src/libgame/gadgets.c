@@ -59,20 +59,6 @@ static void (*PlayGadgetSoundSelecting)(void) = NULL;
 #define CP_INDICATOR_SIZE	(3)
 
 // Start of David H's conversion code
-typedef struct
-{
-  double r;       // a fraction between 0 and 1
-  double g;       // a fraction between 0 and 1
-  double b;       // a fraction between 0 and 1
-} RGBColor;
-
-typedef struct
-{
-  double h;       // angle in degrees
-  double s;       // a fraction between 0 and 1
-  double v;       // a fraction between 0 and 1
-} HSVColor;
-
 static HSVColor get_hsv_from_rgb(RGBColor in)
 {
   HSVColor out;
@@ -195,8 +181,6 @@ static RGBColor get_rgb_from_hsv(HSVColor in)
   return out;
 }
 // End of David H's conversion code
-
-static HSVColor cp_color_hsv = { 180.0, 1.0, 1.0 };	// use some sane default values
 
 enum
 {
@@ -355,9 +339,9 @@ static void DrawColorPicker_ColorMarker(struct GadgetInfo *gi)
     int ysize_main = CP_MAIN_GRADIENT_HEIGHT;
     int xsize_hue  = CP_HUE_GRADIENT_WIDTH;
     int ysize_hue  = CP_HUE_GRADIENT_HEIGHT;
-    int x_main = x + (xsize_main - 1) * cp_color_hsv.s;
-    int y_main = y + (ysize_main - 1) * (1.0 - cp_color_hsv.v);
-    int x_hue = x + ((cp_color_hsv.h / 360.0) * xsize_hue);
+    int x_main = x + (xsize_main - 1) * gi->colorpicker.color_hsv.s;
+    int y_main = y + (ysize_main - 1) * (1.0 - gi->colorpicker.color_hsv.v);
+    int x_hue = x + ((gi->colorpicker.color_hsv.h / 360.0) * xsize_hue);
     int y_hue = y + ysize_main;
 
     // draw color position indicator
@@ -400,7 +384,7 @@ static void DrawColorPicker_SampleBox(SDL_Surface *surface, struct GadgetInfo *g
 
   if (gi->colorpicker.count == 0)	// RGB colors
   {
-    color_rgb = get_rgb_from_hsv(cp_color_hsv);
+    color_rgb = get_rgb_from_hsv(gi->colorpicker.color_hsv);
   }
   else					// indexed colors
   {
@@ -430,7 +414,7 @@ static void DrawColorPicker_ColorText(struct GadgetInfo *gi)
 
   if (gi->colorpicker.count == 0)
   {
-    RGBColor rgb_color = get_rgb_from_hsv(cp_color_hsv);
+    RGBColor rgb_color = get_rgb_from_hsv(gi->colorpicker.color_hsv);
     char text[128];
 
     sprintf(text, "#%02x%02x%02x",
@@ -458,7 +442,7 @@ static void DrawColorPicker(struct GadgetInfo *gi)
 
   if (gi->colorpicker.count == 0)
   {
-    DrawColorPicker_Gradient(surface, cp_color_hsv.h);
+    DrawColorPicker_Gradient(surface, gi->colorpicker.color_hsv.h);
     DrawColorPicker_HueGradient(surface);
   }
   else
@@ -482,7 +466,7 @@ static void SelectColorPickerColor(struct GadgetInfo *gi)
 {
   if (gi->colorpicker.count == 0)		// RGB colors
   {
-    gi->colorpicker.value = get_int_from_hsv(cp_color_hsv);
+    gi->colorpicker.value = get_int_from_hsv(gi->colorpicker.color_hsv);
     gi->event.type = GD_EVENT_COLOR_PICKER_LEAVING;
   }
 }
@@ -2083,7 +2067,7 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
     gi->height = CP_GADGET_HEIGHT + 2 * gi->border.ysize;
 
     if (gi->colorpicker.count == 0)		// RGB colors
-      cp_color_hsv = get_hsv_from_int(gi->colorpicker.value);
+      gi->colorpicker.color_hsv = get_hsv_from_int(gi->colorpicker.value);
 
     // always start with closed color picker
     gi->colorpicker.open = FALSE;
@@ -2657,8 +2641,8 @@ boolean HandleGadgets(int mx, int my, int button)
       {
         if (gi->colorpicker.count == 0)		// RGB colors
         {
-          cp_color_hsv.s =       (double)x_main / xsize_main;
-          cp_color_hsv.v = 1.0 - (double)y_main / ysize_main;
+          gi->colorpicker.color_hsv.s =       (double)x_main / xsize_main;
+          gi->colorpicker.color_hsv.v = 1.0 - (double)y_main / ysize_main;
         }
         else					// indexed colors
         {
@@ -2675,7 +2659,7 @@ boolean HandleGadgets(int mx, int my, int button)
       {
         if (gi->colorpicker.count == 0)		// RGB colors
         {
-          cp_color_hsv.h = (double)x_hue / xsize_hue * 360.0;
+          gi->colorpicker.color_hsv.h = (double)x_hue / xsize_hue * 360.0;
 
           DrawColorPicker(gi);
         }
