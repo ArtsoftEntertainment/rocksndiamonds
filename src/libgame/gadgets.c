@@ -264,14 +264,14 @@ static void DrawColorPicker_Gradient(SDL_Surface *surface, double hue)
   {
     for (x = 0; x < xsize; x++)
     {
-      HSVColor hsv_color =
+      HSVColor color_hsv =
       {
         hue,
         (double) x / xsize,
         1.0 - ((double) y / ysize),
       };
 
-      set_pixel(surface, get_sdl_from_hsv(hsv_color), xpos + x, ypos + y);
+      set_pixel(surface, get_sdl_from_hsv(color_hsv), xpos + x, ypos + y);
     }
   }
 }
@@ -288,14 +288,14 @@ static void DrawColorPicker_HueGradient(SDL_Surface *surface)
   {
     for (x = 0; x < xsize; x++)
     {
-      HSVColor hsv_color =
+      HSVColor color_hsv =
       {
         (double) x / xsize * 360,
         1.0,
         1.0,
       };
 
-      set_pixel(surface, get_sdl_from_hsv(hsv_color), xpos + x, ypos + y);
+      set_pixel(surface, get_sdl_from_hsv(color_hsv), xpos + x, ypos + y);
     }
   }
 }
@@ -414,13 +414,13 @@ static void DrawColorPicker_ColorText(struct GadgetInfo *gi)
 
   if (gi->colorpicker.count == 0)
   {
-    RGBColor rgb_color = get_rgb_from_hsv(gi->colorpicker.color_hsv);
+    RGBColor color_rgb = get_rgb_from_hsv(gi->colorpicker.color_hsv);
     char text[128];
 
     sprintf(text, "#%02x%02x%02x",
-            (int) (rgb_color.r * 255),
-            (int) (rgb_color.g * 255),
-            (int) (rgb_color.b * 255));
+            (int) (color_rgb.r * 255),
+            (int) (color_rgb.g * 255),
+            (int) (color_rgb.b * 255));
 
     DrawText(x_text, y_text, text, font_nr);
   }
