@@ -1422,11 +1422,11 @@ void gd_drawcave_game(const GdCave *cave,
   }
 
   elemmapping[O_MAGIC_WALL] = (cave->magic_wall_state == GD_MW_ACTIVE ?
-                               O_MAGIC_WALL :
-                               O_BRICK);
+                               O_MAGIC_WALL_ACTIVE :
+                               O_MAGIC_WALL);
   elemdrawing[O_MAGIC_WALL] = gd_element_properties[cave->magic_wall_state == GD_MW_ACTIVE ?
-                                                    O_MAGIC_WALL :
-                                                    O_BRICK].image_game;
+                                                    O_MAGIC_WALL_ACTIVE :
+                                                    O_MAGIC_WALL].image_game;
 
   elemmapping[O_CREATURE_SWITCH] = (cave->creatures_backwards ?
                                     O_CREATURE_SWITCH_ON :

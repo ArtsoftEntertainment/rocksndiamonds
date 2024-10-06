@@ -6192,7 +6192,7 @@ bd_object_mapping_list[] =
   },
   {
     O_MAGIC_WALL,				TRUE,
-    EL_BDX_MAGIC_WALL,				ACTION_ACTIVE, -1
+    EL_BDX_MAGIC_WALL,				-1, -1
   },
   {
     O_PRE_OUTBOX,				TRUE,
@@ -7862,7 +7862,7 @@ bd_object_mapping_list[] =
   },
   {
     O_MAGIC_WALL_ACTIVE,			FALSE,
-    EL_BDX_MAGIC_WALL_ACTIVE,		-1, -1
+    EL_BDX_MAGIC_WALL_ACTIVE,			-1, -1
   },
   {
     O_REPLICATOR_ACTIVE,			FALSE,

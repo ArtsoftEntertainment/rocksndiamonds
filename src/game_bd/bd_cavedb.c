@@ -227,7 +227,7 @@ GdElementProperty gd_element_properties[] =
   {
     O_MAGIC_WALL, O_MAGIC_WALL, N_("Magic wall"),
     P_CAN_BE_HAMMERED,
-    "MAGICWALL", 'M', 184, -184, -184
+    "MAGICWALL", 'M', 5, 5, 5
   },
   {
     O_PRE_OUTBOX, O_PRE_OUTBOX, N_("Outbox"),
