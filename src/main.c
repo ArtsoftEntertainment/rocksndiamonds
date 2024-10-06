@@ -6468,7 +6468,7 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Empty space"
   },
   {
-    "bdx_sand_1",
+    "bdx_sand",
     "bdx_sand",
     "Sand"
   },

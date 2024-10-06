@@ -676,9 +676,9 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   },
 
   {
-    EL_BDX_SAND_1,			-1,
+    EL_BDX_SAND,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_sand_looks_like,		EL_BDX_SAND_1
+    &li.bd_sand_looks_like,		EL_BDX_SAND
   },
 
   {
@@ -925,7 +925,7 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   {
     EL_BDX_ACID,			-1,
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_acid_eats_element,		EL_BDX_SAND_1
+    &li.bd_acid_eats_element,		EL_BDX_SAND
   },
   {
     EL_BDX_ACID,			-1,

@@ -5992,7 +5992,7 @@ static int getEngineElement_Ext(int element, int game_engine_type, boolean is_dr
   {
     el_empty		= EL_EMPTY;
     el_player		= EL_BDX_PLAYER;
-    el_sand		= EL_BDX_SAND_1;
+    el_sand		= EL_BDX_SAND;
     el_wall		= EL_BDX_WALL;
     el_steelwall	= EL_BDX_STEELWALL;
     el_exit_closed	= EL_BDX_EXIT_CLOSED;
@@ -6120,7 +6120,7 @@ bd_object_mapping_list[] =
   },
   {
     O_DIRT,					TRUE,
-    EL_BDX_SAND_1,				-1, -1
+    EL_BDX_SAND,				-1, -1
   },
   {
     O_DIRT_SLOPED_UP_RIGHT,			TRUE,

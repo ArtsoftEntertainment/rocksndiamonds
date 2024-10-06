@@ -1843,7 +1843,7 @@ static void InitFieldForEngine_RND(int x, int y)
   element = (element == EL_BDX_EMPTY				? EL_EMPTY :
 	     element == EL_BDX_PLAYER				? EL_PLAYER_1 :
 	     element == EL_BDX_INBOX				? EL_PLAYER_1 :
-	     element == EL_BDX_SAND_1				? EL_SAND :
+	     element == EL_BDX_SAND				? EL_SAND :
 	     element == EL_BDX_WALL				? EL_BD_WALL :
 	     element == EL_BDX_STEELWALL			? EL_STEELWALL :
 	     element == EL_BDX_ROCK				? EL_BD_ROCK :

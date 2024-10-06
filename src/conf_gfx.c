@@ -578,8 +578,8 @@ struct ConfigInfo image_config[] =
   { "bdx_firefly_2.down.EDITOR.xpos",			"11"				},
   { "bdx_firefly_2.down.EDITOR.ypos",			"0"				},
 
-  { "bdx_sand_1",					UNDEFINED_FILENAME		},
-  { "bdx_sand_1.clone_from",				"sand"				},
+  { "bdx_sand",						UNDEFINED_FILENAME		},
+  { "bdx_sand.clone_from",				"sand"				},
 
   { "bdx_grass",					UNDEFINED_FILENAME		},
   { "bdx_grass.clone_from",				"emc_grass"			},
@@ -612,7 +612,7 @@ struct ConfigInfo image_config[] =
   { "bdx_sand_sloped_down_right.frames",		"1"				},
 
   { "bdx_sand_glued",					UNDEFINED_FILENAME		},
-  { "bdx_sand_glued.clone_from",			"bdx_sand_1"			},
+  { "bdx_sand_glued.clone_from",			"bdx_sand"			},
   { "bdx_sand_glued.EDITOR",				"RocksBD2.png"			},
   { "bdx_sand_glued.EDITOR.xpos",			"2"				},
   { "bdx_sand_glued.EDITOR.ypos",			"4"				},

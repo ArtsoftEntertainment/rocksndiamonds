@@ -5640,7 +5640,7 @@ static int editor_hl_boulderdash_native[] =
 static int editor_el_boulderdash_native[] =
 {
   EL_EMPTY,
-  EL_BDX_SAND_1,
+  EL_BDX_SAND,
   EL_BDX_ROCK,
   EL_BDX_DIAMOND,
 
@@ -12694,7 +12694,7 @@ static boolean checkPropertiesConfig(int element)
       CAN_GROW(element) ||
       COULD_MOVE_INTO_ACID(element) ||
       MAYBE_DONT_COLLIDE_WITH(element) ||
-      element == EL_BDX_SAND_1 ||
+      element == EL_BDX_SAND ||
       element == EL_BDX_ROCK ||
       element == EL_BDX_HEAVY_ROCK ||
       element == EL_BDX_BOMB ||
@@ -13025,7 +13025,7 @@ static void DrawPropertiesConfig(void)
     MapDrawingArea(ED_DRAWING_ID_BD_SNAP_ELEMENT);
   }
 
-  if (properties_element == EL_BDX_SAND_1)
+  if (properties_element == EL_BDX_SAND)
   {
     MapDrawingArea(ED_DRAWING_ID_BD_SAND_LOOKS_LIKE);
   }
