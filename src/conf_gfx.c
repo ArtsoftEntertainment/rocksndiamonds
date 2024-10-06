@@ -589,10 +589,10 @@ struct ConfigInfo image_config[] =
   { "bdx_grass_ball.ypos",				"4"				},
   { "bdx_grass_ball.frames",				"1"				},
 
-  { "bdx_sand_loose",					"RocksBD.png"			},
-  { "bdx_sand_loose.xpos",				"10"				},
-  { "bdx_sand_loose.ypos",				"4"				},
-  { "bdx_sand_loose.frames",				"1"				},
+  { "bdx_grass_loose",					"RocksBD.png"			},
+  { "bdx_grass_loose.xpos",				"10"				},
+  { "bdx_grass_loose.ypos",				"4"				},
+  { "bdx_grass_loose.frames",				"1"				},
 
   { "bdx_sand_sloped_up_left",				"RocksBD.png"			},
   { "bdx_sand_sloped_up_left.xpos",			"8"				},

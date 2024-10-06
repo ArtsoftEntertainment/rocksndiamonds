@@ -6483,9 +6483,9 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Grass ball"
   },
   {
-    "bdx_sand_loose",
-    "bdx_sand_loose",
-    "Loose sand"
+    "bdx_grass_loose",
+    "bdx_grass_loose",
+    "Loose grass"
   },
   {
     "bdx_sand_sloped_up_right",
@@ -7248,9 +7248,9 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Grass ball (falling)"
   },
   {
-    "bdx_sand_loose.falling",
-    "bdx_sand_loose",
-    "Loose sand (falling)"
+    "bdx_grass_loose.falling",
+    "bdx_grass_loose",
+    "Loose grass (falling)"
   },
   {
     "bdx_rock.falling",
@@ -7728,14 +7728,14 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Grass ball (falling) (scanned)"
   },
   {
-    "bdx_sand_loose.scanned",
-    "bdx_sand_loose",
-    "Loose sand (scanned)"
+    "bdx_grass_loose.scanned",
+    "bdx_grass_loose",
+    "Loose grass (scanned)"
   },
   {
-    "bdx_sand_loose.falling.scanned",
-    "bdx_sand_loose",
-    "Loose sand (falling) (scanned)"
+    "bdx_grass_loose.falling.scanned",
+    "bdx_grass_loose",
+    "Loose grass (falling) (scanned)"
   },
   {
     "bdx_rock.scanned",
