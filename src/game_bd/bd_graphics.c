@@ -605,9 +605,10 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
     tile_from = game->element_buffer[new_y][new_x];
     draw_from = game->drawing_buffer[new_y][new_x];
 
-    if (is_double_movement)
+    if (is_double_movement || tile_from == O_MAGIC_WALL)
     {
-      // for magic wall or slime, use source tile instead of target tile
+      // for magic wall or slime, use source tile instead of (changed) target tile
+      // also required for element falling into magic wall with no space below it
       tile_from = tile_last;
       draw_from = draw_last;
     }

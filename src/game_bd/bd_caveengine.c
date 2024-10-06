@@ -1624,12 +1624,19 @@ static boolean do_fall_try_magic(GdCave *cave, int x, int y, GdDirection fall_di
     if (cave->magic_wall_state == GD_MW_DORMANT)
       cave->magic_wall_state = GD_MW_ACTIVE;
 
-    if (cave->magic_wall_state == GD_MW_ACTIVE &&
-	is_like_space(cave, x, y, twice[fall_dir]))
+    if (cave->magic_wall_state == GD_MW_ACTIVE)
     {
-      // if magic wall active and place underneath, it turns element
-      // into anything the effect says to do.
-      store_dir(cave, x, y, twice[fall_dir], magic);
+      if (is_like_space(cave, x, y, twice[fall_dir]))
+      {
+        // if magic wall active and place underneath, it turns element
+        // into anything the effect says to do.
+        store_dir(cave, x, y, twice[fall_dir], magic);
+      }
+      else
+      {
+        // store from/to directions in special buffers for smooth movement animations
+        store_dir_buffer(cave, x, y, fall_dir);
+      }
     }
 
     // active or non-active or anything, element falling in will always disappear
