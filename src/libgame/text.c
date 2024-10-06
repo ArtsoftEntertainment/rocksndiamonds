@@ -363,8 +363,6 @@ void DrawTextExt(DrawBuffer *dst_bitmap, int dst_x, int dst_y, char *text,
 // text buffer drawing functions
 // ============================================================================
 
-#define MAX_LINES_FROM_FILE		1024
-
 char *GetTextBufferFromFile(char *filename, int max_lines)
 {
   File *file;
@@ -764,7 +762,7 @@ int DrawTextFile(int x, int y, char *filename, int font_nr,
 		 int line_spacing, int mask_mode, boolean autowrap,
 		 boolean centered, boolean parse_comments)
 {
-  char *text_buffer = GetTextBufferFromFile(filename, MAX_LINES_FROM_FILE);
+  char *text_buffer = GetTextBufferFromFile(filename, MAX_OUTPUT_LINESIZE);
   int num_lines_printed = DrawTextBuffer(x, y, text_buffer, font_nr,
 					 line_length, cut_length, max_lines,
 					 line_spacing, mask_mode, autowrap,
