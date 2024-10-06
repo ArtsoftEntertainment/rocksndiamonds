@@ -6473,9 +6473,9 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Sand"
   },
   {
-    "bdx_sand_2",
-    "bdx_sand",
-    "Sand 2"
+    "bdx_grass",
+    "bdx_grass",
+    "Grass"
   },
   {
     "bdx_sand_ball",

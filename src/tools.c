@@ -6164,7 +6164,7 @@ bd_object_mapping_list[] =
   },
   {
     O_DIRT2,					TRUE,
-    EL_BDX_SAND_2,				-1, -1
+    EL_BDX_GRASS,				-1, -1
   },
   {
     O_BRICK,					TRUE,

@@ -581,8 +581,8 @@ struct ConfigInfo image_config[] =
   { "bdx_sand_1",					UNDEFINED_FILENAME		},
   { "bdx_sand_1.clone_from",				"sand"				},
 
-  { "bdx_sand_2",					UNDEFINED_FILENAME		},
-  { "bdx_sand_2.clone_from",				"emc_grass"			},
+  { "bdx_grass",					UNDEFINED_FILENAME		},
+  { "bdx_grass.clone_from",				"emc_grass"			},
 
   { "bdx_sand_ball",					"RocksBD.png"			},
   { "bdx_sand_ball.xpos",				"9"				},

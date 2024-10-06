@@ -5659,7 +5659,7 @@ static int editor_el_boulderdash_native[] =
   EL_BDX_BUTTERFLY_1_RIGHT,
   EL_BDX_FIREFLY_1_RIGHT,
 
-  EL_BDX_SAND_2,
+  EL_BDX_GRASS,
   EL_BDX_BUTTERFLY_1_DOWN,
   EL_BDX_FIREFLY_1_DOWN,
   EL_BDX_EXIT_OPEN,
