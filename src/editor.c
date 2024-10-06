@@ -11665,17 +11665,26 @@ static void PrintInfoText(char *text, int font_nr, int xpos, int ypos)
   DrawText(SX + xpos, SY + ypos, text, font_nr);
 }
 
-static int PrintElementDescriptionFromFile(char *filename, int font_nr,
-					   int xpos, int ypos)
+static int PrintTextFromBuffer(char *text_buffer, int font_nr, int xpos, int ypos)
 {
   int font_width = getFontWidth(font_nr);
   int font_height = getFontHeight(font_nr);
   int max_chars_per_line = (SXSIZE - 2 * xpos) / font_width;
   int max_lines_drawable = (SYSIZE - ypos) / font_height - 1;
 
-  return DrawTextFile(SX + xpos, SY + ypos, filename, font_nr,
-		      max_chars_per_line, -1, max_lines_drawable, 0, -1,
-		      TRUE, FALSE, FALSE);
+  return DrawTextBuffer(SX + xpos, SY + ypos, text_buffer, font_nr,
+                        max_chars_per_line, -1, max_lines_drawable, 0, -1,
+                        TRUE, FALSE, FALSE);
+}
+
+static int PrintTextFromFile(char *filename, int font_nr, int xpos, int ypos)
+{
+  char *text_buffer = GetTextBufferFromFile(filename, MAX_OUTPUT_LINESIZE);
+  int num_lines_printed = PrintTextFromBuffer(text_buffer, font_nr, xpos, ypos);
+
+  checked_free(text_buffer);
+
+  return num_lines_printed;
 }
 
 static void DrawLevelConfigLevel(void)
@@ -12437,7 +12446,7 @@ static void DrawPropertiesInfo(void)
 
   ypos += line1_height;
 
-  if (PrintElementDescriptionFromFile(filename, font2_nr, xpos, ypos) == 0)
+  if (PrintTextFromFile(filename, font2_nr, xpos, ypos) == 0)
     PrintInfoText(no_description_text, font1_nr, xpos, ypos - line1_height);
 }
 
