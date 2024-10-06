@@ -1,1 +1,0 @@
-A rolling ball of sand. You cannot push it, but you can dig it away.

@@ -6478,9 +6478,9 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Grass"
   },
   {
-    "bdx_sand_ball",
-    "bdx_sand_ball",
-    "Sand ball"
+    "bdx_grass_ball",
+    "bdx_grass_ball",
+    "Grass ball"
   },
   {
     "bdx_sand_loose",
@@ -7243,9 +7243,9 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Light rock"
   },
   {
-    "bdx_sand_ball.falling",
-    "bdx_sand_ball",
-    "Sand ball (falling)"
+    "bdx_grass_ball.falling",
+    "bdx_grass_ball",
+    "Grass ball (falling)"
   },
   {
     "bdx_sand_loose.falling",
@@ -7718,14 +7718,14 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Nut explosion (4)"
   },
   {
-    "bdx_sand_ball.scanned",
-    "bdx_sand_ball",
-    "Sand ball (scanned)"
+    "bdx_grass_ball.scanned",
+    "bdx_grass_ball",
+    "Grass ball (scanned)"
   },
   {
-    "bdx_sand_ball.falling.scanned",
-    "bdx_sand_ball",
-    "Sand ball (falling) (scanned)"
+    "bdx_grass_ball.falling.scanned",
+    "bdx_grass_ball",
+    "Grass ball (falling) (scanned)"
   },
   {
     "bdx_sand_loose.scanned",

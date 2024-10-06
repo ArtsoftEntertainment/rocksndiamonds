@@ -64,8 +64,8 @@ struct ConfigInfo sound_config[] =
   { "bd_firefly.waiting",			"roehr.wav"			},
 
   // sounds for Boulder Dash style elements and actions (native game engine)
-  { "bdx_sand_ball.falling",			"schlurf.wav"			},
-  { "bdx_sand_ball.impact",			"schlurf.wav"			},
+  { "bdx_grass_ball.falling",			"schlurf.wav"			},
+  { "bdx_grass_ball.impact",			"schlurf.wav"			},
   { "bdx_sand_loose.falling",			"schlurf.wav"			},
   { "bdx_sand_loose.impact",			"schlurf.wav"			},
   { "bdx_diamond.collecting",			"pong.wav"			},

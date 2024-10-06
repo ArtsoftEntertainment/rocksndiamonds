@@ -5710,7 +5710,7 @@ static int editor_el_boulderdash_native[] =
   EL_BDX_GHOST,
 
   EL_BDX_SAND_GLUED,
-  EL_BDX_SAND_BALL,
+  EL_BDX_GRASS_BALL,
   EL_BDX_SAND_LOOSE,
   EL_BDX_WALL_NON_SLOPED,
 
@@ -5819,7 +5819,7 @@ static int editor_el_boulderdash_effects[] =
   EL_BDX_NUT_FALLING,
   EL_BDX_NITRO_PACK_FALLING,
 
-  EL_BDX_SAND_BALL_FALLING,
+  EL_BDX_GRASS_BALL_FALLING,
   EL_BDX_SAND_LOOSE_FALLING,
   EL_BDX_FALLING_WALL_FALLING,
   EL_EMPTY,
@@ -5959,8 +5959,8 @@ static int editor_hl_boulderdash_scanned[] =
 
 static int editor_el_boulderdash_scanned[] =
 {
-  EL_BDX_SAND_BALL_SCANNED,
-  EL_BDX_SAND_BALL_FALLING_SCANNED,
+  EL_BDX_GRASS_BALL_SCANNED,
+  EL_BDX_GRASS_BALL_FALLING_SCANNED,
   EL_BDX_SAND_LOOSE_SCANNED,
   EL_BDX_SAND_LOOSE_FALLING_SCANNED,
 

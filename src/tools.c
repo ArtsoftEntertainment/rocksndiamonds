@@ -6140,15 +6140,15 @@ bd_object_mapping_list[] =
   },
   {
     O_DIRT_BALL,				TRUE,
-    EL_BDX_SAND_BALL,				-1, -1
+    EL_BDX_GRASS_BALL,				-1, -1
   },
   {
     O_DIRT_BALL_F,				TRUE,
-    EL_BDX_SAND_BALL_FALLING,			-1, -1
+    EL_BDX_GRASS_BALL_FALLING,			-1, -1
   },
   {
     O_DIRT_BALL_F,				FALSE,
-    EL_BDX_SAND_BALL,				ACTION_FALLING, -1
+    EL_BDX_GRASS_BALL,				ACTION_FALLING, -1
   },
   {
     O_DIRT_LOOSE,				TRUE,
@@ -7427,11 +7427,11 @@ bd_object_mapping_list[] =
 
   {
     O_DIRT_BALL_scanned,			TRUE,
-    EL_BDX_SAND_BALL_SCANNED,			-1, -1
+    EL_BDX_GRASS_BALL_SCANNED,			-1, -1
   },
   {
     O_DIRT_BALL_F_scanned,			TRUE,
-    EL_BDX_SAND_BALL_FALLING_SCANNED,		-1, -1
+    EL_BDX_GRASS_BALL_FALLING_SCANNED,		-1, -1
   },
   {
     O_DIRT_LOOSE_scanned,			TRUE,

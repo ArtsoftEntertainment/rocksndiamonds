@@ -584,10 +584,10 @@ struct ConfigInfo image_config[] =
   { "bdx_grass",					UNDEFINED_FILENAME		},
   { "bdx_grass.clone_from",				"emc_grass"			},
 
-  { "bdx_sand_ball",					"RocksBD.png"			},
-  { "bdx_sand_ball.xpos",				"9"				},
-  { "bdx_sand_ball.ypos",				"4"				},
-  { "bdx_sand_ball.frames",				"1"				},
+  { "bdx_grass_ball",					"RocksBD.png"			},
+  { "bdx_grass_ball.xpos",				"9"				},
+  { "bdx_grass_ball.ypos",				"4"				},
+  { "bdx_grass_ball.frames",				"1"				},
 
   { "bdx_sand_loose",					"RocksBD.png"			},
   { "bdx_sand_loose.xpos",				"10"				},
