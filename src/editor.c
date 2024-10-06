@@ -12337,10 +12337,11 @@ static void DrawPropertiesInfo(void)
     int font3_nr = FONT_TEXT_3;
     int font3_height = getFontHeight(font3_nr);
 
-    DrawTextF(xpos, ypos, font3_nr,
-	      "[%s]", element_info[properties_element].token_name);
+    // wrap element token text if it is longer than window width
+    char *text_token = getStringPrint("[%s]", element_info[properties_element].token_name);
+    int num_lines = PrintTextFromBuffer(text_token, font3_nr, xpos, ypos);
 
-    ypos += 2 * font3_height;
+    ypos += (num_lines + 1) * font3_height;
   }
 
   // ----- print number of elements / percentage of this element in level
