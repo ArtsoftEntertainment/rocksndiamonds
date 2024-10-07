@@ -1159,6 +1159,10 @@ static GdElement player_eat_element(GdCave *cave, const GdElement element, int x
       gd_sound_play(cave, GD_S_SKELETON_COLLECTING, element, x, y);
       return O_SPACE;
 
+    case O_ROCKET:
+      cave->rockets_collected++;
+      return O_SPACE;
+
     case O_OUTBOX:
     case O_INVIS_OUTBOX:
       cave->player_state = GD_PL_EXITED;    // player now exits the cave!
@@ -2166,25 +2170,33 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		{
 		  case GD_MV_RIGHT:
 		    store_dir(cave, x, y, player_move, O_ROCKET_1);
-		    if (!cave->infinite_rockets)
+                    if (cave->rockets_collected > 0)
+                      cave->rockets_collected--;
+		    else if (!cave->infinite_rockets)
 		      store(cave, x, y, O_PLAYER);
 		    break;
 
 		  case GD_MV_UP:
 		    store_dir(cave, x, y, player_move, O_ROCKET_2);
-		    if (!cave->infinite_rockets)
+                    if (cave->rockets_collected > 0)
+                      cave->rockets_collected--;
+		    else if (!cave->infinite_rockets)
 		      store(cave, x, y, O_PLAYER);
 		    break;
 
 		  case GD_MV_LEFT:
 		    store_dir(cave, x, y, player_move, O_ROCKET_3);
-		    if (!cave->infinite_rockets)
+                    if (cave->rockets_collected > 0)
+                      cave->rockets_collected--;
+		    else if (!cave->infinite_rockets)
 		      store(cave, x, y, O_PLAYER);
 		    break;
 
 		  case GD_MV_DOWN:
 		    store_dir(cave, x, y, player_move, O_ROCKET_4);
-		    if (!cave->infinite_rockets)
+                    if (cave->rockets_collected > 0)
+                      cave->rockets_collected--;
+		    else if (!cave->infinite_rockets)
 		      store(cave, x, y, O_PLAYER);
 		    break;
 

@@ -272,6 +272,7 @@ typedef enum _element
   O_PLAYER_STIRRING,
 
   O_ROCKET_LAUNCHER,
+  O_ROCKET,
   O_ROCKET_1,
   O_ROCKET_1_scanned,
   O_ROCKET_2,

@@ -606,6 +606,7 @@ typedef struct _gd_cave
   int diamonds_needed;                  // diamonds needed to open outbox
   int diamonds_collected;               // diamonds collected
   int skeletons_collected;              // number of skeletons collected
+  int rockets_collected;                // number of rockets collected
   int gate_open_flash;                  // flashing of screen when gate opens
   int score;                            // Score got this frame.
   int amoeba_time;                      // Amoeba growing slow (low probability, default 3%) for

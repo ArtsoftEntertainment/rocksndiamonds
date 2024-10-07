@@ -1310,6 +1310,11 @@ GdElementProperty gd_element_properties[] =
     "ROCKET_LAUNCHER", 0, 368, 368, 368
   },
   {
+    O_ROCKET, O_ROCKET, N_("Rocket"),
+    0,
+    "ROCKET", 0, 365, 365, 365
+  },
+  {
     O_ROCKET_1, O_ROCKET_1_scanned, N_("Rocket (right)"),
     P_CAN_MOVE,
     "ROCKETr", 0, 364, 364, 364, 40

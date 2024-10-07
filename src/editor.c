@@ -5793,6 +5793,11 @@ static int editor_el_boulderdash_native[] =
   EL_BDX_GRAVITY_SWITCH,
   EL_BDX_PNEUMATIC_HAMMER,
   EL_BDX_TELEPORTER,
+
+  EL_BDX_ROCKET,
+  EL_EMPTY,
+  EL_EMPTY,
+  EL_EMPTY,
 };
 static int *editor_hl_boulderdash_native_ptr = editor_hl_boulderdash_native;
 static int *editor_el_boulderdash_native_ptr = editor_el_boulderdash_native;

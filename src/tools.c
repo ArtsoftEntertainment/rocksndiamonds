@@ -6975,6 +6975,10 @@ bd_object_mapping_list[] =
     EL_BDX_ROCKET_LAUNCHER,			-1, -1
   },
   {
+    O_ROCKET,					TRUE,
+    EL_BDX_ROCKET,				-1, -1
+  },
+  {
     O_ROCKET_1,					TRUE,
     EL_BDX_ROCKET_RIGHT,			-1, -1
   },
