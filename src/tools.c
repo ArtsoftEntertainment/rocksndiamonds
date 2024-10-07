@@ -11095,8 +11095,9 @@ void InitGraphicInfo_BD(void)
     {
       int effective_element = element;
       int effective_action = action;
-      int graphic = (el_act_dir2img(effective_element, effective_action,
-				    direction));
+      int graphic = (direction == MV_NONE ?
+                     el_act2img(effective_element, effective_action) :
+                     el_act_dir2img(effective_element, effective_action, direction));
       struct GraphicInfo *g = &graphic_info[graphic];
       struct GraphicInfo_BD *g_bd = &graphic_info_bd_object[i][j];
       Bitmap *src_bitmap;
