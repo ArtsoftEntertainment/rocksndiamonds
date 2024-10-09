@@ -11909,7 +11909,7 @@ static void DrawEngineConfigColors(void)
 {
   int i;
 
-  if (!hasColorTemplate())
+  if (!anyImagehasColorTemplate())
   {
     int font_nr = FONT_TEXT_1;
     int font_height = getFontHeight(font_nr);

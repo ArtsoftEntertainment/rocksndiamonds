@@ -40,7 +40,7 @@ void InitGfxBuffers(void);
 void InitGadgets(void);
 void InitImageTextures(void);
 
-boolean hasColorTemplate(void);
+boolean anyImagehasColorTemplate(void);
 void InitColorTemplateImages(void);
 void InitColorTemplateImagesIfNeeded(void);
 

@@ -344,13 +344,22 @@ static void InitBitmapPointers(void)
       graphic_info[i].bitmap = graphic_info[i].bitmaps[IMG_BITMAP_STANDARD];
 }
 
-boolean hasColorTemplate(void)
+static boolean hasColorTemplate(int graphic)
+{
+  // if graphic was cloned, only re-color cloned graphic
+  if (graphic_info[graphic].clone_from != -1)
+    return FALSE;
+
+  return graphic_info[graphic].color_template;
+}
+
+boolean anyImagehasColorTemplate(void)
 {
   int num_images = getImageListSize();
   int i;
 
   for (i = 0; i < num_images; i++)
-    if (graphic_info[i].color_template)
+    if (hasColorTemplate(i))
       return TRUE;
 
   return FALSE;
@@ -363,12 +372,12 @@ void InitColorTemplateImages(void)
 
   // if graphic is marked as "color template", reset using colored bitmaps
   for (i = 0; i < num_images; i++)
-    if (graphic_info[i].color_template)
+    if (hasColorTemplate(i))
       ResetColorTemplateImage(i);
 
   // if graphic is marked as "color template", re-color all scaled bitmaps
   for (i = 0; i < num_images; i++)
-    if (graphic_info[i].color_template)
+    if (hasColorTemplate(i))
       CreateImgesFromColorTemplate(i, GetColoredBitmapFromTemplate_BD);
 
   InitImageTextures();
@@ -376,7 +385,7 @@ void InitColorTemplateImages(void)
 
 void InitColorTemplateImagesIfNeeded(void)
 {
-  if (hasColorTemplate())
+  if (anyImagehasColorTemplate())
     InitColorTemplateImages();
 }
 
