@@ -5639,7 +5639,7 @@ static int editor_hl_boulderdash_native[] =
 
 static int editor_el_boulderdash_native[] =
 {
-  EL_EMPTY,
+  EL_BDX_EMPTY,
   EL_BDX_SAND,
   EL_BDX_ROCK,
   EL_BDX_DIAMOND,
