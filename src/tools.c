@@ -6072,6 +6072,10 @@ bd_object_mapping_list[] =
   // additional RND style elements mapped to BD style elements (must be listed first)
 
   {
+    O_SPACE,					TRUE,
+    EL_EMPTY,					-1, -1
+  },
+  {
     O_DIRT,					TRUE,
     EL_SAND,					-1, -1
   },
@@ -6116,7 +6120,7 @@ bd_object_mapping_list[] =
 
   {
     O_SPACE,					TRUE,
-    EL_EMPTY,					-1, -1
+    EL_BDX_EMPTY,				-1, -1
   },
   {
     O_DIRT,					TRUE,
