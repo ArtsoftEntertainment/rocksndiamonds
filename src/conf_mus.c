@@ -41,6 +41,7 @@ struct ConfigInfo music_config[] =
   { "background.INFO[PROGRAM]",			UNDEFINED_FILENAME		},
   { "background.INFO[VERSION]",			UNDEFINED_FILENAME		},
   { "background.INFO[LEVELSET]",		UNDEFINED_FILENAME		},
+  { "background.INFO[LEVEL]",			UNDEFINED_FILENAME		},
   { "background.SETUP",				UNDEFINED_FILENAME		},
 
   { "background.titlescreen_initial_1",		UNDEFINED_FILENAME		},

@@ -681,6 +681,7 @@
 #define CREDITS_DIRECTORY		"credits"
 #define PROGRAM_INFO_DIRECTORY		"program"
 #define LEVELSET_INFO_DIRECTORY		"levelset"
+#define LEVEL_INFO_DIRECTORY		"levels"
 #define CACHE_DIRECTORY			"cache"
 #define CONF_DIRECTORY			"conf"
 #define NETWORK_DIRECTORY		"network"
@@ -1460,6 +1461,7 @@ struct SetupInternalInfo
   boolean info_program;
   boolean info_version;
   boolean info_levelset;
+  boolean info_level;
   boolean info_exit;
 };
 

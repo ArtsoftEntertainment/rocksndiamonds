@@ -2856,6 +2856,7 @@ enum
   GFX_SPECIAL_ARG_INFO_PROGRAM,
   GFX_SPECIAL_ARG_INFO_VERSION,
   GFX_SPECIAL_ARG_INFO_LEVELSET,
+  GFX_SPECIAL_ARG_INFO_LEVEL,
 
   NUM_SPECIAL_GFX_INFO_ARGS
 };
@@ -3031,6 +3032,7 @@ enum
   FONT_GAME_INFO,
   FONT_INFO_ELEMENTS,
   FONT_INFO_LEVELSET,
+  FONT_INFO_LEVEL,
   FONT_MAIN_NETWORK_PLAYERS,
 
   NUM_FONTS
@@ -3261,6 +3263,7 @@ struct MenuMainButtonInfo
   struct MenuPosInfo play_solution;
 
   struct MenuPosInfo levelset_info;
+  struct MenuPosInfo level_info;
   struct MenuPosInfo switch_ecs_aga;
 };
 

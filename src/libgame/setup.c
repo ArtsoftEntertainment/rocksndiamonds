@@ -870,6 +870,15 @@ static char *getLevelSetInfoBasename(int nr)
   return basename;
 }
 
+static char *getLevelInfoBasename(int level_nr)
+{
+  static char basename[32];
+
+  sprintf(basename, "%03d.txt", level_nr);
+
+  return basename;
+}
+
 char *getLevelSetInfoFilename(int nr)
 {
   char *basename = getLevelSetInfoBasename(nr);
@@ -881,7 +890,7 @@ char *getLevelSetInfoFilename(int nr)
 
   checked_free(filename);
 
-  // look for level set info file the current level set directory
+  // look for level set info file in the current level set's "docs/levelset" sub-directory
   filename = getPath3(getCurrentLevelDir(), info_subdir, basename);
   if (fileExists(filename))
     return filename;
@@ -903,6 +912,7 @@ char *getLevelSetInfoFilename(int nr)
   };
   int i;
 
+  // look for README style level set info file directly in the current level set directory
   for (i = 0; basenames[i] != NULL; i++)
   {
     checked_free(filename);
@@ -911,6 +921,32 @@ char *getLevelSetInfoFilename(int nr)
     if (fileExists(filename))
       return filename;
   }
+
+  return NULL;
+}
+
+char *getLevelInfoFilename(int level_nr)
+{
+  char *basename = getLevelInfoBasename(level_nr);
+  static char *info_subdir = NULL;
+  static char *filename = NULL;
+
+  if (info_subdir == NULL)
+    info_subdir = getPath2(DOCS_DIRECTORY, LEVEL_INFO_DIRECTORY);
+
+  checked_free(filename);
+
+  // look for level info file in the current level set's "docs/levels" sub-directory
+  filename = getPath3(getCurrentLevelDir(), info_subdir, basename);
+  if (fileExists(filename))
+    return filename;
+
+  checked_free(filename);
+
+  // look for level style level info file directly in the current level set directory
+  filename = getPath2(getCurrentLevelDir(), basename);
+  if (fileExists(filename))
+    return filename;
 
   return NULL;
 }

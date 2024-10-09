@@ -37,8 +37,9 @@
 #define INFO_MODE_PROGRAM			5
 #define INFO_MODE_VERSION			6
 #define INFO_MODE_LEVELSET			7
+#define INFO_MODE_LEVEL				8
 
-#define MAX_INFO_MODES				8
+#define MAX_INFO_MODES				9
 
 // screens on the setup screen
 // (must match GFX_SPECIAL_ARG_SETUP_* values as defined in src/main.h)
@@ -107,6 +108,7 @@
 #define STR_INFO_PROGRAM			"Program Info"
 #define STR_INFO_VERSION			"Version Info"
 #define STR_INFO_LEVELSET			"Level Set Info"
+#define STR_INFO_LEVEL				"Level Info"
 #define STR_INFO_EXIT				"Exit"
 
 // setup screen titles
@@ -235,20 +237,21 @@
 #define SCREEN_CTRL_ID_INSERT_SOLUTION		12
 #define SCREEN_CTRL_ID_PLAY_SOLUTION		13
 #define SCREEN_CTRL_ID_LEVELSET_INFO		14
-#define SCREEN_CTRL_ID_SWITCH_ECS_AGA		15
-#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE		16
-#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE		17
-#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE2		18
-#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE2		19
+#define SCREEN_CTRL_ID_LEVEL_INFO		15
+#define SCREEN_CTRL_ID_SWITCH_ECS_AGA		16
+#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE		17
+#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE		18
+#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE2		19
+#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE2		20
 
-#define NUM_SCREEN_MENUBUTTONS			20
+#define NUM_SCREEN_MENUBUTTONS			21
 
-#define SCREEN_CTRL_ID_SCROLL_UP		20
-#define SCREEN_CTRL_ID_SCROLL_DOWN		21
-#define SCREEN_CTRL_ID_SCROLL_VERTICAL		22
-#define SCREEN_CTRL_ID_NETWORK_SERVER		23
+#define SCREEN_CTRL_ID_SCROLL_UP		21
+#define SCREEN_CTRL_ID_SCROLL_DOWN		22
+#define SCREEN_CTRL_ID_SCROLL_VERTICAL		23
+#define SCREEN_CTRL_ID_NETWORK_SERVER		24
 
-#define NUM_SCREEN_GADGETS			24
+#define NUM_SCREEN_GADGETS			25
 
 #define NUM_SCREEN_SCROLLBUTTONS		2
 #define NUM_SCREEN_SCROLLBARS			1
@@ -256,12 +259,13 @@
 
 #define SCREEN_MASK_MAIN			(1 << 0)
 #define SCREEN_MASK_MAIN_HAS_SOLUTION		(1 << 1)
-#define SCREEN_MASK_MAIN_HAS_SET_INFO		(1 << 2)
-#define SCREEN_MASK_INPUT			(1 << 3)
-#define SCREEN_MASK_TOUCH			(1 << 4)
-#define SCREEN_MASK_TOUCH2			(1 << 5)
-#define SCREEN_MASK_SCORES			(1 << 6)
-#define SCREEN_MASK_SCORES_INFO			(1 << 7)
+#define SCREEN_MASK_MAIN_HAS_LEVELSET_INFO	(1 << 2)
+#define SCREEN_MASK_MAIN_HAS_LEVEL_INFO		(1 << 3)
+#define SCREEN_MASK_INPUT			(1 << 4)
+#define SCREEN_MASK_TOUCH			(1 << 5)
+#define SCREEN_MASK_TOUCH2			(1 << 6)
+#define SCREEN_MASK_SCORES			(1 << 7)
+#define SCREEN_MASK_SCORES_INFO			(1 << 8)
 
 // graphic position and size values for buttons and scrollbars
 #define SC_MENUBUTTON_XSIZE			TILEX
@@ -720,7 +724,7 @@ static int align_yoffset = 0;
 
 // (there are no draw offset definitions needed for INFO_MODE_TITLE)
 #define DRAW_MODE_INFO(i)	((i) >= INFO_MODE_TITLE &&			\
-				 (i) <= INFO_MODE_LEVELSET ? (i) :		\
+				 (i) <= INFO_MODE_LEVEL ? (i) :			\
 				 INFO_MODE_MAIN)
 
 #define DRAW_MODE_SETUP(i)	((i) >= SETUP_MODE_MAIN &&			\
@@ -1031,6 +1035,11 @@ static struct MainControlInfo main_controls[] =
 static boolean hasLevelSetInfo(void)
 {
   return (getLevelSetInfoFilename(0) != NULL);
+}
+
+static boolean hasLevelInfo(void)
+{
+  return (getLevelInfoFilename(level_nr) != NULL);
 }
 
 static int getTitleScreenGraphic(int nr, boolean initial)
@@ -1688,6 +1697,10 @@ static void DrawInfoScreen_Headline(int screen_nr, int num_screens,
   {
     sprintf(info_text_title_2, "Page %d of %d", screen_nr + 1, num_screens);
   }
+  else if (info_mode == INFO_MODE_LEVEL)
+  {
+    snprintf(info_text_title_2, MAX_LINE_LEN, "for level %d", level_nr);
+  }
   else
   {
     char *text_format = (use_global_screens ? "for %s" : "for \"%s\"");
@@ -2002,7 +2015,8 @@ void DrawMainMenu(void)
   MapTapeButtons();
   MapScreenMenuGadgets(SCREEN_MASK_MAIN);
   UpdateScreenMenuGadgets(SCREEN_MASK_MAIN_HAS_SOLUTION, hasSolutionTape());
-  UpdateScreenMenuGadgets(SCREEN_MASK_MAIN_HAS_SET_INFO, hasLevelSetInfo());
+  UpdateScreenMenuGadgets(SCREEN_MASK_MAIN_HAS_LEVELSET_INFO, hasLevelSetInfo());
+  UpdateScreenMenuGadgets(SCREEN_MASK_MAIN_HAS_LEVEL_INFO, hasLevelInfo());
 
   // copy actual game door content to door double buffer for OpenDoor()
   BlitBitmap(drawto, bitmap_db_door_1, DX, DY, DXSIZE, DYSIZE, 0, 0);
@@ -2324,6 +2338,7 @@ static void HandleMainMenu_SelectLevel(int step, int direction,
     SaveLevelSetup_SeriesInfo();
 
     UpdateScreenMenuGadgets(SCREEN_MASK_MAIN_HAS_SOLUTION, hasSolutionTape());
+    UpdateScreenMenuGadgets(SCREEN_MASK_MAIN_HAS_LEVEL_INFO, hasLevelInfo());
 
     // force redraw of playfield area (may be reset at this point)
     redraw_mask |= REDRAW_FIELD;
@@ -2607,6 +2622,13 @@ static void execInfoLevelSet(void)
   DrawInfoScreen();
 }
 
+static void execInfoLevel(void)
+{
+  info_mode = INFO_MODE_LEVEL;
+
+  DrawInfoScreen();
+}
+
 static void execExitInfo(void)
 {
   SetGameStatus(GAME_MODE_MAIN);
@@ -2623,6 +2645,7 @@ static struct TokenInfo info_info_main[] =
   { TYPE_ENTER_SCREEN,	execInfoProgram,	STR_INFO_PROGRAM	},
   { TYPE_ENTER_SCREEN,	execInfoVersion,	STR_INFO_VERSION	},
   { TYPE_ENTER_SCREEN,	execInfoLevelSet,	STR_INFO_LEVELSET	},
+  { TYPE_ENTER_SCREEN,	execInfoLevel,		STR_INFO_LEVEL		},
   { TYPE_EMPTY,		NULL,			""			},
   { TYPE_LEAVE_MENU,	execExitInfo, 		STR_INFO_EXIT		},
 
@@ -4012,6 +4035,7 @@ static char *getInfoScreenTitle_Generic(void)
 	  info_mode == INFO_MODE_PROGRAM  ? STR_INFO_PROGRAM  :
 	  info_mode == INFO_MODE_VERSION  ? STR_INFO_VERSION  :
 	  info_mode == INFO_MODE_LEVELSET ? STR_INFO_LEVELSET :
+	  info_mode == INFO_MODE_LEVEL    ? STR_INFO_LEVEL    :
 	  "");
 }
 
@@ -4023,6 +4047,7 @@ static int getInfoScreenBackgroundImage_Generic(void)
 	  info_mode == INFO_MODE_PROGRAM  ? IMG_BACKGROUND_INFO_PROGRAM  :
 	  info_mode == INFO_MODE_VERSION  ? IMG_BACKGROUND_INFO_VERSION  :
 	  info_mode == INFO_MODE_LEVELSET ? IMG_BACKGROUND_INFO_LEVELSET :
+	  info_mode == INFO_MODE_LEVEL    ? IMG_BACKGROUND_INFO_LEVEL    :
 	  IMG_BACKGROUND_INFO);
 }
 
@@ -4033,6 +4058,7 @@ static int getInfoScreenBackgroundSound_Generic(void)
 	  info_mode == INFO_MODE_PROGRAM  ? SND_BACKGROUND_INFO_PROGRAM  :
 	  info_mode == INFO_MODE_VERSION  ? SND_BACKGROUND_INFO_VERSION  :
 	  info_mode == INFO_MODE_LEVELSET ? SND_BACKGROUND_INFO_LEVELSET :
+	  info_mode == INFO_MODE_LEVEL    ? SND_BACKGROUND_INFO_LEVEL    :
 	  SND_BACKGROUND_INFO);
 }
 
@@ -4043,6 +4069,7 @@ static int getInfoScreenBackgroundMusic_Generic(void)
 	  info_mode == INFO_MODE_PROGRAM  ? MUS_BACKGROUND_INFO_PROGRAM  :
 	  info_mode == INFO_MODE_VERSION  ? MUS_BACKGROUND_INFO_VERSION  :
 	  info_mode == INFO_MODE_LEVELSET ? MUS_BACKGROUND_INFO_LEVELSET :
+	  info_mode == INFO_MODE_LEVEL    ? MUS_BACKGROUND_INFO_LEVEL    :
 	  MUS_BACKGROUND_INFO);
 }
 
@@ -4051,6 +4078,7 @@ static char *getInfoScreenFilename_Generic(int nr, boolean global)
   return (info_mode == INFO_MODE_CREDITS  ? getCreditsFilename(nr, global) :
 	  info_mode == INFO_MODE_PROGRAM  ? getProgramInfoFilename(nr)     :
 	  info_mode == INFO_MODE_LEVELSET ? getLevelSetInfoFilename(nr)    :
+	  info_mode == INFO_MODE_LEVEL    ? getLevelInfoFilename(level_nr) :
 	  NULL);
 }
 
@@ -4086,9 +4114,12 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens,
 		 filename, font_text, chars, -1, lines, line_spacing, -1,
 		 autowrap, centered, parse_comments);
   }
-  else if (info_mode == INFO_MODE_LEVELSET)
+  else if (info_mode == INFO_MODE_LEVELSET ||
+           info_mode == INFO_MODE_LEVEL)
   {
     struct TitleMessageInfo *tmi = &readme;
+    int font = (info_mode == INFO_MODE_LEVEL && tmi->font == FONT_INFO_LEVELSET ? FONT_INFO_LEVEL :
+                tmi->font);
 
     // if x position set to "-1", automatically determine by playfield width
     if (tmi->x == -1)
@@ -4119,7 +4150,7 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens,
       tmi->height = tmi->lines * getFontHeight(tmi->font);
 
     DrawTextFile(mSX + ALIGNED_TEXT_XPOS(tmi), mSY + ALIGNED_TEXT_YPOS(tmi),
-		 filename, tmi->font, tmi->chars, -1, tmi->lines, 0, -1,
+		 filename, font, tmi->chars, -1, tmi->lines, 0, -1,
 		 tmi->autowrap, tmi->centered, tmi->parse_comments);
   }
 
@@ -4195,6 +4226,16 @@ void HandleInfoScreen_Generic(int dx, int dy, int button)
 
       text_no_info = "No level set info available.";
     }
+    else if (info_mode == INFO_MODE_LEVEL)
+    {
+      use_global_screens = FALSE;
+
+      // determine number of level info screens
+      if (getLevelInfoFilename(level_nr) != NULL)
+	num_screens = 1;
+
+      text_no_info = "No level info available.";
+    }
 
     if (num_screens == 0)
     {
@@ -4268,6 +4309,8 @@ static void DrawInfoScreen(void)
     DrawInfoScreen_Version();
   else if (info_mode == INFO_MODE_LEVELSET)
     DrawInfoScreen_Generic();
+  else if (info_mode == INFO_MODE_LEVEL)
+    DrawInfoScreen_Generic();
   else
     DrawInfoScreen_Main();
 }
@@ -4324,6 +4367,8 @@ void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
   else if (info_mode == INFO_MODE_VERSION)
     HandleInfoScreen_Version(button);
   else if (info_mode == INFO_MODE_LEVELSET)
+    HandleInfoScreen_Generic(dx, dy, button);
+  else if (info_mode == INFO_MODE_LEVEL)
     HandleInfoScreen_Generic(dx, dy, button);
   else
     HandleInfoScreen_Main(mx, my, dx, dy, button);
@@ -7909,6 +7954,7 @@ static struct
   { &setup.internal.info_program,		execInfoProgram			},
   { &setup.internal.info_version,		execInfoVersion			},
   { &setup.internal.info_levelset,		execInfoLevelSet		},
+  { &setup.internal.info_level,			execInfoLevel			},
   { &setup.internal.info_exit,			execExitInfo			},
 
   { NULL,					NULL				}
@@ -10332,9 +10378,18 @@ static struct
     IMG_MENU_BUTTON_LEVELSET_INFO_ACTIVE,
     &menu.main.button.levelset_info, NULL,
     SCREEN_CTRL_ID_LEVELSET_INFO,
-    SCREEN_MASK_MAIN_HAS_SET_INFO,
+    SCREEN_MASK_MAIN_HAS_LEVELSET_INFO,
     GD_EVENT_RELEASED,
     FALSE, "show level set info"
+  },
+  {
+    IMG_MENU_BUTTON_LEVEL_INFO, IMG_MENU_BUTTON_LEVEL_INFO_PRESSED,
+    IMG_MENU_BUTTON_LEVEL_INFO_ACTIVE,
+    &menu.main.button.level_info, NULL,
+    SCREEN_CTRL_ID_LEVEL_INFO,
+    SCREEN_MASK_MAIN_HAS_LEVEL_INFO,
+    GD_EVENT_RELEASED,
+    FALSE, "show level info"
   },
   {
     IMG_MENU_BUTTON_SWITCH_ECS_AGA, IMG_MENU_BUTTON_SWITCH_ECS_AGA_ACTIVE, -1,
@@ -10568,6 +10623,15 @@ static void CreateScreenMenubuttons(void)
 	  x = SX + SXSIZE - 4 * TILESIZE;
 	  y = SY + SYSIZE - 3 * TILESIZE;
 	}
+      }
+    }
+    else if (id == SCREEN_CTRL_ID_LEVEL_INFO)
+    {
+      if (pos->x == -1 && pos->y == -1)
+      {
+	// use "SX" here to place button (ignore draw offsets)
+	x = SX + TILESIZE;
+	y = SY + SYSIZE - 2 * TILESIZE;
       }
     }
 
@@ -10840,7 +10904,9 @@ static void UnmapScreenMenuGadgets(int screen_mask)
     {
       UnmapGadget(screen_gadget[menubutton_info[i].gadget_id]);
 
-      if (screen_mask & SCREEN_MASK_MAIN_HAS_SOLUTION)
+      // undraw buttons for solution tapes or level info that may not exist for the selected level
+      if (screen_mask & SCREEN_MASK_MAIN_HAS_SOLUTION ||
+          screen_mask & SCREEN_MASK_MAIN_HAS_LEVEL_INFO)
 	DrawBackground(screen_gadget[menubutton_info[i].gadget_id]->x,
 		       screen_gadget[menubutton_info[i].gadget_id]->y,
 		       screen_gadget[menubutton_info[i].gadget_id]->width,
@@ -10989,6 +11055,10 @@ static void HandleScreenGadgets(struct GadgetInfo *gi)
 
     case SCREEN_CTRL_ID_LEVELSET_INFO:
       DrawInfoScreen_FromMainMenu(INFO_MODE_LEVELSET);
+      break;
+
+    case SCREEN_CTRL_ID_LEVEL_INFO:
+      DrawInfoScreen_FromMainMenu(INFO_MODE_LEVEL);
       break;
 
     case SCREEN_CTRL_ID_SWITCH_ECS_AGA:
