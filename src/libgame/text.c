@@ -523,16 +523,15 @@ static boolean getCheckedTokenValueFromString(char *string, char **token,
   return TRUE;
 }
 
-static void DrawTextBuffer_Flush(int x, int y, char *buffer, int base_font_nr,
+static void DrawTextBuffer_Flush(int x, int y, char *buffer,
 				 int font_nr, int line_length, int cut_length,
 				 int mask_mode, boolean centered,
 				 int current_ypos)
 {
   int buffer_len = strlen(buffer);
-  int base_font_width = getFontWidth(base_font_nr);
   int font_width = getFontWidth(font_nr);
   int offset_chars = (centered ? (line_length - buffer_len) / 2 : 0);
-  int line_width = base_font_width * line_length;
+  int line_width = font_width * line_length;
   int buffer_width = font_width * buffer_len;
   int offset_xsize = (centered ? (line_width - buffer_width) / 2 : 0);
   int final_cut_length = MAX(0, cut_length - offset_chars);
@@ -642,7 +641,7 @@ static int DrawTextBufferExt(int x, int y, char *text_buffer, int base_font_nr,
 	// if found, flush the current buffer, if non-empty
 	if (buffer_len > 0 && current_ypos < max_height)
 	{
-	  DrawTextBuffer_Flush(x, y, buffer, base_font_nr, font_nr, line_length,
+	  DrawTextBuffer_Flush(x, y, buffer, font_nr, line_length,
 			       cut_length, mask_mode, centered, current_ypos);
 	  current_ypos += line_height;
 	  current_line++;
@@ -717,7 +716,7 @@ static int DrawTextBufferExt(int x, int y, char *text_buffer, int base_font_nr,
 
       if (buffer_filled)
       {
-	DrawTextBuffer_Flush(x, y, buffer, base_font_nr, font_nr, line_length,
+	DrawTextBuffer_Flush(x, y, buffer, font_nr, line_length,
 			     cut_length, mask_mode, centered, current_ypos);
 	current_ypos += line_height;
 	current_line++;
@@ -732,7 +731,7 @@ static int DrawTextBufferExt(int x, int y, char *text_buffer, int base_font_nr,
 
   if (buffer_len > 0 && current_ypos < max_height)
   {
-    DrawTextBuffer_Flush(x, y, buffer, base_font_nr, font_nr, line_length,
+    DrawTextBuffer_Flush(x, y, buffer, font_nr, line_length,
 			 cut_length, mask_mode, centered, current_ypos);
     current_ypos += line_height;
     current_line++;
