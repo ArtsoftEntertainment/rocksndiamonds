@@ -566,7 +566,7 @@ static int DrawTextBufferExt(int x, int y, char *text_buffer, int base_font_nr,
 			     boolean centered, boolean parse_comments,
 			     boolean is_text_area)
 {
-  char buffer[line_length + 1];
+  char buffer[MAX_OUTPUT_LINESIZE + 1];
   int buffer_len;
   int font_nr = base_font_nr;
   int font_width = getFontWidth(font_nr);
