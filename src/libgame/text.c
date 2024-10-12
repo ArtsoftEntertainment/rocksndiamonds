@@ -546,19 +546,6 @@ static void DrawTextBuffer_Flush(int x, int y, char *buffer,
     DrawText(xx, yy, buffer, font_nr);
 }
 
-static void setTextBufferCharSize(int *line_length, int *cut_length, int *max_lines,
-				  int line_width, int cut_width, int max_height,
-				  int font_nr, int line_spacing)
-{
-  int font_width = getFontWidth(font_nr);
-  int font_height = getFontHeight(font_nr);
-  int line_height = font_height + line_spacing;
-
-  *line_length = MIN(line_width / font_width, MAX_OUTPUT_LINESIZE);
-  *cut_length  = MIN(cut_width  / font_width, MAX_OUTPUT_LINESIZE);
-  *max_lines   = max_height / line_height;
-}
-
 static int DrawTextBufferExt(int x, int y, char *text_buffer, int base_font_nr,
 			     int line_length, int cut_length, int max_lines,
 			     int line_width, int cut_width, int max_height,
@@ -597,9 +584,8 @@ static int DrawTextBufferExt(int x, int y, char *text_buffer, int base_font_nr,
   if (max_height == -1)
     max_height = max_lines * line_height;
 
-  // update character sizes of line buffer from pixel sizes
-  setTextBufferCharSize(&line_length, &cut_length, &max_lines,
-			line_width, cut_width, max_height, font_nr, line_spacing);
+  // update line buffer length from line width and font width
+  line_length = MIN(line_width / font_width, MAX_OUTPUT_LINESIZE);
 
   buffer[0] = '\0';
   buffer_len = 0;
@@ -660,12 +646,12 @@ static int DrawTextBufferExt(int x, int y, char *text_buffer, int base_font_nr,
 	  parse_comments = get_boolean_from_string(value);
 
 	// if font has changed, depending values need to be updated as well
+	font_width = getFontWidth(font_nr);
 	font_height = getFontHeight(font_nr);
 	line_height = font_height + line_spacing;
 
-	// update character sizes of line buffer from pixel sizes
-	setTextBufferCharSize(&line_length, &cut_length, &max_lines,
-			      line_width, cut_width, max_height, font_nr, line_spacing);
+        // update line buffer length from line width and font width
+        line_length = MIN(line_width / font_width, MAX_OUTPUT_LINESIZE);
       }
 
       continue;
