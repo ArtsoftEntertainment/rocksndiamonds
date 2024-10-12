@@ -554,8 +554,8 @@ static void setTextBufferCharSize(int *line_length, int *cut_length, int *max_li
   int font_height = getFontHeight(font_nr);
   int line_height = font_height + line_spacing;
 
-  *line_length = line_width / font_width;
-  *cut_length  = cut_width  / font_width;
+  *line_length = MIN(line_width / font_width, MAX_OUTPUT_LINESIZE);
+  *cut_length  = MIN(cut_width  / font_width, MAX_OUTPUT_LINESIZE);
   *max_lines   = max_height / line_height;
 }
 
