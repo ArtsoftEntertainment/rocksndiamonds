@@ -29,6 +29,7 @@
 
 // text output definitions
 #define MAX_OUTPUT_LINESIZE	1024
+#define MAX_OUTPUT_LINES	1024
 
 // special constants for old ISO-8859-1 character byte values
 #define CHAR_BYTE_UMLAUT_A	((char)0xc4)
@@ -90,7 +91,27 @@
 #define DEFAULT_NUM_CHARS_PER_LINE		16
 
 
-// font structure definitions
+// structure definitions
+
+struct WrappedTextInfo
+{
+  struct
+  {
+    char *text;
+    int font_nr;
+    boolean centered;
+  } line[MAX_OUTPUT_LINES];
+
+  // number of wrapped lines
+  int num_lines;
+
+  // internal info for processing lines
+  int line_width, cut_length, max_height;
+  int line_spacing, mask_mode;
+};
+
+
+// function definitions
 
 void EnableDrawingText(void);
 void DisableDrawingText(void);
@@ -126,6 +147,13 @@ void DrawText(int, int, char *, int);
 void DrawTextExt(DrawBuffer *, int, int, char *, int, int);
 
 char *GetTextBufferFromFile(char *, int);
+struct WrappedTextInfo *GetWrappedTextBuffer(char *, int, int, int, int, int, int, int, int, int,
+                                             boolean, boolean, boolean);
+struct WrappedTextInfo *GetWrappedTextFile(char *, int, int, int, int, int, int, int, int, int,
+                                           boolean, boolean, boolean);
+int DrawWrappedText(int, int, struct WrappedTextInfo *, int);
+void FreeWrappedText(struct WrappedTextInfo *);
+
 int DrawTextArea(int, int, char *, int, int, int, int, int, int, int, int, int,
 		 boolean, boolean, boolean);
 int DrawTextBuffer(int, int, char *, int, int, int, int, int, int, int, int, int,

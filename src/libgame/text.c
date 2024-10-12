@@ -523,6 +523,15 @@ static boolean getCheckedTokenValueFromString(char *string, char **token,
   return TRUE;
 }
 
+static void AddLineToWrappedText(struct WrappedTextInfo *wrapped_text,
+                                 char *buffer, int font_nr, int centered)
+{
+  wrapped_text->line[wrapped_text->num_lines].text = getStringCopy(buffer);
+  wrapped_text->line[wrapped_text->num_lines].font_nr = font_nr;
+  wrapped_text->line[wrapped_text->num_lines].centered = centered;
+  wrapped_text->num_lines++;
+}
+
 static void DrawTextBuffer_Flush(int x, int y, char *buffer,
 				 int font_nr, int line_length, int cut_length,
 				 int mask_mode, boolean centered,
@@ -546,27 +555,23 @@ static void DrawTextBuffer_Flush(int x, int y, char *buffer,
     DrawText(xx, yy, buffer, font_nr);
 }
 
-static int DrawTextBufferExt(int x, int y, char *text_buffer, int base_font_nr,
-			     int line_length, int cut_length, int max_lines,
-			     int line_width, int cut_width, int max_height,
-			     int line_spacing, int mask_mode, boolean autowrap,
-			     boolean centered, boolean parse_comments,
-			     boolean is_text_area)
+static struct WrappedTextInfo *GetWrappedText(char *text_buffer, int base_font_nr,
+                                              int line_length, int cut_length, int max_lines,
+                                              int line_width, int cut_width, int max_height,
+                                              int line_spacing, int mask_mode, boolean autowrap,
+                                              boolean centered, boolean parse_comments,
+                                              boolean is_text_area)
 {
+  struct WrappedTextInfo *wrapped_text;
   char buffer[MAX_OUTPUT_LINESIZE + 1];
   int buffer_len;
   int font_nr = base_font_nr;
   int font_width = getFontWidth(font_nr);
   int font_height = getFontHeight(font_nr);
   int line_height = font_height + line_spacing;
-  int current_line = 0;
-  int current_ypos = 0;
 
   if (text_buffer == NULL || *text_buffer == '\0')
-    return 0;
-
-  if (current_line >= max_lines)
-    return 0;
+    return NULL;
 
   // if number of characters where to cut line not defined, set to default line size
   if (cut_length == -1)
@@ -587,10 +592,16 @@ static int DrawTextBufferExt(int x, int y, char *text_buffer, int base_font_nr,
   // update line buffer length from line width and font width
   line_length = MIN(line_width / font_width, MAX_OUTPUT_LINESIZE);
 
+  wrapped_text = checked_calloc(sizeof(struct WrappedTextInfo));
+  wrapped_text->line_width = line_width;
+  wrapped_text->cut_length = cut_length;
+  wrapped_text->max_height = max_height;
+  wrapped_text->num_lines = 0;
+
   buffer[0] = '\0';
   buffer_len = 0;
 
-  while (*text_buffer && current_ypos < max_height)
+  while (*text_buffer && wrapped_text->num_lines < MAX_OUTPUT_LINES)
   {
     char line[MAX_LINE_LEN + 1];
     char *line_ptr;
@@ -625,12 +636,9 @@ static int DrawTextBufferExt(int x, int y, char *text_buffer, int base_font_nr,
       if (getCheckedTokenValueFromString(line + 1, &token, &value))
       {
 	// if found, flush the current buffer, if non-empty
-	if (buffer_len > 0 && current_ypos < max_height)
+	if (buffer_len > 0 && wrapped_text->num_lines < MAX_OUTPUT_LINES)
 	{
-	  DrawTextBuffer_Flush(x, y, buffer, font_nr, line_length,
-			       cut_length, mask_mode, centered, current_ypos);
-	  current_ypos += line_height;
-	  current_line++;
+          AddLineToWrappedText(wrapped_text, buffer, font_nr, centered);
 
 	  buffer[0] = '\0';
 	  buffer_len = 0;
@@ -645,13 +653,8 @@ static int DrawTextBufferExt(int x, int y, char *text_buffer, int base_font_nr,
 	else if (strEqual(token, ".parse_comments"))
 	  parse_comments = get_boolean_from_string(value);
 
-	// if font has changed, depending values need to be updated as well
-	font_width = getFontWidth(font_nr);
-	font_height = getFontHeight(font_nr);
-	line_height = font_height + line_spacing;
-
         // update line buffer length from line width and font width
-        line_length = MIN(line_width / font_width, MAX_OUTPUT_LINESIZE);
+        line_length = MIN(line_width / getFontWidth(font_nr), MAX_OUTPUT_LINESIZE);
       }
 
       continue;
@@ -672,7 +675,7 @@ static int DrawTextBufferExt(int x, int y, char *text_buffer, int base_font_nr,
 
     line_ptr = line;
 
-    while (*line_ptr && current_ypos < max_height)
+    while (*line_ptr && wrapped_text->num_lines < MAX_OUTPUT_LINES)
     {
       boolean buffer_filled;
 
@@ -702,10 +705,7 @@ static int DrawTextBufferExt(int x, int y, char *text_buffer, int base_font_nr,
 
       if (buffer_filled)
       {
-	DrawTextBuffer_Flush(x, y, buffer, font_nr, line_length,
-			     cut_length, mask_mode, centered, current_ypos);
-	current_ypos += line_height;
-	current_line++;
+        AddLineToWrappedText(wrapped_text, buffer, font_nr, centered);
 
 	last_line_was_empty = (buffer_len == 0);
 
@@ -715,15 +715,105 @@ static int DrawTextBufferExt(int x, int y, char *text_buffer, int base_font_nr,
     }
   }
 
-  if (buffer_len > 0 && current_ypos < max_height)
+  if (buffer_len > 0 && wrapped_text->num_lines < MAX_OUTPUT_LINES)
+    AddLineToWrappedText(wrapped_text, buffer, font_nr, centered);
+
+  return wrapped_text;
+}
+
+struct WrappedTextInfo *GetWrappedTextBuffer(char *text_buffer, int font_nr,
+                                             int line_length, int cut_length, int max_lines,
+                                             int line_width, int cut_width, int max_height,
+                                             int line_spacing, int mask_mode, boolean autowrap,
+                                             boolean centered, boolean parse_comments)
+{
+  return GetWrappedText(text_buffer, font_nr,
+                        line_length, cut_length, max_lines,
+                        line_width, cut_width, max_height,
+                        line_spacing, mask_mode, autowrap,
+                        centered, parse_comments, FALSE);
+}
+
+struct WrappedTextInfo *GetWrappedTextFile(char *filename, int font_nr,
+                                           int line_length, int cut_length, int max_lines,
+                                           int line_width, int cut_width, int max_height,
+                                           int line_spacing, int mask_mode, boolean autowrap,
+                                           boolean centered, boolean parse_comments)
+{
+  char *text_buffer = GetTextBufferFromFile(filename, MAX_OUTPUT_LINESIZE);
+  struct WrappedTextInfo *wrapped_text = GetWrappedText(text_buffer, font_nr,
+                                                        line_length, cut_length, max_lines,
+                                                        line_width, cut_width, max_height,
+                                                        line_spacing, mask_mode, autowrap,
+                                                        centered, parse_comments, FALSE);
+  checked_free(text_buffer);
+
+  return wrapped_text;
+}
+
+int DrawWrappedText(int x, int y, struct WrappedTextInfo *wrapped_text, int start_pos)
+{
+  int current_line = 0;
+  int current_ypos = 0;
+  int i;
+
+  if (wrapped_text == NULL)
+    return 0;
+
+  if (start_pos >= wrapped_text->num_lines)
+    return 0;
+
+  for (i = start_pos; i < wrapped_text->num_lines; i++)
   {
-    DrawTextBuffer_Flush(x, y, buffer, font_nr, line_length,
-			 cut_length, mask_mode, centered, current_ypos);
+    int font_nr = wrapped_text->line[i].font_nr;
+    int font_height = getFontHeight(font_nr);
+    int line_length = MIN(wrapped_text->line_width / getFontWidth(font_nr), MAX_OUTPUT_LINESIZE);
+    int line_height = font_height + wrapped_text->line_spacing;
+
+    if (current_ypos + font_height > wrapped_text->max_height)
+      break;
+
+    DrawTextBuffer_Flush(x, y, wrapped_text->line[i].text, font_nr, line_length,
+                         wrapped_text->cut_length, wrapped_text->mask_mode,
+                         wrapped_text->line[i].centered, current_ypos);
+
     current_ypos += line_height;
     current_line++;
   }
 
   return current_line;
+}
+
+void FreeWrappedText(struct WrappedTextInfo *wrapped_text)
+{
+  int i;
+
+  if (wrapped_text == NULL)
+    return;
+
+  for (i = 0; i < wrapped_text->num_lines; i++)
+    checked_free(wrapped_text->line[i].text);
+
+  checked_free(wrapped_text);
+}
+
+static int DrawTextBufferExt(int x, int y, char *text_buffer, int font_nr,
+			     int line_length, int cut_length, int max_lines,
+			     int line_width, int cut_width, int max_height,
+			     int line_spacing, int mask_mode, boolean autowrap,
+			     boolean centered, boolean parse_comments,
+			     boolean is_text_area)
+{
+  struct WrappedTextInfo *wrapped_text = GetWrappedText(text_buffer, font_nr,
+                                                        line_length, cut_length, max_lines,
+                                                        line_width, cut_width, max_height,
+                                                        line_spacing, mask_mode, autowrap,
+                                                        centered, parse_comments, is_text_area);
+  int num_lines_printed = DrawWrappedText(x, y, wrapped_text, 0);
+
+  FreeWrappedText(wrapped_text);
+
+  return num_lines_printed;
 }
 
 int DrawTextArea(int x, int y, char *text_buffer, int font_nr,
