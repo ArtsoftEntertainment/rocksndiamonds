@@ -549,6 +549,7 @@ static void DrawTextBuffer_Flush(int x, int y, char *buffer, int base_font_nr,
 
 static int DrawTextBufferExt(int x, int y, char *text_buffer, int base_font_nr,
 			     int line_length, int cut_length, int max_lines,
+			     int line_width_unused, int cut_width_unused, int max_height_unused,
 			     int line_spacing, int mask_mode, boolean autowrap,
 			     boolean centered, boolean parse_comments,
 			     boolean is_text_area)
@@ -708,39 +709,46 @@ static int DrawTextBufferExt(int x, int y, char *text_buffer, int base_font_nr,
 
 int DrawTextArea(int x, int y, char *text_buffer, int font_nr,
 		 int line_length, int cut_length, int max_lines,
+		 int line_width, int cut_width, int max_height,
 		 int line_spacing, int mask_mode, boolean autowrap,
 		 boolean centered, boolean parse_comments)
 {
   return DrawTextBufferExt(x, y, text_buffer, font_nr,
 			   line_length, cut_length, max_lines,
+			   line_width, cut_width, max_height,
 			   line_spacing, mask_mode, autowrap,
 			   centered, parse_comments, TRUE);
 }
 
 int DrawTextBuffer(int x, int y, char *text_buffer, int font_nr,
 		   int line_length, int cut_length, int max_lines,
+		   int line_width, int cut_width, int max_height,
 		   int line_spacing, int mask_mode, boolean autowrap,
 		   boolean centered, boolean parse_comments)
 {
   return DrawTextBufferExt(x, y, text_buffer, font_nr,
 			   line_length, cut_length, max_lines,
+			   line_width, cut_width, max_height,
 			   line_spacing, mask_mode, autowrap,
 			   centered, parse_comments, FALSE);
 }
 
 int DrawTextBufferS(int x, int y, char *text_buffer, int font_nr,
 		    int line_length, int cut_length, int max_lines,
+		    int line_width, int cut_width, int max_height,
 		    int line_spacing, int mask_mode, boolean autowrap,
 		    boolean centered, boolean parse_comments)
 {
   return DrawTextBuffer(gfx.sx + x, gfx.sy + y, text_buffer, font_nr,
 			line_length, cut_length, max_lines,
+			line_width, cut_width, max_height,
 			line_spacing, mask_mode, autowrap,
 			centered, parse_comments);
 }
 
 int DrawTextBufferVA(int x, int y, char *format, va_list ap, int font_nr,
 		     int line_length, int cut_length, int max_lines,
+		     int line_width, int cut_width, int max_height,
 		     int line_spacing, int mask_mode, boolean autowrap,
 		     boolean centered, boolean parse_comments)
 {
@@ -752,6 +760,7 @@ int DrawTextBufferVA(int x, int y, char *format, va_list ap, int font_nr,
 
   int num_lines_printed = DrawTextBuffer(x, y, text_buffer, font_nr,
 					 line_length, cut_length, max_lines,
+					 line_width, cut_width, max_height,
 					 line_spacing, mask_mode, autowrap,
 					 centered, parse_comments);
   return num_lines_printed;
@@ -759,12 +768,14 @@ int DrawTextBufferVA(int x, int y, char *format, va_list ap, int font_nr,
 
 int DrawTextFile(int x, int y, char *filename, int font_nr,
 		 int line_length, int cut_length, int max_lines,
+		 int line_width, int cut_width, int max_height,
 		 int line_spacing, int mask_mode, boolean autowrap,
 		 boolean centered, boolean parse_comments)
 {
   char *text_buffer = GetTextBufferFromFile(filename, MAX_OUTPUT_LINESIZE);
   int num_lines_printed = DrawTextBuffer(x, y, text_buffer, font_nr,
 					 line_length, cut_length, max_lines,
+					 line_width, cut_width, max_height,
 					 line_spacing, mask_mode, autowrap,
 					 centered, parse_comments);
   checked_free(text_buffer);

@@ -11678,7 +11678,7 @@ static int PrintTextFromBuffer(char *text_buffer, int font_nr, int xpos, int ypo
   int max_lines_drawable = (SYSIZE - ypos) / font_height - 1;
 
   return DrawTextBuffer(SX + xpos, SY + ypos, text_buffer, font_nr,
-                        max_chars_per_line, -1, max_lines_drawable, 0, -1,
+                        max_chars_per_line, -1, max_lines_drawable, -1, -1, -1, 0, -1,
                         TRUE, FALSE, FALSE);
 }
 

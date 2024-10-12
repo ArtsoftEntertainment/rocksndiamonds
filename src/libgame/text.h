@@ -126,15 +126,15 @@ void DrawText(int, int, char *, int);
 void DrawTextExt(DrawBuffer *, int, int, char *, int, int);
 
 char *GetTextBufferFromFile(char *, int);
-int DrawTextArea(int, int, char *, int, int, int, int, int, int,
+int DrawTextArea(int, int, char *, int, int, int, int, int, int, int, int, int,
 		 boolean, boolean, boolean);
-int DrawTextBuffer(int, int, char *, int, int, int, int, int, int,
+int DrawTextBuffer(int, int, char *, int, int, int, int, int, int, int, int, int,
 		   boolean, boolean, boolean);
-int DrawTextBufferS(int, int, char *, int, int, int, int, int, int,
+int DrawTextBufferS(int, int, char *, int, int, int, int, int, int, int, int, int,
 		    boolean, boolean, boolean);
-int DrawTextBufferVA(int, int, char *, va_list, int, int, int, int, int, int,
+int DrawTextBufferVA(int, int, char *, va_list, int, int, int, int, int, int, int, int, int,
 		     boolean, boolean, boolean);
-int DrawTextFile(int, int, char *, int, int, int, int, int, int,
+int DrawTextFile(int, int, char *, int, int, int, int, int, int, int, int, int,
 		 boolean, boolean, boolean);
 
 #endif	// TEXT_H

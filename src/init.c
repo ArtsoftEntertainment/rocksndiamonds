@@ -6608,7 +6608,7 @@ void DisplayExitMessage(char *format, va_list ap)
 
   num_lines_printed =
     DrawTextBufferVA(sx, sy, format, ap, font_2,
-		     line_length, line_length, max_lines,
+		     line_length, line_length, max_lines, -1, -1, -1,
 		     0, BLIT_ON_BACKGROUND, TRUE, TRUE, FALSE);
   sy += (num_lines_printed + 3) * font_height;
 
@@ -6617,7 +6617,7 @@ void DisplayExitMessage(char *format, va_list ap)
 
   num_lines_printed =
     DrawTextBuffer(sx, sy, program.log_filename, font_2,
-		   line_length, line_length, max_lines,
+		   line_length, line_length, max_lines, -1, -1, -1,
 		   0, BLIT_ON_BACKGROUND, TRUE, TRUE, FALSE);
 
   DrawTextSCentered(SYSIZE - 20, font_3, "Press any key or button to exit");

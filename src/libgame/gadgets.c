@@ -954,7 +954,7 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 
 	// gadget text value
 	DrawTextArea(x + border_x, y + border_y, gi->textarea.value,
-		     font_nr, xsize, -1, ysize, 0,
+		     font_nr, xsize, -1, ysize, -1, -1, -1, 0,
 		     BLIT_ON_BACKGROUND, FALSE, FALSE, FALSE);
 
 	cursor_letter = gi->textarea.value[gi->textarea.cursor_position];

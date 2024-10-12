@@ -2970,7 +2970,7 @@ static void AnimateEnvelope(int envelope_nr, int anim_mode, int action)
 
     DrawTextArea(sx + font_width, sy + font_height,
 		 level.envelope[envelope_nr].text, font_nr, max_xsize,
-		 xsize - 2, ysize - 2, 0, mask_mode,
+		 xsize - 2, ysize - 2, -1, -1, -1, 0, mask_mode,
 		 level.envelope[envelope_nr].autowrap,
 		 level.envelope[envelope_nr].centered, FALSE);
 
@@ -3228,7 +3228,7 @@ static void DrawEnvelopeRequestText(int sx, int sy, char *text)
   }
 
   DrawTextBuffer(sx + sx_offset, sy + sy_offset, text_final, font_nr,
-		 line_length, -1, max_lines, line_spacing, mask_mode,
+		 line_length, -1, max_lines, -1, -1, -1, line_spacing, mask_mode,
 		 request.autowrap, request.centered, FALSE);
 
   if (text_door_style)

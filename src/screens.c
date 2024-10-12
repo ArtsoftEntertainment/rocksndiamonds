@@ -1840,7 +1840,7 @@ static void DrawTitleScreenMessage(int nr, boolean initial)
   ClearRectangleOnBackground(drawto, 0, 0, WIN_XSIZE, WIN_YSIZE);
 
   DrawTextFile(ALIGNED_TEXT_XPOS(tmi), ALIGNED_TEXT_YPOS(tmi),
-	       filename, tmi->font, tmi->chars, -1, tmi->lines, 0, -1,
+	       filename, tmi->font, tmi->chars, -1, tmi->lines, -1, -1, -1, 0, -1,
 	       tmi->autowrap, tmi->centered, tmi->parse_comments);
 
   ResetFontStatus();
@@ -3464,7 +3464,7 @@ void DrawInfoScreen_HelpText(int element, int action, int direction, int ypos)
   // first get number of text lines to calculate offset for centering text
   int num_lines_printed =
     DrawTextBuffer(0, 0, text, font_nr,
-		   max_chars_per_line, -1, max_lines_per_text, line_spacing, -1,
+		   max_chars_per_line, -1, max_lines_per_text, -1, -1, -1, line_spacing, -1,
 		   autowrap, centered, parse_comments);
 
   EnableDrawingText();
@@ -3473,7 +3473,7 @@ void DrawInfoScreen_HelpText(int element, int action, int direction, int ypos)
   int yoffset = (row_height - size_lines_printed) / 2;
 
   DrawTextBuffer(xstart, ystart + ypos * ystep + yoffset, text, font_nr,
-		 max_chars_per_line, -1, max_lines_per_text, line_spacing, -1,
+		 max_chars_per_line, -1, max_lines_per_text, -1, -1, -1, line_spacing, -1,
 		 autowrap, centered, parse_comments);
 }
 
@@ -4111,7 +4111,7 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens,
     boolean parse_comments = TRUE;
 
     DrawTextFile(xstart, ystart,
-		 filename, font_text, chars, -1, lines, line_spacing, -1,
+		 filename, font_text, chars, -1, lines, -1, -1, -1, line_spacing, -1,
 		 autowrap, centered, parse_comments);
   }
   else if (info_mode == INFO_MODE_LEVELSET ||
@@ -4150,7 +4150,7 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens,
       tmi->height = tmi->lines * getFontHeight(tmi->font);
 
     DrawTextFile(mSX + ALIGNED_TEXT_XPOS(tmi), mSY + ALIGNED_TEXT_YPOS(tmi),
-		 filename, font, tmi->chars, -1, tmi->lines, 0, -1,
+		 filename, font, tmi->chars, -1, tmi->lines, -1, -1, -1, 0, -1,
 		 tmi->autowrap, tmi->centered, tmi->parse_comments);
   }
 
@@ -5851,13 +5851,13 @@ static void DrawScoreInfo_Content(int entry_nr)
 
   DrawTextF(xstart1, ystart, font_head, "Level Set");
   lines = DrawTextBufferS(xstart2, ystart, leveldir_current->name, font_text,
-			  max_chars_per_line, -1, max_lines_per_text, 0, -1,
+			  max_chars_per_line, -1, max_lines_per_text, -1, -1, -1, 0, -1,
 			  TRUE, FALSE, FALSE);
   ystart += ystep_line + (lines > 0 ? lines - 1 : 0) * font_height;
 
   DrawTextF(xstart1, ystart, font_head, "Level");
   lines = DrawTextBufferS(xstart2, ystart, level.name, font_text,
-			  max_chars_per_line, -1, max_lines_per_text, 0, -1,
+			  max_chars_per_line, -1, max_lines_per_text, -1, -1, -1, 0, -1,
 			  TRUE, FALSE, FALSE);
   ystart += ystep_para + (lines > 0 ? lines - 1 : 0) * font_height;
 
@@ -5911,7 +5911,7 @@ static void DrawScoreInfo_Content(int entry_nr)
 
   DrawTextF(xstart1, ystart, font_head, "Country");
   lines = DrawTextBufferS(xstart2, ystart, entry->country_name, font_text,
-			  max_chars_per_line, -1, max_lines_per_text, 0, -1,
+			  max_chars_per_line, -1, max_lines_per_text, -1, -1, -1, 0, -1,
 			  TRUE, FALSE, FALSE);
   ystart += ystep_line;
 

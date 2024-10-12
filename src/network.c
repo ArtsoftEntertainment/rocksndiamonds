@@ -99,7 +99,7 @@ static void DrawNetworkTextExt(char *message, int font_nr, boolean initialize)
     int num_lines_spacing = (font_nr == FC_YELLOW ? 1 : 3);
     int num_lines_printed = DrawTextBuffer(xpos, ypos, message, font_nr,
 					   max_chars_per_line, -1,
-					   max_lines_per_text, 0, -1,
+					   max_lines_per_text, -1, -1, -1, 0, -1,
 					   TRUE, TRUE, FALSE);
 
     ypos += (num_lines_printed + num_lines_spacing) * font_height;
