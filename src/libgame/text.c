@@ -547,9 +547,22 @@ static void DrawTextBuffer_Flush(int x, int y, char *buffer, int base_font_nr,
     DrawText(xx, yy, buffer, font_nr);
 }
 
+static void setTextBufferCharSize(int *line_length, int *cut_length, int *max_lines,
+				  int line_width, int cut_width, int max_height,
+				  int font_nr, int line_spacing)
+{
+  int font_width = getFontWidth(font_nr);
+  int font_height = getFontHeight(font_nr);
+  int line_height = font_height + line_spacing;
+
+  *line_length = line_width / font_width;
+  *cut_length  = cut_width  / font_width;
+  *max_lines   = max_height / line_height;
+}
+
 static int DrawTextBufferExt(int x, int y, char *text_buffer, int base_font_nr,
 			     int line_length, int cut_length, int max_lines,
-			     int line_width_unused, int cut_width_unused, int max_height_unused,
+			     int line_width, int cut_width, int max_height,
 			     int line_spacing, int mask_mode, boolean autowrap,
 			     boolean centered, boolean parse_comments,
 			     boolean is_text_area)
@@ -557,11 +570,11 @@ static int DrawTextBufferExt(int x, int y, char *text_buffer, int base_font_nr,
   char buffer[line_length + 1];
   int buffer_len;
   int font_nr = base_font_nr;
+  int font_width = getFontWidth(font_nr);
   int font_height = getFontHeight(font_nr);
   int line_height = font_height + line_spacing;
   int current_line = 0;
   int current_ypos = 0;
-  int max_height = max_lines * line_height;
 
   if (text_buffer == NULL || *text_buffer == '\0')
     return 0;
@@ -569,8 +582,25 @@ static int DrawTextBufferExt(int x, int y, char *text_buffer, int base_font_nr,
   if (current_line >= max_lines)
     return 0;
 
+  // if number of characters where to cut line not defined, set to default line size
   if (cut_length == -1)
     cut_length = line_length;
+
+  // if pixel width where to cut line not defined, set from number of characters
+  if (cut_width == -1)
+    cut_width = cut_length * font_width;
+
+  // if pixel width of line buffer not defined, set from maximum line size
+  if (line_width == -1)
+    line_width = line_length * font_width;
+
+  // if pixel height of line buffer not defined, set from maximum number of lines
+  if (max_height == -1)
+    max_height = max_lines * line_height;
+
+  // update character sizes of line buffer from pixel sizes
+  setTextBufferCharSize(&line_length, &cut_length, &max_lines,
+			line_width, cut_width, max_height, font_nr, line_spacing);
 
   buffer[0] = '\0';
   buffer_len = 0;
@@ -633,6 +663,10 @@ static int DrawTextBufferExt(int x, int y, char *text_buffer, int base_font_nr,
 	// if font has changed, depending values need to be updated as well
 	font_height = getFontHeight(font_nr);
 	line_height = font_height + line_spacing;
+
+	// update character sizes of line buffer from pixel sizes
+	setTextBufferCharSize(&line_length, &cut_length, &max_lines,
+			      line_width, cut_width, max_height, font_nr, line_spacing);
       }
 
       continue;
