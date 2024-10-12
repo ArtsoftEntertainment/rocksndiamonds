@@ -534,7 +534,7 @@ static void DrawTextBuffer_Flush(int x, int y, char *buffer,
   int line_width = font_width * line_length;
   int buffer_width = font_width * buffer_len;
   int offset_xsize = (centered ? (line_width - buffer_width) / 2 : 0);
-  int final_cut_length = MAX(0, cut_length - offset_chars);
+  int final_cut_length = MIN(MAX(0, cut_length - offset_chars), buffer_len);
   int xx = x + offset_xsize;
   int yy = y + current_ypos;
 
