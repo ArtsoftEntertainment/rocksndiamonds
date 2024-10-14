@@ -768,6 +768,8 @@ int DrawWrappedText(int x, int y, struct WrappedTextInfo *wrapped_text, int star
   if (start_pos >= wrapped_text->num_lines)
     return 0;
 
+  wrapped_text->line_visible_first = start_pos;
+
   for (i = start_pos; i < wrapped_text->num_lines; i++)
   {
     int font_nr = wrapped_text->line[i].font_nr;
@@ -785,6 +787,8 @@ int DrawWrappedText(int x, int y, struct WrappedTextInfo *wrapped_text, int star
     current_ypos += line_height;
     current_line++;
   }
+
+  wrapped_text->line_visible_last = start_pos + current_line - 1;
 
   return current_line;
 }

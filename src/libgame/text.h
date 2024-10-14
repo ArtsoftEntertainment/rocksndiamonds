@@ -111,6 +111,8 @@ struct WrappedTextInfo
   // internal info for processing lines
   int line_width, cut_length, max_height;
   int line_spacing, mask_mode;
+  int line_visible_first;
+  int line_visible_last;
 };
 
 
