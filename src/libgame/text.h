@@ -105,6 +105,9 @@ struct WrappedTextInfo
   // number of wrapped lines
   int num_lines;
 
+  // total height of all lines
+  int total_height;
+
   // internal info for processing lines
   int line_width, cut_length, max_height;
   int line_spacing, mask_mode;

@@ -529,6 +529,8 @@ static void AddLineToWrappedText(struct WrappedTextInfo *wrapped_text,
   wrapped_text->line[wrapped_text->num_lines].text = getStringCopy(buffer);
   wrapped_text->line[wrapped_text->num_lines].font_nr = font_nr;
   wrapped_text->line[wrapped_text->num_lines].centered = centered;
+
+  wrapped_text->total_height += getFontHeight(font_nr) + wrapped_text->line_spacing;
   wrapped_text->num_lines++;
 }
 
@@ -598,6 +600,7 @@ static struct WrappedTextInfo *GetWrappedText(char *text_buffer, int base_font_n
   wrapped_text->max_height = max_height;
   wrapped_text->line_spacing = line_spacing;
   wrapped_text->mask_mode = mask_mode;
+  wrapped_text->total_height = 0;
   wrapped_text->num_lines = 0;
 
   buffer[0] = '\0';
