@@ -327,7 +327,7 @@ static void HandleInfoScreen_TitleScreen(int, int, int);
 static void HandleInfoScreen_Elements(int, int, int);
 static void HandleInfoScreen_Music(int, int, int);
 static void HandleInfoScreen_Version(int);
-static void HandleInfoScreen_Generic(int, int, int);
+static void HandleInfoScreen_Generic(int, int, int, int, int);
 
 static void ModifyGameSpeedIfNeeded(void);
 static void DisableVsyncIfNeeded(void);
@@ -4169,14 +4169,14 @@ static void DrawInfoScreen_Generic(void)
 
   FadeOut(REDRAW_FIELD);
 
-  HandleInfoScreen_Generic(0, 0, MB_MENU_INITIALIZE);
+  HandleInfoScreen_Generic(0, 0, 0, 0, MB_MENU_INITIALIZE);
 
   PlayInfoSoundsAndMusic();
 
   FadeIn(REDRAW_FIELD);
 }
 
-void HandleInfoScreen_Generic(int dx, int dy, int button)
+void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
 {
   static char *text_no_info = "";
   static int num_screens = 0;
@@ -4361,15 +4361,15 @@ void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
   else if (info_mode == INFO_MODE_MUSIC)
     HandleInfoScreen_Music(dx, dy, button);
   else if (info_mode == INFO_MODE_CREDITS)
-    HandleInfoScreen_Generic(dx, dy, button);
+    HandleInfoScreen_Generic(mx, my, dx, dy, button);
   else if (info_mode == INFO_MODE_PROGRAM)
-    HandleInfoScreen_Generic(dx, dy, button);
+    HandleInfoScreen_Generic(mx, my, dx, dy, button);
   else if (info_mode == INFO_MODE_VERSION)
     HandleInfoScreen_Version(button);
   else if (info_mode == INFO_MODE_LEVELSET)
-    HandleInfoScreen_Generic(dx, dy, button);
+    HandleInfoScreen_Generic(mx, my, dx, dy, button);
   else if (info_mode == INFO_MODE_LEVEL)
-    HandleInfoScreen_Generic(dx, dy, button);
+    HandleInfoScreen_Generic(mx, my, dx, dy, button);
   else
     HandleInfoScreen_Main(mx, my, dx, dy, button);
 }
