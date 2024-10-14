@@ -4114,12 +4114,13 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
     int font_width = getFontWidth(font_text);
     int font_height = getFontHeight(font_text);
     int width = SXSIZE;
-    int height = MENU_SCREEN_INFO_YBOTTOM - MENU_SCREEN_INFO_YSTART;
     int chars = width / font_width;
-    int lines = height / font_height;
-    int line_spacing = getMenuTextSpacing(spacing_line, font_text);
     int x = (width - chars * font_width) / 2;
     int y = MENU_SCREEN_INFO_YSTART + getHeadlineSpacing();
+    int height = MENU_SCREEN_INFO_YBOTTOM - y - 10;
+    int line_spacing = getMenuTextSpacing(spacing_line, font_text);
+    int line_height = font_height + line_spacing;
+    int lines = height / line_height;
     boolean autowrap = FALSE;
     boolean centered = TRUE;
     boolean parse_comments = TRUE;
