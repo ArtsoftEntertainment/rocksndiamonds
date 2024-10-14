@@ -596,6 +596,8 @@ static struct WrappedTextInfo *GetWrappedText(char *text_buffer, int base_font_n
   wrapped_text->line_width = line_width;
   wrapped_text->cut_length = cut_length;
   wrapped_text->max_height = max_height;
+  wrapped_text->line_spacing = line_spacing;
+  wrapped_text->mask_mode = mask_mode;
   wrapped_text->num_lines = 0;
 
   buffer[0] = '\0';
