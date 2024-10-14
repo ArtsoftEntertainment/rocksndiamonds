@@ -756,7 +756,8 @@ struct WrappedTextInfo *GetWrappedTextFile(char *filename, int font_nr,
   return wrapped_text;
 }
 
-int DrawWrappedText(int x, int y, struct WrappedTextInfo *wrapped_text, int start_pos)
+static int DrawWrappedTextExt(int x, int y, struct WrappedTextInfo *wrapped_text, int start_pos,
+                              boolean init_only)
 {
   int current_line = 0;
   int current_ypos = 0;
@@ -780,9 +781,10 @@ int DrawWrappedText(int x, int y, struct WrappedTextInfo *wrapped_text, int star
     if (current_ypos + font_height > wrapped_text->max_height)
       break;
 
-    DrawTextBuffer_Flush(x, y, wrapped_text->line[i].text, font_nr, line_length,
-                         wrapped_text->cut_length, wrapped_text->mask_mode,
-                         wrapped_text->line[i].centered, current_ypos);
+    if (!init_only)
+      DrawTextBuffer_Flush(x, y, wrapped_text->line[i].text, font_nr, line_length,
+                           wrapped_text->cut_length, wrapped_text->mask_mode,
+                           wrapped_text->line[i].centered, current_ypos);
 
     current_ypos += line_height;
     current_line++;
@@ -791,6 +793,16 @@ int DrawWrappedText(int x, int y, struct WrappedTextInfo *wrapped_text, int star
   wrapped_text->line_visible_last = start_pos + current_line - 1;
 
   return current_line;
+}
+
+int InitWrappedText(int x, int y, struct WrappedTextInfo *wrapped_text, int start_pos)
+{
+  return DrawWrappedTextExt(x, y, wrapped_text, start_pos, TRUE);
+}
+
+int DrawWrappedText(int x, int y, struct WrappedTextInfo *wrapped_text, int start_pos)
+{
+  return DrawWrappedTextExt(x, y, wrapped_text, start_pos, FALSE);
 }
 
 void FreeWrappedText(struct WrappedTextInfo *wrapped_text)

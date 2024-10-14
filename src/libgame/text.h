@@ -156,6 +156,7 @@ struct WrappedTextInfo *GetWrappedTextBuffer(char *, int, int, int, int, int, in
                                              boolean, boolean, boolean);
 struct WrappedTextInfo *GetWrappedTextFile(char *, int, int, int, int, int, int, int, int, int,
                                            boolean, boolean, boolean);
+int InitWrappedText(int, int, struct WrappedTextInfo *, int);
 int DrawWrappedText(int, int, struct WrappedTextInfo *, int);
 void FreeWrappedText(struct WrappedTextInfo *);
 
