@@ -765,7 +765,7 @@ int DrawWrappedText(int x, int y, struct WrappedTextInfo *wrapped_text, int star
   if (wrapped_text == NULL)
     return 0;
 
-  if (start_pos >= wrapped_text->num_lines)
+  if (start_pos < 0 || start_pos >= wrapped_text->num_lines)
     return 0;
 
   wrapped_text->line_visible_first = start_pos;
