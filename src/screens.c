@@ -4082,8 +4082,7 @@ static char *getInfoScreenFilename_Generic(int nr, boolean global)
 	  NULL);
 }
 
-static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens,
-					 int use_global_screens)
+static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use_global_screens)
 {
   char *filename = getInfoScreenFilename_Generic(screen_nr, use_global_screens);
   int font_text = MENU_INFO_FONT_TEXT;
