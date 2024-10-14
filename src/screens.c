@@ -4119,13 +4119,13 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
     int lines = height / font_height;
     int padx = (width - chars * font_width) / 2;
     int line_spacing = getMenuTextSpacing(spacing_line, font_text);
-    int xstart = mSX + padx;
-    int ystart = mSY + MENU_SCREEN_INFO_YSTART + getHeadlineSpacing();
+    int x = mSX + padx;
+    int y = mSY + MENU_SCREEN_INFO_YSTART + getHeadlineSpacing();
     boolean autowrap = FALSE;
     boolean centered = TRUE;
     boolean parse_comments = TRUE;
 
-    DrawTextFile(xstart, ystart,
+    DrawTextFile(x, y,
 		 filename, font_text, chars, -1, lines, -1, -1, -1, line_spacing, -1,
 		 autowrap, centered, parse_comments);
   }
