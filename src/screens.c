@@ -860,6 +860,8 @@ static char *main_text_title_1			= NULL;
 static char *main_text_title_2			= NULL;
 static char *main_text_title_3			= NULL;
 
+static struct WrappedTextInfo *wrapped_text = NULL;
+
 extern char debug_xsn_mode[];
 
 struct MainControlInfo
@@ -4082,6 +4084,18 @@ static char *getInfoScreenFilename_Generic(int nr, boolean global)
 	  NULL);
 }
 
+static void DrawInfoScreen_GenericText(int start_pos)
+{
+  struct TitleMessageInfo *tmi = &readme;
+  int x = mSX + ALIGNED_TEXT_XPOS(tmi);
+  int y = mSY + ALIGNED_TEXT_YPOS(tmi);
+
+  // clear info text area, but not title or scrollbar
+  DrawBackground(x, y, tmi->width, tmi->height);
+
+  DrawWrappedText(x, y, wrapped_text, start_pos);
+}
+
 static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use_global_screens)
 {
   char *filename = getInfoScreenFilename_Generic(screen_nr, use_global_screens);
@@ -4148,9 +4162,12 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
     else
       tmi->height = tmi->lines * getFontHeight(tmi->font);
 
-    DrawTextFile(mSX + ALIGNED_TEXT_XPOS(tmi), mSY + ALIGNED_TEXT_YPOS(tmi),
-		 filename, font, tmi->chars, -1, tmi->lines, -1, -1, -1, 0, -1,
-		 tmi->autowrap, tmi->centered, tmi->parse_comments);
+    FreeWrappedText(wrapped_text);
+
+    wrapped_text = GetWrappedTextFile(filename, font, tmi->chars, -1, tmi->lines, -1, -1, -1,
+                                      0, -1, tmi->autowrap, tmi->centered, tmi->parse_comments);
+
+    DrawInfoScreen_GenericText(0);
   }
 
   boolean last_screen = (screen_nr == num_screens - 1);
@@ -4180,12 +4197,14 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
   static char *text_no_info = "";
   static int num_screens = 0;
   static int screen_nr = 0;
+  static int start_pos = 0;
   static boolean use_global_screens = FALSE;
 
   if (button == MB_MENU_INITIALIZE)
   {
     num_screens = 0;
     screen_nr = 0;
+    start_pos = 0;
 
     if (info_mode == INFO_MODE_CREDITS)
     {
@@ -4267,6 +4286,7 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
     PlaySound(SND_MENU_ITEM_SELECTING);
 
     screen_nr += (dx < 0 ? -1 : +1);
+    start_pos = 0;
 
     if (screen_nr < 0 || screen_nr >= num_screens)
     {
@@ -4284,6 +4304,20 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
       DrawInfoScreen_GenericScreen(screen_nr, num_screens, use_global_screens);
 
       FadeIn(REDRAW_FIELD);
+    }
+  }
+  else if (dy)
+  {
+    if (info_mode == INFO_MODE_LEVELSET ||
+        info_mode == INFO_MODE_LEVEL)
+    {
+      if ((dy < 0 && wrapped_text->line_visible_first > 0) ||
+          (dy > 0 && wrapped_text->line_visible_last < wrapped_text->num_lines - 1))
+      {
+        start_pos += SIGN(dy);
+
+        DrawInfoScreen_GenericText(start_pos);
+      }
     }
   }
   else
