@@ -4099,10 +4099,12 @@ static void DrawInfoScreen_GenericText(struct WrappedTextInfo *wrapped_text,
 
 static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use_global_screens)
 {
+  static struct TitleMessageInfo tmi_info;
+  struct TitleMessageInfo *tmi = &tmi_info;
   char *filename = getInfoScreenFilename_Generic(screen_nr, use_global_screens);
   int font_text = MENU_INFO_FONT_TEXT;
   int font_foot = MENU_INFO_FONT_FOOT;
-  int spacing_line = menu.line_spacing_info[info_mode];
+  int line_spacing = getMenuTextSpacing(menu.line_spacing_info[info_mode], font_text);
   int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
 
   ClearField();
@@ -4112,11 +4114,8 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
   if (info_mode == INFO_MODE_CREDITS ||
       info_mode == INFO_MODE_PROGRAM)
   {
-    static struct TitleMessageInfo tmi_info;
-    struct TitleMessageInfo *tmi = &tmi_info;
     int font_width = getFontWidth(font_text);
     int font_height = getFontHeight(font_text);
-    int line_spacing = getMenuTextSpacing(spacing_line, font_text);
     int line_height = font_height + line_spacing;
 
     tmi->x = SXSIZE / 2;
@@ -4130,23 +4129,18 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
     tmi->autowrap = FALSE;
     tmi->centered = TRUE;
     tmi->parse_comments = TRUE;
-
-    FreeWrappedText(wrapped_text);
-
-    wrapped_text = GetWrappedTextFile(filename, font_text, tmi->chars, -1, tmi->lines, -1, -1, -1,
-                                      line_spacing, -1,
-                                      tmi->autowrap, tmi->centered, tmi->parse_comments);
-
-    DrawInfoScreen_GenericText(wrapped_text, tmi, 0);
-
-    wrapped_tmi = tmi;
   }
   else if (info_mode == INFO_MODE_LEVELSET ||
            info_mode == INFO_MODE_LEVEL)
   {
-    struct TitleMessageInfo *tmi = &readme;
-    int font = (info_mode == INFO_MODE_LEVEL && tmi->font == FONT_INFO_LEVELSET ? FONT_INFO_LEVEL :
-                tmi->font);
+    tmi = &readme;
+
+    font_text = (info_mode == INFO_MODE_LEVEL && tmi->font == FONT_INFO_LEVELSET ?
+                 FONT_INFO_LEVEL : tmi->font);
+    line_spacing = 0;
+
+    int font_width = getFontWidth(font_text);
+    int font_height = getFontHeight(font_text);
 
     // if x position set to "-1", automatically determine by playfield width
     if (tmi->x == -1)
@@ -4166,25 +4160,26 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
 
     // if chars set to "-1", automatically determine by text and font width
     if (tmi->chars == -1)
-      tmi->chars = tmi->width / getFontWidth(font);
+      tmi->chars = tmi->width / font_width;
     else
-      tmi->width = tmi->chars * getFontWidth(font);
+      tmi->width = tmi->chars * font_width;
 
     // if lines set to "-1", automatically determine by text and font height
     if (tmi->lines == -1)
-      tmi->lines = tmi->height / getFontHeight(font);
+      tmi->lines = tmi->height / font_height;
     else
-      tmi->height = tmi->lines * getFontHeight(font);
-
-    FreeWrappedText(wrapped_text);
-
-    wrapped_text = GetWrappedTextFile(filename, font, tmi->chars, -1, tmi->lines, -1, -1, -1,
-                                      0, -1, tmi->autowrap, tmi->centered, tmi->parse_comments);
-
-    DrawInfoScreen_GenericText(wrapped_text, tmi, 0);
-
-    wrapped_tmi = tmi;
+      tmi->height = tmi->lines * font_height;
   }
+
+  FreeWrappedText(wrapped_text);
+
+  wrapped_text = GetWrappedTextFile(filename, font_text, tmi->chars, -1, tmi->lines, -1, -1, -1,
+                                    line_spacing, -1,
+                                    tmi->autowrap, tmi->centered, tmi->parse_comments);
+
+  DrawInfoScreen_GenericText(wrapped_text, tmi, 0);
+
+  wrapped_tmi = tmi;
 
   boolean last_screen = (screen_nr == num_screens - 1);
   char *text_foot = (last_screen ? TEXT_NEXT_MENU : TEXT_NEXT_PAGE);
