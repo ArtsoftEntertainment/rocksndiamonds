@@ -861,6 +861,7 @@ static char *main_text_title_2			= NULL;
 static char *main_text_title_3			= NULL;
 
 static struct WrappedTextInfo *wrapped_text = NULL;
+static struct TitleMessageInfo *wrapped_tmi = NULL;
 
 extern char debug_xsn_mode[];
 
@@ -4111,23 +4112,34 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
   if (info_mode == INFO_MODE_CREDITS ||
       info_mode == INFO_MODE_PROGRAM)
   {
+    static struct TitleMessageInfo tmi_info;
+    struct TitleMessageInfo *tmi = &tmi_info;
     int font_width = getFontWidth(font_text);
     int font_height = getFontHeight(font_text);
-    int width = SXSIZE;
-    int chars = width / font_width;
-    int x = (width - chars * font_width) / 2;
-    int y = MENU_SCREEN_INFO_YSTART + getHeadlineSpacing();
-    int height = MENU_SCREEN_INFO_YBOTTOM - y - 10;
     int line_spacing = getMenuTextSpacing(spacing_line, font_text);
     int line_height = font_height + line_spacing;
-    int lines = height / line_height;
-    boolean autowrap = FALSE;
-    boolean centered = TRUE;
-    boolean parse_comments = TRUE;
 
-    DrawTextFile(mSX + x, mSY + y,
-		 filename, font_text, chars, -1, lines, -1, -1, -1, line_spacing, -1,
-		 autowrap, centered, parse_comments);
+    tmi->x = SXSIZE / 2;
+    tmi->y = MENU_SCREEN_INFO_YSTART + getHeadlineSpacing();
+    tmi->chars = SXSIZE / font_width;
+    tmi->width = tmi->chars * font_width;
+    tmi->height = MENU_SCREEN_INFO_YBOTTOM - tmi->y - 10;
+    tmi->lines = tmi->height / line_height;
+    tmi->align = ALIGN_CENTER;
+    tmi->valign = VALIGN_TOP;
+    tmi->autowrap = FALSE;
+    tmi->centered = TRUE;
+    tmi->parse_comments = TRUE;
+
+    FreeWrappedText(wrapped_text);
+
+    wrapped_text = GetWrappedTextFile(filename, font_text, tmi->chars, -1, tmi->lines, -1, -1, -1,
+                                      line_spacing, -1,
+                                      tmi->autowrap, tmi->centered, tmi->parse_comments);
+
+    DrawInfoScreen_GenericText(wrapped_text, tmi, 0);
+
+    wrapped_tmi = tmi;
   }
   else if (info_mode == INFO_MODE_LEVELSET ||
            info_mode == INFO_MODE_LEVEL)
@@ -4170,6 +4182,8 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
                                       0, -1, tmi->autowrap, tmi->centered, tmi->parse_comments);
 
     DrawInfoScreen_GenericText(wrapped_text, tmi, 0);
+
+    wrapped_tmi = tmi;
   }
 
   boolean last_screen = (screen_nr == num_screens - 1);
@@ -4310,16 +4324,12 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
   }
   else if (dy)
   {
-    if (info_mode == INFO_MODE_LEVELSET ||
-        info_mode == INFO_MODE_LEVEL)
+    if ((dy < 0 && wrapped_text->line_visible_first > 0) ||
+        (dy > 0 && wrapped_text->line_visible_last < wrapped_text->num_lines - 1))
     {
-      if ((dy < 0 && wrapped_text->line_visible_first > 0) ||
-          (dy > 0 && wrapped_text->line_visible_last < wrapped_text->num_lines - 1))
-      {
-        start_pos += SIGN(dy);
+      start_pos += SIGN(dy);
 
-        DrawInfoScreen_GenericText(wrapped_text, &readme, start_pos);
-      }
+      DrawInfoScreen_GenericText(wrapped_text, wrapped_tmi, start_pos);
     }
   }
   else
