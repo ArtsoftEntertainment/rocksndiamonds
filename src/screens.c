@@ -4154,15 +4154,15 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
 
     // if chars set to "-1", automatically determine by text and font width
     if (tmi->chars == -1)
-      tmi->chars = tmi->width / getFontWidth(tmi->font);
+      tmi->chars = tmi->width / getFontWidth(font);
     else
-      tmi->width = tmi->chars * getFontWidth(tmi->font);
+      tmi->width = tmi->chars * getFontWidth(font);
 
     // if lines set to "-1", automatically determine by text and font height
     if (tmi->lines == -1)
-      tmi->lines = tmi->height / getFontHeight(tmi->font);
+      tmi->lines = tmi->height / getFontHeight(font);
     else
-      tmi->height = tmi->lines * getFontHeight(tmi->font);
+      tmi->height = tmi->lines * getFontHeight(font);
 
     FreeWrappedText(wrapped_text);
 
