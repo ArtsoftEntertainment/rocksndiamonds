@@ -4317,15 +4317,12 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
       FadeIn(REDRAW_FIELD);
     }
   }
-  else if (dy)
+  else if ((dy < 0 && wrapped_text->line_visible_first > 0) ||
+           (dy > 0 && wrapped_text->line_visible_last < wrapped_text->num_lines - 1))
   {
-    if ((dy < 0 && wrapped_text->line_visible_first > 0) ||
-        (dy > 0 && wrapped_text->line_visible_last < wrapped_text->num_lines - 1))
-    {
-      start_pos += SIGN(dy);
+    start_pos += SIGN(dy);
 
-      DrawInfoScreen_GenericText(wrapped_text, wrapped_tmi, start_pos);
-    }
+    DrawInfoScreen_GenericText(wrapped_text, wrapped_tmi, start_pos);
   }
   else
   {
