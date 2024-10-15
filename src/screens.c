@@ -4320,7 +4320,29 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
   else if ((dy < 0 && wrapped_text->line_visible_first > 0) ||
            (dy > 0 && wrapped_text->line_visible_last < wrapped_text->num_lines - 1))
   {
-    start_pos += SIGN(dy);
+    if (ABS(dy) == SCROLL_PAGE)
+    {
+      if (dy < 0)
+      {
+        int old_line_visible_first = wrapped_text->line_visible_first;
+
+        while (wrapped_text->line_visible_first > 0 &&
+               wrapped_text->line_visible_last > old_line_visible_first)
+          InitWrappedText(0, 0, wrapped_text, --start_pos);
+      }
+      else
+      {
+        int old_line_visible_last = wrapped_text->line_visible_last;
+
+        while (wrapped_text->line_visible_last < wrapped_text->num_lines - 1 &&
+               wrapped_text->line_visible_first < old_line_visible_last)
+          InitWrappedText(0, 0, wrapped_text, ++start_pos);
+      }
+    }
+    else
+    {
+      start_pos += SIGN(dy);
+    }
 
     DrawInfoScreen_GenericText(wrapped_text, wrapped_tmi, start_pos);
   }
