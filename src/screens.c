@@ -339,6 +339,7 @@ static void MapScreenGadgets(int);
 static void UnmapScreenGadgets(void);
 static void MapScreenTreeGadgets(TreeInfo *);
 static void UnmapScreenTreeGadgets(void);
+static void MapScreenInfoGadgets(void);
 
 static void UpdateScreenMenuGadgets(int, boolean);
 static void AdjustScoreInfoButtons_SelectScore(int, int, int);
@@ -1586,6 +1587,29 @@ static void AdjustChooseTreeScrollbar(TreeInfo *ti, int id)
 {
   AdjustScrollbar(id, numTreeInfoInGroup(ti), NUM_MENU_ENTRIES_ON_SCREEN,
 		  ti->cl_first);
+}
+
+static void AdjustInfoScreenScrollbar(int items_max, int items_visible, int item_position)
+{
+  AdjustScrollbar(SCREEN_CTRL_ID_SCROLL_VERTICAL, items_max, items_visible, item_position);
+}
+
+static void AdjustInfoScreenGadgets(int y, int height,
+                                    int items_max, int items_visible, int item_position)
+{
+  struct GadgetInfo *gi_up     = screen_gadget[SCREEN_CTRL_ID_SCROLL_UP];
+  struct GadgetInfo *gi_down   = screen_gadget[SCREEN_CTRL_ID_SCROLL_DOWN];
+  struct GadgetInfo *gi_scroll = screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL];
+  int y_up = y;
+  int y_down = y + height - SC_SCROLLBUTTON_YSIZE;
+  int y_scroll = y + SC_SCROLLBUTTON_YSIZE;
+  int height_scroll = height - 2 * SC_SCROLLBUTTON_YSIZE;
+
+  ModifyGadget(gi_up, GDI_Y, y_up, GDI_END);
+  ModifyGadget(gi_down, GDI_Y, y_down, GDI_END);
+  ModifyGadget(gi_scroll, GDI_Y, y_scroll, GDI_HEIGHT, height_scroll, GDI_END);
+
+  AdjustInfoScreenScrollbar(items_max, items_visible, item_position);
 }
 
 static void clearMenuListArea(void)
@@ -4107,6 +4131,9 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
   int line_spacing = getMenuTextSpacing(menu.line_spacing_info[info_mode], font_text);
   int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
 
+  FreeScreenGadgets();
+  CreateScreenGadgets();
+
   ClearField();
 
   DrawInfoScreen_Headline(screen_nr, num_screens, use_global_screens);
@@ -4177,6 +4204,23 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
                                     line_spacing, -1,
                                     tmi->autowrap, tmi->centered, tmi->parse_comments);
 
+  if (wrapped_text->total_height > wrapped_text->max_height)
+  {
+    int start_pos = 0;
+
+    while (wrapped_text->line_visible_last < wrapped_text->num_lines - 1)
+      InitWrappedText(0, 0, wrapped_text, ++start_pos);
+
+    int items_max = wrapped_text->num_lines;
+    int items_visible = wrapped_text->num_lines - start_pos;
+    int item_position = 0;
+
+    AdjustInfoScreenGadgets(mSY + ALIGNED_TEXT_YPOS(tmi), wrapped_text->max_height,
+                            items_max, items_visible, item_position);
+
+    MapScreenInfoGadgets();
+  }
+
   DrawInfoScreen_GenericText(wrapped_text, tmi, 0);
 
   wrapped_tmi = tmi;
@@ -4210,12 +4254,12 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
   static int screen_nr = 0;
   static int start_pos = 0;
   static boolean use_global_screens = FALSE;
+  boolean position_set_by_scrollbar = (dx == 999);
 
   if (button == MB_MENU_INITIALIZE)
   {
     num_screens = 0;
     screen_nr = 0;
-    start_pos = 0;
 
     if (info_mode == INFO_MODE_CREDITS)
     {
@@ -4283,7 +4327,31 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
       return;
     }
 
-    DrawInfoScreen_GenericScreen(screen_nr, num_screens, use_global_screens);
+    if (position_set_by_scrollbar)
+    {
+      int items_max = screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL]->scrollbar.items_max;
+      int items_visible = screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL]->scrollbar.items_visible;
+
+      // check if scrollbar was moved by one screen, or to top or bottom position
+      if (ABS(dy - start_pos) == items_visible - 1 || dy == 0 || dy == items_max - items_visible)
+      {
+        // use dynamic "next screen" calculation instead of adding static offset
+        // (required for text using multiple fonts with different vertical sizes)
+        HandleInfoScreen(0, 0, 0, SIGN(dy - start_pos) * SCROLL_PAGE, MB_MENU_MARK);
+
+        return;
+      }
+
+      start_pos = dy;
+
+      DrawInfoScreen_GenericText(wrapped_text, wrapped_tmi, start_pos);
+    }
+    else
+    {
+      start_pos = 0;
+
+      DrawInfoScreen_GenericScreen(screen_nr, num_screens, use_global_screens);
+    }
   }
   else if (button == MB_MENU_LEAVE)
   {
@@ -4292,7 +4360,7 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
     info_mode = INFO_MODE_MAIN;
     DrawInfoScreen();
   }
-  else if (button == MB_MENU_CHOICE || dx)
+  else if ((mx >= 0 && my >= 0 && button == MB_MENU_CHOICE) || dx)
   {
     PlaySound(SND_MENU_ITEM_SELECTING);
 
@@ -4345,6 +4413,9 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
     }
 
     DrawInfoScreen_GenericText(wrapped_text, wrapped_tmi, start_pos);
+
+    ModifyGadget(screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL],
+                 GDI_SCROLLBAR_ITEM_POSITION, start_pos, GDI_END);
   }
   else
   {
@@ -11015,6 +11086,17 @@ static void MapScreenTreeGadgets(TreeInfo *ti)
 static void UnmapScreenTreeGadgets(void)
 {
   UnmapScreenGadgets();
+}
+
+static void MapScreenInfoGadgets(void)
+{
+  int i;
+
+  for (i = 0; i < NUM_SCREEN_SCROLLBUTTONS; i++)
+    MapGadget(screen_gadget[scrollbutton_info[i].gadget_id]);
+
+  for (i = 0; i < NUM_SCREEN_SCROLLBARS; i++)
+    MapGadget(screen_gadget[scrollbar_info[i].gadget_id]);
 }
 
 static void AdjustScoreInfoButtons_SelectScore(int x, int y1, int y2)
