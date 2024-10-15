@@ -4084,9 +4084,9 @@ static char *getInfoScreenFilename_Generic(int nr, boolean global)
 	  NULL);
 }
 
-static void DrawInfoScreen_GenericText(int start_pos)
+static void DrawInfoScreen_GenericText(struct WrappedTextInfo *wrapped_text,
+                                       struct TitleMessageInfo *tmi, int start_pos)
 {
-  struct TitleMessageInfo *tmi = &readme;
   int x = mSX + ALIGNED_TEXT_XPOS(tmi);
   int y = mSY + ALIGNED_TEXT_YPOS(tmi);
 
@@ -4169,7 +4169,7 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
     wrapped_text = GetWrappedTextFile(filename, font, tmi->chars, -1, tmi->lines, -1, -1, -1,
                                       0, -1, tmi->autowrap, tmi->centered, tmi->parse_comments);
 
-    DrawInfoScreen_GenericText(0);
+    DrawInfoScreen_GenericText(wrapped_text, tmi, 0);
   }
 
   boolean last_screen = (screen_nr == num_screens - 1);
@@ -4318,7 +4318,7 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
       {
         start_pos += SIGN(dy);
 
-        DrawInfoScreen_GenericText(start_pos);
+        DrawInfoScreen_GenericText(wrapped_text, &readme, start_pos);
       }
     }
   }
