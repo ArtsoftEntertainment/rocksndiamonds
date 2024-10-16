@@ -4144,12 +4144,14 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
     int font_width = getFontWidth(font_text);
     int font_height = getFontHeight(font_text);
     int line_height = font_height + line_spacing;
+    int draw_xoffset = mSX - SX;
+    int draw_yoffset = mSY - SY;
 
-    tmi->x = SXSIZE / 2;
+    tmi->x = (SXSIZE - draw_xoffset) / 2;
     tmi->y = MENU_SCREEN_INFO_YSTART + getHeadlineSpacing();
-    tmi->chars = SXSIZE / font_width;
+    tmi->chars = (SXSIZE - draw_xoffset) / font_width;
     tmi->width = tmi->chars * font_width;
-    tmi->height = MENU_SCREEN_INFO_YBOTTOM - tmi->y - 10;
+    tmi->height = MENU_SCREEN_INFO_YBOTTOM - tmi->y - 10 - draw_yoffset;
     tmi->lines = tmi->height / line_height;
     tmi->align = ALIGN_CENTER;
     tmi->valign = VALIGN_TOP;
