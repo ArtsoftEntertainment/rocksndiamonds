@@ -45,6 +45,7 @@ static void (*PlayGadgetSoundActivating)(void) = NULL;
 static void (*PlayGadgetSoundSelecting)(void) = NULL;
 
 
+// Color picker by Brooke Tilley (pixlark) from https://github.com/pixlark/ColorPicker
 // RGB/HSV conversions by David H from https://stackoverflow.com/questions/3018313/
 
 // A bunch of magic numbers for UI positioning (used by DrawColorPicker() and its functions)
