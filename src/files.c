@@ -11646,6 +11646,10 @@ static struct TokenInfo internal_setup_tokens[] =
   },
   {
     TYPE_BOOLEAN,
+    &setup.internal.info_level,			"info_level"
+  },
+  {
+    TYPE_BOOLEAN,
     &setup.internal.info_exit,			"info_exit"
   },
 };
