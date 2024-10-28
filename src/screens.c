@@ -4166,10 +4166,10 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
 
     font_text = (info_mode == INFO_MODE_LEVEL && tmi->font == FONT_INFO_LEVELSET ?
                  FONT_INFO_LEVEL : tmi->font);
-    line_spacing = 0;
 
     int font_width = getFontWidth(font_text);
     int font_height = getFontHeight(font_text);
+    int line_height = font_height + line_spacing;
 
     // if x position set to "-1", automatically determine by playfield width
     if (tmi->x == -1)
@@ -4193,11 +4193,11 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
     else
       tmi->width = tmi->chars * font_width;
 
-    // if lines set to "-1", automatically determine by text and font height
+    // if lines set to "-1", automatically determine by text and line height
     if (tmi->lines == -1)
-      tmi->lines = tmi->height / font_height;
+      tmi->lines = tmi->height / line_height;
     else
-      tmi->height = tmi->lines * font_height;
+      tmi->height = tmi->lines * line_height;
   }
 
   FreeWrappedText(wrapped_text);
