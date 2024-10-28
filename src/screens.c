@@ -4260,8 +4260,31 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
 
   if (button == MB_MENU_INITIALIZE)
   {
+    if (position_set_by_scrollbar)
+    {
+      int items_max = screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL]->scrollbar.items_max;
+      int items_visible = screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL]->scrollbar.items_visible;
+
+      // check if scrollbar was moved by one screen, or to top or bottom position
+      if (ABS(dy - start_pos) == items_visible - 1 || dy == 0 || dy == items_max - items_visible)
+      {
+        // use dynamic "next screen" calculation instead of adding static offset
+        // (required for text using multiple fonts with different vertical sizes)
+        HandleInfoScreen(0, 0, 0, SIGN(dy - start_pos) * SCROLL_PAGE, MB_MENU_MARK);
+      }
+      else
+      {
+        start_pos = dy;
+
+        DrawInfoScreen_GenericText(wrapped_text, wrapped_tmi, start_pos);
+      }
+
+      return;
+    }
+
     num_screens = 0;
     screen_nr = 0;
+    start_pos = 0;
 
     if (info_mode == INFO_MODE_CREDITS)
     {
@@ -4329,31 +4352,7 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
       return;
     }
 
-    if (position_set_by_scrollbar)
-    {
-      int items_max = screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL]->scrollbar.items_max;
-      int items_visible = screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL]->scrollbar.items_visible;
-
-      // check if scrollbar was moved by one screen, or to top or bottom position
-      if (ABS(dy - start_pos) == items_visible - 1 || dy == 0 || dy == items_max - items_visible)
-      {
-        // use dynamic "next screen" calculation instead of adding static offset
-        // (required for text using multiple fonts with different vertical sizes)
-        HandleInfoScreen(0, 0, 0, SIGN(dy - start_pos) * SCROLL_PAGE, MB_MENU_MARK);
-
-        return;
-      }
-
-      start_pos = dy;
-
-      DrawInfoScreen_GenericText(wrapped_text, wrapped_tmi, start_pos);
-    }
-    else
-    {
-      start_pos = 0;
-
-      DrawInfoScreen_GenericScreen(screen_nr, num_screens, use_global_screens);
-    }
+    DrawInfoScreen_GenericScreen(screen_nr, num_screens, use_global_screens);
   }
   else if (button == MB_MENU_LEAVE)
   {
