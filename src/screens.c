@@ -4202,7 +4202,7 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
 
   FreeWrappedText(wrapped_text);
 
-  wrapped_text = GetWrappedTextFile(filename, font_text, tmi->chars, -1, tmi->lines, -1, -1, -1,
+  wrapped_text = GetWrappedTextFile(filename, font_text, -1, -1, -1, tmi->width, -1, tmi->height,
                                     line_spacing, -1,
                                     tmi->autowrap, tmi->centered, tmi->parse_comments);
 
