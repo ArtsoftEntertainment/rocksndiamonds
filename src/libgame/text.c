@@ -575,6 +575,21 @@ static struct WrappedTextInfo *GetWrappedText(char *text_buffer, int base_font_n
   if (text_buffer == NULL || *text_buffer == '\0')
     return NULL;
 
+  // if pixel width of line buffer not defined, set from maximum line size
+  if (line_width == -1)
+    line_width = line_length * font_width;
+  else
+    line_length = line_width / font_width;
+
+  // if pixel height of line buffer not defined, set from maximum number of lines
+  if (max_height == -1)
+    max_height = max_lines * line_height;
+  else
+    max_lines = max_height / line_height;
+
+  // limit line buffer length to maximum output line size
+  line_length = MIN(line_length, MAX_OUTPUT_LINESIZE);
+
   // if number of characters where to cut line not defined, set to default line size
   if (cut_length == -1)
     cut_length = line_length;
@@ -582,17 +597,6 @@ static struct WrappedTextInfo *GetWrappedText(char *text_buffer, int base_font_n
   // if pixel width where to cut line not defined, set from number of characters
   if (cut_width == -1)
     cut_width = cut_length * font_width;
-
-  // if pixel width of line buffer not defined, set from maximum line size
-  if (line_width == -1)
-    line_width = line_length * font_width;
-
-  // if pixel height of line buffer not defined, set from maximum number of lines
-  if (max_height == -1)
-    max_height = max_lines * line_height;
-
-  // update line buffer length from line width and font width
-  line_length = MIN(line_width / font_width, MAX_OUTPUT_LINESIZE);
 
   wrapped_text = checked_calloc(sizeof(struct WrappedTextInfo));
   wrapped_text->line_width = line_width;
