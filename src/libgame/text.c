@@ -535,14 +535,13 @@ static void AddLineToWrappedText(struct WrappedTextInfo *wrapped_text,
 }
 
 static void DrawTextBuffer_Flush(int x, int y, char *buffer,
-				 int font_nr, int line_length, int cut_length,
+				 int font_nr, int line_width, int line_length, int cut_length,
 				 int mask_mode, boolean centered,
 				 int current_ypos)
 {
   int buffer_len = strlen(buffer);
   int font_width = getFontWidth(font_nr);
   int offset_chars = (centered ? (line_length - buffer_len) / 2 : 0);
-  int line_width = font_width * line_length;
   int buffer_width = font_width * buffer_len;
   int offset_xsize = (centered ? (line_width - buffer_width) / 2 : 0);
   int final_cut_length = MIN(MAX(0, cut_length - offset_chars), buffer_len);
@@ -786,7 +785,8 @@ static int DrawWrappedTextExt(int x, int y, struct WrappedTextInfo *wrapped_text
       break;
 
     if (!init_only)
-      DrawTextBuffer_Flush(x, y, wrapped_text->line[i].text, font_nr, line_length,
+      DrawTextBuffer_Flush(x, y, wrapped_text->line[i].text, font_nr,
+                           wrapped_text->line_width, line_length,
                            wrapped_text->cut_length, wrapped_text->mask_mode,
                            wrapped_text->line[i].centered, current_ypos);
 
