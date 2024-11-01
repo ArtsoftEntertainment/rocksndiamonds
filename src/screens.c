@@ -4173,6 +4173,23 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
 
   if (wrapped_text->total_height > wrapped_text->max_height)
   {
+    // re-wrap text with text width reduced by scroll bar width
+    tmi->width -= SC_SCROLL_VERTICAL_XSIZE;
+
+    // adjust left border and text width if text should be centered
+    if (wrapped_text->line[0].centered &&
+        MENU_SCREEN_INFO_SPACE_LEFT == MENU_SCREEN_INFO_SPACE_RIGHT)
+    {
+      tmi->x += SC_SCROLL_VERTICAL_XSIZE;
+      tmi->width -= SC_SCROLL_VERTICAL_XSIZE;
+    }
+
+    FreeWrappedText(wrapped_text);
+
+    wrapped_text = GetWrappedTextFile(filename, font_text, -1, -1, -1, tmi->width, -1, tmi->height,
+                                      line_spacing, -1,
+                                      tmi->autowrap, tmi->centered, tmi->parse_comments);
+
     int start_pos = 0;
 
     while (wrapped_text->line_visible_last < wrapped_text->num_lines - 1)
