@@ -4138,23 +4138,19 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
 
   DrawInfoScreen_Headline(screen_nr, num_screens, use_global_screens);
 
+  int draw_xoffset = mSX - SX;
+  int draw_yoffset = mSY - SY;
+
+  tmi->x = MENU_SCREEN_INFO_SPACE_LEFT;
+  tmi->y = MENU_SCREEN_INFO_SPACE_TOP + getHeadlineSpacing();
+  tmi->width  = SXSIZE - draw_xoffset - tmi->x - MENU_SCREEN_INFO_SPACE_RIGHT;
+  tmi->height = SYSIZE - draw_yoffset - tmi->y - MENU_SCREEN_INFO_SPACE_BOTTOM - 10;
+  tmi->align = ALIGN_LEFT;
+  tmi->valign = VALIGN_TOP;
+
   if (info_mode == INFO_MODE_CREDITS ||
       info_mode == INFO_MODE_PROGRAM)
   {
-    int font_width = getFontWidth(font_text);
-    int font_height = getFontHeight(font_text);
-    int line_height = font_height + line_spacing;
-    int draw_xoffset = mSX - SX;
-    int draw_yoffset = mSY - SY;
-
-    tmi->x = (SXSIZE - draw_xoffset) / 2;
-    tmi->y = MENU_SCREEN_INFO_YSTART + getHeadlineSpacing();
-    tmi->chars = (SXSIZE - draw_xoffset) / font_width;
-    tmi->width = tmi->chars * font_width;
-    tmi->height = MENU_SCREEN_INFO_YBOTTOM - tmi->y - 10 - draw_yoffset;
-    tmi->lines = tmi->height / line_height;
-    tmi->align = ALIGN_CENTER;
-    tmi->valign = VALIGN_TOP;
     tmi->autowrap = FALSE;
     tmi->centered = TRUE;
     tmi->parse_comments = TRUE;
@@ -4162,42 +4158,11 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
   else if (info_mode == INFO_MODE_LEVELSET ||
            info_mode == INFO_MODE_LEVEL)
   {
-    tmi = &readme;
+    tmi->autowrap = readme.autowrap;
+    tmi->centered = readme.centered;
+    tmi->parse_comments = readme.parse_comments;
 
-    font_text = (info_mode == INFO_MODE_LEVEL && tmi->font == FONT_INFO_LEVELSET ?
-                 FONT_INFO_LEVEL : tmi->font);
-
-    int font_width = getFontWidth(font_text);
-    int font_height = getFontHeight(font_text);
-    int line_height = font_height + line_spacing;
-
-    // if x position set to "-1", automatically determine by playfield width
-    if (tmi->x == -1)
-      tmi->x = SXSIZE / 2;
-
-    // if y position set to "-1", use static default value
-    if (tmi->y == -1)
-      tmi->y = MENU_SCREEN_INFO_YSTART + getHeadlineSpacing();
-
-    // if width set to "-1", automatically determine by playfield width
-    if (tmi->width == -1)
-      tmi->width = SXSIZE - 2 * TILEX;
-
-    // if height set to "-1", automatically determine by playfield height
-    if (tmi->height == -1)
-      tmi->height = MENU_SCREEN_INFO_YBOTTOM - tmi->y - 10;
-
-    // if chars set to "-1", automatically determine by text and font width
-    if (tmi->chars == -1)
-      tmi->chars = tmi->width / font_width;
-    else
-      tmi->width = tmi->chars * font_width;
-
-    // if lines set to "-1", automatically determine by text and line height
-    if (tmi->lines == -1)
-      tmi->lines = tmi->height / line_height;
-    else
-      tmi->height = tmi->lines * line_height;
+    font_text = (info_mode == INFO_MODE_LEVELSET ? FONT_INFO_LEVELSET : FONT_INFO_LEVEL);
   }
 
   FreeWrappedText(wrapped_text);
