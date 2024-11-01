@@ -3870,9 +3870,9 @@ static void DrawInfoScreen_Version(void)
   int ystep_line = getMenuTextStep(spacing_line,  font_text);
   int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART + getHeadlineSpacing();
   int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
-  int xstart1 = mSX - SX + 2 * xstep;
-  int xstart2 = mSX - SX + 18 * xstep;
-  int xstart3 = mSX - SX + 28 * xstep;
+  int xstart1 = mSX - SX + MENU_SCREEN_INFO_SPACE_LEFT;
+  int xstart2 = mSX - SX + MENU_SCREEN_INFO_SPACE_LEFT + 16 * xstep;
+  int xstart3 = mSX - SX + MENU_SCREEN_INFO_SPACE_LEFT + 27 * xstep;
   SDL_version sdl_version_compiled;
   const SDL_version *sdl_version_linked;
   int driver_name_len = 10;
