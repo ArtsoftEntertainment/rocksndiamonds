@@ -3992,8 +3992,8 @@ static void DrawInfoScreen_Version(void)
   ystart += ystep_para;
 
   DrawTextF(xstart1, ystart, font_head, "Driver");
-  DrawTextF(xstart2, ystart, font_head, "Requested");
-  DrawTextF(xstart3, ystart, font_head, "Used");
+  DrawTextF(xstart2, ystart, font_head, "requested");
+  DrawTextF(xstart3, ystart, font_head, "used");
   ystart += ystep_head;
 
   driver_name =
