@@ -3811,7 +3811,7 @@ struct FileInfo *getFileListFromConfigList(struct ConfigInfo *config_list,
   if (num_file_list_entries_found != num_file_list_entries)
   {
     Error("---");
-    Error("inconsistant config list information:");
+    Error("inconsistent config list information:");
     Error("- should be:   %d (according to 'src/conf_xxx.h')",
 	  num_file_list_entries);
     Error("- found to be: %d (according to 'src/conf_xxx.c')",
