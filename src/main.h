@@ -3244,6 +3244,7 @@ struct RequestButtonInfo
 
 struct MenuTextInfo
 {
+  struct TextPosInfo title;
   struct TextPosInfo title_1;
   struct TextPosInfo title_2;
   struct TextPosInfo footer;
