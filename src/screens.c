@@ -5000,13 +5000,11 @@ static void drawChooseTreeText(TreeInfo *ti, int y, boolean active)
 
 static void drawChooseTreeHeadExt(int type, char *title_string)
 {
-  int yoffset_sets = MENU_TITLE1_YPOS;
-  int yoffset_setup = MENU_TITLE_YPOS;
-  int yoffset = (type == TREE_TYPE_SCORE_ENTRY ||
-		 type == TREE_TYPE_LEVEL_DIR ||
-		 type == TREE_TYPE_LEVEL_NR ? yoffset_sets : yoffset_setup);
+  int y = (type == TREE_TYPE_SCORE_ENTRY ||
+	   type == TREE_TYPE_LEVEL_DIR ||
+	   type == TREE_TYPE_LEVEL_NR ? MENU_TITLE1_YPOS : MENU_TITLE_YPOS);
 
-  DrawTextSCentered(yoffset, FONT_TITLE_1, title_string);
+  DrawTextSCentered(y, FONT_TITLE_1, title_string);
 }
 
 static void drawChooseTreeHead(TreeInfo *ti)
