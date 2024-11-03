@@ -173,17 +173,20 @@
 #define MAX_SETUP_TEXT_INPUT_LEN		28
 
 // for various menu stuff
+#define MENU_TEXT_ALIGNED_YPOS(t)		(ALIGNED_YPOS((t).y + ((t).y < 0 ? SYSIZE : 0),	\
+							      getFontHeight((t).font), (t).valign))
 #define MENU_SCREEN_START_XPOS			1
 #define MENU_SCREEN_START_YPOS			2
 #define MENU_SCREEN_VALUE_XPOS			(SCR_FIELDX - 3)
 #define MENU_SCREEN_TEXT2_XPOS			(SCR_FIELDX - 2)
 #define MENU_SCREEN_MAX_XPOS			(SCR_FIELDX - 1)
-#define MENU_TITLE1_YPOS			(menu.text.title_1.y)
-#define MENU_TITLE2_YPOS			(menu.text.title_2.y)
+#define MENU_TITLE1_YPOS			MENU_TEXT_ALIGNED_YPOS(menu.text.title_1)
+#define MENU_TITLE2_YPOS			MENU_TEXT_ALIGNED_YPOS(menu.text.title_2)
+#define MENU_FOOTER_YPOS			MENU_TEXT_ALIGNED_YPOS(menu.text.footer)
 #define MENU_INFO_FONT_TITLE			FONT_TEXT_1
 #define MENU_INFO_FONT_HEAD			FONT_TEXT_2
 #define MENU_INFO_FONT_TEXT			FONT_TEXT_3
-#define MENU_INFO_FONT_FOOT			FONT_TEXT_4
+#define MENU_INFO_FONT_FOOT			FONT_FOOTER
 #define MENU_INFO_SPACE_HEAD			(menu.headline2_spacing_info[info_mode])
 #define MENU_SCREEN_INFO_SPACE_LEFT		(menu.left_spacing_info[info_mode])
 #define MENU_SCREEN_INFO_SPACE_MIDDLE		(menu.middle_spacing_info[info_mode])
@@ -204,7 +207,7 @@
 #define MENU_SCREEN_INFO_YBOTTOM		(SYSIZE - MENU_SCREEN_INFO_SPACE_BOTTOM)
 #define MENU_SCREEN_INFO_YSIZE			(MENU_SCREEN_INFO_YBOTTOM -			\
 						 MENU_SCREEN_INFO_YSTART - TILEY / 2)
-#define MENU_SCREEN_INFO_FOOTER			MENU_SCREEN_INFO_YBOTTOM
+#define MENU_SCREEN_INFO_FOOTER			MENU_FOOTER_YPOS
 #define MAX_INFO_ELEMENTS_IN_ARRAY		128
 #define MAX_INFO_ELEMENTS_ON_SCREEN		(SYSIZE / TILEY)
 #define MAX_INFO_ELEMENTS			MIN(MAX_INFO_ELEMENTS_IN_ARRAY,			\
@@ -5938,7 +5941,7 @@ static void DrawScoreInfo_Content(int entry_nr)
   int ystep_line = getMenuTextStep(spacing_line,  font_text);
   int xstart  = mSX - SX + spacing_left;
   int ystart  = mSY - SY + spacing_top + getHeadlineSpacing();
-  int yfooter = mSY - SY + SYSIZE - menu.bottom_spacing[GAME_MODE_SCOREINFO];
+  int yfooter = mSY - SY + MENU_FOOTER_YPOS;
   int xstart1 = xstart + xstep;
   int xstart2 = xstart + xstep * 12;
   int select_x = SX + xstart1;
@@ -7833,7 +7836,7 @@ static void ToggleNetworkModeIfNeeded(void)
   int font_title = FONT_TITLE_1;
   int font_foot = FC_BLUE;
   int ystart  = mSY - SY + 16;
-  int yfooter = mSY - SY + SYSIZE - 20;
+  int yfooter = mSY - SY + MENU_FOOTER_YPOS;
   char *text = (setup.network_mode ? "Start Network" : "Stop Network");
 
   if (setup.network_mode == network.enabled)

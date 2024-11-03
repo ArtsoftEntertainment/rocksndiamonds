@@ -7777,6 +7777,9 @@ struct ConfigInfo image_config[] =
   { "font.title_2.SETUP",				UNDEFINED_FILENAME		},
   { "font.title_2.SETUP.clone_from",			"font.text_2"			},
 
+  { "font.footer",					UNDEFINED_FILENAME		},
+  { "font.footer.clone_from",				"font.text_4"			},
+
   { "font.menu_1",					"RocksFontBig.png"		},
   { "font.menu_1.x",					"0"				},
   { "font.menu_1.y",					"320"				},
@@ -9403,6 +9406,11 @@ struct ConfigInfo image_config[] =
   { "menu.text.title_2.align",				"center"			},
   { "menu.text.title_2.valign",				"top"				},
   { "menu.text.title_2.font",				"font.title_2"			},
+  { "menu.text.footer.x",				"-1"				},
+  { "menu.text.footer.y",				"-8"				},
+  { "menu.text.footer.align",				"center"			},
+  { "menu.text.footer.valign",				"bottom"			},
+  { "menu.text.footer.font",				"font.footer"			},
 
   { "main.button.name.x",				"0"				},
   { "main.button.name.y",				"64"				},

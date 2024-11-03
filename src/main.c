@@ -9341,6 +9341,7 @@ struct FontInfo font_info[NUM_FONTS + 1] =
   { "font.initial_4"		},
   { "font.title_1"		},
   { "font.title_2"		},
+  { "font.footer"		},
   { "font.menu_1.active"	},
   { "font.menu_2.active"	},
   { "font.menu_1"		},
