@@ -204,6 +204,7 @@
 #define MENU_SCREEN_INFO_YBOTTOM		(SYSIZE - MENU_SCREEN_INFO_SPACE_BOTTOM)
 #define MENU_SCREEN_INFO_YSIZE			(MENU_SCREEN_INFO_YBOTTOM -			\
 						 MENU_SCREEN_INFO_YSTART - TILEY / 2)
+#define MENU_SCREEN_INFO_FOOTER			MENU_SCREEN_INFO_YBOTTOM
 #define MAX_INFO_ELEMENTS_IN_ARRAY		128
 #define MAX_INFO_ELEMENTS_ON_SCREEN		(SYSIZE / TILEY)
 #define MAX_INFO_ELEMENTS			MIN(MAX_INFO_ELEMENTS_IN_ARRAY,			\
@@ -3304,7 +3305,7 @@ void DrawInfoScreen_NotAvailable(char *text_title, char *text_error)
   int font_error = FONT_TEXT_2;
   int font_foot  = MENU_INFO_FONT_FOOT;
   int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART + getHeadlineSpacing();
-  int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
+  int yfooter = mSY - SY + MENU_SCREEN_INFO_FOOTER;
 
   SetMainBackgroundImageIfDefined(IMG_BACKGROUND_INFO);
 
@@ -3315,7 +3316,7 @@ void DrawInfoScreen_NotAvailable(char *text_title, char *text_error)
   DrawInfoScreen_Headline(0, 1, FALSE);
 
   DrawTextSCentered(ystart, font_error, text_error);
-  DrawTextSCentered(ybottom, font_foot, TEXT_NEXT_MENU);
+  DrawTextSCentered(yfooter, font_foot, TEXT_NEXT_MENU);
 
   FadeIn(REDRAW_FIELD);
 }
@@ -3327,7 +3328,7 @@ void DrawInfoScreen_HelpAnim(int start, int max_anims, boolean init)
   int font_foot = MENU_INFO_FONT_FOOT;
   int xstart = mSX + MENU_SCREEN_INFO_SPACE_LEFT;
   int ystart = mSY + MENU_SCREEN_INFO_YSTART + getHeadlineSpacing();
-  int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
+  int yfooter = mSY - SY + MENU_SCREEN_INFO_FOOTER;
   int ystep = MENU_SCREEN_INFO_YSTEP;
   int row_height = MENU_SCREEN_INFO_ENTRY_SIZE;
   int tilesize = MENU_SCREEN_INFO_TILE_SIZE;
@@ -3343,7 +3344,7 @@ void DrawInfoScreen_HelpAnim(int start, int max_anims, boolean init)
     for (i = 0; i < NUM_INFO_ELEMENTS_ON_SCREEN; i++)
       infoscreen_step[i] = infoscreen_frame[i] = 0;
 
-    DrawTextSCentered(ybottom, font_foot, TEXT_NEXT_PAGE);
+    DrawTextSCentered(yfooter, font_foot, TEXT_NEXT_PAGE);
 
     FrameCounter = 0;
   }
@@ -3652,7 +3653,7 @@ void HandleInfoScreen_Music(int dx, int dy, int button)
   int spacing_head = menu.headline2_spacing_info[info_mode];
   int ystep_head = getMenuTextStep(spacing_head,  font_head);
   int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART;
-  int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
+  int yfooter = mSY - SY + MENU_SCREEN_INFO_FOOTER;
 
   if (button == MB_MENU_INITIALIZE)
   {
@@ -3678,7 +3679,7 @@ void HandleInfoScreen_Music(int dx, int dy, int button)
       DrawInfoScreen_Headline(0, 1, TRUE);
 
       DrawTextSCentered(ystart, font_title, "No music info for this level set.");
-      DrawTextSCentered(ybottom, font_foot, TEXT_NEXT_MENU);
+      DrawTextSCentered(yfooter, font_foot, TEXT_NEXT_MENU);
 
       return;
     }
@@ -3846,7 +3847,7 @@ void HandleInfoScreen_Music(int dx, int dy, int button)
       }
     }
 
-    DrawTextSCentered(ybottom, font_foot, TEXT_NEXT_PAGE);
+    DrawTextSCentered(yfooter, font_foot, TEXT_NEXT_PAGE);
 
     if (button != MB_MENU_INITIALIZE)
       FadeIn(REDRAW_FIELD);
@@ -3869,7 +3870,7 @@ static void DrawInfoScreen_Version(void)
   int ystep_para = getMenuTextStep(spacing_para,  font_text);
   int ystep_line = getMenuTextStep(spacing_line,  font_text);
   int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART + getHeadlineSpacing();
-  int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
+  int yfooter = mSY - SY + MENU_SCREEN_INFO_FOOTER;
   int xstart1 = mSX - SX + MENU_SCREEN_INFO_SPACE_LEFT;
   int xstart2 = mSX - SX + MENU_SCREEN_INFO_SPACE_LEFT + 16 * xstep;
   int xstart3 = mSX - SX + MENU_SCREEN_INFO_SPACE_LEFT + 27 * xstep;
@@ -4019,7 +4020,7 @@ static void DrawInfoScreen_Version(void)
   DrawTextF(xstart2, ystart, font_text, "%s", setup.system.sdl_audiodriver);
   DrawTextF(xstart3, ystart, font_text, "%s", driver_name);
 
-  DrawTextSCentered(ybottom, font_foot, TEXT_NEXT_MENU);
+  DrawTextSCentered(yfooter, font_foot, TEXT_NEXT_MENU);
 
   PlayInfoSoundsAndMusic();
 
@@ -4129,7 +4130,7 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
   int font_text = MENU_INFO_FONT_TEXT;
   int font_foot = MENU_INFO_FONT_FOOT;
   int line_spacing = getMenuTextSpacing(menu.line_spacing_info[info_mode], font_text);
-  int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
+  int yfooter = mSY - SY + MENU_SCREEN_INFO_FOOTER;
 
   FreeScreenGadgets();
   CreateScreenGadgets();
@@ -4212,7 +4213,7 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
   boolean last_screen = (screen_nr == num_screens - 1);
   char *text_foot = (last_screen ? TEXT_NEXT_MENU : TEXT_NEXT_PAGE);
 
-  DrawTextSCentered(ybottom, font_foot, text_foot);
+  DrawTextSCentered(yfooter, font_foot, text_foot);
 }
 
 static void DrawInfoScreen_Generic(void)
@@ -4322,14 +4323,14 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
       int font_title = MENU_INFO_FONT_TITLE;
       int font_foot  = MENU_INFO_FONT_FOOT;
       int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART;
-      int ybottom = mSY - SY + MENU_SCREEN_INFO_YBOTTOM;
+      int yfooter = mSY - SY + MENU_SCREEN_INFO_FOOTER;
 
       ClearField();
 
       DrawInfoScreen_Headline(screen_nr, num_screens, use_global_screens);
 
       DrawTextSCentered(ystart, font_title, text_no_info);
-      DrawTextSCentered(ybottom, font_foot, TEXT_NEXT_MENU);
+      DrawTextSCentered(yfooter, font_foot, TEXT_NEXT_MENU);
 
       return;
     }
@@ -5937,7 +5938,7 @@ static void DrawScoreInfo_Content(int entry_nr)
   int ystep_line = getMenuTextStep(spacing_line,  font_text);
   int xstart  = mSX - SX + spacing_left;
   int ystart  = mSY - SY + spacing_top + getHeadlineSpacing();
-  int ybottom = mSY - SY + SYSIZE - menu.bottom_spacing[GAME_MODE_SCOREINFO];
+  int yfooter = mSY - SY + SYSIZE - menu.bottom_spacing[GAME_MODE_SCOREINFO];
   int xstart1 = xstart + xstep;
   int xstart2 = xstart + xstep * 12;
   int select_x = SX + xstart1;
@@ -6030,7 +6031,7 @@ static void DrawScoreInfo_Content(int entry_nr)
 
   select_y2 = SY + ystart;
 
-  DrawTextSCentered(ybottom, font_foot, "Press any key or button to go back");
+  DrawTextSCentered(yfooter, font_foot, "Press any key or button to go back");
 
   AdjustScoreInfoButtons_SelectScore(select_x, select_y1, select_y2);
   AdjustScoreInfoButtons_PlayTape(play_x, play_y, play_visible);
@@ -7832,7 +7833,7 @@ static void ToggleNetworkModeIfNeeded(void)
   int font_title = FONT_TITLE_1;
   int font_foot = FC_BLUE;
   int ystart  = mSY - SY + 16;
-  int ybottom = mSY - SY + SYSIZE - 20;
+  int yfooter = mSY - SY + SYSIZE - 20;
   char *text = (setup.network_mode ? "Start Network" : "Stop Network");
 
   if (setup.network_mode == network.enabled)
@@ -7853,7 +7854,7 @@ static void ToggleNetworkModeIfNeeded(void)
   else
     DisconnectFromNetworkServer();
 
-  DrawTextSCentered(ybottom, font_foot,
+  DrawTextSCentered(yfooter, font_foot,
 		    "Press any key or button for setup menu");
 
   WaitForEventToContinue();
