@@ -2922,7 +2922,7 @@ static void DrawInfoScreen_Main(void)
 
   OpenDoor(GetDoorState() | DOOR_NO_DELAY | DOOR_FORCE_REDRAW);
 
-  DrawTextSCentered(mSY - SY + MENU_TITLE_YPOS, FONT_TITLE_1, STR_INFO_MAIN);
+  DrawTextSCentered(MENU_TITLE_YPOS, FONT_TITLE_1, STR_INFO_MAIN);
 
   info_info = info_info_main;
 
@@ -3309,7 +3309,7 @@ void DrawInfoScreen_NotAvailable(char *text_title, char *text_error)
   int font_error = FONT_TEXT_2;
   int font_foot  = MENU_INFO_FONT_FOOT;
   int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART + getHeadlineSpacing();
-  int yfooter = mSY - SY + MENU_SCREEN_INFO_FOOTER;
+  int yfooter = MENU_SCREEN_INFO_FOOTER;
 
   SetMainBackgroundImageIfDefined(IMG_BACKGROUND_INFO);
 
@@ -3332,7 +3332,7 @@ void DrawInfoScreen_HelpAnim(int start, int max_anims, boolean init)
   int font_foot = MENU_INFO_FONT_FOOT;
   int xstart = mSX + MENU_SCREEN_INFO_SPACE_LEFT;
   int ystart = mSY + MENU_SCREEN_INFO_YSTART + getHeadlineSpacing();
-  int yfooter = mSY - SY + MENU_SCREEN_INFO_FOOTER;
+  int yfooter = MENU_SCREEN_INFO_FOOTER;
   int ystep = MENU_SCREEN_INFO_YSTEP;
   int row_height = MENU_SCREEN_INFO_ENTRY_SIZE;
   int tilesize = MENU_SCREEN_INFO_TILE_SIZE;
@@ -3657,7 +3657,7 @@ void HandleInfoScreen_Music(int dx, int dy, int button)
   int spacing_head = menu.headline2_spacing_info[info_mode];
   int ystep_head = getMenuTextStep(spacing_head,  font_head);
   int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART;
-  int yfooter = mSY - SY + MENU_SCREEN_INFO_FOOTER;
+  int yfooter = MENU_SCREEN_INFO_FOOTER;
 
   if (button == MB_MENU_INITIALIZE)
   {
@@ -3876,7 +3876,7 @@ static void DrawInfoScreen_Version(void)
   int ystep_para = getMenuTextStep(spacing_para, font_text);
   int ystep_line = getMenuTextStep(spacing_line, font_text);
   int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART + getHeadlineSpacing();
-  int yfooter = mSY - SY + MENU_SCREEN_INFO_FOOTER;
+  int yfooter = MENU_SCREEN_INFO_FOOTER;
   int xstart1 = mSX - SX + MENU_SCREEN_INFO_SPACE_LEFT;
   int xstart2 = xstart1 + max_text_1_len * getFontWidth(font_text) + spacing_midd;
   int xstart3 = xstart2 + max_text_2_len * getFontWidth(font_text) + spacing_midd;
@@ -4136,7 +4136,7 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
   int font_text = MENU_INFO_FONT_TEXT;
   int font_foot = MENU_INFO_FONT_FOOT;
   int line_spacing = getMenuTextSpacing(menu.line_spacing_info[info_mode], font_text);
-  int yfooter = mSY - SY + MENU_SCREEN_INFO_FOOTER;
+  int yfooter = MENU_SCREEN_INFO_FOOTER;
 
   FreeScreenGadgets();
   CreateScreenGadgets();
@@ -4329,7 +4329,7 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
       int font_title = MENU_INFO_FONT_TITLE;
       int font_foot  = MENU_INFO_FONT_FOOT;
       int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART;
-      int yfooter = mSY - SY + MENU_SCREEN_INFO_FOOTER;
+      int yfooter = MENU_SCREEN_INFO_FOOTER;
 
       ClearField();
 
@@ -5006,7 +5006,7 @@ static void drawChooseTreeHeadExt(int type, char *title_string)
 		 type == TREE_TYPE_LEVEL_DIR ||
 		 type == TREE_TYPE_LEVEL_NR ? yoffset_sets : yoffset_setup);
 
-  DrawTextSCentered(mSY - SY + yoffset, FONT_TITLE_1, title_string);
+  DrawTextSCentered(yoffset, FONT_TITLE_1, title_string);
 }
 
 static void drawChooseTreeHead(TreeInfo *ti)
@@ -5944,7 +5944,7 @@ static void DrawScoreInfo_Content(int entry_nr)
   int ystep_para = getMenuTextStep(spacing_para, font_text);
   int ystep_line = getMenuTextStep(spacing_line, font_text);
   int ystart  = mSY - SY + spacing_top + getHeadlineSpacing();
-  int yfooter = mSY - SY + MENU_FOOTER_YPOS;
+  int yfooter = MENU_FOOTER_YPOS;
   int xstart1 = mSX - SX + spacing_left;
   int xstart2 = xstart1 + max_text_1_len * getFontWidth(font_text) + spacing_midd;
   int select_x = SX + xstart1;
@@ -7838,8 +7838,8 @@ static void ToggleNetworkModeIfNeeded(void)
 {
   int font_title = FONT_TITLE_1;
   int font_foot = FC_BLUE;
-  int ystart  = mSY - SY + MENU_TITLE_YPOS;
-  int yfooter = mSY - SY + MENU_FOOTER_YPOS;
+  int ystart  = MENU_TITLE_YPOS;
+  int yfooter = MENU_FOOTER_YPOS;
   char *text = (setup.network_mode ? "Start Network" : "Stop Network");
 
   if (setup.network_mode == network.enabled)
@@ -8926,7 +8926,7 @@ static void DrawSetupScreen_Generic(void)
   // use modified setup info without setup entries marked as hidden
   setup_info = getSetupInfoFinal(setup_info);
 
-  DrawTextSCentered(mSY - SY + MENU_TITLE_YPOS, FONT_TITLE_1, title_string);
+  DrawTextSCentered(MENU_TITLE_YPOS, FONT_TITLE_1, title_string);
 
   // determine maximal number of setup entries that can be displayed on screen
   num_setup_info = 0;
@@ -8968,7 +8968,7 @@ static void DrawSetupScreen_Input(void)
 
   setup_info = getSetupInfoFinal(setup_info_input);
 
-  DrawTextSCentered(mSY - SY + MENU_TITLE_YPOS, FONT_TITLE_1, STR_SETUP_INPUT);
+  DrawTextSCentered(MENU_TITLE_YPOS, FONT_TITLE_1, STR_SETUP_INPUT);
 
   for (i = 0; setup_info[i].type != 0; i++)
   {
@@ -9299,7 +9299,7 @@ static boolean CustomizeKeyboardMain(int player_nr)
 
   ClearField();
 
-  DrawTextSCentered(mSY - SY + MENU_TITLE_YPOS, FONT_TITLE_1, "Keyboard Input");
+  DrawTextSCentered(MENU_TITLE_YPOS, FONT_TITLE_1, "Keyboard Input");
 
   step_nr = 0;
   DrawText(mSX, mSY + (2 + 2 * step_nr) * 32,
@@ -9938,7 +9938,7 @@ static boolean ConfigureVirtualButtonsMain(void)
 
   ClearField();
 
-  DrawTextSCentered(mSY - SY + MENU_TITLE_YPOS, FONT_TITLE_1, "Virtual Buttons");
+  DrawTextSCentered(MENU_TITLE_YPOS, FONT_TITLE_1, "Virtual Buttons");
   DrawTextSCentered(ypos1, font_nr, "Select tiles to");
   DrawTextSCentered(ypos2, font_nr, customize_step_text[step_nr]);
 
@@ -10134,7 +10134,7 @@ static boolean ConfigureVirtualButtonsMain(void)
 
 	ClearField();
 
-	DrawTextSCentered(mSY - SY + MENU_TITLE_YPOS, FONT_TITLE_1, "Virtual Buttons");
+	DrawTextSCentered(MENU_TITLE_YPOS, FONT_TITLE_1, "Virtual Buttons");
 	DrawTextSCentered(ypos1, font_nr, "Select tiles to");
 	DrawTextSCentered(ypos2, font_nr, customize_step_text[step_nr]);
       }
