@@ -25,6 +25,8 @@ void DrawMainMenu(void);
 void DrawHallOfFame(int);
 void DrawScreenAfterAddingSet(char *, int);
 void DrawInfoScreen_FromMainMenu(int);
+void DrawInfoScreen_FromInitGame(int);
+boolean ShowInfoScreen_FromInitGame(void);
 
 void RedrawSetupScreenAfterFullscreenToggle(void);
 void RedrawSetupScreenAfterScreenRotation(int);

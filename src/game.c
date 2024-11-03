@@ -3676,10 +3676,16 @@ void InitGame(void)
   int full_lev_fieldy = lev_fieldy + (BorderElement != EL_EMPTY ? 2 : 0);
   int fade_mask = REDRAW_FIELD;
   boolean restarting = (game_status == GAME_MODE_PLAYING);
+  boolean level_info = (game_status == GAME_MODE_INFO);
   boolean emulate_bd = TRUE;	// unless non-BOULDERDASH elements found
   boolean emulate_sp = TRUE;	// unless non-SUPAPLEX    elements found
   int initial_move_dir = MV_DOWN;
   int i, j, x, y;
+
+  // show level info before starting the game (if any exists)
+  if (!level_editor_test_game && !restarting && !level_info && !tape.playing)
+    if (ShowInfoScreen_FromInitGame())
+      return;
 
   // required to prevent handling game actions when moving doors (via "checkGameEnded()")
   game.InitGameRequested = TRUE;

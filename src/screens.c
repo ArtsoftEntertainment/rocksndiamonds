@@ -158,8 +158,10 @@
 #define TEXT_MAIN_MENU				"Press any key or button for main menu"
 #define TEXT_INFO_MENU				"Press any key or button for info menu"
 #define TEXT_NEXT_PAGE				"Press any key or button for next page"
-#define TEXT_NEXT_MENU				(info_screens_from_main ?		\
-						 TEXT_MAIN_MENU : TEXT_INFO_MENU)
+#define TEXT_INIT_GAME				"Press any key or button to start game"
+#define TEXT_NEXT_MENU				(info_screens_from_main ? TEXT_MAIN_MENU :	\
+						 info_screens_from_game ? TEXT_INIT_GAME :	\
+						 TEXT_INFO_MENU)
 
 // for input setup functions
 #define SETUPINPUT_SCREEN_POS_START		0
@@ -370,6 +372,7 @@ static int info_mode = INFO_MODE_MAIN;
 static int setup_mode = SETUP_MODE_MAIN;
 
 static boolean info_screens_from_main = FALSE;
+static boolean info_screens_from_game = FALSE;
 
 static TreeInfo *window_sizes = NULL;
 static TreeInfo *window_size_current = NULL;
@@ -2894,6 +2897,16 @@ static void DrawInfoScreen_Main(void)
     return;
   }
 
+  // (needed after displaying info sub-screens directly from init game)
+  if (info_screens_from_game)
+  {
+    info_screens_from_game = FALSE;
+
+    InitGame();
+
+    return;
+  }
+
   if (redraw_mask & REDRAW_ALL)
     fade_mask = REDRAW_ALL;
 
@@ -4347,6 +4360,10 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
   {
     PlaySound(SND_MENU_ITEM_SELECTING);
 
+    // if escaping from level info screen on game start, go back to main menu
+    if (info_screens_from_game)
+      info_screens_from_main = TRUE;
+
     info_mode = INFO_MODE_MAIN;
     DrawInfoScreen();
   }
@@ -4435,11 +4452,18 @@ static void DrawInfoScreen(void)
     DrawInfoScreen_Main();
 }
 
-void DrawInfoScreen_FromMainMenu(int nr)
+static void DrawInfoScreen_FromMainMenuOrInitGame(int nr, boolean from_game_status)
 {
   int fade_mask = REDRAW_FIELD;
 
   if (nr < INFO_MODE_MAIN || nr >= MAX_INFO_MODES)
+    return;
+
+  if (from_game_status == GAME_MODE_MAIN)
+    info_screens_from_main = TRUE;
+  else if (from_game_status == GAME_MODE_PLAYING)
+    info_screens_from_game = TRUE;
+  else
     return;
 
   CloseDoor(DOOR_CLOSE_2);
@@ -4447,7 +4471,6 @@ void DrawInfoScreen_FromMainMenu(int nr)
   SetGameStatus(GAME_MODE_INFO);
 
   info_mode = nr;
-  info_screens_from_main = TRUE;
 
   if (redraw_mask & REDRAW_ALL)
     fade_mask = REDRAW_ALL;
@@ -4470,6 +4493,26 @@ void DrawInfoScreen_FromMainMenu(int nr)
   SetMainBackgroundImage(IMG_BACKGROUND_INFO);
 
   DrawInfoScreen();
+}
+
+void DrawInfoScreen_FromMainMenu(int nr)
+{
+  DrawInfoScreen_FromMainMenuOrInitGame(nr, GAME_MODE_MAIN);
+}
+
+void DrawInfoScreen_FromInitGame(int nr)
+{
+  DrawInfoScreen_FromMainMenuOrInitGame(nr, GAME_MODE_PLAYING);
+}
+
+boolean ShowInfoScreen_FromInitGame(void)
+{
+  if (!hasLevelInfo())
+    return FALSE;
+
+  DrawInfoScreen_FromInitGame(INFO_MODE_LEVEL);
+
+  return TRUE;
 }
 
 void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
