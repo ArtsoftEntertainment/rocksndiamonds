@@ -3862,21 +3862,23 @@ void HandleInfoScreen_Music(int dx, int dy, int button)
 
 static void DrawInfoScreen_Version(void)
 {
+  int max_text_1_len = strlen("Version (xxxx)");
+  int max_text_2_len = strlen("requested");
   int font_head = MENU_INFO_FONT_HEAD;
   int font_text = MENU_INFO_FONT_TEXT;
   int font_foot = MENU_INFO_FONT_FOOT;
   int spacing_head = menu.headline2_spacing_info[info_mode];
   int spacing_para = menu.paragraph_spacing_info[info_mode];
   int spacing_line = menu.line_spacing_info[info_mode];
-  int xstep = getFontWidth(font_text);
+  int spacing_midd = menu.middle_spacing_info[info_mode];
   int ystep_head = getMenuTextStep(spacing_head,  font_head);
   int ystep_para = getMenuTextStep(spacing_para,  font_text);
   int ystep_line = getMenuTextStep(spacing_line,  font_text);
   int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART + getHeadlineSpacing();
   int yfooter = mSY - SY + MENU_SCREEN_INFO_FOOTER;
   int xstart1 = mSX - SX + MENU_SCREEN_INFO_SPACE_LEFT;
-  int xstart2 = mSX - SX + MENU_SCREEN_INFO_SPACE_LEFT + 16 * xstep;
-  int xstart3 = mSX - SX + MENU_SCREEN_INFO_SPACE_LEFT + 27 * xstep;
+  int xstart2 = xstart1 + max_text_1_len * getFontWidth(font_text) + spacing_midd;
+  int xstart3 = xstart2 + max_text_2_len * getFontWidth(font_text) + spacing_midd;
   SDL_version sdl_version_compiled;
   const SDL_version *sdl_version_linked;
   int driver_name_len = 10;
