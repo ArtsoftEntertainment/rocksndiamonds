@@ -7779,6 +7779,8 @@ struct ConfigInfo image_config[] =
 
   { "font.footer",					UNDEFINED_FILENAME		},
   { "font.footer.clone_from",				"font.text_4"			},
+  { "font.footer.INFO",					UNDEFINED_FILENAME		},
+  { "font.footer.INFO.clone_from",			"font.text_4.INFO"		},
 
   { "font.menu_1",					"RocksFontBig.png"		},
   { "font.menu_1.x",					"0"				},
@@ -7920,6 +7922,8 @@ struct ConfigInfo image_config[] =
   { "font.text_4.SETUP.clone_from",			"font.text_4.LEVELS"		},
   { "font.text_4.NAMES",				UNDEFINED_FILENAME		},
   { "font.text_4.NAMES.clone_from",			"font.menu_1.active"		},
+  { "font.text_4.INFO",					UNDEFINED_FILENAME		},
+  { "font.text_4.INFO.clone_from",			"font.text_4"			},
   { "font.text_4.SCORES",				"RocksFontMedium.png"		},
   { "font.text_4.SCORES.x",				"0"				},
   { "font.text_4.SCORES.y",				"480"				},
