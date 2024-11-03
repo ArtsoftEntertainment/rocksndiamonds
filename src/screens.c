@@ -178,8 +178,8 @@
 #define MENU_SCREEN_VALUE_XPOS			(SCR_FIELDX - 3)
 #define MENU_SCREEN_TEXT2_XPOS			(SCR_FIELDX - 2)
 #define MENU_SCREEN_MAX_XPOS			(SCR_FIELDX - 1)
-#define MENU_TITLE1_YPOS			8
-#define MENU_TITLE2_YPOS			46
+#define MENU_TITLE1_YPOS			(menu.text.title_1.y)
+#define MENU_TITLE2_YPOS			(menu.text.title_2.y)
 #define MENU_INFO_FONT_TITLE			FONT_TEXT_1
 #define MENU_INFO_FONT_HEAD			FONT_TEXT_2
 #define MENU_INFO_FONT_TEXT			FONT_TEXT_3

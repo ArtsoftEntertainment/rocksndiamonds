@@ -3241,6 +3241,12 @@ struct RequestButtonInfo
   struct TextPosInfo touch_confirm;
 };
 
+struct MenuTextInfo
+{
+  struct TextPosInfo title_1;
+  struct TextPosInfo title_2;
+};
+
 struct MenuMainButtonInfo
 {
   struct MenuPosInfo name;
@@ -3431,6 +3437,7 @@ struct MenuInfo
   int sound[NUM_SPECIAL_GFX_ARGS];
   int music[NUM_SPECIAL_GFX_ARGS];
 
+  struct MenuTextInfo text;
   struct MenuMainInfo main;
   struct MenuSetupInfo setup;
   struct MenuScoresInfo scores;

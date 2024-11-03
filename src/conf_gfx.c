@@ -9393,6 +9393,17 @@ struct ConfigInfo image_config[] =
   { "menu.extra_spacing.INFO[LEVEL]",			"2"				},
   { "menu.extra_spacing.SETUP[INPUT]",			"2"				},
 
+  { "menu.text.title_1.x",				"-1"				},
+  { "menu.text.title_1.y",				"8"				},
+  { "menu.text.title_1.align",				"center"			},
+  { "menu.text.title_1.valign",				"top"				},
+  { "menu.text.title_1.font",				"font.title_1"			},
+  { "menu.text.title_2.x",				"-1"				},
+  { "menu.text.title_2.y",				"46"				},
+  { "menu.text.title_2.align",				"center"			},
+  { "menu.text.title_2.valign",				"top"				},
+  { "menu.text.title_2.font",				"font.title_2"			},
+
   { "main.button.name.x",				"0"				},
   { "main.button.name.y",				"64"				},
   { "main.button.levels.x",				"0"				},
