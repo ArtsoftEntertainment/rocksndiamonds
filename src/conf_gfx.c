@@ -9302,6 +9302,7 @@ struct ConfigInfo image_config[] =
   { "menu.left_spacing.INFO[LEVEL]",			"16"				},
   { "menu.left_spacing.SETUP[INPUT]",			"16"				},
 
+  { "menu.middle_spacing.SCOREINFO",			"32"				},
   { "menu.middle_spacing.INFO[ELEMENTS]",		"16"				},
   { "menu.middle_spacing.INFO[VERSION]",		"32"				},
 

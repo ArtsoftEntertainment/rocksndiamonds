@@ -3403,6 +3403,7 @@ struct MenuInfo
   int left_spacing[NUM_SPECIAL_GFX_ARGS];
   int left_spacing_info[NUM_SPECIAL_GFX_INFO_ARGS];
   int left_spacing_setup[NUM_SPECIAL_GFX_SETUP_ARGS];
+  int middle_spacing[NUM_SPECIAL_GFX_ARGS];
   int middle_spacing_info[NUM_SPECIAL_GFX_INFO_ARGS];
   int right_spacing[NUM_SPECIAL_GFX_ARGS];
   int right_spacing_info[NUM_SPECIAL_GFX_INFO_ARGS];

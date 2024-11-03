@@ -5931,6 +5931,7 @@ static void DrawScoreInfo_Content(int entry_nr)
   struct ScoreEntry *entry = &scores.entry[entry_nr];
   char *pos_text = getHallOfFameRankText(entry_nr, 0);
   char *tape_date = getHallOfFameTapeDateText(entry);
+  int max_text_1_len = strlen("Level Set");
   int font_head = MENU_INFO_FONT_HEAD;
   int font_text = MENU_INFO_FONT_TEXT;
   int font_foot = MENU_INFO_FONT_FOOT;
@@ -5938,14 +5939,13 @@ static void DrawScoreInfo_Content(int entry_nr)
   int spacing_line = menu.line_spacing[GAME_MODE_SCOREINFO];
   int spacing_left = menu.left_spacing[GAME_MODE_SCOREINFO];
   int spacing_top  = menu.top_spacing[GAME_MODE_SCOREINFO];
-  int xstep = getFontWidth(font_text);
+  int spacing_midd = menu.middle_spacing[GAME_MODE_SCOREINFO];
   int ystep_para = getMenuTextStep(spacing_para,  font_text);
   int ystep_line = getMenuTextStep(spacing_line,  font_text);
-  int xstart  = mSX - SX + spacing_left;
   int ystart  = mSY - SY + spacing_top + getHeadlineSpacing();
   int yfooter = mSY - SY + MENU_FOOTER_YPOS;
-  int xstart1 = xstart + xstep;
-  int xstart2 = xstart + xstep * 12;
+  int xstart1 = mSX - SX + spacing_left;
+  int xstart2 = xstart1 + max_text_1_len * getFontWidth(font_text) + spacing_midd;
   int select_x = SX + xstart1;
   int select_y1, select_y2;
   int play_x, play_y;
