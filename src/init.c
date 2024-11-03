@@ -5181,27 +5181,51 @@ static void InitGlobal(void)
   // set default filenames for all cloned graphics in static configuration
   for (i = 0; image_config[i].token != NULL; i++)
   {
-    if (strEqual(image_config[i].value, UNDEFINED_FILENAME))
+    char *token = image_config[i].token;
+    char *value = image_config[i].value;
+    char *token_cloned = token;
+    int num_references_followed = 0;
+    int max_references_allowed = 10;
+
+    // if image config entry has undefined filename, check for cloned graphics (recursively)
+    while (strEqual(value, UNDEFINED_FILENAME) &&
+           num_references_followed < max_references_allowed)
     {
-      char *token = image_config[i].token;
-      char *token_clone_from = getStringCat2(token, ".clone_from");
-      char *token_cloned = getHashEntry(image_config_hash, token_clone_from);
+      char *token_clone_from = getStringCat2(token_cloned, ".clone_from");
 
-      if (token_cloned != NULL)
-      {
-	char *value_cloned = getHashEntry(image_config_hash, token_cloned);
-
-	if (value_cloned != NULL)
-	{
-	  // set default filename in static configuration
-	  image_config[i].value = value_cloned;
-
-	  // set default filename in image config hash
-	  setHashEntry(image_config_hash, token, value_cloned);
-	}
-      }
+      token_cloned = getHashEntry(image_config_hash, token_clone_from);
 
       free(token_clone_from);
+
+      if (token_cloned == NULL)
+        break;
+
+      value = getHashEntry(image_config_hash, token_cloned);
+
+      num_references_followed++;
+    }
+
+    // if cloned graphics were found for undefined filename, update image config
+    if (token_cloned != token && num_references_followed > 0)
+    {
+      if (token_cloned == NULL || value == NULL || strEqual(value, UNDEFINED_FILENAME))
+      {
+        Error("---");
+        Error("inconsistent image config list information for cloned graphics:");
+
+        if (num_references_followed >= max_references_allowed)
+          Error("- '%s' cannot be resolved in %d steps (loop?)", token, max_references_allowed);
+        else
+          Error("- '%s' cannot be resolved to a valid image filename", token);
+
+        Fail("please fix");
+      }
+
+      // set default filename in static configuration
+      image_config[i].value = value;
+
+      // set default filename in image config hash
+      setHashEntry(image_config_hash, token, value);
     }
   }
 
