@@ -3680,8 +3680,12 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
                 int old_x = getx(cave, raw_x, raw_y);
                 int old_y = gety(cave, raw_x, raw_y);
 
-		store_dir(cave, x, y, GD_MV_UP, O_SPACE);        // place a space ...
-		store_dir(cave, old_x, old_y, move_dir, tile);   // and move element.
+                // only move game element if not already moving in that direction
+                if (game_bd.game->dir_buffer_to[old_y][old_x] != move_dir)
+                {
+                  store_dir(cave, x, y, GD_MV_UP, O_SPACE);        // place a space ...
+                  store_dir(cave, old_x, old_y, move_dir, tile);   // and move element.
+                }
 	      }
 	    }
 
@@ -3710,8 +3714,12 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
                 int old_x = getx(cave, raw_x, raw_y);
                 int old_y = gety(cave, raw_x, raw_y);
 
-		store_dir(cave, x, y, GD_MV_DOWN, O_SPACE);      // place a space ...
-		store_dir(cave, old_x, old_y, move_dir, tile);   // and move element.
+                // only move game element if not already moving in that direction
+                if (game_bd.game->dir_buffer_to[old_y][old_x] != move_dir)
+                {
+                  store_dir(cave, x, y, GD_MV_DOWN, O_SPACE);      // place a space ...
+                  store_dir(cave, old_x, old_y, move_dir, tile);   // and move element.
+                }
 	      }
 	    }
 	  }
