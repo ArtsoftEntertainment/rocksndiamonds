@@ -1645,7 +1645,8 @@ void gd_drawcave_game(const GdCave *cave,
       }
 
       // draw special graphics if element is moving
-      if (dir_to == GD_MV_LEFT || dir_to == GD_MV_RIGHT)
+      if ((dir_to == GD_MV_LEFT || dir_to == GD_MV_RIGHT) &&
+          !moved_by_conveyor_dir(cave, x, y, dir_to))
       {
         if (actual == O_STONE || actual == O_STONE_F)
         {

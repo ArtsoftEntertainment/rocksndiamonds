@@ -552,6 +552,45 @@ static inline boolean moved_by_conveyor_bottom(const GdCave *cave, const int x, 
   return has_property(get_dir(cave, x, y, dir), P_MOVED_BY_CONVEYOR_BOTTOM);
 }
 
+// returns true if element can be moved by conveyor belt (above or below)
+boolean moved_by_conveyor(const GdCave *cave, const int x, const int y)
+{
+  int element      = get(cave, x, y);
+  int element_up   = get_dir(cave, x, y, GD_MV_UP);
+  int element_down = get_dir(cave, x, y, GD_MV_DOWN);
+  boolean moved_by_conveyor_top    = has_property(element, P_MOVED_BY_CONVEYOR_TOP);
+  boolean moved_by_conveyor_bottom = has_property(element, P_MOVED_BY_CONVEYOR_BOTTOM);
+  boolean conveyor_up   = (element_up   == O_CONVEYOR_LEFT || element_up   == O_CONVEYOR_RIGHT);
+  boolean conveyor_down = (element_down == O_CONVEYOR_LEFT || element_down == O_CONVEYOR_RIGHT);
+
+  return (!cave->gravity_disabled && cave->conveyor_belts_active &&
+          ((cave->gravity == GD_MV_DOWN && ((conveyor_down && moved_by_conveyor_top) ||
+                                            (conveyor_up   && moved_by_conveyor_bottom))) ||
+           (cave->gravity == GD_MV_UP   && ((conveyor_up   && moved_by_conveyor_top) ||
+                                            (conveyor_down && moved_by_conveyor_bottom)))));
+}
+
+// returns true if moving element is moved by conveyor belt in same direction (above or below)
+boolean moved_by_conveyor_dir(const GdCave *cave, const int x, const int y, const GdDirection dir)
+{
+  int element_dir = (cave->conveyor_belts_direction_changed ? opposite[dir] : dir);
+  int element      = get(cave, x, y);
+  int element_up   = get_dir(cave, x, y, GD_MV_UP);
+  int element_down = get_dir(cave, x, y, GD_MV_DOWN);
+  boolean moved_by_conveyor_top    = has_property(element, P_MOVED_BY_CONVEYOR_TOP);
+  boolean moved_by_conveyor_bottom = has_property(element, P_MOVED_BY_CONVEYOR_BOTTOM);
+  boolean conveyor_up   = ((element_up   == O_CONVEYOR_LEFT  && element_dir == GD_MV_RIGHT) ||
+                           (element_up   == O_CONVEYOR_RIGHT && element_dir == GD_MV_LEFT));
+  boolean conveyor_down = ((element_down == O_CONVEYOR_LEFT  && element_dir == GD_MV_LEFT) ||
+                           (element_down == O_CONVEYOR_RIGHT && element_dir == GD_MV_RIGHT));
+
+  return (!cave->gravity_disabled && cave->conveyor_belts_active &&
+          ((cave->gravity == GD_MV_DOWN && ((conveyor_down && moved_by_conveyor_top) ||
+                                            (conveyor_up   && moved_by_conveyor_bottom))) ||
+           (cave->gravity == GD_MV_UP   && ((conveyor_up   && moved_by_conveyor_top) ||
+                                            (conveyor_down && moved_by_conveyor_bottom)))));
+}
+
 // returns true if the given element is scanned
 boolean is_scanned_element(GdElement e)
 {

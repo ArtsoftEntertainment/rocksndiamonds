@@ -27,6 +27,8 @@ GdElement non_scanned_pair(GdElement of_what);
 boolean is_player(const GdCave *cave, const int x, const int y);
 boolean is_player_stirring(const GdCave *cave, const int x, const int y);
 boolean can_be_pushed(const GdCave *cave, const int x, const int y, const GdDirection dir);
+boolean moved_by_conveyor(const GdCave *cave, const int x, const int y);
+boolean moved_by_conveyor_dir(const GdCave *cave, const int x, const int y, const GdDirection dir);
 GdDirection gd_direction_from_keypress(boolean up, boolean down, boolean left, boolean right);
 void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire, boolean suicide);
 void set_initial_cave_speed(GdCave *cave);
