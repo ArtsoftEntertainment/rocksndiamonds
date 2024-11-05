@@ -658,10 +658,6 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   if (cave->player_state == GD_PL_EXITED)
     use_smooth_movements = FALSE;
 
-  // never treat empty space as "moving" (source tile if player is snapping)
-  if (tile_from == O_SPACE)
-    use_smooth_movements = FALSE;
-
   // do not use smooth movement animation for player stirring the pot
   if (tile_from == O_PLAYER_STIRRING || tile_to == O_PLAYER_STIRRING)
     use_smooth_movements = FALSE;

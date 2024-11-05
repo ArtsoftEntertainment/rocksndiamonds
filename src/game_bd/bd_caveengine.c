@@ -3684,7 +3684,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
                 if (game_bd.game->dir_buffer_to[old_y][old_x] != move_dir ||
                     cave->conveyor_belts_buggy)
                 {
-                  store_dir(cave, x, y, GD_MV_UP, O_SPACE);        // place a space ...
+                  store(cave, old_x, old_y, O_SPACE);              // place a space ...
                   store_dir(cave, old_x, old_y, move_dir, tile);   // and move element.
                 }
 	      }
@@ -3719,7 +3719,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
                 if (game_bd.game->dir_buffer_to[old_y][old_x] != move_dir ||
                     cave->conveyor_belts_buggy)
                 {
-                  store_dir(cave, x, y, GD_MV_DOWN, O_SPACE);      // place a space ...
+                  store(cave, old_x, old_y, O_SPACE);              // place a space ...
                   store_dir(cave, old_x, old_y, move_dir, tile);   // and move element.
                 }
 	      }
