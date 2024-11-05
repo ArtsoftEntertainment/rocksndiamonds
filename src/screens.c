@@ -4367,6 +4367,16 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
     info_mode = INFO_MODE_MAIN;
     DrawInfoScreen();
   }
+  else if (button == MB_MENU_CONTINUE)
+  {
+    // if space key was pressed, show next page of info screen, if available
+    if (wrapped_text->line_visible_last < wrapped_text->num_lines - 1)
+      HandleInfoScreen(0, 0, 0, +1 * SCROLL_PAGE, MB_MENU_MARK);
+    else
+      HandleInfoScreen(0, 0, 0, 0, MB_MENU_CHOICE);
+
+    return;
+  }
   else if ((mx >= 0 && my >= 0 && button == MB_MENU_CHOICE) || dx)
   {
     PlaySound(SND_MENU_ITEM_SELECTING);
@@ -4517,6 +4527,13 @@ boolean ShowInfoScreen_FromInitGame(void)
 
 void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
 {
+  // fix "continue" button mode for screens that do not support it
+  if (button == MB_MENU_CONTINUE && (info_mode != INFO_MODE_CREDITS &&
+                                     info_mode != INFO_MODE_PROGRAM &&
+                                     info_mode != INFO_MODE_LEVELSET &&
+                                     info_mode != INFO_MODE_LEVEL))
+    button = MB_MENU_CHOICE;
+
   if (info_mode == INFO_MODE_TITLE)
     HandleInfoScreen_TitleScreen(dx, dy, button);
   else if (info_mode == INFO_MODE_ELEMENTS)

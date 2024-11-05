@@ -2467,7 +2467,7 @@ void HandleKey(Key key, int key_status)
 	  else if (game_status == GAME_MODE_SETUP)
 	    HandleSetupScreen(0, 0, 0, 0, MB_MENU_CHOICE);
 	  else if (game_status == GAME_MODE_INFO)
-	    HandleInfoScreen(0, 0, 0, 0, MB_MENU_CHOICE);
+	    HandleInfoScreen(0, 0, 0, 0, (key == KSYM_space ? MB_MENU_CONTINUE : MB_MENU_CHOICE));
 	  else if (game_status == GAME_MODE_SCORES)
 	    HandleHallOfFame(0, 0, 0, 0, MB_MENU_CHOICE);
 	  else if (game_status == GAME_MODE_SCOREINFO)
