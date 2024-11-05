@@ -2720,6 +2720,11 @@ const GdStructDescriptor gd_cave_properties[] =
     N_("Direction changed"), CAVE_OFFSET(conveyor_belts_direction_changed), 1,
     N_("If the conveyor belts' movement is changed, ie. they are running in the opposite direction. As you can freely use left and right going versions of the conveyor belt in a cave, it is not recommended to change this setting, rather you should select the correct one from the element box when drawing.")
   },
+  {
+    "ConveyorBelt.buggy", GD_TYPE_BOOLEAN, 0,
+    N_("Buggy conveyor belt"), CAVE_OFFSET(conveyor_belts_buggy), 1,
+    N_("If it is true, pushing an object onto an active (going right) conveyor belt from the left side results in that object immediately jumping another tile to the right before moving further on the conveyor belt. Otherwise, the conveyor belt works as expected, and objects being pushed onto it from the left side move normally.")
+  },
 
   // water
   {
@@ -3215,6 +3220,7 @@ GdPropertyDefault gd_cave_defaults_gdash[] =
   // conveyor belt
   { CAVE_OFFSET(conveyor_belts_active),				TRUE				},
   { CAVE_OFFSET(conveyor_belts_direction_changed),		FALSE				},
+  { CAVE_OFFSET(conveyor_belts_buggy),				TRUE				},
 
   // slime
   { CAVE_OFFSET(slime_predictable),				TRUE				},

@@ -987,6 +987,11 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
     &li.bd_conveyor_belts_changed,	FALSE
   },
+  {
+    EL_BDX_CONVEYOR_LEFT,		-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(3),
+    &li.bd_conveyor_belts_buggy,	FALSE
+  },
 
   {
     EL_BDX_WATER,			-1,
@@ -4427,6 +4432,7 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
 
   cave->conveyor_belts_active		= level->bd_conveyor_belts_active;
   cave->conveyor_belts_direction_changed= level->bd_conveyor_belts_changed;
+  cave->conveyor_belts_buggy		= level->bd_conveyor_belts_buggy;
 
   cave->water_does_not_flow_down	= level->bd_water_cannot_flow_down;
 
@@ -4614,6 +4620,7 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
 
   level->bd_conveyor_belts_active	= cave->conveyor_belts_active;
   level->bd_conveyor_belts_changed	= cave->conveyor_belts_direction_changed;
+  level->bd_conveyor_belts_buggy	= cave->conveyor_belts_buggy;
 
   level->bd_water_cannot_flow_down	= cave->water_does_not_flow_down;
 

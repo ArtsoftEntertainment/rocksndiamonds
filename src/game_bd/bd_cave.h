@@ -496,6 +496,7 @@ typedef struct _gd_cave
 
   boolean conveyor_belts_active;
   boolean conveyor_belts_direction_changed;
+  boolean conveyor_belts_buggy;		// use old, buggy conveyor belt behavior
 
   // effects
   GdElement explosion_effect;           // explosion converts to this element after its last stage.

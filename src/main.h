@@ -3876,6 +3876,7 @@ struct LevelInfo
   int bd_replicator_create_delay;	// BD replicator delay between replications (in BD frames)
   boolean bd_conveyor_belts_active;	// BD conveyor belts start in active state if enabled
   boolean bd_conveyor_belts_changed;	// BD conveyor belts direction is changed if enabled
+  boolean bd_conveyor_belts_buggy;	// BD conveyor belts setting to implement buggy behaviour
   boolean bd_water_cannot_flow_down;	// BD water does not flow downwards if enabled
   int bd_nut_content;			// BD nut contains the specified game element
   int bd_hammer_walls_break_delay;	// BD hammer time for breaking walls (in BD frames)
