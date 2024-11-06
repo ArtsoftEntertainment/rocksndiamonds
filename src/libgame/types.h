@@ -40,6 +40,10 @@ typedef unsigned char byte;
 #undef STATE_ASK
 #endif
 
+#ifdef STATE_ONCE
+#undef STATE_ONCE
+#endif
+
 // values for boolean data type
 #define TRUE			1
 #define FALSE			0
@@ -49,6 +53,7 @@ typedef unsigned char byte;
 #define STATE_FALSE		0
 #define STATE_AUTO		-1
 #define STATE_ASK		-1
+#define STATE_ONCE		-1
 
 #ifndef MIN
 #define MIN(a, b) 		((a) < (b) ? (a) : (b))

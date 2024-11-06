@@ -4923,6 +4923,11 @@ char *getSetupValue(int type, void *value)
 			    *(int *)value == STATE_FALSE ? "no" : "yes"));
       break;
 
+    case TYPE_YES_NO_ONCE:
+      strcpy(value_string, (*(int *)value == STATE_ONCE  ? "once" :
+			    *(int *)value == STATE_FALSE ? "no" : "yes"));
+      break;
+
     case TYPE_ECS_AGA:
       strcpy(value_string, (*(boolean *)value ? "new" : "old"));
       break;

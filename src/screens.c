@@ -2693,6 +2693,7 @@ static int getMenuTextFont(int type)
 	      TYPE_YES_NO	|
 	      TYPE_YES_NO_AUTO	|
 	      TYPE_YES_NO_ASK	|
+	      TYPE_YES_NO_ONCE	|
 	      TYPE_STRING	|
 	      TYPE_PLAYER	|
 	      TYPE_ECS_AGA	|
@@ -3150,6 +3151,7 @@ static void HandleMenuScreen(int mx, int my, int dx, int dy, int button,
 	  menu_info[choice].type & TYPE_BOOLEAN_STYLE ||
 	  menu_info[choice].type & TYPE_YES_NO_AUTO ||
 	  menu_info[choice].type & TYPE_YES_NO_ASK ||
+	  menu_info[choice].type & TYPE_YES_NO_ONCE ||
 	  menu_info[choice].type & TYPE_PLAYER)
 	button = MB_MENU_CHOICE;
     }
@@ -8621,6 +8623,9 @@ static int getSetupValueFont(int type, void *value)
   else if (type & TYPE_YES_NO_ASK)
     return (*(int *)value == STATE_ASK   ? FONT_OPTION_ON :
 	    *(int *)value == STATE_FALSE ? FONT_OPTION_OFF : FONT_OPTION_ON);
+  else if (type & TYPE_YES_NO_ONCE)
+    return (*(int *)value == STATE_ONCE  ? FONT_OPTION_ON :
+	    *(int *)value == STATE_FALSE ? FONT_OPTION_OFF : FONT_OPTION_ON);
   else if (type & TYPE_PLAYER)
     return FONT_VALUE_1;
   else
@@ -8777,6 +8782,15 @@ static void changeSetupValue(int screen_pos, int setup_info_pos_raw, int dx)
 	*(int *)si->value == STATE_TRUE ? STATE_FALSE : STATE_ASK) :
        (*(int *)si->value == STATE_TRUE ? STATE_ASK :
 	*(int *)si->value == STATE_ASK  ? STATE_FALSE : STATE_TRUE));
+  }
+  else if (si->type & TYPE_YES_NO_ONCE)
+  {
+    *(int *)si->value =
+      (dx == -1 ?
+       (*(int *)si->value == STATE_ONCE ? STATE_TRUE :
+	*(int *)si->value == STATE_TRUE ? STATE_FALSE : STATE_ONCE) :
+       (*(int *)si->value == STATE_TRUE ? STATE_ONCE :
+	*(int *)si->value == STATE_ONCE ? STATE_FALSE : STATE_TRUE));
   }
   else if (si->type & TYPE_KEY)
   {

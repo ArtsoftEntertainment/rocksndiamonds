@@ -23,36 +23,37 @@
 #define TYPE_YES_NO			(1 << 3)
 #define TYPE_YES_NO_AUTO		(1 << 4)
 #define TYPE_YES_NO_ASK			(1 << 5)
-#define TYPE_ECS_AGA			(1 << 6)
-#define TYPE_KEY			(1 << 7)
-#define TYPE_KEY_X11			(1 << 8)
-#define TYPE_INTEGER			(1 << 9)
-#define TYPE_STRING			(1 << 10)
-#define TYPE_PLAYER			(1 << 11)
-#define TYPE_ELEMENT			(1 << 12)
-#define TYPE_GRAPHIC			(1 << 13)
+#define TYPE_YES_NO_ONCE		(1 << 6)
+#define TYPE_ECS_AGA			(1 << 7)
+#define TYPE_KEY			(1 << 8)
+#define TYPE_KEY_X11			(1 << 9)
+#define TYPE_INTEGER			(1 << 10)
+#define TYPE_STRING			(1 << 11)
+#define TYPE_PLAYER			(1 << 12)
+#define TYPE_ELEMENT			(1 << 13)
+#define TYPE_GRAPHIC			(1 << 14)
 
 // additional values for setup screen
-#define TYPE_ENTER_SCREEN		(1 << 14)
-#define TYPE_LEAVE_SCREEN		(1 << 15)
-#define TYPE_ENTER_MENU			(1 << 16)
-#define TYPE_LEAVE_MENU			(1 << 17)
-#define TYPE_ENTER_LIST			(1 << 18)
-#define TYPE_LEAVE_LIST			(1 << 19)
-#define TYPE_TEXT_INPUT			(1 << 20)
-#define TYPE_EMPTY			(1 << 21)
-#define TYPE_SKIPPABLE			(1 << 22)
-#define TYPE_KEYTEXT			(1 << 23)
-#define TYPE_HEADLINE			(1 << 24)
+#define TYPE_ENTER_SCREEN		(1 << 15)
+#define TYPE_LEAVE_SCREEN		(1 << 16)
+#define TYPE_ENTER_MENU			(1 << 17)
+#define TYPE_LEAVE_MENU			(1 << 18)
+#define TYPE_ENTER_LIST			(1 << 19)
+#define TYPE_LEAVE_LIST			(1 << 20)
+#define TYPE_TEXT_INPUT			(1 << 21)
+#define TYPE_EMPTY			(1 << 22)
+#define TYPE_SKIPPABLE			(1 << 23)
+#define TYPE_KEYTEXT			(1 << 24)
+#define TYPE_HEADLINE			(1 << 25)
 
-#define TYPE_GHOSTED			(1 << 25)
-#define TYPE_QUERY			(1 << 26)
+#define TYPE_GHOSTED			(1 << 26)
+#define TYPE_QUERY			(1 << 27)
 
 // additional values for internal purposes
-#define TYPE_BITFIELD			(1 << 27)
-#define TYPE_CONTENT			(1 << 28)
-#define TYPE_ELEMENT_LIST		(1 << 29)
-#define TYPE_CONTENT_LIST		(1 << 30)
+#define TYPE_BITFIELD			(1 << 28)
+#define TYPE_CONTENT			(1 << 29)
+#define TYPE_ELEMENT_LIST		(1 << 30)
+#define TYPE_CONTENT_LIST		(1 << 31)
 
 // derived values for setup file handling
 #define TYPE_BOOLEAN_STYLE		(TYPE_BOOLEAN | \
@@ -65,6 +66,7 @@
 					 TYPE_SWITCH_3_STATES	| \
 					 TYPE_YES_NO_AUTO	| \
 					 TYPE_YES_NO_ASK	| \
+					 TYPE_YES_NO_ONCE	| \
 					 TYPE_KEY		| \
 					 TYPE_KEY_X11		| \
 					 TYPE_INTEGER		| \
