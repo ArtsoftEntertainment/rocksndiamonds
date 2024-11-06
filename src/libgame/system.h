@@ -1500,6 +1500,7 @@ struct SetupInfo
   boolean autorecord_after_replay;
   boolean auto_pause_on_start;
   boolean show_titlescreen;
+  boolean show_level_story;
   boolean quick_doors;
   boolean team_mode;
   boolean handicap;
@@ -1891,6 +1892,8 @@ struct MouseActionInfo
 struct LevelSetInfo
 {
   int music[MAX_LEVELS];
+
+  boolean level_story_shown[MAX_LEVELS];
 
   char *identifier;
   int level_nr;

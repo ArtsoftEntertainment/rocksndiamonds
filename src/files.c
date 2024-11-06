@@ -10819,6 +10819,10 @@ static struct TokenInfo global_setup_tokens[] =
     &setup.show_titlescreen,			"show_titlescreen"
   },
   {
+    TYPE_SWITCH_3_STATES,
+    &setup.show_level_story,			"show_level_story"
+  },
+  {
     TYPE_SWITCH,
     &setup.quick_doors,				"quick_doors"
   },
@@ -11804,6 +11808,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->autorecord_after_replay = TRUE;
   si->auto_pause_on_start = FALSE;
   si->show_titlescreen = TRUE;
+  si->show_level_story = STATE_ONCE;
   si->quick_doors = FALSE;
   si->team_mode = FALSE;
   si->handicap = TRUE;

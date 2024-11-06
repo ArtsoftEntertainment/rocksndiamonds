@@ -4522,6 +4522,12 @@ boolean ShowInfoScreen_FromInitGame(void)
   if (!hasLevelInfo())
     return FALSE;
 
+  if (setup.show_level_story == STATE_FALSE ||
+      (setup.show_level_story == STATE_ONCE && levelset.level_story_shown[level_nr]))
+    return FALSE;
+
+  levelset.level_story_shown[level_nr] = TRUE;
+
   DrawInfoScreen_FromInitGame(INFO_MODE_LEVEL);
 
   return TRUE;
@@ -8309,6 +8315,7 @@ static struct TokenInfo setup_info_graphics[] =
   { TYPE_SWITCH,	&setup.quick_switch,		"Quick Player Focus Switch:"	},
   { TYPE_SWITCH,	&setup.quick_doors,		"Quick Menu Doors:"		},
   { TYPE_SWITCH,	&setup.show_titlescreen,	"Show Title Screens:"		},
+  { TYPE_YES_NO_ONCE,	&setup.show_level_story,	"Show Level Stories:"		},
   { TYPE_SWITCH,	&setup.toons,			"Show Toons:"			},
   { TYPE_SWITCH,	&setup.small_game_graphics,	"Small Game Graphics:"		},
   { TYPE_YES_NO_AUTO,	&setup.debug.xsn_mode,		debug_xsn_mode			},

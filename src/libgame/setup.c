@@ -5354,6 +5354,8 @@ void LoadLevelSetup_SeriesInfo(void)
   {
     LevelStats_setPlayed(i, 0);
     LevelStats_setSolved(i, 0);
+
+    levelset.level_story_shown[i] = FALSE;
   }
 
   checkSeriesInfo();
