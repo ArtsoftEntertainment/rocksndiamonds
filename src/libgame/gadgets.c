@@ -49,15 +49,37 @@ static void (*PlayGadgetSoundSelecting)(void) = NULL;
 // RGB/HSV conversions by David H from https://stackoverflow.com/questions/3018313/
 
 // A bunch of magic numbers for UI positioning (used by DrawColorPicker() and its functions)
+#define CP_SEPARATOR_SIZE	(1)
 #define CP_GADGET_WIDTH		(256)
-#define CP_GADGET_HEIGHT	(300)
+#define CP_GADGET_HEIGHT	(300 + CP_SEPARATOR_SIZE)
+#define CP_MAIN_GRADIENT_X	(0)
+#define CP_MAIN_GRADIENT_Y	(0)
 #define CP_MAIN_GRADIENT_WIDTH	(CP_GADGET_WIDTH)
-#define CP_MAIN_GRADIENT_HEIGHT	(CP_GADGET_WIDTH)
-#define CP_SAMPLE_BOX_WIDTH	(CP_GADGET_HEIGHT - CP_GADGET_WIDTH)
-#define CP_SAMPLE_BOX_HEIGHT	(CP_SAMPLE_BOX_WIDTH)
-#define CP_HUE_GRADIENT_WIDTH	(CP_GADGET_WIDTH - CP_SAMPLE_BOX_WIDTH)
+#define CP_MAIN_GRADIENT_HEIGHT	(CP_MAIN_GRADIENT_WIDTH)
+#define CP_SAMPLE_BOX_X		(CP_HUE_GRADIENT_WIDTH + CP_SEPARATOR_SIZE)
+#define CP_SAMPLE_BOX_Y		(CP_MAIN_GRADIENT_HEIGHT + CP_SEPARATOR_SIZE)
+#define CP_SAMPLE_BOX_WIDTH	(CP_SAMPLE_BOX_HEIGHT)
+#define CP_SAMPLE_BOX_HEIGHT	(CP_GADGET_HEIGHT - CP_MAIN_GRADIENT_HEIGHT - CP_SEPARATOR_SIZE)
+#define CP_HUE_GRADIENT_X	(0)
+#define CP_HUE_GRADIENT_Y	(CP_SAMPLE_BOX_Y)
+#define CP_HUE_GRADIENT_WIDTH	(CP_GADGET_WIDTH - CP_SAMPLE_BOX_WIDTH - CP_SEPARATOR_SIZE)
 #define CP_HUE_GRADIENT_HEIGHT	(CP_SAMPLE_BOX_HEIGHT / 2)
-#define CP_INDICATOR_SIZE	(3)
+#define CP_COLOR_TEXT_X		(0)
+#define CP_COLOR_TEXT_Y		(CP_HUE_GRADIENT_Y + CP_HUE_GRADIENT_HEIGHT + CP_SEPARATOR_SIZE)
+#define CP_MARK_SIZE		(3)
+
+#define CP_INSIDE_MAIN(x, y)	((x) >= CP_MAIN_GRADIENT_X &&				\
+                                 (x) <  CP_MAIN_GRADIENT_X + CP_MAIN_GRADIENT_WIDTH &&	\
+                                 (y) >= CP_MAIN_GRADIENT_Y &&				\
+                                 (y) <  CP_MAIN_GRADIENT_Y + CP_MAIN_GRADIENT_HEIGHT)
+#define CP_INSIDE_HUE(x, y)	((x) >= CP_HUE_GRADIENT_X &&				\
+                                 (x) <  CP_HUE_GRADIENT_X + CP_HUE_GRADIENT_WIDTH &&	\
+                                 (y) >= CP_HUE_GRADIENT_Y &&				\
+                                 (y) <  CP_HUE_GRADIENT_Y + CP_HUE_GRADIENT_HEIGHT)
+#define CP_INSIDE_SAMPLE(x, y)	((x) >= CP_SAMPLE_BOX_X &&				\
+                                 (x) <  CP_SAMPLE_BOX_X + CP_SAMPLE_BOX_WIDTH &&	\
+                                 (y) >= CP_SAMPLE_BOX_Y &&				\
+                                 (y) <  CP_SAMPLE_BOX_Y + CP_SAMPLE_BOX_HEIGHT)
 
 // Start of David H's conversion code
 static HSVColor get_hsv_from_rgb(RGBColor in)
@@ -186,8 +208,8 @@ static RGBColor get_rgb_from_hsv(HSVColor in)
 enum
 {
   CP_STATE_NONE,
-  CP_STATE_GRADIENT_CHANGE,
-  CP_STATE_SLIDER_CHANGE,
+  CP_STATE_MAIN_GRADIENT_CHANGE,
+  CP_STATE_HUE_GRADIENT_CHANGE,
   CP_STATE_SAMPLE_BOX,
 };
 
@@ -255,10 +277,10 @@ static void set_pixel(SDL_Surface *surface, SDL_Color color, int x, int y)
 
 static void DrawColorPicker_Gradient(SDL_Surface *surface, double hue)
 {
+  int xpos = CP_MAIN_GRADIENT_X;
+  int ypos = CP_MAIN_GRADIENT_Y;
   int xsize = CP_MAIN_GRADIENT_WIDTH;
   int ysize = CP_MAIN_GRADIENT_HEIGHT;
-  int xpos = 0;
-  int ypos = 0;
   int x, y;
 
   for (y = 0; y < ysize; y++)
@@ -279,10 +301,10 @@ static void DrawColorPicker_Gradient(SDL_Surface *surface, double hue)
 
 static void DrawColorPicker_HueGradient(SDL_Surface *surface)
 {
+  int xpos = CP_HUE_GRADIENT_X;
+  int ypos = CP_HUE_GRADIENT_Y;
   int xsize = CP_HUE_GRADIENT_WIDTH;
   int ysize = CP_HUE_GRADIENT_HEIGHT;
-  int xpos = 0;
-  int ypos = CP_MAIN_GRADIENT_HEIGHT;
   int x, y;
 
   for (y = 0; y < ysize; y++)
@@ -340,17 +362,20 @@ static void DrawColorPicker_ColorMarker(struct GadgetInfo *gi)
     int ysize_main = CP_MAIN_GRADIENT_HEIGHT;
     int xsize_hue  = CP_HUE_GRADIENT_WIDTH;
     int ysize_hue  = CP_HUE_GRADIENT_HEIGHT;
-    int x_main = x + (xsize_main - 1) * gi->colorpicker.color_hsv.s;
-    int y_main = y + (ysize_main - 1) * (1.0 - gi->colorpicker.color_hsv.v);
-    int x_hue = x + ((gi->colorpicker.color_hsv.h / 360.0) * xsize_hue);
-    int y_hue = y + ysize_main;
+    int x_main = x + xsize_main * gi->colorpicker.color_hsv.s;
+    int y_main = y + ysize_main * (1.0 - gi->colorpicker.color_hsv.v);
+    int x_hue = x + (((gi->colorpicker.color_hsv.h + 1) / 360.0) * xsize_hue);
+    int y_hue = y + CP_HUE_GRADIENT_Y;
 
     // draw color position indicator
-    FillRectangle(drawto, x_main - 1, y, CP_INDICATOR_SIZE, ysize_main, BLACK_PIXEL);
-    FillRectangle(drawto, x, y_main - 1, xsize_main, CP_INDICATOR_SIZE, BLACK_PIXEL);
+    FillRectangle(drawto, x_main - CP_MARK_SIZE / 2, y, CP_MARK_SIZE, ysize_main, BLACK_PIXEL);
+    FillRectangle(drawto, x, y_main - CP_MARK_SIZE / 2, xsize_main, CP_MARK_SIZE, BLACK_PIXEL);
+    FillRectangle(drawto, x_main, y, 1, ysize_main, WHITE_PIXEL);
+    FillRectangle(drawto, x, y_main, xsize_main, 1, WHITE_PIXEL);
 
     // draw color slider
-    FillRectangle(drawto, x_hue - 1, y_hue, CP_INDICATOR_SIZE, ysize_hue, BLACK_PIXEL);
+    FillRectangle(drawto, x_hue - CP_MARK_SIZE / 2, y_hue, CP_MARK_SIZE, ysize_hue, BLACK_PIXEL);
+    FillRectangle(drawto, x_hue, y_hue, 1, ysize_hue, WHITE_PIXEL);
   }
   else					// indexed colors
   {
@@ -364,10 +389,14 @@ static void DrawColorPicker_ColorMarker(struct GadgetInfo *gi)
     int y = gi->y + gi->border.ysize + ypos * box_size;
 
     // draw color position indicator
-    FillRectangle(drawto, x - 1, y - 1, box_size + 2, CP_INDICATOR_SIZE, BLACK_PIXEL);
-    FillRectangle(drawto, x + box_size - 1, y - 1, CP_INDICATOR_SIZE, box_size + 2, BLACK_PIXEL);
-    FillRectangle(drawto, x - 1, y + box_size - 1, box_size + 2, CP_INDICATOR_SIZE, BLACK_PIXEL);
-    FillRectangle(drawto, x - 1, y - 1, CP_INDICATOR_SIZE, box_size + 2, BLACK_PIXEL);
+    FillRectangle(drawto, x - 1, y - 1, box_size + 2, CP_MARK_SIZE, BLACK_PIXEL);
+    FillRectangle(drawto, x + box_size - 2, y - 1, CP_MARK_SIZE, box_size + 2, BLACK_PIXEL);
+    FillRectangle(drawto, x - 1, y + box_size - 2, box_size + 2, CP_MARK_SIZE, BLACK_PIXEL);
+    FillRectangle(drawto, x - 1, y - 1, CP_MARK_SIZE, box_size + 2, BLACK_PIXEL);
+    FillRectangle(drawto, x, y, box_size, 1, WHITE_PIXEL);
+    FillRectangle(drawto, x + box_size - 1, y, 1, box_size, WHITE_PIXEL);
+    FillRectangle(drawto, x, y + box_size - 1, box_size, 1, WHITE_PIXEL);
+    FillRectangle(drawto, x, y, 1, box_size, WHITE_PIXEL);
   }
 }
 
@@ -375,8 +404,8 @@ static void DrawColorPicker_SampleBox(SDL_Surface *surface, struct GadgetInfo *g
 {
   SDL_Rect draw_rect =
   {
-    CP_HUE_GRADIENT_WIDTH,
-    CP_MAIN_GRADIENT_HEIGHT,
+    CP_SAMPLE_BOX_X,
+    CP_SAMPLE_BOX_Y,
     CP_SAMPLE_BOX_WIDTH,
     CP_SAMPLE_BOX_HEIGHT,
   };
@@ -408,10 +437,12 @@ static void DrawColorPicker_ColorText(struct GadgetInfo *gi)
   int font_nr = gi->font;
   int font_height = getFontHeight(font_nr);
   int font_padding = (CP_HUE_GRADIENT_HEIGHT - font_height) / 2;
-  int ysize_main = CP_MAIN_GRADIENT_HEIGHT;
-  int ysize_hue  = CP_HUE_GRADIENT_HEIGHT;
-  int x_text = x + font_padding;
-  int y_text = y + ysize_main + ysize_hue + font_padding;
+  int x_text = x + CP_COLOR_TEXT_X + font_padding;
+  int y_text = y + CP_COLOR_TEXT_Y + font_padding;
+
+  int draw_background_mask = GetDrawBackgroundMask();
+
+  SetDrawBackgroundMask(REDRAW_NONE);	// deactivate masked drawing (use black background)
 
   if (gi->colorpicker.count == 0)
   {
@@ -429,6 +460,8 @@ static void DrawColorPicker_ColorText(struct GadgetInfo *gi)
   {
     DrawText(x_text, y_text, gi->colorpicker.names[gi->colorpicker.value], font_nr);
   }
+
+  SetDrawBackgroundMask(draw_background_mask);
 }
 
 static void DrawColorPicker(struct GadgetInfo *gi)
@@ -2625,7 +2658,6 @@ boolean HandleGadgets(int mx, int my, int button)
       int xsize_main = CP_MAIN_GRADIENT_WIDTH;
       int ysize_main = CP_MAIN_GRADIENT_HEIGHT;
       int xsize_hue  = CP_HUE_GRADIENT_WIDTH;
-      int ysize_hue  = CP_HUE_GRADIENT_HEIGHT;
       int x = mx - gi->x - gi->border.xsize;
       int y = my - gi->y - gi->border.ysize;
       int x_hue  = MIN(MAX(0, x), xsize_hue - 1);
@@ -2633,12 +2665,12 @@ boolean HandleGadgets(int mx, int my, int button)
       int y_main = MIN(MAX(0, y), ysize_main - 1);
 
       if (!motion_status)
-        state = (y < ysize_main ? CP_STATE_GRADIENT_CHANGE :
-                 x < xsize_hue && y < ysize_main + ysize_hue ? CP_STATE_SLIDER_CHANGE :
-                 x >= xsize_hue && y >= ysize_main ? CP_STATE_SAMPLE_BOX :
+        state = (CP_INSIDE_MAIN(x, y)   ? CP_STATE_MAIN_GRADIENT_CHANGE :
+                 CP_INSIDE_HUE(x, y)    ? CP_STATE_HUE_GRADIENT_CHANGE :
+                 CP_INSIDE_SAMPLE(x, y) ? CP_STATE_SAMPLE_BOX :
                  CP_STATE_NONE);
 
-      if (state == CP_STATE_GRADIENT_CHANGE)
+      if (state == CP_STATE_MAIN_GRADIENT_CHANGE)
       {
         if (gi->colorpicker.count == 0)		// RGB colors
         {
@@ -2656,7 +2688,7 @@ boolean HandleGadgets(int mx, int my, int button)
 
         DrawColorPicker(gi);
       }
-      else if (state == CP_STATE_SLIDER_CHANGE)
+      else if (state == CP_STATE_HUE_GRADIENT_CHANGE)
       {
         if (gi->colorpicker.count == 0)		// RGB colors
         {
