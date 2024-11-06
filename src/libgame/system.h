@@ -1993,6 +1993,7 @@ boolean GetOverlayActive(void);
 void SetDrawDeactivationMask(int);
 int GetDrawDeactivationMask(void);
 void SetDrawBackgroundMask(int);
+int GetDrawBackgroundMask(void);
 void SetBackgroundBitmap(Bitmap *, int, int, int, int, int);
 void SetRedrawMaskFromArea(int, int, int, int);
 

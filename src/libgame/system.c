@@ -453,6 +453,11 @@ void SetDrawBackgroundMask(int draw_background_mask)
   gfx.draw_background_mask = draw_background_mask;
 }
 
+int GetDrawBackgroundMask(void)
+{
+  return gfx.draw_background_mask;
+}
+
 void SetBackgroundBitmap(Bitmap *background_bitmap_tile, int mask,
 			 int x, int y, int width, int height)
 {
