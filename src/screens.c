@@ -1043,15 +1043,34 @@ static struct MainControlInfo main_controls[] =
   }
 };
 
+static char *getLevelSetInfoBuffer(void)
+{
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD &&
+      level.native_bd_level->caveset != NULL)
+    return level.native_bd_level->caveset->story;
+
+  return NULL;
+}
+
+static char *getLevelInfoBuffer(void)
+{
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD &&
+      level.native_bd_level->cave != NULL)
+    return level.native_bd_level->cave->story;
+
+  return NULL;
+}
 
 static boolean hasLevelSetInfo(void)
 {
-  return (getLevelSetInfoFilename(0) != NULL);
+  return (getLevelSetInfoFilename(0) != NULL ||
+          getLevelSetInfoBuffer() != NULL);
 }
 
 static boolean hasLevelInfo(void)
 {
-  return (getLevelInfoFilename(level_nr) != NULL);
+  return (getLevelInfoFilename(level_nr) != NULL ||
+          getLevelInfoBuffer() != NULL);
 }
 
 static int getTitleScreenGraphic(int nr, boolean initial)
@@ -4131,6 +4150,13 @@ static char *getInfoScreenFilename_Generic(int nr, boolean global)
 	  NULL);
 }
 
+static char *getInfoScreenBuffer_Generic(void)
+{
+  return (info_mode == INFO_MODE_LEVELSET ? getLevelSetInfoBuffer() :
+	  info_mode == INFO_MODE_LEVEL    ? getLevelInfoBuffer()    :
+	  NULL);
+}
+
 static void DrawInfoScreen_GenericText(struct WrappedTextInfo *wrapped_text,
                                        struct TitleMessageInfo *tmi, int start_pos)
 {
@@ -4147,13 +4173,18 @@ static void SetWrappedText_GenericScreen(struct TitleMessageInfo *tmi,
                                          int screen_nr, int use_global_screens)
 {
   char *filename = getInfoScreenFilename_Generic(screen_nr, use_global_screens);
+  char *buffer   = getInfoScreenBuffer_Generic();
+  char *raw_text = (filename != NULL ?	// always prefer info text files over buffers
+                    GetTextBufferFromFile(filename, MAX_OUTPUT_LINESIZE) :
+                    getStringCopy(buffer));
   int line_spacing = getMenuTextSpacing(menu.line_spacing_info[info_mode], tmi->font);
 
   FreeWrappedText(wrapped_text);
 
-  wrapped_text = GetWrappedTextFile(filename, tmi->font, -1, -1, -1, tmi->width, -1, tmi->height,
-                                    line_spacing, -1,
-                                    tmi->autowrap, tmi->centered, tmi->parse_comments);
+  wrapped_text = GetWrappedTextBuffer(raw_text, tmi->font, -1, -1, -1, tmi->width, -1, tmi->height,
+                                      line_spacing, -1,
+                                      tmi->autowrap, tmi->centered, tmi->parse_comments);
+  checked_free(raw_text);
 }
 
 static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use_global_screens)
@@ -4330,6 +4361,9 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
       while (getLevelSetInfoFilename(num_screens) != NULL)
 	num_screens++;
 
+      if (num_screens == 0 && getLevelSetInfoBuffer() != NULL)
+        num_screens = 1;
+
       text_no_info = "No level set info available.";
     }
     else if (info_mode == INFO_MODE_LEVEL)
@@ -4337,8 +4371,9 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
       use_global_screens = FALSE;
 
       // determine number of level info screens
-      if (getLevelInfoFilename(level_nr) != NULL)
-	num_screens = 1;
+      if (getLevelInfoFilename(level_nr) != NULL ||
+          getLevelInfoBuffer() != NULL)
+        num_screens = 1;
 
       text_no_info = "No level info available.";
     }
