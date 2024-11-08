@@ -17,8 +17,6 @@
 #ifndef BD_CAVESET_H
 #define BD_CAVESET_H
 
-#include "main_bd.h"
-
 
 typedef struct _gd_caveset_data
 {
