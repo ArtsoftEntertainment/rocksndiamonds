@@ -17,6 +17,7 @@
 // ============================================================================
 
 #include "bd_cave.h"
+#include "bd_caveset.h"
 #include "bd_elements.h"
 #include "bd_gameplay.h"
 
@@ -57,6 +58,7 @@ struct GameInfo_BD
 
 struct LevelInfo_BD
 {
+  GdCavesetData *caveset;
   GdCave *cave;
   GdReplay *replay;
 

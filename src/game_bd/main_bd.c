@@ -81,6 +81,7 @@ void setLevelInfoToDefaults_BD_Ext(int width, int height)
   cave->selectable = TRUE;
   cave->intermission = FALSE;
 
+  native_bd_level.caveset = NULL;
   native_bd_level.cave = cave;
   native_bd_level.replay = NULL;
 
@@ -156,6 +157,7 @@ boolean LoadNativeLevel_BD(char *filename, int level_pos, boolean level_info_onl
   // set better initial cave speed (to set better native replay tape length)
   set_initial_cave_speed(native_bd_level.cave);
 
+  native_bd_level.caveset = gd_caveset_data;
   native_bd_level.loaded_from_caveset = TRUE;
 
   // check if this cave has any replays
