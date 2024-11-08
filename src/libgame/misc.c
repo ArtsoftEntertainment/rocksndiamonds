@@ -2350,7 +2350,18 @@ char *getLatin1FromUTF8(char *utf8)
 	     src[1] >= 128 && src[1] < 192 &&
 	     src[2] >= 128 && src[2] < 192)
     {
-      *dst++ = '?';
+      // detect and substitute selected UTF-8 characters
+      if (src[0] == 226 &&
+          src[1] == 128 &&
+          src[2] >= 152 && src[2] <= 155)
+        *dst++ = '\'';
+      else if (src[0] == 226 &&
+               src[1] == 128 &&
+               src[2] >= 156 && src[2] <= 159)
+        *dst++ = '"';
+      else
+        *dst++ = '?';
+
       src += 3;
     }
     else if (src[0] >= 240 && src[0] < 248 &&
