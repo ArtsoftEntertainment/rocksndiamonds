@@ -4176,7 +4176,7 @@ static void SetWrappedText_GenericScreen(struct TitleMessageInfo *tmi,
   char *buffer   = getInfoScreenBuffer_Generic();
   char *raw_text = (filename != NULL ?	// always prefer info text files over buffers
                     GetTextBufferFromFile(filename, MAX_OUTPUT_LINESIZE) :
-                    getStringCopy(buffer));
+                    getLatin1FromUTF8(buffer));
   int line_spacing = getMenuTextSpacing(menu.line_spacing_info[info_mode], tmi->font);
 
   FreeWrappedText(wrapped_text);
