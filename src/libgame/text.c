@@ -748,7 +748,7 @@ struct WrappedTextInfo *GetWrappedTextFile(char *filename, int font_nr,
                                            int line_spacing, int mask_mode, boolean autowrap,
                                            boolean centered, boolean parse_comments)
 {
-  char *text_buffer = GetTextBufferFromFile(filename, MAX_OUTPUT_LINESIZE);
+  char *text_buffer = GetTextBufferFromFile(filename, MAX_OUTPUT_LINES);
   struct WrappedTextInfo *wrapped_text = GetWrappedText(text_buffer, font_nr,
                                                         line_length, cut_length, max_lines,
                                                         line_width, cut_width, max_height,
@@ -906,7 +906,7 @@ int DrawTextFile(int x, int y, char *filename, int font_nr,
 		 int line_spacing, int mask_mode, boolean autowrap,
 		 boolean centered, boolean parse_comments)
 {
-  char *text_buffer = GetTextBufferFromFile(filename, MAX_OUTPUT_LINESIZE);
+  char *text_buffer = GetTextBufferFromFile(filename, MAX_OUTPUT_LINES);
   int num_lines_printed = DrawTextBuffer(x, y, text_buffer, font_nr,
 					 line_length, cut_length, max_lines,
 					 line_width, cut_width, max_height,

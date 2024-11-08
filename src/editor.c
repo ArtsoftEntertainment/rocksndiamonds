@@ -11694,7 +11694,7 @@ static int PrintTextFromBuffer(char *text_buffer, int font_nr, int xpos, int ypo
 
 static int PrintTextFromFile(char *filename, int font_nr, int xpos, int ypos)
 {
-  char *text_buffer = GetTextBufferFromFile(filename, MAX_OUTPUT_LINESIZE);
+  char *text_buffer = GetTextBufferFromFile(filename, MAX_OUTPUT_LINES);
   int num_lines_printed = PrintTextFromBuffer(text_buffer, font_nr, xpos, ypos);
 
   checked_free(text_buffer);
