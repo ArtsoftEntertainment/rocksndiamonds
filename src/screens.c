@@ -4414,7 +4414,10 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
 
     // if escaping from level info screen on game start, go back to main menu
     if (info_screens_from_game)
+    {
       info_screens_from_main = TRUE;
+      info_screens_from_game = FALSE;
+    }
 
     info_mode = INFO_MODE_MAIN;
     DrawInfoScreen();
