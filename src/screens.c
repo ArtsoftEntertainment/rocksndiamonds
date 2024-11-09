@@ -1763,7 +1763,8 @@ static void DrawInfoScreen_Headline(int screen_nr, int num_screens,
                          use_global_screens ? "for %s" : "for \"%s\"");
     int text_format_len = strlen(text_format) - strlen("%s");
     int text_font = (info_mode == INFO_MODE_STORY ? FONT_TITLE_STORY : FONT_TITLE_2);
-    int max_text_len = SXSIZE / getFontWidth(text_font);
+    int max_text_width = SXSIZE - MENU_SCREEN_INFO_SPACE_LEFT - MENU_SCREEN_INFO_SPACE_RIGHT;
+    int max_text_len = max_text_width / getFontWidth(text_font);
     int max_name_len = max_text_len - text_format_len;
     char name_cut[max_name_len];
     char *name_full = (info_mode == INFO_MODE_STORY ? level.name_native :
