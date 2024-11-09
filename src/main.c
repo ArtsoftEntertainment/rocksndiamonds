@@ -9380,6 +9380,7 @@ struct FontInfo font_info[NUM_FONTS + 1] =
   { "font.info.elements"	},
   { "font.info.levelset"	},
   { "font.info.level"		},
+  { "font.info.story"		},
   { "font.main.network_players"	},
 
   { NULL			}

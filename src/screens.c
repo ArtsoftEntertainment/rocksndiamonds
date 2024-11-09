@@ -38,8 +38,9 @@
 #define INFO_MODE_VERSION			6
 #define INFO_MODE_LEVELSET			7
 #define INFO_MODE_LEVEL				8
+#define INFO_MODE_STORY				9
 
-#define MAX_INFO_MODES				9
+#define MAX_INFO_MODES				10
 
 // screens on the setup screen
 // (must match GFX_SPECIAL_ARG_SETUP_* values as defined in src/main.h)
@@ -733,7 +734,7 @@ static int align_yoffset = 0;
 
 // (there are no draw offset definitions needed for INFO_MODE_TITLE)
 #define DRAW_MODE_INFO(i)	((i) >= INFO_MODE_TITLE &&			\
-				 (i) <= INFO_MODE_LEVEL ? (i) :			\
+				 (i) <= INFO_MODE_STORY ? (i) :			\
 				 INFO_MODE_MAIN)
 
 #define DRAW_MODE_SETUP(i)	((i) >= SETUP_MODE_MAIN &&			\
@@ -1757,12 +1758,14 @@ static void DrawInfoScreen_Headline(int screen_nr, int num_screens,
   }
   else
   {
-    char *text_format = (use_global_screens ? "for %s" : "for \"%s\"");
+    char *text_format = (info_mode == INFO_MODE_STORY ? "%s" :
+                         use_global_screens ? "for %s" : "for \"%s\"");
     int text_format_len = strlen(text_format) - strlen("%s");
     int max_text_len = SXSIZE / getFontWidth(FONT_TITLE_2);
     int max_name_len = max_text_len - text_format_len;
     char name_cut[max_name_len];
-    char *name_full = (use_global_screens ? getProgramTitleString() :
+    char *name_full = (info_mode == INFO_MODE_STORY ? level.name :
+                       use_global_screens ? getProgramTitleString() :
 		       leveldir_current->name);
 
     snprintf(name_cut, max_name_len, "%s", name_full);
@@ -4116,6 +4119,7 @@ static int getInfoScreenBackgroundImage_Generic(void)
 	  info_mode == INFO_MODE_VERSION  ? IMG_BACKGROUND_INFO_VERSION  :
 	  info_mode == INFO_MODE_LEVELSET ? IMG_BACKGROUND_INFO_LEVELSET :
 	  info_mode == INFO_MODE_LEVEL    ? IMG_BACKGROUND_INFO_LEVEL    :
+	  info_mode == INFO_MODE_STORY    ? IMG_BACKGROUND_INFO_STORY    :
 	  IMG_BACKGROUND_INFO);
 }
 
@@ -4127,6 +4131,7 @@ static int getInfoScreenBackgroundSound_Generic(void)
 	  info_mode == INFO_MODE_VERSION  ? SND_BACKGROUND_INFO_VERSION  :
 	  info_mode == INFO_MODE_LEVELSET ? SND_BACKGROUND_INFO_LEVELSET :
 	  info_mode == INFO_MODE_LEVEL    ? SND_BACKGROUND_INFO_LEVEL    :
+	  info_mode == INFO_MODE_STORY    ? SND_BACKGROUND_INFO_STORY    :
 	  SND_BACKGROUND_INFO);
 }
 
@@ -4138,6 +4143,7 @@ static int getInfoScreenBackgroundMusic_Generic(void)
 	  info_mode == INFO_MODE_VERSION  ? MUS_BACKGROUND_INFO_VERSION  :
 	  info_mode == INFO_MODE_LEVELSET ? MUS_BACKGROUND_INFO_LEVELSET :
 	  info_mode == INFO_MODE_LEVEL    ? MUS_BACKGROUND_INFO_LEVEL    :
+	  info_mode == INFO_MODE_STORY    ? MUS_BACKGROUND_INFO_STORY    :
 	  MUS_BACKGROUND_INFO);
 }
 
@@ -4147,6 +4153,7 @@ static char *getInfoScreenFilename_Generic(int nr, boolean global)
 	  info_mode == INFO_MODE_PROGRAM  ? getProgramInfoFilename(nr)     :
 	  info_mode == INFO_MODE_LEVELSET ? getLevelSetInfoFilename(nr)    :
 	  info_mode == INFO_MODE_LEVEL    ? getLevelInfoFilename(level_nr) :
+	  info_mode == INFO_MODE_STORY    ? getLevelInfoFilename(level_nr) :
 	  NULL);
 }
 
@@ -4154,6 +4161,7 @@ static char *getInfoScreenBuffer_Generic(void)
 {
   return (info_mode == INFO_MODE_LEVELSET ? getLevelSetInfoBuffer() :
 	  info_mode == INFO_MODE_LEVEL    ? getLevelInfoBuffer()    :
+	  info_mode == INFO_MODE_STORY    ? getLevelInfoBuffer()    :
 	  NULL);
 }
 
@@ -4221,13 +4229,15 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
     tmi->parse_comments = TRUE;
   }
   else if (info_mode == INFO_MODE_LEVELSET ||
-           info_mode == INFO_MODE_LEVEL)
+           info_mode == INFO_MODE_LEVEL ||
+           info_mode == INFO_MODE_STORY)
   {
     tmi->autowrap = readme.autowrap;
     tmi->centered = readme.centered;
     tmi->parse_comments = readme.parse_comments;
 
-    tmi->font = (info_mode == INFO_MODE_LEVELSET ? FONT_INFO_LEVELSET : FONT_INFO_LEVEL);
+    tmi->font = (info_mode == INFO_MODE_LEVELSET ? FONT_INFO_LEVELSET :
+                 info_mode == INFO_MODE_LEVEL    ? FONT_INFO_LEVEL    : FONT_INFO_STORY);
   }
 
   SetWrappedText_GenericScreen(tmi, screen_nr, use_global_screens);
@@ -4366,7 +4376,8 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
 
       text_no_info = "No level set info available.";
     }
-    else if (info_mode == INFO_MODE_LEVEL)
+    else if (info_mode == INFO_MODE_LEVEL ||
+             info_mode == INFO_MODE_STORY)
     {
       use_global_screens = FALSE;
 
@@ -4499,6 +4510,8 @@ static void DrawInfoScreen(void)
     DrawInfoScreen_Generic();
   else if (info_mode == INFO_MODE_LEVEL)
     DrawInfoScreen_Generic();
+  else if (info_mode == INFO_MODE_STORY)
+    DrawInfoScreen_Generic();
   else
     DrawInfoScreen_Main();
 }
@@ -4567,7 +4580,7 @@ boolean ShowInfoScreen_FromInitGame(void)
 
   levelset.level_story_shown[level_nr] = TRUE;
 
-  DrawInfoScreen_FromInitGame(INFO_MODE_LEVEL);
+  DrawInfoScreen_FromInitGame(INFO_MODE_STORY);
 
   return TRUE;
 }
@@ -4578,7 +4591,8 @@ void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
   if (button == MB_MENU_CONTINUE && (info_mode != INFO_MODE_CREDITS &&
                                      info_mode != INFO_MODE_PROGRAM &&
                                      info_mode != INFO_MODE_LEVELSET &&
-                                     info_mode != INFO_MODE_LEVEL))
+                                     info_mode != INFO_MODE_LEVEL &&
+                                     info_mode != INFO_MODE_STORY))
     button = MB_MENU_CHOICE;
 
   if (info_mode == INFO_MODE_TITLE)
@@ -4596,6 +4610,8 @@ void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
   else if (info_mode == INFO_MODE_LEVELSET)
     HandleInfoScreen_Generic(mx, my, dx, dy, button);
   else if (info_mode == INFO_MODE_LEVEL)
+    HandleInfoScreen_Generic(mx, my, dx, dy, button);
+  else if (info_mode == INFO_MODE_STORY)
     HandleInfoScreen_Generic(mx, my, dx, dy, button);
   else
     HandleInfoScreen_Main(mx, my, dx, dy, button);
