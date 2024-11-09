@@ -186,6 +186,7 @@
 #define MENU_TITLE_YPOS				MENU_TEXT_ALIGNED_YPOS(menu.text.title)
 #define MENU_TITLE1_YPOS			MENU_TEXT_ALIGNED_YPOS(menu.text.title_1)
 #define MENU_TITLE2_YPOS			MENU_TEXT_ALIGNED_YPOS(menu.text.title_2)
+#define MENU_TITLE_STORY_YPOS			MENU_TEXT_ALIGNED_YPOS(menu.text.title_story)
 #define MENU_FOOTER_YPOS			MENU_TEXT_ALIGNED_YPOS(menu.text.footer)
 #define MENU_INFO_FONT_TITLE			FONT_TEXT_1
 #define MENU_INFO_FONT_HEAD			FONT_TEXT_2
@@ -1772,8 +1773,15 @@ static void DrawInfoScreen_Headline(int screen_nr, int num_screens,
     snprintf(info_text_title_2, max_text_len, text_format, name_cut);
   }
 
-  DrawTextSCentered(MENU_TITLE1_YPOS, FONT_TITLE_1, info_text_title_1);
-  DrawTextSCentered(MENU_TITLE2_YPOS, FONT_TITLE_2, info_text_title_2);
+  if (info_mode == INFO_MODE_STORY)
+  {
+    DrawTextSCentered(MENU_TITLE_STORY_YPOS, FONT_TITLE_STORY, info_text_title_2);
+  }
+  else
+  {
+    DrawTextSCentered(MENU_TITLE1_YPOS, FONT_TITLE_1, info_text_title_1);
+    DrawTextSCentered(MENU_TITLE2_YPOS, FONT_TITLE_2, info_text_title_2);
+  }
 }
 
 static void DrawTitleScreenImage(int nr, boolean initial)

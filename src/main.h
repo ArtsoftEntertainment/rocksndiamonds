@@ -2996,6 +2996,7 @@ enum
   FONT_INITIAL_4 = MAIN_FONT_INITIAL_4,
   FONT_TITLE_1,
   FONT_TITLE_2,
+  FONT_TITLE_STORY,
   FONT_FOOTER,
   FONT_MENU_1_ACTIVE,
   FONT_MENU_2_ACTIVE,
@@ -3249,6 +3250,7 @@ struct MenuTextInfo
   struct TextPosInfo title;
   struct TextPosInfo title_1;
   struct TextPosInfo title_2;
+  struct TextPosInfo title_story;
   struct TextPosInfo footer;
 };
 
