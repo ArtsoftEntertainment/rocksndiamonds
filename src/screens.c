@@ -1765,7 +1765,7 @@ static void DrawInfoScreen_Headline(int screen_nr, int num_screens,
     int max_text_len = SXSIZE / getFontWidth(FONT_TITLE_2);
     int max_name_len = max_text_len - text_format_len;
     char name_cut[max_name_len];
-    char *name_full = (info_mode == INFO_MODE_STORY ? level.name :
+    char *name_full = (info_mode == INFO_MODE_STORY ? level.name_native :
                        use_global_screens ? getProgramTitleString() :
 		       leveldir_current->name);
 

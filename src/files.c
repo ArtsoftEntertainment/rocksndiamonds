@@ -2395,12 +2395,15 @@ static void setLevelInfoToDefaults_Level(struct LevelInfo *level)
   level->encoding_16bit_amoeba = TRUE;
 
   // clear level name and level author string buffers
+  for (i = 0; i < MAX_OUTPUT_LINESIZE; i++)
+    level->name_native[i] = '\0';
   for (i = 0; i < MAX_LEVEL_NAME_LEN; i++)
     level->name[i] = '\0';
   for (i = 0; i < MAX_LEVEL_AUTHOR_LEN; i++)
     level->author[i] = '\0';
 
   // set level name and level author to default values
+  strcpy(level->name_native, NAMELESS_LEVEL_NAME);
   strcpy(level->name, NAMELESS_LEVEL_NAME);
   strcpy(level->author, ANONYMOUS_NAME);
 
@@ -3254,6 +3257,8 @@ static int LoadLevel_NAME(File *file, int chunk_size, struct LevelInfo *level)
   for (i = 0; i < MAX_LEVEL_NAME_LEN; i++)
     level->name[i] = getFile8Bit(file);
   level->name[MAX_LEVEL_NAME_LEN] = 0;
+
+  strncpy(level->name_native, level->name, MAX_OUTPUT_LINESIZE);
 
   return chunk_size;
 }
@@ -4685,6 +4690,9 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
                            getStringPrint("%s / %d", cave_name_latin1, bd_level_nr + 1) :
                            getStringCopy(cave_name_latin1));
 
+  strncpy(level->name_native, cave_name_latin1, MAX_OUTPUT_LINESIZE);
+  level->name_native[MAX_OUTPUT_LINESIZE] = '\0';
+
   strncpy(level->name, cave_name_final, MAX_LEVEL_NAME_LEN);
   level->name[MAX_LEVEL_NAME_LEN] = '\0';
 
@@ -5351,6 +5359,7 @@ static void CopyNativeLevel_MM_to_RND(struct LevelInfo *level)
   level->df_laser_green = level_mm->df_laser_green;
   level->df_laser_blue  = level_mm->df_laser_blue;
 
+  strcpy(level->name_native, level_mm->name);
   strcpy(level->name, level_mm->name);
 
   // only overwrite author from 'levelinfo.conf' if author defined in level
@@ -6938,6 +6947,10 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
   level->envelope[0].ysize = 10;
   level->envelope[0].autowrap = TRUE;
   level->envelope[0].centered = TRUE;
+
+  for (i = 0; i < level_name_len; i++)
+    level->name_native[i] = header[level_name_pos + 1 + i];
+  level->name_native[level_name_len] = '\0';
 
   for (i = 0; i < level_name_len; i++)
     level->name[i] = header[level_name_pos + 1 + i];

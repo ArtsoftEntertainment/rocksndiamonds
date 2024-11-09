@@ -3735,6 +3735,7 @@ struct LevelInfo
   boolean auto_count_gems;
   boolean rate_time_over_score;
 
+  char name_native[MAX_OUTPUT_LINESIZE + 1];
   char name[MAX_LEVEL_NAME_LEN + 1];
   char author[MAX_LEVEL_AUTHOR_LEN + 1];
 
