@@ -1045,11 +1045,43 @@ static struct MainControlInfo main_controls[] =
   }
 };
 
+static char *getInfoTextBuffer_BD(char *text_raw)
+{
+  static char *text_final = NULL;
+  int max_text_size = 3 * strlen(text_raw) + 1;
+
+  checked_free(text_final);
+
+  text_final = checked_calloc(max_text_size);
+
+  unsigned char *src = (unsigned char *)text_raw;
+  unsigned char *dst = (unsigned char *)text_final;
+
+  while (*src)
+  {
+    // add two spaces (to indicate line break) before single newlines
+    if (src[0] != '\n' && src[1] == '\n' && src[2] != '\n')
+    {
+      *dst++ = *src++;
+      *dst++ = ' ';
+      *dst++ = ' ';
+    }
+
+    *dst++ = *src++;
+  }
+
+  // only use the smallest possible string buffer size
+  text_final = checked_realloc(text_final, strlen(text_final) + 1);
+
+  return text_final;
+}
+
 static char *getLevelSetInfoBuffer(void)
 {
   if (level.game_engine_type == GAME_ENGINE_TYPE_BD &&
-      level.native_bd_level->caveset != NULL)
-    return level.native_bd_level->caveset->story;
+      level.native_bd_level->caveset != NULL &&
+      level.native_bd_level->caveset->story != NULL)
+    return getInfoTextBuffer_BD(level.native_bd_level->caveset->story);
 
   return NULL;
 }
@@ -1057,8 +1089,9 @@ static char *getLevelSetInfoBuffer(void)
 static char *getLevelInfoBuffer(void)
 {
   if (level.game_engine_type == GAME_ENGINE_TYPE_BD &&
-      level.native_bd_level->cave != NULL)
-    return level.native_bd_level->cave->story;
+      level.native_bd_level->cave != NULL &&
+      level.native_bd_level->cave->story != NULL)
+    return getInfoTextBuffer_BD(level.native_bd_level->cave->story);
 
   return NULL;
 }
