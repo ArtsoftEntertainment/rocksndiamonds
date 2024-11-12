@@ -4459,7 +4459,7 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
 
     DrawInfoScreen_GenericScreen(screen_nr, num_screens, use_global_screens);
   }
-  else if (button == MB_MENU_LEAVE)
+  else if (button == MB_MENU_LEAVE || dx < 0)
   {
     PlaySound(SND_MENU_ITEM_SELECTING);
 
@@ -4483,7 +4483,7 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
 
     return;
   }
-  else if ((mx >= 0 && my >= 0 && button == MB_MENU_CHOICE) || dx)
+  else if ((mx >= 0 && my >= 0 && button == MB_MENU_CHOICE) || dx > 0)
   {
     PlaySound(SND_MENU_ITEM_SELECTING);
 
