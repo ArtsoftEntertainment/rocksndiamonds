@@ -4162,7 +4162,7 @@ static int getInfoScreenBackgroundImage_Generic(void)
 	  info_mode == INFO_MODE_VERSION  ? IMG_BACKGROUND_INFO_VERSION  :
 	  info_mode == INFO_MODE_LEVELSET ? IMG_BACKGROUND_INFO_LEVELSET :
 	  info_mode == INFO_MODE_LEVEL    ? IMG_BACKGROUND_INFO_LEVEL    :
-	  info_mode == INFO_MODE_STORY    ? IMG_BACKGROUND_INFO_STORY    :
+	  info_mode == INFO_MODE_STORY    ? IMG_BACKGROUND_STORY         :
 	  IMG_BACKGROUND_INFO);
 }
 
@@ -4174,7 +4174,7 @@ static int getInfoScreenBackgroundSound_Generic(void)
 	  info_mode == INFO_MODE_VERSION  ? SND_BACKGROUND_INFO_VERSION  :
 	  info_mode == INFO_MODE_LEVELSET ? SND_BACKGROUND_INFO_LEVELSET :
 	  info_mode == INFO_MODE_LEVEL    ? SND_BACKGROUND_INFO_LEVEL    :
-	  info_mode == INFO_MODE_STORY    ? SND_BACKGROUND_INFO_STORY    :
+	  info_mode == INFO_MODE_STORY    ? SND_BACKGROUND_STORY         :
 	  SND_BACKGROUND_INFO);
 }
 
@@ -4186,7 +4186,7 @@ static int getInfoScreenBackgroundMusic_Generic(void)
 	  info_mode == INFO_MODE_VERSION  ? MUS_BACKGROUND_INFO_VERSION  :
 	  info_mode == INFO_MODE_LEVELSET ? MUS_BACKGROUND_INFO_LEVELSET :
 	  info_mode == INFO_MODE_LEVEL    ? MUS_BACKGROUND_INFO_LEVEL    :
-	  info_mode == INFO_MODE_STORY    ? MUS_BACKGROUND_INFO_STORY    :
+	  info_mode == INFO_MODE_STORY    ? MUS_BACKGROUND_STORY         :
 	  MUS_BACKGROUND_INFO);
 }
 
@@ -4327,7 +4327,15 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
 
 static void DrawInfoScreen_Generic(void)
 {
-  SetMainBackgroundImageIfDefined(getInfoScreenBackgroundImage_Generic());
+  if (info_mode == INFO_MODE_STORY)
+  {
+    SetMainBackgroundImage(IMG_BACKGROUND_STORY);
+  }
+  else
+  {
+    SetMainBackgroundImage(IMG_BACKGROUND_INFO);
+    SetMainBackgroundImageIfDefined(getInfoScreenBackgroundImage_Generic());
+  }
 
   UnmapAllGadgets();
   FadeInfoSoundsAndMusic();
@@ -4578,7 +4586,12 @@ static void DrawInfoScreen_FromMainMenuOrInitGame(int nr, boolean from_game_stat
 
   CloseDoor(DOOR_CLOSE_2);
 
-  SetGameStatus(GAME_MODE_INFO);
+  if (from_game_status == GAME_MODE_MAIN)
+    SetGameStatus(GAME_MODE_INFO);
+  else if (from_game_status == GAME_MODE_PLAYING)
+    SetGameStatus(GAME_MODE_STORY);
+  else
+    return;
 
   info_mode = nr;
 
@@ -4600,8 +4613,6 @@ static void DrawInfoScreen_FromMainMenuOrInitGame(int nr, boolean from_game_stat
   // needed if different viewport properties defined for info screen
   ChangeViewportPropertiesIfNeeded();
 
-  SetMainBackgroundImage(IMG_BACKGROUND_INFO);
-
   DrawInfoScreen();
 }
 
@@ -4615,7 +4626,7 @@ void DrawInfoScreen_FromInitGame(int nr)
   DrawInfoScreen_FromMainMenuOrInitGame(nr, GAME_MODE_PLAYING);
 }
 
-boolean ShowInfoScreen_FromInitGame(void)
+boolean ShowStoryScreen_FromInitGame(void)
 {
   if (!hasLevelInfo())
     return FALSE;
@@ -4625,6 +4636,19 @@ boolean ShowInfoScreen_FromInitGame(void)
     return FALSE;
 
   levelset.level_story_shown[level_nr] = TRUE;
+
+  // copy all ".STORY" settings to ".INFO[STORY]", which is internally used to show story
+  menu.draw_xoffset_info[INFO_MODE_STORY]	= menu.draw_xoffset[GAME_MODE_STORY];
+  menu.draw_yoffset_info[INFO_MODE_STORY]	= menu.draw_yoffset[GAME_MODE_STORY];
+  menu.left_spacing_info[INFO_MODE_STORY]	= menu.left_spacing[GAME_MODE_STORY];
+  menu.right_spacing_info[INFO_MODE_STORY]	= menu.right_spacing[GAME_MODE_STORY];
+  menu.top_spacing_info[INFO_MODE_STORY]	= menu.top_spacing[GAME_MODE_STORY];
+  menu.bottom_spacing_info[INFO_MODE_STORY]	= menu.bottom_spacing[GAME_MODE_STORY];
+  menu.paragraph_spacing_info[INFO_MODE_STORY]	= menu.paragraph_spacing[GAME_MODE_STORY];
+  menu.headline1_spacing_info[INFO_MODE_STORY]	= menu.headline1_spacing[GAME_MODE_STORY];
+  menu.headline2_spacing_info[INFO_MODE_STORY]	= menu.headline2_spacing[GAME_MODE_STORY];
+  menu.line_spacing_info[INFO_MODE_STORY]	= menu.line_spacing[GAME_MODE_STORY];
+  menu.extra_spacing_info[INFO_MODE_STORY]	= menu.extra_spacing[GAME_MODE_STORY];
 
   DrawInfoScreen_FromInitGame(INFO_MODE_STORY);
 
@@ -4661,6 +4685,11 @@ void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
     HandleInfoScreen_Generic(mx, my, dx, dy, button);
   else
     HandleInfoScreen_Main(mx, my, dx, dy, button);
+}
+
+void HandleStoryScreen(int mx, int my, int dx, int dy, int button)
+{
+  HandleInfoScreen(mx, my, dx, dy, button);
 }
 
 
@@ -11399,6 +11428,8 @@ static void HandleScreenGadgets(struct GadgetInfo *gi)
 	HandleSetupScreen(0, 0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
       else if (game_status == GAME_MODE_INFO)
 	HandleInfoScreen(0, 0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
+      else if (game_status == GAME_MODE_STORY)
+	HandleStoryScreen(0, 0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
       else if (game_status == GAME_MODE_SCORES)
 	HandleHallOfFame(0, 0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
       break;
@@ -11414,6 +11445,8 @@ static void HandleScreenGadgets(struct GadgetInfo *gi)
 	HandleSetupScreen(0, 0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
       else if (game_status == GAME_MODE_INFO)
 	HandleInfoScreen(0, 0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
+      else if (game_status == GAME_MODE_STORY)
+	HandleStoryScreen(0, 0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
       else if (game_status == GAME_MODE_SCORES)
 	HandleHallOfFame(0, 0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
       break;
@@ -11429,6 +11462,8 @@ static void HandleScreenGadgets(struct GadgetInfo *gi)
 	HandleSetupScreen(0, 0, 999, gi->event.item_position, MB_MENU_INITIALIZE);
       else if (game_status == GAME_MODE_INFO)
 	HandleInfoScreen(0, 0, 999, gi->event.item_position, MB_MENU_INITIALIZE);
+      else if (game_status == GAME_MODE_STORY)
+	HandleStoryScreen(0, 0, 999, gi->event.item_position, MB_MENU_INITIALIZE);
       else if (game_status == GAME_MODE_SCORES)
 	HandleHallOfFame(0, 0, 999, gi->event.item_position, MB_MENU_INITIALIZE);
       break;

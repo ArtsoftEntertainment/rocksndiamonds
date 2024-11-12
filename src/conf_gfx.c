@@ -8603,7 +8603,7 @@ struct ConfigInfo image_config[] =
   { "background.INFO[VERSION]",				UNDEFINED_FILENAME		},
   { "background.INFO[LEVELSET]",			UNDEFINED_FILENAME		},
   { "background.INFO[LEVEL]",				UNDEFINED_FILENAME		},
-  { "background.INFO[STORY]",				UNDEFINED_FILENAME		},
+  { "background.STORY",					UNDEFINED_FILENAME		},
   { "background.SETUP",					UNDEFINED_FILENAME		},
   { "background.PLAYING",				UNDEFINED_FILENAME		},
   { "background.DOOR",					UNDEFINED_FILENAME		},
@@ -9240,8 +9240,8 @@ struct ConfigInfo image_config[] =
   { "menu.draw_yoffset.INFO[LEVELSET]",			"0"				},
   { "menu.draw_xoffset.INFO[LEVEL]",			"0"				},
   { "menu.draw_yoffset.INFO[LEVEL]",			"0"				},
-  { "menu.draw_xoffset.INFO[STORY]",			"0"				},
-  { "menu.draw_yoffset.INFO[STORY]",			"0"				},
+  { "menu.draw_xoffset.STORY",				"0"				},
+  { "menu.draw_yoffset.STORY",				"0"				},
   { "menu.draw_xoffset.SETUP",				"0"				},
   { "menu.draw_yoffset.SETUP",				"0"				},
   { "menu.draw_xoffset.SETUP[GAME]",			"0"				},
@@ -9307,7 +9307,7 @@ struct ConfigInfo image_config[] =
   { "menu.left_spacing.INFO[VERSION]",			"16"				},
   { "menu.left_spacing.INFO[LEVELSET]",			"16"				},
   { "menu.left_spacing.INFO[LEVEL]",			"16"				},
-  { "menu.left_spacing.INFO[STORY]",			"16"				},
+  { "menu.left_spacing.STORY",				"16"				},
   { "menu.left_spacing.SETUP[INPUT]",			"16"				},
 
   { "menu.middle_spacing.SCOREINFO",			"32"				},
@@ -9324,7 +9324,7 @@ struct ConfigInfo image_config[] =
   { "menu.right_spacing.INFO[VERSION]",			"16"				},
   { "menu.right_spacing.INFO[LEVELSET]",		"16"				},
   { "menu.right_spacing.INFO[LEVEL]",			"16"				},
-  { "menu.right_spacing.INFO[STORY]",			"16"				},
+  { "menu.right_spacing.STORY",				"16"				},
   { "menu.right_spacing.SETUP[INPUT]",			"16"				},
 
   { "menu.top_spacing.SCOREINFO",			"96"				},
@@ -9337,7 +9337,7 @@ struct ConfigInfo image_config[] =
   { "menu.top_spacing.INFO[VERSION]",			"96"				},
   { "menu.top_spacing.INFO[LEVELSET]",			"96"				},
   { "menu.top_spacing.INFO[LEVEL]",			"96"				},
-  { "menu.top_spacing.INFO[STORY]",			"96"				},
+  { "menu.top_spacing.STORY",				"96"				},
   { "menu.top_spacing.SETUP[INPUT]",			"96"				},
 
   { "menu.bottom_spacing.SCOREINFO",			"32"				},
@@ -9350,7 +9350,7 @@ struct ConfigInfo image_config[] =
   { "menu.bottom_spacing.INFO[VERSION]",		"32"				},
   { "menu.bottom_spacing.INFO[LEVELSET]",		"32"				},
   { "menu.bottom_spacing.INFO[LEVEL]",			"32"				},
-  { "menu.bottom_spacing.INFO[STORY]",			"32"				},
+  { "menu.bottom_spacing.STORY",			"32"				},
   { "menu.bottom_spacing.SETUP[INPUT]",			"32"				},
 
   { "menu.paragraph_spacing.SCOREINFO",			"-2"				},
@@ -9363,7 +9363,7 @@ struct ConfigInfo image_config[] =
   { "menu.paragraph_spacing.INFO[VERSION]",		"-2"				},
   { "menu.paragraph_spacing.INFO[LEVELSET]",		"-3"				},
   { "menu.paragraph_spacing.INFO[LEVEL]",		"-3"				},
-  { "menu.paragraph_spacing.INFO[STORY]",		"-3"				},
+  { "menu.paragraph_spacing.STORY",			"-3"				},
   { "menu.paragraph_spacing.SETUP[INPUT]",		"-1"				},
 
   { "menu.headline1_spacing.SCOREINFO",			"-2"				},
@@ -9376,7 +9376,7 @@ struct ConfigInfo image_config[] =
   { "menu.headline1_spacing.INFO[VERSION]",		"-2"				},
   { "menu.headline1_spacing.INFO[LEVELSET]",		"-2"				},
   { "menu.headline1_spacing.INFO[LEVEL]",		"-2"				},
-  { "menu.headline1_spacing.INFO[STORY]",		"-2"				},
+  { "menu.headline1_spacing.STORY",			"-2"				},
   { "menu.headline1_spacing.SETUP[INPUT]",		"-2"				},
 
   { "menu.headline2_spacing.SCOREINFO",			"-1"				},
@@ -9389,7 +9389,7 @@ struct ConfigInfo image_config[] =
   { "menu.headline2_spacing.INFO[VERSION]",		"-1"				},
   { "menu.headline2_spacing.INFO[LEVELSET]",		"-1"				},
   { "menu.headline2_spacing.INFO[LEVEL]",		"-1"				},
-  { "menu.headline2_spacing.INFO[STORY]",		"-1"				},
+  { "menu.headline2_spacing.STORY",			"-1"				},
   { "menu.headline2_spacing.SETUP[INPUT]",		"-1"				},
 
   { "menu.line_spacing.SCOREINFO",			"0"				},
@@ -9402,7 +9402,7 @@ struct ConfigInfo image_config[] =
   { "menu.line_spacing.INFO[VERSION]",			"0"				},
   { "menu.line_spacing.INFO[LEVELSET]",			"0"				},
   { "menu.line_spacing.INFO[LEVEL]",			"0"				},
-  { "menu.line_spacing.INFO[STORY]",			"0"				},
+  { "menu.line_spacing.STORY",				"0"				},
   { "menu.line_spacing.SETUP[INPUT]",			"0"				},
 
   { "menu.extra_spacing.SCOREINFO",			"2"				},
@@ -9415,7 +9415,7 @@ struct ConfigInfo image_config[] =
   { "menu.extra_spacing.INFO[VERSION]",			"2"				},
   { "menu.extra_spacing.INFO[LEVELSET]",		"2"				},
   { "menu.extra_spacing.INFO[LEVEL]",			"2"				},
-  { "menu.extra_spacing.INFO[STORY]",			"2"				},
+  { "menu.extra_spacing.STORY",				"2"				},
   { "menu.extra_spacing.SETUP[INPUT]",			"2"				},
 
   { "menu.text.title.x",				"-1"				},

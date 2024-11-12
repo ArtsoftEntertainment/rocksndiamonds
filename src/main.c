@@ -9295,6 +9295,7 @@ struct SpecialSuffixInfo special_suffix_info[NUM_SPECIAL_GFX_ARGS + 1 + 1] =
   { ".SCOREINFO",		GFX_SPECIAL_ARG_SCOREINFO,		},
   { ".EDITOR",			GFX_SPECIAL_ARG_EDITOR,			},
   { ".INFO",			GFX_SPECIAL_ARG_INFO,			},
+  { ".STORY",			GFX_SPECIAL_ARG_STORY,			},
   { ".SETUP",			GFX_SPECIAL_ARG_SETUP,			},
   { ".PLAYING",			GFX_SPECIAL_ARG_PLAYING,		},
   { ".DOOR",			GFX_SPECIAL_ARG_DOOR,			},
