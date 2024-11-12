@@ -11016,6 +11016,10 @@ static struct TokenInfo global_setup_tokens[] =
     &setup.show_undo_redo_buttons,		"show_undo_redo_buttons"
   },
   {
+    TYPE_SWITCH,
+    &setup.show_menu_to_save_setup,		"show_menu_to_save_setup"
+  },
+  {
     TYPE_STRING,
     &setup.scores_in_highscore_list,		"scores_in_highscore_list"
   },
@@ -11867,6 +11871,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->small_game_graphics = FALSE;
   si->show_load_save_buttons = FALSE;
   si->show_undo_redo_buttons = FALSE;
+  si->show_menu_to_save_setup = FALSE;
   si->scores_in_highscore_list = getStringCopy(STR_SCORES_TYPE_DEFAULT);
 
   si->graphics_set = getStringCopy(GFX_CLASSIC_SUBDIR);
@@ -12774,6 +12779,13 @@ void SaveSetup(void)
   SaveSetup_AutoSetup();
   SaveSetup_ServerSetup();
   SaveSetup_EditorCascade();
+}
+
+void SaveSetupIfNeeded(void)
+{
+  // save changed setup value if "save and exit" menu disabled
+  if (!setup.show_menu_to_save_setup)
+    SaveSetup();
 }
 
 static void SaveSetup_WriteGameControllerMappings(SetupFileHash *mappings_hash,

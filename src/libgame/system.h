@@ -1546,6 +1546,7 @@ struct SetupInfo
   boolean small_game_graphics;
   boolean show_load_save_buttons;
   boolean show_undo_redo_buttons;
+  boolean show_menu_to_save_setup;
   char *scores_in_highscore_list;
 
   char *graphics_set;

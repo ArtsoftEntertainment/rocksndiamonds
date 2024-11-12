@@ -666,6 +666,9 @@ void HandleWindowEvent(WindowEvent *event)
 	UpdateMousePosition();
 
 	SetWindowTitle();
+
+        // required if executed from outside setup menu
+        SaveSetupIfNeeded();
       }
     }
 #if defined(PLATFORM_ANDROID)

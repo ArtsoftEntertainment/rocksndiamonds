@@ -94,6 +94,7 @@ void SaveSetup_EditorCascade(void);
 
 void LoadSetup(void);
 void SaveSetup(void);
+void SaveSetupIfNeeded(void);
 
 void SaveSetup_AddGameControllerMapping(char *);
 

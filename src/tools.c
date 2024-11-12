@@ -14,6 +14,7 @@
 #include "libgame/libgame.h"
 
 #include "tools.h"
+#include "files.h"
 #include "init.h"
 #include "game.h"
 #include "events.h"
@@ -11886,6 +11887,9 @@ void ToggleFullscreenIfNeeded(void)
 
   // set setup value according to successfully changed fullscreen mode
   setup.fullscreen = video.fullscreen_enabled;
+
+  // required if executed from outside setup menu
+  SaveSetupIfNeeded();
 }
 
 void ChangeWindowScalingIfNeeded(void)
@@ -11899,6 +11903,9 @@ void ChangeWindowScalingIfNeeded(void)
 
   // set setup value according to successfully changed window scaling
   setup.window_scaling_percent = video.window_scaling_percent;
+
+  // required if executed from outside setup menu
+  SaveSetupIfNeeded();
 }
 
 void ChangeVsyncModeIfNeeded(void)

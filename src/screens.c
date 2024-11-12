@@ -356,6 +356,7 @@ static void AdjustScoreInfoButtons_PlayTape(int, int, boolean);
 
 static boolean OfferUploadTapes(void);
 static void execOfferUploadTapes(void);
+static void execSaveAndExitSetup(void);
 
 static void DrawHallOfFame_setScoreEntries(void);
 static void HandleHallOfFame_SelectLevel(int, int);
@@ -5731,6 +5732,8 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 	    execSetupTouch();
 	  else
 	    execSetupArtwork();
+
+          SaveSetupIfNeeded();
 	}
 	else
 	{
@@ -8339,6 +8342,7 @@ static struct TokenInfo setup_info_game[] =
   { TYPE_STRING,	&snapshot_mode_text,		""				},
   { TYPE_SWITCH,	&setup.show_load_save_buttons,	"Show Load/Save Buttons:"	},
   { TYPE_SWITCH,	&setup.show_undo_redo_buttons,	"Show Undo/Redo Buttons:"	},
+  { TYPE_SWITCH,	&setup.show_menu_to_save_setup,	"Show Menu to Save Setup:"	},
   { TYPE_EMPTY,		NULL,				""				},
   { TYPE_LEAVE_MENU,	execSetupMain, 			"Back"				},
 
@@ -8987,6 +8991,8 @@ static void changeSetupValue(int screen_pos, int setup_info_pos_raw, int dx)
   // update old setup options from new setup options
   if (si->value == &setup.allow_skipping_levels)
     UpdateHandicapAndSkipLevels();
+
+  SaveSetupIfNeeded();
 }
 
 static struct TokenInfo *getSetupInfoFinal(struct TokenInfo *setup_info_orig)
@@ -9055,6 +9061,11 @@ static void DrawSetupScreen_Generic(void)
   {
     setup_info = setup_info_main;
     title_string = STR_SETUP_MAIN;
+
+    if (!setup.show_menu_to_save_setup)
+      setHideSetupEntry(execSaveAndExitSetup);
+    else
+      removeHideSetupEntry(execSaveAndExitSetup);
   }
   else if (setup_mode == SETUP_MODE_GAME)
   {
