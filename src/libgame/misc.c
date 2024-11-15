@@ -1252,11 +1252,20 @@ char *getStringToLower(const char *s)
 
 static char *getStringVPrint(char *format, va_list ap)
 {
-  char s[MAX_LINE_LEN];
+  char test[1];
 
-  vsnprintf(s, MAX_LINE_LEN, format, ap);	// may truncate output string
+  // determine required size of string to be printed
+  int size = vsnprintf(test, 1, format, ap);
 
-  return getStringCopy(s);
+  // check if something went wrong (should not happen)
+  if (size < 0)
+    size = MAX_LINE_LEN;
+
+  char *s = checked_malloc(size + 1);
+
+  vsnprintf(s, size + 1, format, ap);
+
+  return s;
 }
 
 char *getStringPrint(char *format, ...)
