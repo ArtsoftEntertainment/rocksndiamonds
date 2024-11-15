@@ -1077,26 +1077,124 @@ static char *getInfoTextBuffer_BD(char *text_raw)
   return text_final;
 }
 
-static char *getLevelSetInfoBuffer(void)
+static void addLineOrTextToInfoBuffer(char **buffer, char *header, char *text, boolean centered)
 {
+  if (strlen(*buffer) > 0)
+    appendStringPrint(buffer, "\n\n");
+
+  // header always centered
+  appendStringPrint(buffer, "# .centered: true\n");
+
+  appendStringPrint(buffer, "# .font: font.text_2\n");
+  appendStringPrint(buffer, "%s\n\n", header);
+
+  // text may or may not be centered
+  if (!centered)
+    appendStringPrint(buffer, "# .centered: false\n");
+
+  appendStringPrint(buffer, "# .font: font.text_3\n");
+  appendStringPrint(buffer, "%s", getInfoTextBuffer_BD(text));
+}
+
+static void addLineToInfoBuffer(char **buffer, char *header, char *text)
+{
+  addLineOrTextToInfoBuffer(buffer, header, text, TRUE);
+}
+
+static void addTextToInfoBuffer(char **buffer, char *header, char *text)
+{
+  addLineOrTextToInfoBuffer(buffer, header, text, FALSE);
+}
+
+static char *getLevelSetInfoBuffer(boolean from_info_menu)
+{
+  static char *buffer = NULL;
+
   if (level.game_engine_type != GAME_ENGINE_TYPE_BD ||
       level.native_bd_level->caveset == NULL)
     return NULL;
 
-  if (level.native_bd_level->caveset->story != NULL)
-    return getInfoTextBuffer_BD(level.native_bd_level->caveset->story);
+  checked_free(buffer);
+
+  buffer = getStringCopy("");	// start with empty buffer
+
+  if (from_info_menu)
+  {
+    if (*level.native_bd_level->caveset->name)
+      addLineToInfoBuffer(&buffer, "Cave Set Name", level.native_bd_level->caveset->name);
+
+    if (*level.native_bd_level->caveset->author)
+      addLineToInfoBuffer(&buffer, "Author", level.native_bd_level->caveset->author);
+
+    if (*level.native_bd_level->caveset->date)
+      addLineToInfoBuffer(&buffer, "Date", level.native_bd_level->caveset->date);
+
+    if (*level.native_bd_level->caveset->difficulty)
+      addLineToInfoBuffer(&buffer, "Difficulty", level.native_bd_level->caveset->difficulty);
+
+    if (*level.native_bd_level->caveset->www)
+      addLineToInfoBuffer(&buffer, "Web Site", level.native_bd_level->caveset->www);
+  }
+
+  if (*level.native_bd_level->caveset->description)
+    addLineToInfoBuffer(&buffer, "Description", level.native_bd_level->caveset->description);
+
+  if (level.native_bd_level->caveset->story)
+    addTextToInfoBuffer(&buffer, "Story", level.native_bd_level->caveset->story);
+
+  if (level.native_bd_level->caveset->remark)
+    addTextToInfoBuffer(&buffer, "Remark", level.native_bd_level->caveset->remark);
+
+  if (strlen(buffer) > 0)
+    return buffer;
 
   return NULL;
 }
 
-static char *getLevelInfoBuffer(void)
+static char *getLevelInfoBuffer(boolean from_info_menu)
 {
+  static char *buffer = NULL;
+
   if (level.game_engine_type != GAME_ENGINE_TYPE_BD ||
       level.native_bd_level->cave == NULL)
     return NULL;
 
-  if (level.native_bd_level->cave->story != NULL)
-    return getInfoTextBuffer_BD(level.native_bd_level->cave->story);
+  checked_free(buffer);
+
+  buffer = getStringCopy("");	// start with empty buffer
+
+  if (from_info_menu)
+  {
+    if (*level.native_bd_level->cave->name)
+      addLineToInfoBuffer(&buffer, "Cave Name", level.native_bd_level->cave->name);
+
+    if (*level.native_bd_level->cave->author)
+      addLineToInfoBuffer(&buffer, "Author", level.native_bd_level->cave->author);
+
+    if (*level.native_bd_level->cave->date)
+      addLineToInfoBuffer(&buffer, "Date", level.native_bd_level->cave->date);
+
+    if (*level.native_bd_level->cave->difficulty)
+      addLineToInfoBuffer(&buffer, "Difficulty", level.native_bd_level->cave->difficulty);
+
+    if (*level.native_bd_level->cave->www)
+      addLineToInfoBuffer(&buffer, "Web Site", level.native_bd_level->cave->www);
+  }
+
+  if (*level.native_bd_level->cave->description)
+    addLineToInfoBuffer(&buffer, "Description", level.native_bd_level->cave->description);
+
+  if (from_info_menu)
+  {
+    if (level.native_bd_level->cave->story)
+      addTextToInfoBuffer(&buffer, "Story", level.native_bd_level->cave->story);
+  }
+
+  if (level.native_bd_level->cave->remark)
+    addTextToInfoBuffer(&buffer, "Remark", level.native_bd_level->cave->remark);
+
+  if (strlen(buffer) > 0)
+    return buffer;
 
   return NULL;
 }
@@ -1107,22 +1205,22 @@ static char *getLevelStoryBuffer(void)
       level.native_bd_level->cave == NULL)
     return NULL;
 
-  if (level.native_bd_level->cave->story != NULL)
+  if (level.native_bd_level->cave->story)
     return getInfoTextBuffer_BD(level.native_bd_level->cave->story);
 
   return NULL;
 }
 
-static boolean hasLevelSetInfo(void)
+static boolean hasLevelSetInfo(boolean from_info_menu)
 {
   return (getLevelSetInfoFilename(0) != NULL ||
-          getLevelSetInfoBuffer() != NULL);
+          getLevelSetInfoBuffer(from_info_menu) != NULL);
 }
 
-static boolean hasLevelInfo(void)
+static boolean hasLevelInfo(boolean from_info_menu)
 {
   return (getLevelInfoFilename(level_nr) != NULL ||
-          getLevelInfoBuffer() != NULL);
+          getLevelInfoBuffer(from_info_menu) != NULL);
 }
 
 static boolean hasLevelStory(void)
@@ -2138,8 +2236,8 @@ void DrawMainMenu(void)
   MapTapeButtons();
   MapScreenMenuGadgets(SCREEN_MASK_MAIN);
   UpdateScreenMenuGadgets(SCREEN_MASK_MAIN_HAS_SOLUTION, hasSolutionTape());
-  UpdateScreenMenuGadgets(SCREEN_MASK_MAIN_HAS_LEVELSET_INFO, hasLevelSetInfo());
-  UpdateScreenMenuGadgets(SCREEN_MASK_MAIN_HAS_LEVEL_INFO, hasLevelInfo());
+  UpdateScreenMenuGadgets(SCREEN_MASK_MAIN_HAS_LEVELSET_INFO, hasLevelSetInfo(FALSE));
+  UpdateScreenMenuGadgets(SCREEN_MASK_MAIN_HAS_LEVEL_INFO, hasLevelInfo(FALSE));
 
   // copy actual game door content to door double buffer for OpenDoor()
   BlitBitmap(drawto, bitmap_db_door_1, DX, DY, DXSIZE, DYSIZE, 0, 0);
@@ -2461,7 +2559,7 @@ static void HandleMainMenu_SelectLevel(int step, int direction,
     SaveLevelSetup_SeriesInfo();
 
     UpdateScreenMenuGadgets(SCREEN_MASK_MAIN_HAS_SOLUTION, hasSolutionTape());
-    UpdateScreenMenuGadgets(SCREEN_MASK_MAIN_HAS_LEVEL_INFO, hasLevelInfo());
+    UpdateScreenMenuGadgets(SCREEN_MASK_MAIN_HAS_LEVEL_INFO, hasLevelInfo(FALSE));
 
     // force redraw of playfield area (may be reset at this point)
     redraw_mask |= REDRAW_FIELD;
@@ -4225,9 +4323,9 @@ static char *getInfoScreenFilename_Generic(int nr, boolean global)
 
 static char *getInfoScreenBuffer_Generic(void)
 {
-  return (info_mode == INFO_MODE_LEVELSET ? getLevelSetInfoBuffer() :
-	  info_mode == INFO_MODE_LEVEL    ? getLevelInfoBuffer()    :
-	  info_mode == INFO_MODE_STORY    ? getLevelStoryBuffer()   :
+  return (info_mode == INFO_MODE_LEVELSET ? getLevelSetInfoBuffer(game_status == GAME_MODE_INFO) :
+	  info_mode == INFO_MODE_LEVEL    ? getLevelInfoBuffer(game_status == GAME_MODE_INFO)    :
+	  info_mode == INFO_MODE_STORY    ? getLevelStoryBuffer()                                :
 	  NULL);
 }
 
@@ -4445,7 +4543,7 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
       while (getLevelSetInfoFilename(num_screens) != NULL)
 	num_screens++;
 
-      if (num_screens == 0 && hasLevelSetInfo())
+      if (num_screens == 0 && hasLevelSetInfo(TRUE))
         num_screens = 1;
 
       text_no_info = "No level set info available.";
@@ -4456,7 +4554,7 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
       use_global_screens = FALSE;
 
       // determine number of level info screens
-      if (hasLevelInfo())
+      if (hasLevelInfo(TRUE))
         num_screens = 1;
 
       text_no_info = "No level info available.";
