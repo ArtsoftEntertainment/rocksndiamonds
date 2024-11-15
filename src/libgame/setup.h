@@ -286,6 +286,7 @@ char *getHelpAnimFilename(void);
 char *getHelpTextFilename(void);
 char *getLevelSetInfoFilename(int);
 char *getLevelInfoFilename(int);
+char *getLevelStoryFilename(int);
 char *getLevelSetTitleMessageFilename(int, boolean);
 char *getCreditsFilename(int, boolean);
 char *getProgramInfoFilename(int);

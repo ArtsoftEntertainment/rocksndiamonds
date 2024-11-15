@@ -682,6 +682,7 @@
 #define PROGRAM_INFO_DIRECTORY		"program"
 #define LEVELSET_INFO_DIRECTORY		"levelset"
 #define LEVEL_INFO_DIRECTORY		"levels"
+#define STORIES_DIRECTORY		"stories"
 #define CACHE_DIRECTORY			"cache"
 #define CONF_DIRECTORY			"conf"
 #define NETWORK_DIRECTORY		"network"

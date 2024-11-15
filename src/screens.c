@@ -1101,6 +1101,18 @@ static char *getLevelInfoBuffer(void)
   return NULL;
 }
 
+static char *getLevelStoryBuffer(void)
+{
+  if (level.game_engine_type != GAME_ENGINE_TYPE_BD ||
+      level.native_bd_level->cave == NULL)
+    return NULL;
+
+  if (level.native_bd_level->cave->story != NULL)
+    return getInfoTextBuffer_BD(level.native_bd_level->cave->story);
+
+  return NULL;
+}
+
 static boolean hasLevelSetInfo(void)
 {
   return (getLevelSetInfoFilename(0) != NULL ||
@@ -1111,6 +1123,12 @@ static boolean hasLevelInfo(void)
 {
   return (getLevelInfoFilename(level_nr) != NULL ||
           getLevelInfoBuffer() != NULL);
+}
+
+static boolean hasLevelStory(void)
+{
+  return (getLevelStoryFilename(level_nr) != NULL ||
+          getLevelStoryBuffer() != NULL);
 }
 
 static int getTitleScreenGraphic(int nr, boolean initial)
@@ -4197,11 +4215,11 @@ static int getInfoScreenBackgroundMusic_Generic(void)
 
 static char *getInfoScreenFilename_Generic(int nr, boolean global)
 {
-  return (info_mode == INFO_MODE_CREDITS  ? getCreditsFilename(nr, global) :
-	  info_mode == INFO_MODE_PROGRAM  ? getProgramInfoFilename(nr)     :
-	  info_mode == INFO_MODE_LEVELSET ? getLevelSetInfoFilename(nr)    :
-	  info_mode == INFO_MODE_LEVEL    ? getLevelInfoFilename(level_nr) :
-	  info_mode == INFO_MODE_STORY    ? getLevelInfoFilename(level_nr) :
+  return (info_mode == INFO_MODE_CREDITS  ? getCreditsFilename(nr, global)  :
+	  info_mode == INFO_MODE_PROGRAM  ? getProgramInfoFilename(nr)      :
+	  info_mode == INFO_MODE_LEVELSET ? getLevelSetInfoFilename(nr)     :
+	  info_mode == INFO_MODE_LEVEL    ? getLevelInfoFilename(level_nr)  :
+	  info_mode == INFO_MODE_STORY    ? getLevelStoryFilename(level_nr) :
 	  NULL);
 }
 
@@ -4209,7 +4227,7 @@ static char *getInfoScreenBuffer_Generic(void)
 {
   return (info_mode == INFO_MODE_LEVELSET ? getLevelSetInfoBuffer() :
 	  info_mode == INFO_MODE_LEVEL    ? getLevelInfoBuffer()    :
-	  info_mode == INFO_MODE_STORY    ? getLevelInfoBuffer()    :
+	  info_mode == INFO_MODE_STORY    ? getLevelStoryBuffer()   :
 	  NULL);
 }
 
@@ -4632,7 +4650,7 @@ void DrawInfoScreen_FromInitGame(int nr)
 
 boolean ShowStoryScreen_FromInitGame(void)
 {
-  if (!hasLevelInfo())
+  if (!hasLevelStory())
     return FALSE;
 
   if (setup.show_level_story == STATE_FALSE ||

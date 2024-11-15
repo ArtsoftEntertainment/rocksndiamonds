@@ -879,6 +879,15 @@ static char *getLevelInfoBasename(int level_nr)
   return basename;
 }
 
+static char *getLevelStoryBasename(int level_nr)
+{
+  static char basename[32];
+
+  sprintf(basename, "%03d.txt", level_nr);
+
+  return basename;
+}
+
 char *getLevelSetInfoFilename(int nr)
 {
   char *basename = getLevelSetInfoBasename(nr);
@@ -945,6 +954,25 @@ char *getLevelInfoFilename(int level_nr)
 
   // look for level style level info file directly in the current level set directory
   filename = getPath2(getCurrentLevelDir(), basename);
+  if (fileExists(filename))
+    return filename;
+
+  return NULL;
+}
+
+char *getLevelStoryFilename(int level_nr)
+{
+  char *basename = getLevelStoryBasename(level_nr);
+  static char *stories_subdir = NULL;
+  static char *filename = NULL;
+
+  if (stories_subdir == NULL)
+    stories_subdir = getPath2(DOCS_DIRECTORY, STORIES_DIRECTORY);
+
+  checked_free(filename);
+
+  // look for story file in the current level set's "docs/stories" sub-directory
+  filename = getPath3(getCurrentLevelDir(), stories_subdir, basename);
   if (fileExists(filename))
     return filename;
 
