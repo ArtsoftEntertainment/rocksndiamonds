@@ -4427,7 +4427,7 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
       while (getLevelSetInfoFilename(num_screens) != NULL)
 	num_screens++;
 
-      if (num_screens == 0 && getLevelSetInfoBuffer() != NULL)
+      if (num_screens == 0 && hasLevelSetInfo())
         num_screens = 1;
 
       text_no_info = "No level set info available.";
@@ -4438,8 +4438,7 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
       use_global_screens = FALSE;
 
       // determine number of level info screens
-      if (getLevelInfoFilename(level_nr) != NULL ||
-          getLevelInfoBuffer() != NULL)
+      if (hasLevelInfo())
         num_screens = 1;
 
       text_no_info = "No level info available.";
