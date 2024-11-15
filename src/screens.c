@@ -1079,9 +1079,11 @@ static char *getInfoTextBuffer_BD(char *text_raw)
 
 static char *getLevelSetInfoBuffer(void)
 {
-  if (level.game_engine_type == GAME_ENGINE_TYPE_BD &&
-      level.native_bd_level->caveset != NULL &&
-      level.native_bd_level->caveset->story != NULL)
+  if (level.game_engine_type != GAME_ENGINE_TYPE_BD ||
+      level.native_bd_level->caveset == NULL)
+    return NULL;
+
+  if (level.native_bd_level->caveset->story != NULL)
     return getInfoTextBuffer_BD(level.native_bd_level->caveset->story);
 
   return NULL;
@@ -1089,9 +1091,11 @@ static char *getLevelSetInfoBuffer(void)
 
 static char *getLevelInfoBuffer(void)
 {
-  if (level.game_engine_type == GAME_ENGINE_TYPE_BD &&
-      level.native_bd_level->cave != NULL &&
-      level.native_bd_level->cave->story != NULL)
+  if (level.game_engine_type != GAME_ENGINE_TYPE_BD ||
+      level.native_bd_level->cave == NULL)
+    return NULL;
+
+  if (level.native_bd_level->cave->story != NULL)
     return getInfoTextBuffer_BD(level.native_bd_level->cave->story);
 
   return NULL;
