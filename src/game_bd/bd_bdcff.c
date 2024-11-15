@@ -175,7 +175,10 @@ static boolean struct_set_property(void *str, const GdStructDescriptor *prop_des
       if (prop_desc[i].type == GD_TYPE_STRING)
       {
 	// strings are treated different, as occupy the whole length of the line
-	gd_strcpy(value, param);
+	char *str = getUnescapedString(param);
+
+	gd_strcpy(value, str);
+	checked_free(str);
 
 	// remember this to skip checking the number of parameters at the end of the function
 	was_string = TRUE;
