@@ -4328,9 +4328,9 @@ static char *getInfoScreenFilename_Generic(int nr, boolean global)
 
 static char *getInfoScreenBuffer_Generic(void)
 {
-  return (info_mode == INFO_MODE_LEVELSET ? getLevelSetInfoBuffer(game_status == GAME_MODE_INFO) :
-	  info_mode == INFO_MODE_LEVEL    ? getLevelInfoBuffer(game_status == GAME_MODE_INFO)    :
-	  info_mode == INFO_MODE_STORY    ? getLevelStoryBuffer()                                :
+  return (info_mode == INFO_MODE_LEVELSET ? getLevelSetInfoBuffer(!info_screens_from_main) :
+	  info_mode == INFO_MODE_LEVEL    ? getLevelInfoBuffer(!info_screens_from_main)    :
+	  info_mode == INFO_MODE_STORY    ? getLevelStoryBuffer()                          :
 	  NULL);
 }
 
