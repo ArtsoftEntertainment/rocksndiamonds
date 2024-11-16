@@ -110,6 +110,7 @@
 #define STR_INFO_VERSION			"Version Info"
 #define STR_INFO_LEVELSET			"Level Set Info"
 #define STR_INFO_LEVEL				"Level Info"
+#define STR_INFO_STORY				"Level Story"
 #define STR_INFO_EXIT				"Exit"
 
 // setup screen titles
@@ -1183,12 +1184,6 @@ static char *getLevelInfoBuffer(boolean from_info_menu)
 
   if (*level.native_bd_level->cave->description)
     addLineToInfoBuffer(&buffer, "Description", level.native_bd_level->cave->description);
-
-  if (from_info_menu)
-  {
-    if (level.native_bd_level->cave->story)
-      addTextToInfoBuffer(&buffer, "Story", level.native_bd_level->cave->story);
-  }
 
   if (level.native_bd_level->cave->remark)
     addTextToInfoBuffer(&buffer, "Remark", level.native_bd_level->cave->remark);
@@ -2850,6 +2845,13 @@ static void execInfoLevel(void)
   DrawInfoScreen();
 }
 
+static void execInfoStory(void)
+{
+  info_mode = INFO_MODE_STORY;
+
+  DrawInfoScreen();
+}
+
 static void execExitInfo(void)
 {
   SetGameStatus(GAME_MODE_MAIN);
@@ -2867,6 +2869,7 @@ static struct TokenInfo info_info_main[] =
   { TYPE_ENTER_SCREEN,	execInfoVersion,	STR_INFO_VERSION	},
   { TYPE_ENTER_SCREEN,	execInfoLevelSet,	STR_INFO_LEVELSET	},
   { TYPE_ENTER_SCREEN,	execInfoLevel,		STR_INFO_LEVEL		},
+  { TYPE_ENTER_SCREEN,	execInfoStory,		STR_INFO_STORY		},
   { TYPE_EMPTY,		NULL,			""			},
   { TYPE_LEAVE_MENU,	execExitInfo, 		STR_INFO_EXIT		},
 
@@ -4548,8 +4551,7 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
 
       text_no_info = "No level set info available.";
     }
-    else if (info_mode == INFO_MODE_LEVEL ||
-             info_mode == INFO_MODE_STORY)
+    else if (info_mode == INFO_MODE_LEVEL)
     {
       use_global_screens = FALSE;
 
@@ -4558,6 +4560,29 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
         num_screens = 1;
 
       text_no_info = "No level info available.";
+    }
+    else if (info_mode == INFO_MODE_STORY)
+    {
+      // copy all ".STORY" settings to ".INFO[STORY]", which is internally used to show story
+      menu.draw_xoffset_info[INFO_MODE_STORY]		= menu.draw_xoffset[GAME_MODE_STORY];
+      menu.draw_yoffset_info[INFO_MODE_STORY]		= menu.draw_yoffset[GAME_MODE_STORY];
+      menu.left_spacing_info[INFO_MODE_STORY]		= menu.left_spacing[GAME_MODE_STORY];
+      menu.right_spacing_info[INFO_MODE_STORY]		= menu.right_spacing[GAME_MODE_STORY];
+      menu.top_spacing_info[INFO_MODE_STORY]		= menu.top_spacing[GAME_MODE_STORY];
+      menu.bottom_spacing_info[INFO_MODE_STORY]		= menu.bottom_spacing[GAME_MODE_STORY];
+      menu.paragraph_spacing_info[INFO_MODE_STORY]	= menu.paragraph_spacing[GAME_MODE_STORY];
+      menu.headline1_spacing_info[INFO_MODE_STORY]	= menu.headline1_spacing[GAME_MODE_STORY];
+      menu.headline2_spacing_info[INFO_MODE_STORY]	= menu.headline2_spacing[GAME_MODE_STORY];
+      menu.line_spacing_info[INFO_MODE_STORY]		= menu.line_spacing[GAME_MODE_STORY];
+      menu.extra_spacing_info[INFO_MODE_STORY]		= menu.extra_spacing[GAME_MODE_STORY];
+
+      use_global_screens = FALSE;
+
+      // determine number of level story screens
+      if (hasLevelStory())
+        num_screens = 1;
+
+      text_no_info = "No level story available.";
     }
 
     if (num_screens == 0)
@@ -4756,19 +4781,6 @@ boolean ShowStoryScreen_FromInitGame(void)
     return FALSE;
 
   levelset.level_story_shown[level_nr] = TRUE;
-
-  // copy all ".STORY" settings to ".INFO[STORY]", which is internally used to show story
-  menu.draw_xoffset_info[INFO_MODE_STORY]	= menu.draw_xoffset[GAME_MODE_STORY];
-  menu.draw_yoffset_info[INFO_MODE_STORY]	= menu.draw_yoffset[GAME_MODE_STORY];
-  menu.left_spacing_info[INFO_MODE_STORY]	= menu.left_spacing[GAME_MODE_STORY];
-  menu.right_spacing_info[INFO_MODE_STORY]	= menu.right_spacing[GAME_MODE_STORY];
-  menu.top_spacing_info[INFO_MODE_STORY]	= menu.top_spacing[GAME_MODE_STORY];
-  menu.bottom_spacing_info[INFO_MODE_STORY]	= menu.bottom_spacing[GAME_MODE_STORY];
-  menu.paragraph_spacing_info[INFO_MODE_STORY]	= menu.paragraph_spacing[GAME_MODE_STORY];
-  menu.headline1_spacing_info[INFO_MODE_STORY]	= menu.headline1_spacing[GAME_MODE_STORY];
-  menu.headline2_spacing_info[INFO_MODE_STORY]	= menu.headline2_spacing[GAME_MODE_STORY];
-  menu.line_spacing_info[INFO_MODE_STORY]	= menu.line_spacing[GAME_MODE_STORY];
-  menu.extra_spacing_info[INFO_MODE_STORY]	= menu.extra_spacing[GAME_MODE_STORY];
 
   DrawInfoScreen_FromInitGame(INFO_MODE_STORY);
 
@@ -8393,6 +8405,7 @@ static struct
   { &setup.internal.info_version,		execInfoVersion			},
   { &setup.internal.info_levelset,		execInfoLevelSet		},
   { &setup.internal.info_level,			execInfoLevel			},
+  { &setup.internal.info_story,			execInfoStory			},
   { &setup.internal.info_exit,			execExitInfo			},
 
   { NULL,					NULL				}

@@ -1463,6 +1463,7 @@ struct SetupInternalInfo
   boolean info_version;
   boolean info_levelset;
   boolean info_level;
+  boolean info_story;
   boolean info_exit;
 };
 

@@ -11678,6 +11678,10 @@ static struct TokenInfo internal_setup_tokens[] =
   },
   {
     TYPE_BOOLEAN,
+    &setup.internal.info_story,			"info_story"
+  },
+  {
+    TYPE_BOOLEAN,
     &setup.internal.info_exit,			"info_exit"
   },
 };
