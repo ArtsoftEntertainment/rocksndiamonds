@@ -1897,6 +1897,7 @@ static void DrawInfoScreen_Headline(int screen_nr, int num_screens,
 {
   char *info_text_title_1 = getInfoScreenTitle_Generic();
   char info_text_title_2[MAX_LINE_LEN + 1];
+  boolean draw_story_headline = (info_mode == INFO_MODE_STORY && hasLevelStory());
 
   if (num_screens > 1)
   {
@@ -1908,15 +1909,15 @@ static void DrawInfoScreen_Headline(int screen_nr, int num_screens,
   }
   else
   {
-    char *text_format = (info_mode == INFO_MODE_STORY ? "%s" :
+    char *text_format = (draw_story_headline ? "%s" :
                          use_global_screens ? "for %s" : "for \"%s\"");
     int text_format_len = strlen(text_format) - strlen("%s");
-    int text_font = (info_mode == INFO_MODE_STORY ? FONT_TITLE_STORY : FONT_TITLE_2);
+    int text_font = (draw_story_headline ? FONT_TITLE_STORY : FONT_TITLE_2);
     int max_text_width = SXSIZE - MENU_SCREEN_INFO_SPACE_LEFT - MENU_SCREEN_INFO_SPACE_RIGHT;
     int max_text_len = max_text_width / getFontWidth(text_font);
     int max_name_len = max_text_len - text_format_len;
     char name_cut[max_name_len];
-    char *name_full = (info_mode == INFO_MODE_STORY ? level.name_native :
+    char *name_full = (draw_story_headline ? level.name_native :
                        use_global_screens ? getProgramTitleString() :
 		       leveldir_current->name);
 
@@ -1924,7 +1925,7 @@ static void DrawInfoScreen_Headline(int screen_nr, int num_screens,
     snprintf(info_text_title_2, max_text_len, text_format, name_cut);
   }
 
-  if (info_mode == INFO_MODE_STORY)
+  if (draw_story_headline)
   {
     DrawTextSCentered(MENU_TITLE_STORY_YPOS, FONT_TITLE_STORY, info_text_title_2);
   }
@@ -4274,6 +4275,7 @@ static char *getInfoScreenTitle_Generic(void)
 	  info_mode == INFO_MODE_VERSION  ? STR_INFO_VERSION  :
 	  info_mode == INFO_MODE_LEVELSET ? STR_INFO_LEVELSET :
 	  info_mode == INFO_MODE_LEVEL    ? STR_INFO_LEVEL    :
+	  info_mode == INFO_MODE_STORY    ? STR_INFO_STORY    :
 	  "");
 }
 
