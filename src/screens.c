@@ -1892,11 +1892,9 @@ static void drawChooseTreeEdit(int ypos_raw, boolean active)
   DrawText(sx, sy, STR_CHOOSE_TREE_EDIT, font_nr);
 }
 
-static void DrawInfoScreen_Headline(int screen_nr, int num_screens,
-				    int use_global_screens)
+static char *getInfoScreenSubtitle(int screen_nr, int num_screens, int use_global_screens)
 {
-  char *info_text_title_1 = getInfoScreenTitle_Generic();
-  char info_text_title_2[MAX_LINE_LEN + 1];
+  static char info_text_title_2[MAX_LINE_LEN + 1];
   boolean draw_story_headline = (info_mode == INFO_MODE_STORY && hasLevelStory());
 
   if (num_screens > 1)
@@ -1924,6 +1922,15 @@ static void DrawInfoScreen_Headline(int screen_nr, int num_screens,
     snprintf(name_cut, max_name_len, "%s", name_full);
     snprintf(info_text_title_2, max_text_len, text_format, name_cut);
   }
+
+  return info_text_title_2;
+}
+
+static void DrawInfoScreen_Headline(int screen_nr, int num_screens, int use_global_screens)
+{
+  char *info_text_title_1 = getInfoScreenTitle_Generic();
+  char *info_text_title_2 = getInfoScreenSubtitle(screen_nr, num_screens, use_global_screens);
+  boolean draw_story_headline = (info_mode == INFO_MODE_STORY && hasLevelStory());
 
   if (draw_story_headline)
   {
