@@ -1901,7 +1901,8 @@ static char *getInfoScreenSubtitle(int screen_nr, int num_screens, int use_globa
   {
     sprintf(info_text_title, "Page %d of %d", screen_nr + 1, num_screens);
   }
-  else if (info_mode == INFO_MODE_LEVEL)
+  else if ((info_mode == INFO_MODE_LEVEL) ||
+           (info_mode == INFO_MODE_STORY && !hasLevelStory()))
   {
     snprintf(info_text_title, MAX_LINE_LEN, "for level %d", level_nr);
   }
