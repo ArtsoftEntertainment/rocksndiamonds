@@ -4380,9 +4380,6 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
   int font_foot = MENU_INFO_FONT_FOOT;
   int yfooter = MENU_SCREEN_INFO_FOOTER;
 
-  FreeScreenGadgets();
-  CreateScreenGadgets();
-
   ClearField();
 
   DrawInfoScreen_Headline(screen_nr, num_screens, use_global_screens);
@@ -4475,6 +4472,9 @@ static void DrawInfoScreen_Generic(void)
   FadeInfoSoundsAndMusic();
 
   FadeOut(REDRAW_FIELD);
+
+  FreeScreenGadgets();
+  CreateScreenGadgets();
 
   HandleInfoScreen_Generic(0, 0, 0, 0, MB_MENU_INITIALIZE);
 
