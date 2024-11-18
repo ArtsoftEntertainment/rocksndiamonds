@@ -1119,7 +1119,7 @@ static char *getLevelSetInfoBuffer(boolean from_info_menu)
 {
   static char *buffer = NULL;
 
-  if (level.game_engine_type != GAME_ENGINE_TYPE_BD ||
+  if (level.file_info.type != LEVEL_FILE_TYPE_BD ||
       level.native_bd_level->caveset == NULL)
     return NULL;
 
@@ -1164,7 +1164,7 @@ static char *getLevelInfoBuffer(boolean from_info_menu)
 {
   static char *buffer = NULL;
 
-  if (level.game_engine_type != GAME_ENGINE_TYPE_BD ||
+  if (level.file_info.type != LEVEL_FILE_TYPE_BD ||
       level.native_bd_level->cave == NULL)
     return NULL;
 
@@ -1210,7 +1210,7 @@ static char *getLevelInfoBuffer(boolean from_info_menu)
 
 static char *getLevelStoryBuffer(void)
 {
-  if (level.game_engine_type != GAME_ENGINE_TYPE_BD ||
+  if (level.file_info.type != LEVEL_FILE_TYPE_BD ||
       level.native_bd_level->cave == NULL)
     return NULL;
 
