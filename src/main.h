@@ -3324,6 +3324,17 @@ struct MenuMainInfo
   struct TextPosInfo network_players;
 };
 
+struct MenuInfoButtonInfo
+{
+  struct MenuPosInfo prev_level;
+  struct MenuPosInfo next_level;
+};
+
+struct MenuInfoInfo
+{
+  struct MenuInfoButtonInfo button;
+};
+
 struct MenuSetupButtonInfo
 {
   struct MenuPosInfo prev_player;
@@ -3449,6 +3460,7 @@ struct MenuInfo
 
   struct MenuTextInfo text;
   struct MenuMainInfo main;
+  struct MenuInfoInfo info;
   struct MenuSetupInfo setup;
   struct MenuScoresInfo scores;
 };

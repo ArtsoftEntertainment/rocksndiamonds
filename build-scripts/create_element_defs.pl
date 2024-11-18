@@ -2518,6 +2518,7 @@ sub print_config_vars
 	    # --- some prefix replacements ---
 
 	    $var =~ s/^main\./menu.main./;
+	    $var =~ s/^info\./menu.info./;
 	    $var =~ s/^setup\./menu.setup./;
 	    $var =~ s/^scores\./menu.scores./;
 	    $var =~ s/^\[player\]\./game.player_/;

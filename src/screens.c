@@ -236,32 +236,34 @@
 #define SCREEN_CTRL_ID_NEXT_LEVEL		1
 #define SCREEN_CTRL_ID_PREV_LEVEL2		2
 #define SCREEN_CTRL_ID_NEXT_LEVEL2		3
-#define SCREEN_CTRL_ID_PREV_SCORE		4
-#define SCREEN_CTRL_ID_NEXT_SCORE		5
-#define SCREEN_CTRL_ID_PLAY_TAPE		6
-#define SCREEN_CTRL_ID_FIRST_LEVEL		7
-#define SCREEN_CTRL_ID_LAST_LEVEL		8
-#define SCREEN_CTRL_ID_LEVEL_NUMBER		9
-#define SCREEN_CTRL_ID_PREV_PLAYER		10
-#define SCREEN_CTRL_ID_NEXT_PLAYER		11
-#define SCREEN_CTRL_ID_INSERT_SOLUTION		12
-#define SCREEN_CTRL_ID_PLAY_SOLUTION		13
-#define SCREEN_CTRL_ID_LEVELSET_INFO		14
-#define SCREEN_CTRL_ID_LEVEL_INFO		15
-#define SCREEN_CTRL_ID_SWITCH_ECS_AGA		16
-#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE		17
-#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE		18
-#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE2		19
-#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE2		20
+#define SCREEN_CTRL_ID_PREV_LEVEL3		4
+#define SCREEN_CTRL_ID_NEXT_LEVEL3		5
+#define SCREEN_CTRL_ID_PREV_SCORE		6
+#define SCREEN_CTRL_ID_NEXT_SCORE		7
+#define SCREEN_CTRL_ID_PLAY_TAPE		8
+#define SCREEN_CTRL_ID_FIRST_LEVEL		9
+#define SCREEN_CTRL_ID_LAST_LEVEL		10
+#define SCREEN_CTRL_ID_LEVEL_NUMBER		11
+#define SCREEN_CTRL_ID_PREV_PLAYER		12
+#define SCREEN_CTRL_ID_NEXT_PLAYER		13
+#define SCREEN_CTRL_ID_INSERT_SOLUTION		14
+#define SCREEN_CTRL_ID_PLAY_SOLUTION		15
+#define SCREEN_CTRL_ID_LEVELSET_INFO		16
+#define SCREEN_CTRL_ID_LEVEL_INFO		17
+#define SCREEN_CTRL_ID_SWITCH_ECS_AGA		18
+#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE		19
+#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE		20
+#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE2		21
+#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE2		22
 
-#define NUM_SCREEN_MENUBUTTONS			21
+#define NUM_SCREEN_MENUBUTTONS			23
 
-#define SCREEN_CTRL_ID_SCROLL_UP		21
-#define SCREEN_CTRL_ID_SCROLL_DOWN		22
-#define SCREEN_CTRL_ID_SCROLL_VERTICAL		23
-#define SCREEN_CTRL_ID_NETWORK_SERVER		24
+#define SCREEN_CTRL_ID_SCROLL_UP		23
+#define SCREEN_CTRL_ID_SCROLL_DOWN		24
+#define SCREEN_CTRL_ID_SCROLL_VERTICAL		25
+#define SCREEN_CTRL_ID_NETWORK_SERVER		26
 
-#define NUM_SCREEN_GADGETS			25
+#define NUM_SCREEN_GADGETS			27
 
 #define NUM_SCREEN_SCROLLBUTTONS		2
 #define NUM_SCREEN_SCROLLBARS			1
@@ -276,6 +278,7 @@
 #define SCREEN_MASK_TOUCH2			(1 << 6)
 #define SCREEN_MASK_SCORES			(1 << 7)
 #define SCREEN_MASK_SCORES_INFO			(1 << 8)
+#define SCREEN_MASK_INFO			(1 << 9)
 
 // graphic position and size values for buttons and scrollbars
 #define SC_MENUBUTTON_XSIZE			TILEX
@@ -361,6 +364,7 @@ static void execSaveAndExitSetup(void);
 
 static void DrawHallOfFame_setScoreEntries(void);
 static void HandleHallOfFame_SelectLevel(int, int);
+static void HandleInfoScreen_SelectLevel(int, int);
 static char *getHallOfFameRankText(int, int);
 static char *getHallOfFameScoreText(int, int);
 static char *getInfoScreenTitle_Generic(void);
@@ -4380,6 +4384,9 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
   int font_foot = MENU_INFO_FONT_FOOT;
   int yfooter = MENU_SCREEN_INFO_FOOTER;
 
+  // unmap optional scroll bar gadgets (may not be used on this screen)
+  UnmapScreenGadgets();
+
   ClearField();
 
   DrawInfoScreen_Headline(screen_nr, num_screens, use_global_screens);
@@ -4454,6 +4461,10 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
   char *text_foot = (last_screen ? TEXT_NEXT_MENU : TEXT_NEXT_PAGE);
 
   DrawTextSCentered(yfooter, font_foot, text_foot);
+
+  // redraw level selection buttons (which have just been erased)
+  if (info_mode == INFO_MODE_LEVEL)
+    RedrawScreenMenuGadgets(SCREEN_MASK_INFO);
 }
 
 static void DrawInfoScreen_Generic(void)
@@ -4475,6 +4486,10 @@ static void DrawInfoScreen_Generic(void)
 
   FreeScreenGadgets();
   CreateScreenGadgets();
+
+  // map gadgets for level info screen
+  if (info_mode == INFO_MODE_LEVEL)
+    MapScreenMenuGadgets(SCREEN_MASK_INFO);
 
   HandleInfoScreen_Generic(0, 0, 0, 0, MB_MENU_INITIALIZE);
 
@@ -4609,10 +4624,20 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
       DrawTextSCentered(ystart, font_title, text_no_info);
       DrawTextSCentered(yfooter, font_foot, TEXT_NEXT_MENU);
 
+      // redraw level selection buttons (which have just been erased)
+      if (info_mode == INFO_MODE_LEVEL)
+        RedrawScreenMenuGadgets(SCREEN_MASK_INFO);
+
       return;
     }
 
     DrawInfoScreen_GenericScreen(screen_nr, num_screens, use_global_screens);
+  }
+  else if (info_mode == INFO_MODE_LEVEL & ABS(dx) == 1)
+  {
+    HandleInfoScreen_SelectLevel(1, dx);
+
+    return;
   }
   else if (button == MB_MENU_LEAVE || dx < 0)
   {
@@ -4795,6 +4820,33 @@ boolean ShowStoryScreen_FromInitGame(void)
   DrawInfoScreen_FromInitGame(INFO_MODE_STORY);
 
   return TRUE;
+}
+
+static void HandleInfoScreen_SelectLevel(int step, int direction)
+{
+  int old_level_nr = level_nr;
+  int new_level_nr = old_level_nr + step * direction;
+
+  if (new_level_nr < leveldir_current->first_level)
+    new_level_nr = leveldir_current->first_level;
+  if (new_level_nr > leveldir_current->last_level)
+    new_level_nr = leveldir_current->last_level;
+
+  if (setup.allow_skipping_levels != STATE_TRUE && new_level_nr > leveldir_current->handicap_level)
+    new_level_nr = leveldir_current->handicap_level;
+
+  if (new_level_nr != old_level_nr)
+  {
+    PlaySound(SND_MENU_ITEM_SELECTING);
+
+    level_nr = new_level_nr;
+
+    LoadLevel(level_nr);
+
+    HandleInfoScreen_Generic(0, 0, 0, 0, MB_MENU_INITIALIZE);
+
+    SaveLevelSetup_SeriesInfo();
+  }
 }
 
 void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
@@ -10776,6 +10828,22 @@ static struct
     FALSE, "next level"
   },
   {
+    IMG_MENU_BUTTON_PREV_LEVEL3, IMG_MENU_BUTTON_PREV_LEVEL3_ACTIVE, -1,
+    &menu.info.button.prev_level, NULL,
+    SCREEN_CTRL_ID_PREV_LEVEL3,
+    SCREEN_MASK_INFO,
+    GD_EVENT_PRESSED | GD_EVENT_REPEATED,
+    FALSE, "previous level"
+  },
+  {
+    IMG_MENU_BUTTON_NEXT_LEVEL3, IMG_MENU_BUTTON_NEXT_LEVEL3_ACTIVE, -1,
+    &menu.info.button.next_level, NULL,
+    SCREEN_CTRL_ID_NEXT_LEVEL3,
+    SCREEN_MASK_INFO,
+    GD_EVENT_PRESSED | GD_EVENT_REPEATED,
+    FALSE, "next level"
+  },
+  {
     IMG_MENU_BUTTON_PREV_SCORE, IMG_MENU_BUTTON_PREV_SCORE_ACTIVE, -1,
     &menu.scores.button.prev_score, NULL,
     SCREEN_CTRL_ID_PREV_SCORE,
@@ -10990,6 +11058,7 @@ static void CreateScreenMenubuttons(void)
     boolean is_touch_button = menubutton_info[i].is_touch_button;
     boolean is_check_button = menubutton_info[i].check_value != NULL;
     boolean is_score_button = (screen_mask & SCREEN_MASK_SCORES_INFO);
+    boolean is_info_button  = (screen_mask & SCREEN_MASK_INFO);
     boolean has_gfx_pressed = (menubutton_info[i].gfx_pressed ==
                                menubutton_info[i].gfx_unpressed);
     boolean has_gfx_active = (menubutton_info[i].gfx_active != -1);
@@ -11085,6 +11154,23 @@ static void CreateScreenMenubuttons(void)
       if (pos->y == -1)
 	y = (id == SCREEN_CTRL_ID_PREV_LEVEL2 ||
 	     id == SCREEN_CTRL_ID_NEXT_LEVEL2 ? mSY + MENU_TITLE1_YPOS : 0);
+    }
+    else if (is_info_button)
+    {
+      // if x/y set to -1, dynamically place buttons next to title text
+      int title_width = getTextWidth(STR_INFO_LEVEL, FONT_TITLE_1);
+
+      // use "SX" here to center buttons (ignore horizontal draw offset)
+      if (pos->x == -1)
+	x = (id == SCREEN_CTRL_ID_PREV_LEVEL3 ?
+	     SX + (SXSIZE - title_width) / 2 - width * 3 / 2 :
+	     id == SCREEN_CTRL_ID_NEXT_LEVEL3 ?
+	     SX + (SXSIZE + title_width) / 2 + width / 2 : 0);
+
+      // use "mSY" here to place buttons (respect vertical draw offset)
+      if (pos->y == -1)
+	y = (id == SCREEN_CTRL_ID_PREV_LEVEL3 ||
+	     id == SCREEN_CTRL_ID_NEXT_LEVEL3 ? mSY + MENU_TITLE1_YPOS : 0);
     }
 
     if (id == SCREEN_CTRL_ID_LEVELSET_INFO)
@@ -11506,6 +11592,14 @@ static void HandleScreenGadgets(struct GadgetInfo *gi)
 
     case SCREEN_CTRL_ID_NEXT_LEVEL2:
       HandleHallOfFame_SelectLevel(step, +1);
+      break;
+
+    case SCREEN_CTRL_ID_PREV_LEVEL3:
+      HandleInfoScreen_SelectLevel(step, -1);
+      break;
+
+    case SCREEN_CTRL_ID_NEXT_LEVEL3:
+      HandleInfoScreen_SelectLevel(step, +1);
       break;
 
     case SCREEN_CTRL_ID_PREV_SCORE:
