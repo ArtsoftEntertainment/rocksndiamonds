@@ -2101,7 +2101,7 @@ filetype_id_list[] =
 static boolean check_special_flags(char *flag)
 {
   if (strEqual(options.special_flags, flag) ||
-      strEqual(leveldir_current->special_flags, flag))
+      (leveldir_current != NULL && strEqual(leveldir_current->special_flags, flag)))
     return TRUE;
 
   return FALSE;
