@@ -1189,6 +1189,9 @@ static char *getLevelInfoBuffer(boolean from_info_menu)
   if (*level.native_bd_level->cave->description)
     addLineToInfoBuffer(&buffer, "Description", level.native_bd_level->cave->description);
 
+  if (level.native_bd_level->cave->story)
+    addTextToInfoBuffer(&buffer, "Story", level.native_bd_level->cave->story);
+
   if (level.native_bd_level->cave->remark)
     addTextToInfoBuffer(&buffer, "Remark", level.native_bd_level->cave->remark);
 
