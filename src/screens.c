@@ -1087,6 +1087,10 @@ static void addLineOrTextToInfoBuffer(char **buffer, char *header, char *text, b
   if (strlen(*buffer) > 0)
     appendStringPrint(buffer, "\n\n");
 
+  // do not use centered text if too long
+  if (strlen(text) > 80)
+    centered = FALSE;
+
   // header always centered
   appendStringPrint(buffer, "# .centered: true\n");
 
