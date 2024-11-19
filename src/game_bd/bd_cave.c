@@ -1191,11 +1191,15 @@ static void cave_set_ckdelay_extra_for_animation(GdCave *cave)
   int x, y;
   boolean has_amoeba = FALSE, has_firefly = FALSE, has_butterfly = FALSE;
 
+  cave->ckdelay_current = 0;
+
   for (y = 0; y < cave->h; y++)
   {
     for (x = 0; x < cave->w; x++)
     {
-      switch (non_scanned_pair(cave->map[y][x]))
+      cave->ckdelay_current += gd_element_properties[cave->map[y][x]].ckdelay;
+
+      switch (cave->map[y][x])
       {
 	case O_FIREFLY_1:
 	case O_FIREFLY_2:
@@ -1216,12 +1220,15 @@ static void cave_set_ckdelay_extra_for_animation(GdCave *cave)
 	  break;
 
 	default:
+          // other animated elements are not important,
+          // because they were not present in bd2.
 	  break;
       }
     }
   }
 
   cave->ckdelay_extra_for_animation = 0;
+
   if (has_amoeba)
     cave->ckdelay_extra_for_animation += 2600;
   if (has_firefly)
