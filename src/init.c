@@ -385,6 +385,9 @@ void InitColorTemplateImages(void)
 
 void InitColorTemplateImagesIfNeeded(void)
 {
+  if (program.headless)
+    return;
+
   if (anyImagehasColorTemplate())
     InitColorTemplateImages();
 }
