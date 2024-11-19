@@ -745,6 +745,7 @@ int gd_cave_check_replays(GdCave *cave, boolean report, boolean remove, boolean 
   int wrong = 0;
 
   riter = cave->replays;
+
   while (riter != NULL)
   {
     GdReplay *replay = (GdReplay *)riter->data;

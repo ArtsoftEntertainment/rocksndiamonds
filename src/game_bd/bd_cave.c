@@ -1805,6 +1805,7 @@ unsigned int gd_cave_adler_checksum(GdCave *cave)
   unsigned int b = 0;
 
   gd_cave_adler_checksum_more(cave, &a, &b);
+
   return (b << 16) + a;
 }
 
