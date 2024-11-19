@@ -1718,8 +1718,8 @@ void gd_drawcave_game(const GdCave *cave,
 }
 
 // Convert cave time stored in milliseconds to a visible time in seconds.
-// Internal time may be in real milliseconds or "1200 milliseconds/second" for PAL timing
-// for pal timing. This is taken into account by this function.
+// Internal time may be in real milliseconds or "1200 milliseconds/second"
+// for PAL timing. This is taken into account by this function.
 // Cave time returned is rounded _UP_ to seconds. So at the exact moment when it changes from
 // 2sec remaining to 1sec remaining, the player has exactly one second. When it changes to zero,
 // it is the exact moment of timeout.
