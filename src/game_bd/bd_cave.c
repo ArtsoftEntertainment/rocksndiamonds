@@ -924,9 +924,9 @@ static void gd_cave_set_random_rgb_colors(GdCave *cave)
   if (gd_random_boolean())    swapd(&s2, &s3);
   if (gd_random_boolean())    swapd(&s1, &s3);
 
-  h1 = h1 * 360.0;
-  h2 = h2 * 360.0;
-  h3 = h3 * 360.0;
+  h1 *= 360.0;
+  h2 *= 360.0;
+  h3 *= 360.0;
 
   cave->colorb = gd_color_get_from_hsv(0, 0, 0);
   cave->color0 = gd_color_get_from_hsv(0, 0, 0);       // black for background
