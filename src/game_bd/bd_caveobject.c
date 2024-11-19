@@ -1548,7 +1548,9 @@ GdCave *gd_cave_new_rendered(const GdCave *data, const int level, const unsigned
 
   if (data->level_slime_seed_c64[level] != -1)
   {
-    // if a specific slime seed is requested, change it now.
+    // if a specific slime seed is requested, change it now, after creating map data
+    // if there is -1 in the c64 random seed,
+    // it means "leave the values those left here by the cave setup routine"
 
     gd_cave_c64_random_set_seed(cave,
 				data->level_slime_seed_c64[level] / 256,
