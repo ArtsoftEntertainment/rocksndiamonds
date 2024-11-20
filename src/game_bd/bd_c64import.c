@@ -815,8 +815,8 @@ static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_byte
       cave->acid_eats_this = acid_eat;
   }
 
-  // acid speed, *1e6 as probabilities are stored in int
-  cave->acid_spread_ratio = data[0x16] * 1E6 / 255.0 + 0.5;
+  // acid speed, * 1000000.0 as probabilities are stored in int
+  cave->acid_spread_ratio = data[0x16] * 1000000.0 / 255.0 + 0.5;
 
   cave->acid_turns_to = ((data[0x17] & (1 << 2)) ? O_EXPLODE_3 : O_ACID);
 
@@ -1771,27 +1771,16 @@ static int cave_copy_from_dlb(GdCave *cave, const byte *data, int remaining_byte
   return pos;
 }
 
-// import plck cave data into our format.
-static int cave_copy_from_1stb(GdCave *cave, const byte *data, int remaining_bytes)
+static char *get_name_from_c64_bin(const byte *data)
 {
+  static GdString name;
   int i;
-  int x, y;
 
-  if (remaining_bytes < 1024)
-  {
-    Error("truncated 1stb cave data!");
-
-    return -1;
-  }
-
-  gd_cave_set_engine_defaults(cave, GD_ENGINE_1STB);
-
-  // copy name
-  gd_strcpy(cave->name, "              ");
+  gd_strcpy(name, "              ");
 
   for (i = 0; i < 14; i++)
   {
-    int c = data[0x3a0 + i];
+    int c = data[i];
 
     // import cave name; a conversion table is used for each character
     if (c < 0x40)
@@ -1803,15 +1792,67 @@ static int cave_copy_from_1stb(GdCave *cave, const byte *data, int remaining_byt
     else
       c = ' ';    // don't know this, so change to space
 
+    // from the second one, change to lowercase
     if (i > 0)
       c = tolower(c);
 
-    cave->name[i] = c;
+    name[i] = c;
   }
 
-  chompString(cave->name);
+  // remove trailing and leading spaces
+  chompString(name);
 
-  cave->intermission = data[0x389] != 0;
+  return name;
+}
+
+// This function processes an amoeba probability pattern.
+//
+// @param input The byte read from the file
+// @return The GDash probability
+static int amoeba_probability(byte input)
+{
+  // drop lower 2 bits
+  input = input >> 2;
+
+  // count the number of '1' bits
+  int bits = 0;
+
+  // while has any more bits
+  while (input != 0)
+  {
+    // if the lowest bit is one, increment
+    if (input & 1)
+      bits++;
+
+    // and drop the lowest one.
+    input >>= 1;
+  }
+
+  // here we have the number of 1 bits in the upper six bits.
+  // The order does not count. The probability of all being
+  // zero (thus the amoeba growing) is 1/2^bits.
+  return 1000000.0 / (1 << bits) + 0.5;
+}
+
+// Import a 1stB encoded cave.
+static int cave_copy_from_1stb(GdCave *cave, const byte *data, int remaining_bytes)
+{
+  int x, y;
+  int i;
+
+  if (remaining_bytes < 1024)
+  {
+    Error("truncated 1stb cave data!");
+
+    return -1;
+  }
+
+  gd_cave_set_engine_defaults(cave, GD_ENGINE_1STB);
+
+  // copy name
+  gd_strcpy(cave->name, get_name_from_c64_bin(&data[0x3a0]));
+
+  cave->intermission = (data[0x389] != 0);
 
   // if it is intermission but not scrollable
   if (cave->intermission && !data[0x38c])
@@ -1820,12 +1861,12 @@ static int cave_copy_from_1stb(GdCave *cave, const byte *data, int remaining_byt
     cave->y2 = 11;
   }
 
-  cave->diamond_value = 100 * data[0x379] + 10 * data[0x379 + 1] + data[0x379 + 2];
+  cave->diamond_value       = 100 * data[0x379] + 10 * data[0x379 + 1] + data[0x379 + 2];
   cave->extra_diamond_value = 100 * data[0x376] + 10 * data[0x376 + 1] + data[0x376 + 2];
 
   for (i = 0; i < 5; i++)
   {
-    // plck doesnot really have levels, so just duplicate data five times
+    // 1stb doesnot really have levels, so just duplicate data five times
     cave->level_time[i] = 100 * data[0x370] + 10 * data[0x370+1] + data[0x370 + 2];
 
     // same as gate opening after 0 diamonds
@@ -1850,6 +1891,14 @@ static int cave_copy_from_1stb(GdCave *cave, const byte *data, int remaining_byt
     cave->level_bonus_time[i] = data[0x392];
     cave->level_penalty_time[i] = data[0x393];
     cave->level_amoeba_threshold[i] = 256 * (int)data[0x390] + data[0x390 + 1];
+
+    // set these to the same value on each level, so the engine does
+    // not think that levels are different
+    cave->level_timevalue[i] = 1;
+    cave->level_rand[i] = 0;
+    cave->level_speed[i] = cave->level_ckdelay[i] * 20;
+    if (cave->level_speed[i] < 80)
+      cave->level_speed[i] = 80;
   }
 
   // also has no random data...
@@ -1862,18 +1911,13 @@ static int cave_copy_from_1stb(GdCave *cave, const byte *data, int remaining_byt
   cave->color4 = cave->color1;
   cave->color5 = cave->color1;
 
-  cave->amoeba_growth_prob = (4.0 * 1E6 / (data[0x382] + 1)) + 0.5;   // probabilities store *1M
-  if (cave->amoeba_growth_prob > 1000000)
-    cave->amoeba_growth_prob = 1000000;
-
-  cave->amoeba_fast_growth_prob = (4.0 * 1E6 / (data[0x383] + 1)) + 0.5;
-  if (cave->amoeba_fast_growth_prob > 1000000)
-    cave->amoeba_fast_growth_prob = 1000000;
+  cave->amoeba_growth_prob      = amoeba_probability(data[0x382]);
+  cave->amoeba_fast_growth_prob = amoeba_probability(data[0x383]);
 
   if (data[0x380] != 0)
     cave->creatures_direction_auto_change_time = data[0x381];
   else
-    cave->diagonal_movements = data[0x381] != 0;
+    cave->diagonal_movements = (data[0x381] != 0);
 
   // ... the cave is stored like a map.
   cave->map = gd_cave_map_new(cave, GdElement);
@@ -1881,16 +1925,16 @@ static int cave_copy_from_1stb(GdCave *cave, const byte *data, int remaining_byt
     for (x = 0; x < cave->w; x++)
       cave->map[y][x] = firstboulder_import(data, y * 40 + x);
 
-  cave->magic_wall_sound = data[0x38d] == 0xf1;
+  cave->magic_wall_sound = (data[0x38d] == 0xf1);
 
   // 2d was a normal switch, 2e a changed one.
-  cave->creatures_backwards = data[0x38f] == 0x2d;
+  cave->creatures_backwards = (data[0x38f] == 0x2d);
 
   // 2e horizontal, 2f vertical.
-  cave->expanding_wall_changed = data[0x38e] == 0x2f;
+  cave->expanding_wall_changed = (data[0x38e] == 0x2f);
 
   cave->biter_delay_frame	= data[0x394];
-  cave->magic_wall_stops_amoeba	= data[0x395] == 0;    // negated!!
+  cave->magic_wall_stops_amoeba	= (data[0x395] == 0);    // negated!!
 
   cave->bomb_explosion_effect	= firstboulder_import(data, 0x396);
   cave->explosion_effect	= firstboulder_import(data, 0x397);
@@ -1901,47 +1945,32 @@ static int cave_copy_from_1stb(GdCave *cave, const byte *data, int remaining_byt
   cave->bladder_converts_by	= firstboulder_import(data, 0x39b);
   cave->diamond_falling_effect	= firstboulder_import(data, 0x39c);
   cave->biter_eat		= firstboulder_import(data, 0x39d);
+
+  // slime does this: eats element 1, and adds 3 to it.
+  // for example: element1 == stone, and codes were:
+  // stone, stone (scanned), stone falling, stone falling (scanned)
+  // so by eating a stone it created a stone falling scanned.
   cave->slime_eats_1		= firstboulder_import(data, 0x39e);
   cave->slime_converts_1	= firstboulder_import_byte(data[0x39e] + 3, 0x39e);
   cave->slime_eats_2		= firstboulder_import(data, 0x39f);
   cave->slime_converts_2	= firstboulder_import_byte(data[0x39f] + 3, 0x39f);
+
   cave->magic_diamond_to	= firstboulder_import(data, 0x39a);
 
   // length is always 1024 bytes
   return 1024;
 }
 
-// crazy dream 7
+/// Import a crazy dream 7 cave.
 static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_bytes)
 {
-  int i, index;
-  byte checksum;
+  int index;
+  int i;
 
-  // if we have name, convert
-  gd_strcpy(cave->name, "              ");
+  // if we have name, convert it
+  gd_strcpy(cave->name, get_name_from_c64_bin(data));
 
-  for (i = 0; i < 14; i++)
-  {
-    int c = data[i];
-
-    // import cave name; a conversion table is used for each character
-    if (c < 0x40)
-      c = bd_internal_character_encoding[c];
-    else if (c == 0x74)
-      c = ' ';
-    else if (c == 0x76)
-      c = '?';
-    else
-      c = ' ';
-    if (i > 0)
-      c = tolower(c);
-
-    cave->name[i] = c;
-  }
-
-  chompString(cave->name);    // remove trailing and leading spaces
-
-  cave->selectable = data[14] != 0;
+  cave->selectable = (data[14] != 0);
 
   // jump 15 bytes, 14 was the name and 15 selectability
   data += 15;
@@ -1977,9 +2006,14 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
     cave->level_slime_permeability_c64[i] = data[0x1B];
     cave->level_bonus_time[i] = data[0x22];
     cave->level_penalty_time[i] = data[0x23];
-    cave->level_bonus_time[i] = data[0x22];
-    cave->level_penalty_time[i] = data[0x23];
     cave->level_amoeba_threshold[i] = 256 * (int)data[0x20] + data[0x21];
+
+    // set these to the same value on each level, so the engine does
+    // not think that levels are different
+    cave->level_timevalue[i] = 1;
+    cave->level_speed[i] = cave->level_ckdelay[i] * 20;
+    if (cave->level_speed[i] < 80)
+      cave->level_speed[i] = 80;
   }
 
   cave->extra_diamond_value = (int)data[0x6] * 100 + data[0x7] * 10 + data[0x8];
@@ -1996,7 +2030,7 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
   cave->color4 = cave->color3;
   cave->color5 = cave->color1;
 
-  cave->intermission = data[0x19] != 0;
+  cave->intermission = (data[0x19] != 0);
 
   // if it is intermission but not scrollable
   if (cave->intermission && !data[0x1c])
@@ -2013,25 +2047,20 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
     bcs out        ; jump out (do not expand) if carry set, ie. result was less than 4.
 
     prob values can be like num = 3, 7, 15, 31, 63, ... n lsb bits count.
-    0..3>=4?  0..7>=4?  0..15>=4? and similar.
-    this way, probability of growing is 4/(num+1)
+    0..3 >= 4?  0..7 >= 4?  0..15 >= 4? and similar.
+    this way, probability of growing is 4 / (num + 1)
   */
 
-  cave->amoeba_growth_prob = (4.0 * 1E6 / (data[0x12] + 1)) + 0.5;   // probabilities store * 1M
-  if (cave->amoeba_growth_prob > 1000000)
-    cave->amoeba_growth_prob = 1000000;
-
-  cave->amoeba_fast_growth_prob = (4.0 * 1E6 / (data[0x13] + 1)) + 0.5;
-  if (cave->amoeba_fast_growth_prob > 1000000)
-    cave->amoeba_fast_growth_prob = 1000000;
+  cave->amoeba_growth_prob      = amoeba_probability(data[0x12]);
+  cave->amoeba_fast_growth_prob = amoeba_probability(data[0x13]);
 
   // expanding wall direction change - 2e horizontal, 2f vertical
-  cave->expanding_wall_changed = data[0x1e] == 0x2f;
+  cave->expanding_wall_changed = (data[0x1e] == 0x2f);
 
   // 2c was a normal switch, 2d a changed one.
-  cave->creatures_backwards	= data[0x1f] == 0x2d;
+  cave->creatures_backwards	= (data[0x1f] == 0x2d);
   cave->biter_delay_frame	= data[0x24];
-  cave->magic_wall_stops_amoeba	= data[0x25] == 0;    // negated!!
+  cave->magic_wall_stops_amoeba	= (data[0x25] == 0);    // negated!!
 
   cave->bomb_explosion_effect	= import_table_crdr[data[0x26]];
   cave->explosion_effect	= import_table_crdr[data[0x27]];
@@ -2047,36 +2076,37 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
   cave->slime_eats_2		= import_table_crdr[data[0x2f]];
   cave->slime_converts_2	= import_table_crdr[data[0x2f] + 3];
 
-  cave->diagonal_movements		= (data[0x34] & 1) != 0;
+  cave->diagonal_movements		= ((data[0x34] & 1) != 0);
   cave->gravity_change_time		= data[0x35];
   cave->pneumatic_hammer_frame		= data[0x36];
   cave->hammered_wall_reappear_frame	= data[0x37];
-  cave->hammered_walls_reappear		= data[0x3f] != 0;
+  cave->hammered_walls_reappear		= (data[0x3f] != 0);
 
   /*
     acid in crazy dream 8:
     jsr $2500    ; true random
-    cmp    $03a8    ; compare to ratio
-    bcs out        ; if it was smaller, forget it for now.
+    cmp $03a8    ; compare to ratio
+    bcs out      ; if it was smaller, forget it for now.
 
-    ie. random<=ratio, then acid grows.
+    ie. random <= ratio, then acid grows.
   */
 
-  // 1e6, probabilities are stored as int
-  cave->acid_spread_ratio = data[0x38] / 255.0 * 1E6 + 0.5;
-
+  // 1000000.0, probabilities are stored as int
+  cave->acid_spread_ratio = data[0x38] * 1000000.0 / 255.0 + 0.5;
   cave->acid_eats_this = import_table_crdr[data[0x39]];
+
   switch (data[0x3a] & 3)
   {
-    case 0: cave->gravity = GD_MV_UP; break;
-    case 1: cave->gravity = GD_MV_DOWN; break;
-    case 2: cave->gravity = GD_MV_LEFT; break;
+    case 0: cave->gravity = GD_MV_UP;    break;
+    case 1: cave->gravity = GD_MV_DOWN;  break;
+    case 2: cave->gravity = GD_MV_LEFT;  break;
     case 3: cave->gravity = GD_MV_RIGHT; break;
   }
 
   cave->snap_element = ((data[0x3a] & 4) != 0) ? O_EXPLODE_1 : O_SPACE;
 
   // we do not know the values for these, so do not import
+  // todo do we know?
   //    cave->dirt_looks_like... data[0x3c]
   //    cave->expanding_wall_looks_like... data[0x3b]
   for (i = 0; i < 4; i++)
@@ -2090,34 +2120,36 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
 
   while (data[index] != 0xff)
   {
-    GdElement elem;
-    int x1, y1, x2, y2, dx, dy;
-    int nx, ny;
-    int length, direction;
-
     // for copy&paste; copy&paste are different objects, static = ugly solution :)
     static int cx1, cy1, cw, ch;
 
     switch (data[index])
     {
       case 1:    // point
-	elem = import_table_crdr[data[index + 1]];
-	x1 = data[index + 2];
-	y1 = data[index + 3];
+      {
+	GdElement element = import_table_crdr[data[index + 1]];
+	int x1 = data[index + 2];
+	int y1 = data[index + 3];
+
 	if (x1 >= cave->w || y1 >= cave->h)
 	  Warn("invalid point coordinates %d,%d at byte %d", x1, y1, index);
 
-	cave->objects = list_append(cave->objects, gd_object_new_point(GD_OBJECT_LEVEL_ALL, x1, y1, elem));
+	cave->objects =
+          list_append(cave->objects,
+                      gd_object_new_point(GD_OBJECT_LEVEL_ALL,
+                                          x1, y1, element));
 
 	index += 4;
 	break;
+      }
 
       case 2: // rectangle
-	elem = import_table_crdr[data[index + 1]];
-	x1 = data[index + 2];
-	y1 = data[index + 3];
-	x2 = x1 + data[index + 4] - 1;
-	y2 = y1 + data[index + 5] - 1;    // height
+      {
+	GdElement element = import_table_crdr[data[index + 1]];
+	int x1 = data[index + 2];
+	int y1 = data[index + 3];
+	int x2 = x1 + data[index + 4] - 1;    // width
+	int y2 = y1 + data[index + 5] - 1;    // height
 
 	if (x1 >= cave->w ||
 	    y1 >= cave->h ||
@@ -2125,16 +2157,22 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
 	    y2 >= cave->h)
 	  Warn("invalid rectangle coordinates %d,%d %d,%d at byte %d", x1, y1, x2, y2, index);
 
-	cave->objects = list_append(cave->objects, gd_object_new_rectangle(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, elem));
+	cave->objects =
+          list_append(cave->objects,
+                      gd_object_new_rectangle(GD_OBJECT_LEVEL_ALL,
+                                              x1, y1, x2, y2, element));
 
 	index += 6;
 	break;
+      }
 
       case 3: // fillrect
-	x1 = data[index + 2];
-	y1 = data[index + 3];
-	x2 = x1 + data[index + 4] - 1;
-	y2 = y1 + data[index + 5] - 1;
+      {
+	GdElement element = import_table_crdr[data[index + 1]];
+	int x1 = data[index + 2];
+	int y1 = data[index + 3];
+	int x2 = x1 + data[index + 4] - 1;
+	int y2 = y1 + data[index + 5] - 1;
 
 	if (x1 >= cave->w ||
 	    y1 >= cave->h ||
@@ -2143,31 +2181,39 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
 	  Warn("invalid filled rectangle coordinates %d,%d %d,%d at byte %d", x1, y1, x2, y2, index);
 
 	// border and inside of fill is the same element.
-	cave->objects = list_append(cave->objects, gd_object_new_filled_rectangle(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, import_table_crdr[data[index + 1]], import_table_crdr[data[index + 1]]));
+	cave->objects =
+          list_append(cave->objects,
+                      gd_object_new_filled_rectangle(GD_OBJECT_LEVEL_ALL,
+                                                     x1, y1, x2, y2, element, element));
 
 	index += 6;
 	break;
+      }
 
       case 4: // line
-	elem = import_table_crdr[data[index + 1]];
-	if (elem == O_UNKNOWN)
+      {
+	GdElement element = import_table_crdr[data[index + 1]];
+	int x1 = data[index + 2];
+	int y1 = data[index + 3];
+	int length = data[index + 4];
+	int direction = data[index + 5];
+	int nx = ((signed)direction - 128) % 40;
+	int ny = ((signed)direction - 128) / 40;
+	int x2 = x1 + (length - 1) * nx;
+	int y2 = y1 + (length - 1) * ny;
+
+	if (element == O_UNKNOWN)
 	  Warn("unknown element at %d: %x", index + 1, data[index + 1]);
 
-	x1 = data[index + 2];
-	y1 = data[index + 3];
-	length = data[index + 4];
-	direction = data[index + 5];
-	nx = ((signed)direction - 128) % 40;
-	ny = ((signed)direction - 128) / 40;
-	x2 = x1 + (length - 1) * nx;
-	y2 = y1 + (length - 1) * ny;
-
 	// if either is bigger than one, we cannot treat this as a line. create points instead
-	if (ABS(nx) >= 2 || ABS(ny) >= 2)
+	if (ABS(nx) > 1 || ABS(ny) > 1)
 	{
 	  for (i = 0; i < length; i++)
 	  {
-	    cave->objects = list_append(cave->objects, gd_object_new_point(GD_OBJECT_LEVEL_ALL, x1, y1, elem));
+	    cave->objects =
+              list_append(cave->objects,
+                          gd_object_new_point(GD_OBJECT_LEVEL_ALL,
+                                              x1, y1, element));
 	    x1 += nx;
 	    y1 += ny;
 	  }
@@ -2181,13 +2227,19 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
 	      y2 >= cave->h)
 	    Warn("invalid line coordinates %d,%d %d,%d at byte %d", x1, y1, x2, y2, index - 5);
 
-	  cave->objects = list_append(cave->objects, gd_object_new_line(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, elem));
+	  cave->objects =
+            list_append(cave->objects,
+                        gd_object_new_line(GD_OBJECT_LEVEL_ALL,
+                                           x1, y1, x2, y2, element));
 	}
 
 	index += 6;
 	break;
+      }
 
       case 6: // copy
+      {
+        // (use static variables defined above for copy & paste!)
 	cx1 = data[index + 1];
 	cy1 = data[index + 2];
 	cw = data[index + 3];
@@ -2201,16 +2253,18 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
 
 	index += 5;
 	break;
+      }
 
       case 7: // paste
-	x1 = cx1;
-	y1 = cy1;
+      {
+	int x1 = cx1;
+	int y1 = cy1;
 
 	// original stored width and height, we store the coordinates of the source area
-	x2 = cx1 + cw - 1;
-	y2 = cy1 + ch - 1;
-	dx = data[index + 1];    // new pos
-	dy = data[index + 2];
+	int x2 = cx1 + cw - 1;
+	int y2 = cy1 + ch - 1;
+	int dx = data[index + 1];    // new pos
+	int dy = data[index + 2];
 
 	if (dx >= cave->w ||
 	    dy >= cave->h ||
@@ -2218,21 +2272,26 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
 	    dy + ch > cave->h)
 	  Warn("invalid paste coordinates %d,%d at byte %d", dx, dy, index);
 
-	cave->objects = list_append(cave->objects, gd_object_new_copy_paste(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, dx, dy, FALSE, FALSE));
+	cave->objects =
+          list_append(cave->objects,
+                      gd_object_new_copy_paste(GD_OBJECT_LEVEL_ALL,
+                                               x1, y1, x2, y2, dx, dy, FALSE, FALSE));
 
 	index += 3;
 	break;
+      }
 
       case 11: // raster
-	elem = import_table_crdr[data[index + 1]];
-	x1 = data[index + 2];
-	y1 = data[index + 3];
-	dx = data[index + 4];
-	dy = data[index + 5];
-	nx = data[index + 6] - 1;
-	ny = data[index + 7] - 1;
-	x2 = x1 + dx * nx;    // calculate rectangle we use
-	y2 = y1 + dy * ny;
+      {
+	GdElement element = import_table_crdr[data[index + 1]];
+	int x1 = data[index + 2];
+	int y1 = data[index + 3];
+	int dx = data[index + 4];
+	int dy = data[index + 5];
+	int nx = data[index + 6] - 1;
+	int ny = data[index + 7] - 1;
+	int x2 = x1 + dx * nx;    // calculate rectangle we use
+	int y2 = y1 + dy * ny;
 
 	if (dx < 1)
 	  dx = 1;
@@ -2245,25 +2304,32 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
 	    y2 >= cave->h)
 	  Warn("invalid raster coordinates %d,%d %d,%d at byte %d", x1, y1, x2, y2, index);
 
-	cave->objects = list_append(cave->objects, gd_object_new_raster(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, dx, dy, elem));
+	cave->objects =
+          list_append(cave->objects,
+                      gd_object_new_raster(GD_OBJECT_LEVEL_ALL,
+                                           x1, y1, x2, y2, dx, dy, element));
 
 	index += 8;
 	break;
+      }
 
       default:
+      {
 	Warn("unknown crdr extension no. %02x at byte %d", data[index], index);
+
 	index += 1;    // skip that byte
 	break;
+      }
     }
   }
 
   index++;    // skip $ff
 
   // crazy dream 7 hack
-  checksum = 0;
+  byte checksum = 0;
 
   for (i = 0; i < 0x3b0; i++)
-    checksum = checksum^data[i];
+    checksum = checksum ^ data[i];
 
   if (strEqual(cave->name, "Crazy maze") && checksum == 195)
     cave->skeletons_needed_for_pot = 0;
@@ -2660,8 +2726,8 @@ static int cave_copy_from_crli(GdCave *cave, const byte *data, int remaining_byt
       ie. random<=ratio, then acid grows.
     */
 
-    // * 1e6, probabilities are stored as int
-    cave->acid_spread_ratio		= uncompressed[0x3a8] / 255.0 * 1E6;
+    // * 1000000.0, probabilities are stored as int
+    cave->acid_spread_ratio		= uncompressed[0x3a8] / 255.0 * 1000000.0;
     cave->acid_eats_this		= import(uncompressed[0x3a9], 0x3a9);
     cave->expanding_wall_looks_like	= import(uncompressed[0x3ab], 0x3ab);
     cave->dirt_looks_like		= import(uncompressed[0x3ac], 0x3ac);
