@@ -441,7 +441,7 @@ GdPropertyDefault gd_defaults_crli[] =
   { -1 },
 };
 
-// Set engine parameters to some defaults in cave.
+// Get array with default engine parameters according to cave engine type.
 GdPropertyDefault *gd_get_engine_default_array(GdEngine engine)
 {
   switch (engine)
@@ -478,91 +478,7 @@ GdPropertyDefault *gd_get_engine_default_array(GdEngine engine)
   return gd_defaults_bd1;
 }
 
-// used for bdcff engine flag.
-static const char *gd_engines[] =
-{
-  "BD1",
-  "BD2",
-  "PLCK",
-  "1stB",
-  "CrDr",
-  "CrLi"
-};
-
-// Take a slime predictability byte, and convert it to a bitmask.
-// Used for caves created with the original construction kit.
-// (This conversion method is used by the new game engine.)
-static int slime_plck_new(int c64_data)
-{
-  const int values[] = { 0x00, 0x10, 0x18, 0x38, 0x3c, 0x7c, 0x7e, 0xfe, 0xff };
-
-  if (c64_data > ARRAY_SIZE(values))
-  {
-    Warn("Invalid PLCK slime permeability value %x", c64_data);
-
-    return 0xff;
-  }
-
-  return values[c64_data];
-}
-
-// Take a slime predictability byte, and convert it to a bitmask.
-// Used for caves created with the original construction kit.
-// (This conversion method was used by the old game engine.)
-static int slime_plck_old(int c64_data)
-{
-  int i, perm;
-
-  perm = 0;
-
-  for (i = 0; i < c64_data; i++)
-    // shift in this many msb 1's
-    perm = (0x100|perm) >> 1;
-
-  return perm;
-}
-
-static GdElement bd1_import(byte c, int i)
-{
-  if (c < ARRAY_SIZE(import_table_bd1))
-    return non_scanned_pair(import_table_bd1[c]);
-
-  Warn("Invalid BD1 element in imported file at cave data %d: %d", i, c);
-
-  return O_UNKNOWN;
-}
-
-// deluxe caves 1 contained a special element, non-sloped brick.
-static GdElement deluxecaves_1_import(byte c, int i)
-{
-  GdElement e = bd1_import(c, i);
-
-  if (e == O_H_EXPANDING_WALL)
-    e = O_BRICK_NON_SLOPED;
-
-  return e;
-}
-
-static GdElement firstboulder_import(byte c, int i)
-{
-  if (c < ARRAY_SIZE(import_table_1stb))
-    return non_scanned_pair(import_table_1stb[c]);
-
-  Warn("Invalid 1stB element in imported file at cave data %d: %d", i, c);
-
-  return O_UNKNOWN;
-}
-
-static GdElement crazylight_import(byte c, int i)
-{
-  if (c < ARRAY_SIZE(import_table_crli))
-    return non_scanned_pair(import_table_crli[c]);
-
-  Warn("Invalid CrLi element in imported file at cave data %d: %d", i, c);
-
-  return O_UNKNOWN;
-}
-
+// Set engine parameters to some defaults in cave.
 void gd_cave_set_engine_defaults(GdCave *cave, GdEngine engine)
 {
   gd_cave_set_defaults_from_array(cave, gd_get_engine_default_array(engine));
@@ -586,6 +502,171 @@ void gd_cave_set_engine_defaults(GdCave *cave, GdEngine engine)
     cave->level_ckdelay[3] = 6;    // 120ms
     cave->level_ckdelay[4] = 6;    // 120ms (!) same as level 4
   }
+}
+
+// used for bdcff engine flag.
+static const char *gd_engines[] =
+{
+  "BD1",
+  "BD2",
+  "PLCK",
+  "1stB",
+  "CrDr",
+  "CrLi"
+};
+
+// Take a slime predictability byte, and convert it to a bitmask.
+// Used for caves created with the original construction kit.
+// (This conversion method is used by the new game engine.)
+static int slime_perm_plck_new(int c64_data)
+{
+  const int values[] = { 0x00, 0x10, 0x18, 0x38, 0x3c, 0x7c, 0x7e, 0xfe, 0xff };
+
+  if (c64_data > ARRAY_SIZE(values))
+  {
+    Warn("Invalid PLCK slime permeability value %x", c64_data);
+
+    return 0xff;
+  }
+
+  return values[c64_data];
+}
+
+// Take a slime predictability byte, and convert it to a bitmask.
+// Used for caves created with the original construction kit.
+// (This conversion method was used by the old game engine.)
+static int slime_perm_plck_old(int c64_data)
+{
+  int i, perm;
+
+  perm = 0;
+
+  for (i = 0; i < c64_data; i++)
+    // shift in this many msb 1's
+    perm = (0x100 | perm) >> 1;
+
+  return perm;
+}
+
+// Import a BD1 element.
+//
+// @param c The code byte used in BD1
+// @param i Index in the array, from which the byte was read.
+//          Only to be able to report the error correctly
+// @return The GDash element.
+static GdElement bd1_import_byte(byte c, int i)
+{
+  GdElement e = O_UNKNOWN;
+
+  if (c < ARRAY_SIZE(import_table_bd1))
+    e = import_table_bd1[c];
+
+  if (e == O_UNKNOWN)
+    Warn("Invalid BD1 element in imported file at cave data %d: %d", i, c);
+
+  return non_scanned_pair(e);
+}
+
+static GdElement bd1_import(const byte data[], int i)
+{
+  return bd1_import_byte(data[i], i);
+}
+
+// Import a deluxe caves 1 element.
+// Deluxe caves 1 contained a special element, non-sloped brick.
+// No import table only for that.
+//
+// @param c The code byte used in the imported cave data.
+// @param i Index in the array, from which the byte was read.
+//          Only to be able to report the error correctly
+// @return The GDash element.
+static GdElement deluxecaves_1_import_byte(byte c, int i)
+{
+  if (c == 0x2a)
+    return O_BRICK_NON_SLOPED;
+
+  return bd1_import_byte(c, i);
+}
+
+static GdElement deluxecaves_1_import(const byte data[], int i)
+{
+  return deluxecaves_1_import_byte(data[i], i);
+}
+
+// Import a deluxe caves 3 element.
+// Deluxe caves 3 contained some special elements, like non-sloped brick.
+// No import table only for that.
+//
+// @param c The code byte used in the imported cave data.
+// @param i Index in the array, from which the byte was read.
+//          Only to be able to report the error correctly
+// @return The GDash element.
+static GdElement deluxecaves_3_import_byte(byte c, int i)
+{
+  switch (c)
+  {
+    case 0x2a:
+      return O_BRICK_NON_SLOPED;
+    case 0x18:
+      return O_DIRT_GLUED;
+    case 0x19:
+      return O_DIAMOND_GLUED;
+    case 0x1a:
+      return O_STONE_GLUED;
+  }
+
+  return bd1_import_byte(c, i);
+}
+
+static GdElement deluxecaves_3_import(const byte data[], int i)
+{
+  return deluxecaves_3_import_byte(data[i], i);
+}
+
+// Import a 1stB element.
+// @param c The code byte used in the original data file
+// @param i Index in the array, from which the byte was read.
+//          Only to be able to report the error correctly
+// @return The GDash element.
+static GdElement firstboulder_import_byte(byte c, int i)
+{
+  GdElement e = O_UNKNOWN;
+
+  if (c < ARRAY_SIZE(import_table_1stb))
+    e = import_table_1stb[c];
+
+  if (e == O_UNKNOWN)
+    Warn("Invalid 1stB element in imported file at cave data %d: %d", i, c);
+
+  return non_scanned_pair(e);
+}
+
+static GdElement firstboulder_import(const byte data[], int i)
+{
+  return firstboulder_import_byte(data[i], i);
+}
+
+// Import a Crazy Light element.
+// @param c The code byte used in the original data file
+// @param i Index in the array, from which the byte was read.
+//          Only to be able to report the error correctly
+// @return The GDash element.
+static GdElement crazylight_import_byte(byte c, int i)
+{
+  GdElement e = O_UNKNOWN;
+
+  if (c < ARRAY_SIZE(import_table_crli))
+    e = import_table_crli[c];
+
+  if (e == O_UNKNOWN)
+    Warn("Invalid CrLi element in imported file at cave data %d: %d", i, c);
+
+  return non_scanned_pair(e);
+}
+
+static GdElement crazylight_import(const byte data[], int i)
+{
+  return crazylight_import_byte(data[i], i);
 }
 
 GdEngine gd_cave_get_engine_from_string(const char *param)
@@ -643,15 +724,12 @@ static unsigned int checksum(const byte *data, int length)
 
 // import bd1 cave data into our format.
 static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_bytes,
-			      GdCavefileFormat format)
+			      GdCavefileFormat format, GdImportHack hack)
 {
-  int length, direction;
   int index;
   int level;
-  int x1, y1, x2, y2;
-  byte code;
-  GdElement elem;
-  GdElement (* import_func) (byte c, int i);
+  GdElement (* import_func) (const byte data[], int i);
+  GdElement (* import_func_byte) (byte c, int i);
   int i;
 
   // cant be shorted than this: header + no objects + delimiter
@@ -667,10 +745,22 @@ static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_byte
   if (format == GD_FORMAT_BD1_ATARI)
     cave->scheduling = GD_SCHEDULING_BD1_ATARI;
 
-  if (format == GD_FORMAT_DC1)
-    import_func = deluxecaves_1_import;
+  // set import func
+  if (hack == GD_HACK_DC1)
+  {
+    import_func      = deluxecaves_1_import;
+    import_func_byte = deluxecaves_1_import_byte;
+  }
+  else if (hack == GD_HACK_DC3)
+  {
+    import_func      = deluxecaves_3_import;
+    import_func_byte = deluxecaves_3_import_byte;
+  }
   else
-    import_func = bd1_import;
+  {
+    import_func      = bd1_import;
+    import_func_byte = bd1_import_byte;
+  }
 
   // set visible size for intermission
   if (cave->intermission)
@@ -698,7 +788,12 @@ static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_byte
     // gate opening is checked AFTER adding to diamonds collected, so 0 here means 100 to collect
     if (cave->level_diamonds[level] == 0)
       cave->level_diamonds[level] = 100;
+
     cave->level_time[level] = data[14 + level];
+
+    // 0 immediately underflowed to 999.
+    if (cave->level_time[level] == 0)
+      cave->level_time[level] = 999;
   }
 
   /*
@@ -712,13 +807,18 @@ static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_byte
     so it does not matter how we set the values.
   */
 
-  // 0x1c index: same as probability1 !!!!! don't be surprised. we do a &0x3f because of this
-  cave->acid_eats_this = import_func(data[0x1c] & 0x3F, 0x1c);
+  if (data[0x1c] < 0x40)
+  {
+    GdElement acid_eat = import_func(data, 0x1c);
+
+    if (acid_eat != O_UNKNOWN)
+      cave->acid_eats_this = acid_eat;
+  }
 
   // acid speed, *1e6 as probabilities are stored in int
-  cave->acid_spread_ratio = data[0x16] / 255.0 * 1E6 + 0.5;
+  cave->acid_spread_ratio = data[0x16] * 1E6 / 255.0 + 0.5;
 
-  cave->acid_turns_to = (data[0x17] & (1 << 2)) ? O_EXPLODE_3 : O_ACID;
+  cave->acid_turns_to = ((data[0x17] & (1 << 2)) ? O_EXPLODE_3 : O_ACID);
 
   if (format == GD_FORMAT_BD1_ATARI)
   {
@@ -746,33 +846,33 @@ static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_byte
   // random fill
   for (i = 0; i < 4; i++)
   {
-    cave->random_fill[i] = import_func(data[24 + i], 24 + i);
+    cave->random_fill[i] = import_func(data, 24 + i);
     cave->random_fill_probability[i] = data[28 + i];
   }
 
   /*
    * Decode the explicit cave data
    */
+
   index = 32;
 
-  while (data[index] != 0xFF && index < remaining_bytes && index < 255)
+  while (index < remaining_bytes && data[index] != 0xFF && index < 255)
   {
-    code = data[index];
+    byte code = data[index];
 
     // crazy dream 3 extension:
     if (code == 0x0f)
     {
-      int x1, y1, nx, ny, dx, dy;
       int x, y;
 
       // as this one uses nonstandard dx dy values, create points instead
-      elem = import_func(data[index + 1], index + 1);
-      x1 = data[index + 2];
-      y1 = data[index + 3] - 2;
-      nx = data[index + 4];
-      ny = data[index + 5];
-      dx = data[index + 6];
-      dy = data[index + 7] + 1;
+      int x1 = data[index + 2];
+      int y1 = data[index + 3] - 2;
+      int nx = data[index + 4];
+      int ny = data[index + 5];
+      int dx = data[index + 6];
+      int dy = data[index + 7] + 1;
+      GdElement element = import_func(data, index + 1);
 
       for (y = 0; y < ny; y++)
       {
@@ -780,7 +880,10 @@ static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_byte
 	{
 	  int pos = x1 + y1 * 40 + y * dy * 40 + x * dx;
 
-	  cave->objects = list_append(cave->objects, gd_object_new_point(GD_OBJECT_LEVEL_ALL, pos % 40, pos / 40, elem));
+	  cave->objects =
+            list_append(cave->objects,
+                        gd_object_new_point(GD_OBJECT_LEVEL_ALL,
+                                            pos % 40, pos / 40, element));
 	}
       }
 
@@ -789,33 +892,36 @@ static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_byte
     else
     {
       // object is code & 3f, object type is upper 2 bits
-      elem = import_func(code & 0x3F, index);
+      GdElement element = import_func_byte(code & 0x3F, index);
 
+      // 2 bits MSB determine object type
       switch ((code >> 6) & 3)
       {
 	case 0:                // 00: POINT
-	  x1 = data[index + 1];
-	  y1 = data[index + 2] - 2;
+        {
+	  int x1 = data[index + 1];
+	  int y1 = data[index + 2] - 2;
 
-	  if (x1 >= cave->w || y1 >= cave->h)
-	    Warn("invalid point coordinates %d,%d at byte %d", x1, y1, index);
+          if (x1 >= cave->w || y1 >= cave->h)
+            Warn("invalid point coordinates %d,%d at byte %d", x1, y1, index);
 
-	  cave->objects = list_append(cave->objects, gd_object_new_point(GD_OBJECT_LEVEL_ALL, x1, y1, elem));
+	  cave->objects =
+            list_append(cave->objects,
+                        gd_object_new_point(GD_OBJECT_LEVEL_ALL,
+                                            x1, y1, element));
 
 	  index += 3;
 	  break;
+        }
 
 	case 1:                // 01: LINE
-	  x1 = data[index + 1];
-	  y1 = data[index + 2] - 2;
-	  length = (byte)data[index + 3] - 1;
-	  direction = data[index + 4];
+        {
+	  int x1 = data[index + 1];
+	  int y1 = data[index + 2] - 2;
+	  int length = (byte)data[index + 3] - 1;
+	  int direction = data[index + 4];
 
-	  if (length < 0)
-	  {
-	    Warn("line length negative, not displaying line at all, at byte %d", index);
-	  }
-	  else
+	  if (length >= 0)
 	  {
 	    if (direction > GD_MV_UP_LEFT)
 	    {
@@ -823,8 +929,8 @@ static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_byte
 	      direction = GD_MV_STILL;
 	    }
 
-	    x2 = x1 + length * gd_dx[direction + 1];
-	    y2 = y1 + length * gd_dy[direction + 1];
+	    int x2 = x1 + length * gd_dx[direction + 1];
+	    int y2 = y1 + length * gd_dy[direction + 1];
 
 	    if (x1 >= cave->w ||
 		y1 >= cave->h ||
@@ -832,17 +938,26 @@ static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_byte
 		y2 >= cave->h)
 	      Warn("invalid line coordinates %d,%d %d,%d at byte %d", x1, y1, x2, y2, index);
 
-	    cave->objects = list_append(cave->objects, gd_object_new_line(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, elem));
+	    cave->objects =
+              list_append(cave->objects,
+                          gd_object_new_line(GD_OBJECT_LEVEL_ALL,
+                                             x1, y1, x2, y2, element));
+	  }
+	  else
+	  {
+	    Warn("line length negative, not displaying line at all, at byte %d", index);
 	  }
 
 	  index += 5;
 	  break;
+        }
 
 	case 2:                // 10: FILLED RECTANGLE
-	  x1 = data[index + 1];
-	  y1 = data[index + 2] - 2;
-	  x2 = x1 + data[index + 3] - 1;    // width
-	  y2 = y1 + data[index + 4] - 1;    // height
+        {
+	  int x1 = data[index + 1];
+	  int y1 = data[index + 2] - 2;
+	  int x2 = x1 + data[index + 3] - 1;    // width
+	  int y2 = y1 + data[index + 4] - 1;    // height
 
 	  if (x1 >= cave->w ||
 	      y1 >= cave->h ||
@@ -850,16 +965,22 @@ static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_byte
 	      y2 >= cave->h)
 	    Warn("invalid filled rectangle coordinates %d,%d %d,%d at byte %d", x1, y1, x2, y2, index);
 
-	  cave->objects = list_append(cave->objects, gd_object_new_filled_rectangle(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, elem, import_func(data[index + 5], index + 5)));
+	  cave->objects =
+            list_append(cave->objects,
+                        gd_object_new_filled_rectangle(GD_OBJECT_LEVEL_ALL,
+                                                       x1, y1, x2, y2, element,
+                                                       import_func(data, index + 5)));
 
 	  index += 6;
 	  break;
+        }
 
 	case 3:                // 11: OPEN RECTANGLE (OUTLINE)
-	  x1 = data[index + 1];
-	  y1 = data[index + 2] - 2;
-	  x2 = x1 + data[index + 3] - 1;
-	  y2 = y1 + data[index + 4] - 1;
+        {
+	  int x1 = data[index + 1];
+	  int y1 = data[index + 2] - 2;
+	  int x2 = x1 + data[index + 3] - 1;    // width
+	  int y2 = y1 + data[index + 4] - 1;    // height
 
 	  if (x1 >= cave->w ||
 	      y1 >= cave->h ||
@@ -867,10 +988,14 @@ static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_byte
 	      y2 >= cave->h)
 	    Warn("invalid rectangle coordinates %d,%d %d,%d at byte %d", x1, y1, x2, y2, index);
 
-	  cave->objects = list_append(cave->objects, gd_object_new_rectangle(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, elem));
+	  cave->objects =
+            list_append(cave->objects,
+                        gd_object_new_rectangle(GD_OBJECT_LEVEL_ALL,
+                                                x1, y1, x2, y2, element));
 
 	  index += 5;
 	  break;
+        }
       }
     }
   }
@@ -878,26 +1003,29 @@ static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_byte
   if (data[index] != 0xFF)
   {
     Error("import error, cave not delimited with 0xFF");
+
     return -1;
   }
 
-  return index + 1;
+  // the delimiter
+  index++;
+
+  return index;
 }
 
-// import bd2 cave data into our format. return number of bytes if pointer passed.
-// this is pretty much the same as above, only the encoding was different.
+// Import bd2 cave data into our format.
+// Very similar to the bd1 importer, only the encoding was different.
 static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_bytes,
 			      GdCavefileFormat format)
 {
   int index;
+  int x, y;
   int i;
-  int x, y, rx, ry;
-  int x1, y1, x2, y2, dx, dy;
-  GdElement elem;
 
   if (remaining_bytes < 0x1A + 5)
   {
     Error("truncated BD2 cave data, %d bytes", remaining_bytes);
+
     return -1;
   }
 
@@ -918,53 +1046,60 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
 
   for (i = 0; i < 5; i++)
   {
+    cave->level_amoeba_time[i] = data[0];
+
     // 0 immediately underflowed to 999, so we use 999. example: sendydash 3, cave 02.
-    cave->level_amoeba_time[i] = data[0] == 0 ? 999 : data[0];
+    if (cave->level_amoeba_time[i] == 0)
+      cave->level_amoeba_time[i] = 999;
+
     cave->level_rand[i] = data[13 + i];
+    cave->level_diamonds[i] = data[8 + i];
 
     // gate opening is checked AFTER adding to diamonds collected, so 0 here is 1000 needed
-    cave->level_diamonds[i] = data[8 + i] == 0 ? 1000 : data[8 + i];
+    if (cave->level_diamonds[i] == 0)
+      cave->level_diamonds[i] = 1000;
+
     cave->level_time[i] = data[3 + i];
     cave->level_magic_wall_time[i] = data[0];
   }
 
   for (i = 0; i < 4; i++)
   {
-    cave->random_fill[i] = bd1_import(data[0x16 + i], 0x16 + i);
+    cave->random_fill[i] = bd1_import(data, 0x16 + i);
     cave->random_fill_probability[i] = data[0x12 + i];
   }
 
   /*
    * Decode the explicit cave data
    */
+
   index = 0x1A;
 
-  while (data[index] != 0xFF && index < remaining_bytes)
+  while (index < remaining_bytes && data[index] != 0xFF)
   {
-    int nx, ny;
-    unsigned int addr;
-    int val, n, bytes;
-    int length, direction;
+    // EXTREME CARE HERE! coordinates are in "wrong" order, first y then x.
 
     switch (data[index])
     {
       case 0:                // LINE
-	elem = bd1_import(data[index + 1], index + 1);
-	y1 = data[index + 2];
-	x1 = data[index + 3];
+      {
+	GdElement element = bd1_import(data, index + 1);
+	int x1 = data[index + 3];
+	int y1 = data[index + 2];
 
 	// they are multiplied by two - 0 is up, 2 is upright, 4 is right...
-	direction = data[index + 4] / 2;
-	length = data[index + 5] - 1;
+	int direction = data[index + 4] / 2;
+	int length = data[index + 5] - 1;
 
 	if (direction > GD_MV_UP_LEFT)
 	{
 	  Warn("invalid line direction %d at byte %d", direction, index);
+
 	  direction = GD_MV_STILL;
 	}
 
-	x2 = x1 + length * gd_dx[direction + 1];
-	y2 = y1 + length * gd_dy[direction + 1];
+	int x2 = x1 + length * gd_dx[direction + 1];
+	int y2 = y1 + length * gd_dy[direction + 1];
 
 	if (x1 >= cave->w ||
 	    y1 >= cave->h ||
@@ -972,17 +1107,22 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
 	    y2 >= cave->h)
 	  Warn("invalid line coordinates %d,%d %d,%d at byte %d", x1, y1, x2, y2, index);
 
-	cave->objects = list_append(cave->objects, gd_object_new_line(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, elem));
+	cave->objects =
+          list_append(cave->objects,
+                      gd_object_new_line(GD_OBJECT_LEVEL_ALL,
+                                         x1, y1, x2, y2, element));
 
 	index += 6;
 	break;
+      }
 
       case 1:                // OPEN RECTANGLE
-	elem = bd1_import(data[index + 1], index + 1);
-	y1 = data[index + 2];
-	x1 = data[index + 3];
-	y2 = y1 + data[index + 4] - 1;    // height
-	x2 = x1 + data[index + 5] - 1;
+      {
+	GdElement element = bd1_import(data, index + 1);
+	int x1 = data[index + 3];
+	int y1 = data[index + 2];
+	int x2 = x1 + data[index + 5] - 1;    // width
+	int y2 = y1 + data[index + 4] - 1;    // height
 
 	if (x1 >= cave->w ||
 	    y1 >= cave->h ||
@@ -990,17 +1130,23 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
 	    y2 >= cave->h)
 	  Warn("invalid rectangle coordinates %d,%d %d,%d at byte %d", x1, y1, x2, y2, index);
 
-	cave->objects = list_append(cave->objects, gd_object_new_rectangle(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, elem));
+	cave->objects =
+          list_append(cave->objects,
+                      gd_object_new_rectangle(GD_OBJECT_LEVEL_ALL,
+                                              x1, y1, x2, y2, element));
 
 	index += 6;
 	break;
+      }
 
       case 2:                // FILLED RECTANGLE
-	elem = bd1_import(data[index + 1], index + 1);
-	y1 = data[index + 2];
-	x1 = data[index + 3];
-	y2 = y1 + data[index + 4] - 1;
-	x2 = x1 + data[index + 5] - 1;
+      {
+	GdElement element = bd1_import(data, index + 1);
+	int x1 = data[index + 3];
+	int y1 = data[index + 2];
+	int x2 = x1 + data[index + 5] - 1;    // width
+	int y2 = y1 + data[index + 4] - 1;    // height
+	GdElement fill_element = bd1_import(data, index + 6);
 
 	if (x1 >= cave->w ||
 	    y1 >= cave->h ||
@@ -1008,41 +1154,52 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
 	    y2 >= cave->h)
 	  Warn("invalid filled rectangle coordinates %d,%d %d,%d at byte %d", x1, y1, x2, y2, index);
 
-	cave->objects = list_append(cave->objects, gd_object_new_filled_rectangle(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, elem, bd1_import(data[index+6], index+6)));
+	cave->objects =
+          list_append(cave->objects,
+                      gd_object_new_filled_rectangle(GD_OBJECT_LEVEL_ALL,
+                                                     x1, y1, x2, y2, element, fill_element));
 
 	index += 7;
 	break;
+      }
 
       case 3:                // POINT
-	elem = bd1_import(data[index + 1], index + 1);
-	y1 = data[index + 2];
-	x1 = data[index + 3];
+      {
+	GdElement element = bd1_import(data, index + 1);
+	int x1 = data[index + 3];
+	int y1 = data[index + 2];
 
 	if (x1 >= cave->w ||
 	    y1 >= cave->h)
 	  Warn("invalid point coordinates %d,%d at byte %d", x1, y1, index);
 
-	cave->objects = list_append(cave->objects, gd_object_new_point(GD_OBJECT_LEVEL_ALL, x1, y1, elem));
+	cave->objects =
+          list_append(cave->objects,
+                      gd_object_new_point(GD_OBJECT_LEVEL_ALL,
+                                          x1, y1, element));
 
 	index += 4;
 	break;
+      }
 
       case 4:                // RASTER
-	elem = bd1_import(data[index + 1], index + 1);
-	y1 = data[index + 2];     // starting pos
-	x1 = data[index + 3];
-	ny = data[index + 4] - 1; // number of elements
-	nx = data[index + 5] - 1;
-	dy = data[index + 6];     // displacement
-	dx = data[index + 7];
-	y2 = y1 + dy * ny;        // calculate rectangle
-	x2 = x1 + dx * nx;
+      {
+	GdElement element = bd1_import(data, index + 1);
+	int x1 = data[index + 3];     // starting pos
+	int y1 = data[index + 2];
+	int nx = data[index + 5] - 1; // number of elements
+	int ny = data[index + 4] - 1;
+	int dx = data[index + 7];     // displacement
+	int dy = data[index + 6];
+	int x2 = x1 + dx * nx;        // calculate rectangle
+	int y2 = y1 + dy * ny;
 
-	// guess this has to be here, after x2,y2 calculation, because of some bugs in imported data
-	if (dy < 1)
-	  dy = 1;
+	// guess this has to be here, after x2,y2 calculation,
+        // because of some bugs in imported data
 	if (dx < 1)
 	  dx = 1;
+	if (dy < 1)
+	  dy = 1;
 
 	if (x1 >= cave->w ||
 	    y1 >= cave->h ||
@@ -1050,20 +1207,26 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
 	    y2 >= cave->h)
 	  Warn("invalid raster coordinates %d,%d %d,%d at byte %d", x1, y1, x2, y2, index);
 
-	cave->objects = list_append(cave->objects, gd_object_new_raster(GD_OBJECT_LEVEL_ALL, x1, y1, x2, y2, dx, dy, elem));
+	cave->objects =
+          list_append(cave->objects,
+                      gd_object_new_raster(GD_OBJECT_LEVEL_ALL,
+                                           x1, y1, x2, y2, dx, dy, element));
 
 	index += 8;
 	break;
+      }
 
       case 5:
+      {
 	// profi boulder extension: bitmap
-	elem = bd1_import(data[index + 1], index + 1);
-	bytes = data[index + 2];    // number of bytes in bitmap
+	GdElement element = bd1_import(data, index + 1);
+	int bytes = data[index + 2];    // number of bytes in bitmap
 
 	if (bytes >= cave->w * cave->h / 8)
 	  Warn("invalid bitmap length at byte %d", index - 4);
 
-	addr = 0;
+	int addr = 0;
+
 	addr += data[index + 3];         // msb
 	addr += data[index + 4] << 8;    // lsb
 
@@ -1073,19 +1236,23 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
 	if (addr >= cave->w * cave->h)
 	  Warn("invalid bitmap start address at byte %d", index - 4);
 
-	x1 = addr % 40;
-	y1 = addr / 40;
+	int x1 = addr % 40;
+	int y1 = addr / 40;
 
 	for (i = 0; i < bytes; i++)
 	{
 	  // for ("bytes" number of bytes)
-	  val = data[index + 5 + i];
+	  int val = data[index + 5 + i];
+          int n;
 
 	  for (n = 0; n < 8; n++)
 	  {
 	    // for (8 bits in a byte)
-	    if ((val & 1) != 0) // convert to single points...
-	      cave->objects = list_append(cave->objects, gd_object_new_point(GD_OBJECT_LEVEL_ALL, x1, y1, elem));
+	    if (val & 1) // convert to single points...
+	      cave->objects =
+                list_append(cave->objects,
+                            gd_object_new_point(GD_OBJECT_LEVEL_ALL,
+                                                x1, y1, element));
 
 	    val >>= 1;
 	    x1++;   // next cave pos
@@ -1101,29 +1268,42 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
 
 	index += 5 + bytes;    // 5 description bytes and "bytes" data bytes
 	break;
+      }
 
       case 6:                // JOIN
-	dy = data[index + 3] / 40;
-	dx = data[index + 3] % 40;    // same byte!!!
-	cave->objects = list_append(cave->objects, gd_object_new_join(GD_OBJECT_LEVEL_ALL, dx, dy, bd1_import(data[index+1], index+1), bd1_import(data[index+2], index+2)));
+      {
+	GdElement search_element = bd1_import(data, index + 1);
+	GdElement put_element    = bd1_import(data, index + 2);
+	int dx = data[index + 3] % 40;    // they are stored ...
+	int dy = data[index + 3] / 40;    // ... in the same byte!
+
+	cave->objects =
+          list_append(cave->objects,
+                      gd_object_new_join(GD_OBJECT_LEVEL_ALL,
+                                         dx, dy, search_element, put_element));
 
 	index += 4;
 	break;
+      }
 
       case 7:             // SLIME PERMEABILITY
+      {
 	// interesting this is set here, and not in the cave header
 	for (i = 0; i < 5; i++)
 	  cave->level_slime_permeability_c64[i] = data[index + 1];
 
 	index += 2;
 	break;
+      }
 
       case 9:
-	// profi boulder extension by player: plck-like cave map. the import
-	// routine (any2gdash) inserts it here.
+      {
+	// profi boulder extension by player: plck-like cave map.
+        // the import routine (any2gdash) inserts it here.
 	if (cave->map != NULL)
 	{
 	  Error("contains more than one PLCK map");
+
 	  gd_cave_map_free(cave->map);
 	}
 
@@ -1132,11 +1312,11 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
 	for (x = 0; x < cave->w; x++)
 	{
 	  // fill the first and the last row with steel wall.
-	  cave->map[0][x] = O_STEEL;
+	  cave->map[0][x]           = O_STEEL;
 	  cave->map[cave->h - 1][x] = O_STEEL;
 	}
 
-	n = 0;    // number of bytes read from map
+	int n = 0;    // number of bytes read from map
 
 	// the first and the last rows are not stored.
 	for (y = 1; y < cave->h - 1; y++)
@@ -1150,8 +1330,8 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
 	}
 
 	// the position of inbox is stored. this is to check the cave
-	ry = data[index + 1] - 2;
-	rx = data[index + 2];
+	int ry = data[index + 1] - 2;
+	int rx = data[index + 2];
 
 	// at the start of the cave, bd scrolled to the last player placed during the drawing
 	// (setup) of the cave.
@@ -1159,21 +1339,25 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
 	// this to check its integrity
 	if (rx >= cave->w || ry < 0 ||
 	    ry >= cave->h || cave->map[ry][rx] != O_INBOX)
-	  Warn ("embedded PLCK map may be corrupted, player coordinates %d,%d", rx, rx);
+	  Warn("embedded PLCK map may be corrupted, player coordinates %d,%d", rx, rx);
 
 	index += 3 + n;
 	break;
+      }
 
       default:
-	Warn ("unknown bd2 extension no. %02x at byte %d", data[index], index);
+      {
+	Warn("unknown bd2 extension no. %02x at byte %d", data[index], index);
 
 	index += 1;    // skip that byte
+      }
     }
   }
 
   if (data[index] != 0xFF)
   {
     Error("import error, cave not delimited with 0xFF");
+
     return -1;
   }
 
@@ -1211,8 +1395,8 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
   return index;
 }
 
-// import plck cave data into our format.
-// length is always 512 bytes, and contains if it is an intermission cave.
+// Import plck cave data into our format.
+// Length is always 512 bytes, and contains if it is an intermission cave.
 static int cave_copy_from_plck(GdCave *cave, const byte *data,
 			       int remaining_bytes, GdCavefileFormat format)
 {
@@ -1221,23 +1405,33 @@ static int cave_copy_from_plck(GdCave *cave, const byte *data,
   // it also contains the individual frames
   static GdElement plck_graphic_table[] =
   {
-    /* 3000 */ O_UNKNOWN, O_UNKNOWN, O_UNKNOWN, O_UNKNOWN, O_UNKNOWN, O_UNKNOWN, O_UNKNOWN, O_UNKNOWN,
-    /* 3100 */ O_BUTTER_1, O_MAGIC_WALL, O_PRE_DIA_1, O_PRE_DIA_2, O_PRE_DIA_3, O_PRE_DIA_4, O_PRE_DIA_5, O_OUTBOX_CLOSED,
-    /* 3200 */ O_AMOEBA, O_VOODOO, O_STONE, O_DIRT, O_DIAMOND, O_STEEL, O_PLAYER, O_BRICK,
-    /* 3300 */ O_SPACE, O_OUTBOX_OPEN, O_FIREFLY_1, O_EXPLODE_1, O_EXPLODE_2, O_EXPLODE_3, O_MAGIC_WALL, O_MAGIC_WALL,
-    /* 3400 */ O_PLAYER_TAP_BLINK, O_PLAYER_TAP_BLINK, O_PLAYER_TAP_BLINK, O_PLAYER_TAP_BLINK, O_PLAYER_TAP_BLINK, O_PLAYER_TAP_BLINK, O_PLAYER_TAP_BLINK, O_PLAYER_TAP_BLINK,
-    /* 3500 */ O_PLAYER_LEFT, O_PLAYER_LEFT, O_PLAYER_LEFT, O_PLAYER_LEFT, O_PLAYER_LEFT, O_PLAYER_LEFT, O_PLAYER_LEFT, O_PLAYER_LEFT,
-    /* 3600 */ O_PLAYER_RIGHT, O_PLAYER_RIGHT, O_PLAYER_RIGHT, O_PLAYER_RIGHT, O_PLAYER_RIGHT, O_PLAYER_RIGHT, O_PLAYER_RIGHT, O_PLAYER_RIGHT,
-    /* 3700 */ O_BUTTER_1, O_BUTTER_1, O_BUTTER_1, O_BUTTER_1, O_BUTTER_1, O_BUTTER_1, O_BUTTER_1, O_BUTTER_1,
-    /* 3800 */ O_AMOEBA, O_AMOEBA, O_AMOEBA, O_AMOEBA, O_AMOEBA, O_AMOEBA, O_AMOEBA, O_AMOEBA,
+    /* 3000 */ O_UNKNOWN, O_UNKNOWN, O_UNKNOWN, O_UNKNOWN,
+               O_UNKNOWN, O_UNKNOWN, O_UNKNOWN, O_UNKNOWN,
+    /* 3100 */ O_BUTTER_1, O_MAGIC_WALL, O_PRE_DIA_1, O_PRE_DIA_2,
+               O_PRE_DIA_3, O_PRE_DIA_4, O_PRE_DIA_5, O_OUTBOX_CLOSED,
+    /* 3200 */ O_AMOEBA, O_VOODOO, O_STONE, O_DIRT,
+               O_DIAMOND, O_STEEL, O_PLAYER, O_BRICK,
+    /* 3300 */ O_SPACE, O_OUTBOX_OPEN, O_FIREFLY_1, O_EXPLODE_1,
+               O_EXPLODE_2, O_EXPLODE_3, O_MAGIC_WALL, O_MAGIC_WALL,
+    /* 3400 */ O_PLAYER_TAP_BLINK, O_PLAYER_TAP_BLINK, O_PLAYER_TAP_BLINK, O_PLAYER_TAP_BLINK,
+               O_PLAYER_TAP_BLINK, O_PLAYER_TAP_BLINK, O_PLAYER_TAP_BLINK, O_PLAYER_TAP_BLINK,
+    /* 3500 */ O_PLAYER_LEFT, O_PLAYER_LEFT, O_PLAYER_LEFT, O_PLAYER_LEFT,
+               O_PLAYER_LEFT, O_PLAYER_LEFT, O_PLAYER_LEFT, O_PLAYER_LEFT,
+    /* 3600 */ O_PLAYER_RIGHT, O_PLAYER_RIGHT, O_PLAYER_RIGHT, O_PLAYER_RIGHT,
+               O_PLAYER_RIGHT, O_PLAYER_RIGHT, O_PLAYER_RIGHT, O_PLAYER_RIGHT,
+    /* 3700 */ O_BUTTER_1, O_BUTTER_1, O_BUTTER_1, O_BUTTER_1,
+               O_BUTTER_1, O_BUTTER_1, O_BUTTER_1, O_BUTTER_1,
+    /* 3800 */ O_AMOEBA, O_AMOEBA, O_AMOEBA, O_AMOEBA,
+               O_AMOEBA, O_AMOEBA, O_AMOEBA, O_AMOEBA,
   };
 
-  int i;
   int x, y;
+  int i;
 
   if (remaining_bytes < 512)
   {
     Error("truncated plck cave data!");
+
     return -1;
   }
 
@@ -1246,7 +1440,7 @@ static int cave_copy_from_plck(GdCave *cave, const byte *data,
   if (format == GD_FORMAT_PLC_ATARI)
     cave->scheduling = GD_SCHEDULING_BD2_PLCK_ATARI;
 
-  cave->intermission = data[0x1da] != 0;
+  cave->intermission = (data[0x1da] != 0);
 
   if (cave->intermission)
   {
@@ -1265,11 +1459,13 @@ static int cave_copy_from_plck(GdCave *cave, const byte *data,
     int j;
 
     // found selection table
-    cave->selectable = data[0x1f0] == 0x19;
+    cave->selectable = (data[0x1f0] == 0x19);
     gd_strcpy(cave->name, "              ");
 
     for (j = 0; j < 12; j++)
-      cave->name[j] = data[0x1f2 + j];
+      if (data[0x1f2 + j] >= 32 &&
+          data[0x1f2 + j] < 128)
+        cave->name[j] = data[0x1f2 + j];
 
     chompString(cave->name);    // remove spaces
   }
@@ -1284,7 +1480,7 @@ static int cave_copy_from_plck(GdCave *cave, const byte *data,
 
   for (i = 0; i < 5; i++)
   {
-    // plck doesnot really have levels, so just duplicate data five times
+    // plck does not really have levels, so just duplicate data five times
     cave->level_amoeba_time[i] = data[0x1c4];
 
     // immediately underflowed to 999, so we use 999. example: sendydash 3, cave 02.
@@ -1292,6 +1488,11 @@ static int cave_copy_from_plck(GdCave *cave, const byte *data,
       cave->level_amoeba_time[i] = 999;
 
     cave->level_time[i] = data[0x1ba];
+
+    // immediately underflowed to 999, so we use 999. example: sendydash 3, cave 02.
+    if (cave->level_time[i] == 0)
+      cave->level_time[i] = 999;
+
     cave->level_diamonds[i] = data[0x1bc];
 
     // gate opening is checked AFTER adding to diamonds collected, so 0 here is 1000 needed
@@ -1300,19 +1501,31 @@ static int cave_copy_from_plck(GdCave *cave, const byte *data,
 
     cave->level_ckdelay[i] = data[0x1b8];
     cave->level_magic_wall_time[i] = data[0x1c6];
-    cave->level_slime_permeability_c64[i] = slime_plck_new(data[0x1c2]);
-    cave->level_slime_permeability_old[i] = slime_plck_old(data[0x1c2]);
+
+    cave->level_slime_permeability_c64[i] = slime_perm_plck_new(data[0x1c2]);
+    cave->level_slime_permeability_old[i] = slime_perm_plck_old(data[0x1c2]);
+
+    // set these to the same value on each level, so the engine does
+    // not think that levels are different
+    cave->level_timevalue[i] = 1;
+    cave->level_rand[i] = 0;
+    cave->level_speed[i] = cave->level_ckdelay[i] * 20;
+
+    if (cave->level_speed[i] < 80)
+      cave->level_speed[i] = 80;
   }
 
   if (format == GD_FORMAT_PLC_ATARI)
   {
     // use atari colors
     cave->colorb = gd_atari_color(0);               // border
+
     // indexes in data are not the same order as on c64!!!
     cave->color0 = gd_atari_color(data[0x1e3]);     // background
     cave->color1 = gd_atari_color(data[0x1db]);
     cave->color2 = gd_atari_color(data[0x1dd]);
     cave->color3 = gd_atari_color(data[0x1df]);
+
     // in atari plck, slime and amoeba could not coexist in the same cave.
     // if amoeba was used, the graphics turned to green, and data at 0x1e1 was set to 0xd4.
     // if slime was used, graphics to blue, and data at 0x1e1 was set to 0x72.
@@ -1343,7 +1556,9 @@ static int cave_copy_from_plck(GdCave *cave, const byte *data,
   // also dlp 155 allowed writing to the bottom line; the first 20 $44-s now store the bottom line.
   // so the cave is essentially shifted one row down in the file:
   // cave->map[y][x] = data[... y+1 mod height ][x]
-  for (y = 0; y < cave->h; y++)
+
+  // FOR NOW, WE DO NOT IMPORT THE BOTTOM BORDER
+  for (y = 0; y < cave->h - 1; y++)
   {
     for (x = 0; x < cave->w; x += 2)
     {
@@ -1355,7 +1570,7 @@ static int cave_copy_from_plck(GdCave *cave, const byte *data,
     }
   }
 
-  // FOR NOW, WE DO NOT IMPORT THE BOTTOM BORDER
+  // (... instead, set bottom border to steel wall)
   for (x = 0; x < cave->w; x++)
     cave->map[cave->h - 1][x] = O_STEEL;
 
@@ -1365,11 +1580,11 @@ static int cave_copy_from_plck(GdCave *cave, const byte *data,
       (data[0x1e5] == 0xa9 && data[0x1e6] == 0x1c && data[0x1e7] == 0x85))
   {
     // diego effects enabled.
-    cave->stone_bouncing_effect = bd1_import(data[0x1ea], 0x1ea);
-    cave->diamond_falling_effect = bd1_import(data[0x1eb], 0x1eb);
+    cave->stone_bouncing_effect  = bd1_import(data, 0x1ea);
+    cave->diamond_falling_effect = bd1_import(data, 0x1eb);
 
     // explosions: 0x1e was explosion 4.
-    cave->explosion_3_effect = bd1_import(data[0x1ec], 0x1ec);
+    cave->explosion_3_effect = bd1_import(data, 0x1ec);
 
     /*
       pointer to element graphic.
@@ -1389,19 +1604,12 @@ static int cave_copy_from_plck(GdCave *cave, const byte *data,
   return 512;
 }
 
-// no one's delight boulder dash essentially: rle compressed plck maps.
+/// No one's delight boulder dash importer.
+/// essentially rle compressed plck maps.
 static int cave_copy_from_dlb(GdCave *cave, const byte *data, int remaining_bytes)
 {
-  byte decomp[512];
-  enum
-  {
-    START,        // initial state
-    SEPARATOR,    // got a separator
-    RLE,          // after a separator, got the byte to duplicate
-    NORMAL        // normal, copy bytes till separator
-  } state;
-  int pos, cavepos, i, x, y;
-  byte byte, separator;
+  int x, y;
+  int i;
 
   gd_cave_set_engine_defaults(cave, GD_ENGINE_PLCK); // essentially the plck engine
 
@@ -1423,8 +1631,16 @@ static int cave_copy_from_dlb(GdCave *cave, const byte *data, int remaining_byte
       cave->level_amoeba_time[i] = 999;
 
     cave->level_magic_wall_time[i] = data[7];
-    cave->level_slime_permeability_c64[i] = slime_plck_new(data[5]);
-    cave->level_slime_permeability_old[i] = slime_plck_old(data[5]);
+    cave->level_slime_permeability_c64[i] = slime_perm_plck_new(data[5]);
+    cave->level_slime_permeability_old[i] = slime_perm_plck_old(data[5]);
+
+    // set these to the same value on each level, so the engine does
+    // not think that levels are different */
+    cave->level_timevalue[i] = 1;
+    cave->level_rand[i] = 0;
+    cave->level_speed[i] = cave->level_ckdelay[i] * 20;
+    if (cave->level_speed[i] < 80)
+      cave->level_speed[i] = 80;
   }
 
   cave->diamond_value = data[3];
@@ -1439,13 +1655,24 @@ static int cave_copy_from_dlb(GdCave *cave, const byte *data, int remaining_byte
   cave->color4 = cave->color3;                    // in plck, amoeba was color3
   cave->color5 = cave->color3;                    // same for slime
 
-  // cave map
-  pos = 13;                     // those 13 bytes were the cave values above
-  cavepos = 0;
-  byte = 0;                     // just to get rid of compiler warning
-  separator = 0;                // just to get rid of compiler warning
+  // cave map is compressed.
+  // employ a state machine to decompress data.
 
-  // employ a state machine.
+  // cave map
+  int pos = 13;                     // those 13 bytes were the cave values above
+  int cavepos = 0;
+  byte databyte = 0;                // just to get rid of compiler warning
+  byte separator = 0;               // just to get rid of compiler warning
+  byte decomp[512];
+
+  enum
+  {
+    START,        // initial state
+    SEPARATOR,    // got a separator
+    RLE,          // after a separator, got the byte to duplicate
+    NORMAL        // normal, copy bytes till separator
+  } state;
+
   state = START;
 
   while (cavepos < 400 && pos < remaining_bytes)
@@ -1462,7 +1689,7 @@ static int cave_copy_from_dlb(GdCave *cave, const byte *data, int remaining_byte
 
       case SEPARATOR:
 	// we had a separator. remember this byte, as this will be duplicated (or more)
-	byte = data[pos];
+	databyte = data[pos];
 	state = RLE;
 	break;
 
@@ -1475,11 +1702,12 @@ static int cave_copy_from_dlb(GdCave *cave, const byte *data, int remaining_byte
 	  if (cavepos + 254 > 400)
 	  {
 	    Error("DLB import error: RLE data overflows buffer");
+
 	    return -1;
 	  }
 
 	  for (i = 0; i < 254; i++)
-	    decomp[cavepos++] = byte;
+	    decomp[cavepos++] = databyte;
 	}
 	else
 	{
@@ -1487,11 +1715,12 @@ static int cave_copy_from_dlb(GdCave *cave, const byte *data, int remaining_byte
 	  if (cavepos + data[pos] > 400)
 	  {
 	    Error("DLB import error: RLE data overflows buffer");
+
 	    return -1;
 	  }
 
 	  for (i = 0; i < data[pos]; i++)
-	    decomp[cavepos++] = byte;
+	    decomp[cavepos++] = databyte;
 
 	  state = NORMAL;
 	}
@@ -1512,19 +1741,21 @@ static int cave_copy_from_dlb(GdCave *cave, const byte *data, int remaining_byte
   if (cavepos != 400)
   {
     Error("DLB import error: RLE processing, cave length %d, should be 400", cavepos);
+
     return -1;
   }
 
-  // process uncompressed map
   cave->map = gd_cave_map_new(cave, GdElement);
 
+  // first and last row was not stored - it is always steel wall
   for (x = 0; x < cave->w; x++)
   {
     // fill the first and the last row with steel wall.
-    cave->map[0][x] = O_STEEL;
+    cave->map[0][x]           = O_STEEL;
     cave->map[cave->h - 1][x] = O_STEEL;
   }
 
+  // process uncompressed map
   for (y = 1; y < cave->h - 1; y++)
   {
     for (x = 0; x < cave->w; x += 2)
@@ -1648,7 +1879,7 @@ static int cave_copy_from_1stb(GdCave *cave, const byte *data, int remaining_byt
   cave->map = gd_cave_map_new(cave, GdElement);
   for (y = 0; y < cave->h; y++)
     for (x = 0; x < cave->w; x++)
-      cave->map[y][x] = firstboulder_import(data[y * 40 + x], y * 40 + x);
+      cave->map[y][x] = firstboulder_import(data, y * 40 + x);
 
   cave->magic_wall_sound = data[0x38d] == 0xf1;
 
@@ -1661,20 +1892,20 @@ static int cave_copy_from_1stb(GdCave *cave, const byte *data, int remaining_byt
   cave->biter_delay_frame	= data[0x394];
   cave->magic_wall_stops_amoeba	= data[0x395] == 0;    // negated!!
 
-  cave->bomb_explosion_effect	= firstboulder_import(data[0x396], 0x396);
-  cave->explosion_effect	= firstboulder_import(data[0x397], 0x397);
-  cave->stone_bouncing_effect	= firstboulder_import(data[0x398], 0x398);
-  cave->diamond_birth_effect	= firstboulder_import(data[0x399], 0x399);
-  cave->magic_diamond_to	= firstboulder_import(data[0x39a], 0x39a);
+  cave->bomb_explosion_effect	= firstboulder_import(data, 0x396);
+  cave->explosion_effect	= firstboulder_import(data, 0x397);
+  cave->stone_bouncing_effect	= firstboulder_import(data, 0x398);
+  cave->diamond_birth_effect	= firstboulder_import(data, 0x399);
+  cave->magic_diamond_to	= firstboulder_import(data, 0x39a);
 
-  cave->bladder_converts_by	= firstboulder_import(data[0x39b], 0x39b);
-  cave->diamond_falling_effect	= firstboulder_import(data[0x39c], 0x39c);
-  cave->biter_eat		= firstboulder_import(data[0x39d], 0x39d);
-  cave->slime_eats_1		= firstboulder_import(data[0x39e], 0x39e);
-  cave->slime_converts_1	= firstboulder_import(data[0x39e] + 3, 0x39e);
-  cave->slime_eats_2		= firstboulder_import(data[0x39f], 0x39f);
-  cave->slime_converts_2	= firstboulder_import(data[0x39f] + 3, 0x39f);
-  cave->magic_diamond_to	= firstboulder_import(data[0x39a], 0x39a);
+  cave->bladder_converts_by	= firstboulder_import(data, 0x39b);
+  cave->diamond_falling_effect	= firstboulder_import(data, 0x39c);
+  cave->biter_eat		= firstboulder_import(data, 0x39d);
+  cave->slime_eats_1		= firstboulder_import(data, 0x39e);
+  cave->slime_converts_1	= firstboulder_import_byte(data[0x39e] + 3, 0x39e);
+  cave->slime_eats_2		= firstboulder_import(data, 0x39f);
+  cave->slime_converts_2	= firstboulder_import_byte(data[0x39f] + 3, 0x39f);
+  cave->magic_diamond_to	= firstboulder_import(data, 0x39a);
 
   // length is always 1024 bytes
   return 1024;
@@ -2020,7 +2251,7 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
 	break;
 
       default:
-	Warn ("unknown crdr extension no. %02x at byte %d", data[index], index);
+	Warn("unknown crdr extension no. %02x at byte %d", data[index], index);
 	index += 1;    // skip that byte
 	break;
     }
@@ -2284,12 +2515,12 @@ static int cave_copy_from_crli(GdCave *cave, const byte *data, int remaining_byt
       version = i + 1;
 
   // v3.0 has falling wall and box, and no ghost.
-  import = version >= V3_0 ? crazylight_import : firstboulder_import;
+  import = version >= V3_0 ? crazylight_import_byte : firstboulder_import_byte;
 
   if (version == none)
   {
     Warn("unknown crli version %c%c%c%c", uncompressed[0x3a0], uncompressed[0x3a1], uncompressed[0x3a2], uncompressed[0x3a3]);
-    import = crazylight_import;
+    import = crazylight_import_byte;
   }
 
   // process map
@@ -2587,7 +2818,7 @@ List *gd_caveset_import_from_buffer (const byte *buf, size_t length)
 	  case GD_FORMAT_BD1:
 	  case GD_FORMAT_BD1_ATARI:
 	  case GD_FORMAT_DC1:
-	    cavelength = cave_copy_from_bd1(newcave, buf + bufp, length - bufp, format);
+	    cavelength = cave_copy_from_bd1(newcave, buf + bufp, length - bufp, format, hack);
 	    if (cavelength != -1 && hack == GD_HACK_DC3)
 	      deluxe_caves_3_add_specials(newcave, cavenum);
 	    if (cavelength != -1 && hack == GD_HACK_MB)

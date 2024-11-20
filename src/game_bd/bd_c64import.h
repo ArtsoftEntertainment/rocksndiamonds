@@ -23,7 +23,6 @@
 // file formats
 typedef enum _gd_cavefile_format
 {
-  GD_FORMAT_UNKNOWN,    // unknown format
   GD_FORMAT_BD1,        // boulder dash 1
   GD_FORMAT_BD1_ATARI,  // boulder dash 1 atari version
   GD_FORMAT_DC1,        // boulder dash 1, deluxe caves 1 extension - non-sloped brick wall
@@ -36,12 +35,15 @@ typedef enum _gd_cavefile_format
   GD_FORMAT_CRDR_7,     // crazy dream 7
   GD_FORMAT_CRDR_9,     // crazy dream 9 - is a crli caveset with hardcoded mazes
   GD_FORMAT_FIRSTB,     // first boulder
+
+  GD_FORMAT_UNKNOWN,    // unknown format
 } GdCavefileFormat;
 
 // import hacks
 typedef enum _gd_import_hack
 {
   GD_HACK_NONE,         // no hack
+
   GD_HACK_CRDR_1,       // crazy dream 1
   GD_HACK_CRDR_7,       // crazy dream 7
   GD_HACK_CRDR_9,       // crazy dream 9
@@ -59,6 +61,7 @@ typedef enum _gd_engine
   GD_ENGINE_1STB,
   GD_ENGINE_CRDR7,
   GD_ENGINE_CRLI,
+
   GD_ENGINE_INVALID,    // fake
 } GdEngine;
 
