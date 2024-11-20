@@ -313,14 +313,15 @@ typedef struct _gd_cave_replay
 
 typedef enum _gd_scheduling
 {
-  GD_SCHEDULING_MILLISECONDS,
-  GD_SCHEDULING_BD1,
-  GD_SCHEDULING_BD2,
-  GD_SCHEDULING_PLCK,
-  GD_SCHEDULING_CRDR,
-  GD_SCHEDULING_BD1_ATARI,
-  GD_SCHEDULING_BD2_PLCK_ATARI,
-  GD_SCHEDULING_MAX
+  GD_SCHEDULING_MILLISECONDS,	// Perfect scheduling, milliseconds-based
+  GD_SCHEDULING_BD1,		// C64 BD1
+  GD_SCHEDULING_BD2,		// C64 BD2
+  GD_SCHEDULING_PLCK,		// C64 construction kit
+  GD_SCHEDULING_CRDR,		// C64 crazy dream
+  GD_SCHEDULING_BD1_ATARI,	// Atari BD1
+  GD_SCHEDULING_BD2_PLCK_ATARI,	// Atari BD2 and construction kit
+
+  GD_SCHEDULING_MAX		// Number of scheduling types
 } GdScheduling;
 
 typedef struct _gd_c64_random_generator
