@@ -3159,7 +3159,7 @@ GdPropertyDefault gd_cave_defaults_gdash[] =
   { CAVE_OFFSET(snap_element),					O_SPACE				},
   { CAVE_OFFSET(pushing_stone_prob),				250000				},
   { CAVE_OFFSET(pushing_stone_prob_sweet),			1000000				},
-  { CAVE_OFFSET(level_bonus_time),				30				},
+  { CAVE_OFFSET(mega_stones_pushable_with_sweet),		FALSE				},
   { CAVE_OFFSET(pneumatic_hammer_frame),			5				},
   { CAVE_OFFSET(hammered_walls_reappear),			FALSE				},
   { CAVE_OFFSET(hammered_wall_reappear_frame),			100				},
@@ -3167,6 +3167,7 @@ GdPropertyDefault gd_cave_defaults_gdash[] =
   { CAVE_OFFSET(voodoo_disappear_in_explosion),			TRUE				},
   { CAVE_OFFSET(voodoo_dies_by_stone),				FALSE				},
   { CAVE_OFFSET(voodoo_any_hurt_kills_player),			FALSE				},
+  { CAVE_OFFSET(level_bonus_time),				30				},
   { CAVE_OFFSET(level_penalty_time),				30				},
 
   // magic wall
@@ -3188,9 +3189,10 @@ GdPropertyDefault gd_cave_defaults_gdash[] =
   { CAVE_OFFSET(amoeba_timer_wait_for_hatching),		FALSE				},
 
   { CAVE_OFFSET(level_amoeba_threshold),			200				},
+  { CAVE_OFFSET(level_amoeba_time),				999				},
+
   { CAVE_OFFSET(amoeba_growth_prob),				31250				},
   { CAVE_OFFSET(amoeba_fast_growth_prob),			250000				},
-  { CAVE_OFFSET(level_amoeba_time),				999				},
   { CAVE_OFFSET(amoeba_timer_started_immediately),		TRUE				},
   { CAVE_OFFSET(amoeba_timer_wait_for_hatching),		FALSE				},
   { CAVE_OFFSET(amoeba_too_big_effect),				O_STONE				},
@@ -3198,9 +3200,10 @@ GdPropertyDefault gd_cave_defaults_gdash[] =
 
   // amoeba
   { CAVE_OFFSET(level_amoeba_2_threshold),			200				},
+  { CAVE_OFFSET(level_amoeba_2_time),				999				},
+
   { CAVE_OFFSET(amoeba_2_growth_prob),				31250				},
   { CAVE_OFFSET(amoeba_2_fast_growth_prob),			250000				},
-  { CAVE_OFFSET(level_amoeba_2_time),				999				},
   { CAVE_OFFSET(amoeba_2_too_big_effect),			O_STONE				},
   { CAVE_OFFSET(amoeba_2_enclosed_effect),			O_DIAMOND			},
   { CAVE_OFFSET(amoeba_2_explodes_by_amoeba),			TRUE				},
@@ -3212,6 +3215,9 @@ GdPropertyDefault gd_cave_defaults_gdash[] =
 
   // nut
   { CAVE_OFFSET(nut_turns_to_when_crushed),			O_NUT_CRACK_1			},
+
+  // expanding wall
+  { CAVE_OFFSET(expanding_wall_changed),			FALSE				},
 
   // replicator
   { CAVE_OFFSET(replicator_delay_frame),			4				},

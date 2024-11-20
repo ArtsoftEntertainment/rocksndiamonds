@@ -1584,6 +1584,9 @@ GdCave *gd_cave_new_rendered(const GdCave *data, const int level, const unsigned
 
   gd_cave_correct_visible_size(cave);
 
+  cave->last_direction = GD_MV_STILL;
+  cave->last_horizontal_direction = GD_MV_STILL;
+
   return cave;
 }
 
