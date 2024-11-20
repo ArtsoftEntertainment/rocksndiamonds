@@ -401,18 +401,16 @@ static void brc_import(byte *data)
       // 5 levels, 20 caves, 24 bytes - max 40*2 properties for each cave
       int c = 5 * 20 * 24;
 
-      int datapos = (cavenum * 5 +level) * 24 + 22;
+      int datapos = (cavenum * 5 + level) * 24 + 22;
       int colind;
 
       cave = gd_cave_new();
       imported[level * 20 + cavenum] = cave;
 
       if (cavenum < 16)
-	snprintf(cave->name, sizeof(GdString), "Cave %c/%d", 'A' + cavenum,
-		 level + 1);
+	snprintf(cave->name, sizeof(GdString), "Cave %c/%d", 'A' + cavenum, level + 1);
       else
-	snprintf(cave->name, sizeof(GdString), "Intermission %d/%d",
-		 cavenum - 15, level + 1);
+	snprintf(cave->name, sizeof(GdString), "Intermission %d/%d", cavenum - 15, level + 1);
 
       // fixed intermission caves; are smaller.
       if (cavenum >= 16)
@@ -427,9 +425,7 @@ static void brc_import(byte *data)
       {
 	for (x = 0; x < cave->w; x++)
 	{
-	  byte import;
-
-	  import = data[y + level * 24 + cavenum * 24 * 5 + x * 24 * 5 * 20];
+	  byte import = data[y + level * 24 + cavenum * 24 * 5 + x * 24 * 5 * 20];
 
           cave->map[y][x] = brc_import_elem(import);
 	}
@@ -446,6 +442,11 @@ static void brc_import(byte *data)
 	// bonus time: 100 was added, so it could also be negative
 	cave->level_bonus_time[i]      = (int)data[11 * c + datapos + 1] - 100;
 	cave->level_hatching_delay_frame[i] = data[10 * c + datapos];
+
+        if (data[9 * c + datapos] != 0)
+          cave->level_slime_permeability[i] = 1E6 / data[9 * c + datapos] + 0.5; // 0.5 for rounding
+        else
+          Warn("slime permeability cannot be zero, error at byte %d", 9 * c + datapos);
 
 	// this was not set in boulder remake.
 	cave->level_speed[i] = 150;
@@ -471,37 +472,39 @@ static void brc_import(byte *data)
 	just make sure we do not divide by zero for some broken input.
       */
 
-      if (data[7 * c + datapos] == 0)
-	Warn("amoeba growth cannot be zero, error at byte %d",
-	     data[7 * c + datapos]);
-      else
+      if (data[7 * c + datapos] != 0)
 	cave->amoeba_growth_prob = 1E6 / data[7 * c + datapos] + 0.5; // 0.5 for rounding
-
-      if (data[8 * c + datapos] == 0)
-	Warn("amoeba growth cannot be zero, error at byte %d",
-	     data[8 * c + datapos]);
       else
+	Warn("amoeba growth cannot be zero, error at byte %d", 7 * c + datapos);
+
+      if (data[8 * c + datapos] != 0)
 	cave->amoeba_fast_growth_prob = 1E6 / data[8 * c + datapos] + 0.5; // 0.5 for rounding
+      else
+	Warn("amoeba fast growth cannot be zero, error at byte %d", 8 * c + datapos);
 
       cave->slime_predictable = FALSE;
 
-      for (i = 0; i < 5; i++)
-	cave->level_slime_permeability[i] = 1E6 / data[9 * c + datapos] + 0.5;   // 0.5 for rounding
-
       // probability -> *1E6
-      cave->acid_spread_ratio = 1E6 / data[10 * c + datapos] + 0.5;
+      if (data[10 * c + datapos] != 0)
+        cave->acid_spread_ratio = 1E6 / data[10 * c + datapos] + 0.5;
+      else
+	Warn("acid spread ratio cannot be zero, error at byte %d", 10 * c + datapos);
 
       // br only allowed values 1..8 in here, but works the same way. prob -> *1E6
-      cave->pushing_stone_prob = 1E6 / data[11 * c + datapos] + 0.5;
+      if (data[11 * c + datapos] != 0)
+        cave->pushing_stone_prob = 1E6 / data[11 * c + datapos] + 0.5;
+      else
+	Warn("pushing stone probability cannot be zero, error at byte %d", 11 * c + datapos);
 
       cave->magic_wall_stops_amoeba = (data[12 * c + datapos + 1] != 0);
       cave->intermission = (cavenum >= 16 || data[14 * c + datapos + 1] != 0);
 
       // colors
       colind = data[31 * c + datapos] % ARRAY_SIZE(brc_color_table);
+
       cave->colorb = 0x000000;    // fixed rgb black
       cave->color0 = 0x000000;    // fixed rgb black
-      cave->color1 = brc_color_table[colind];
+      cave->color1 = brc_color_table[colind];         // brc specified dirt color
       cave->color2 = brc_color_table_comp[colind];    // complement
       cave->color3 = 0xffffff;    // white for brick
       cave->color4 = 0xe5ad23;    // fixed for amoeba
@@ -548,8 +551,7 @@ static void brc_import(byte *data)
       boolean only_dirt;
       int x, y;
 
-      // check if cave contains only dirt.
-      // that is an empty cave, and do not import.
+      // check if cave contains only dirt. that is an empty cave, and do not import.
       only_dirt = TRUE;
 
       for (y = 1; y < cave->h - 1 && only_dirt; y++)
