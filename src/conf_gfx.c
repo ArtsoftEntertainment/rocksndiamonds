@@ -588,11 +588,17 @@ struct ConfigInfo image_config[] =
   { "bdx_grass_ball.xpos",				"9"				},
   { "bdx_grass_ball.ypos",				"4"				},
   { "bdx_grass_ball.frames",				"1"				},
+  { "bdx_grass_ball.falling.EDITOR",			"RocksBD2.png"			},
+  { "bdx_grass_ball.falling.EDITOR.xpos",		"1"				},
+  { "bdx_grass_ball.falling.EDITOR.ypos",		"5"				},
 
   { "bdx_grass_loose",					"RocksBD.png"			},
   { "bdx_grass_loose.xpos",				"10"				},
   { "bdx_grass_loose.ypos",				"4"				},
   { "bdx_grass_loose.frames",				"1"				},
+  { "bdx_grass_loose.falling.EDITOR",			"RocksBD2.png"			},
+  { "bdx_grass_loose.falling.EDITOR.xpos",		"2"				},
+  { "bdx_grass_loose.falling.EDITOR.ypos",		"5"				},
 
   { "bdx_sand_sloped_up_left",				"RocksBD.png"			},
   { "bdx_sand_sloped_up_left.xpos",			"8"				},
@@ -700,6 +706,9 @@ struct ConfigInfo image_config[] =
 
   { "bdx_steelwall_explodable",				UNDEFINED_FILENAME		},
   { "bdx_steelwall_explodable.clone_from",		"bdx_steelwall"			},
+  { "bdx_steelwall_explodable.EDITOR",			"RocksBD2.png"			},
+  { "bdx_steelwall_explodable.EDITOR.xpos",		"0"				},
+  { "bdx_steelwall_explodable.EDITOR.ypos",		"5"				},
 
   { "bdx_steelwall_diggable",				UNDEFINED_FILENAME		},
   { "bdx_steelwall_diggable.clone_from",		"bdx_steelwall"			},
