@@ -192,9 +192,9 @@ struct TapeTextInfo
 
 struct TapeInfo
 {
-  int file_version;		// file format version the tape is stored with
-  int game_version;		// game release version the tape was created with
-  int engine_version;		// game engine version the tape was recorded with
+  VersionType file_version;		// file format version the tape is stored with
+  VersionType game_version;		// game release version the tape was created with
+  VersionType engine_version;		// game engine version the tape was recorded with
 
   char score_tape_basename[MAX_FILENAME_LEN + 1];
   char level_identifier[MAX_FILENAME_LEN + 1];

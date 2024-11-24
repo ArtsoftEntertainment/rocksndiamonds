@@ -182,7 +182,7 @@ struct GameInfo
   boolean use_native_bd_sound_engine;
 
   // constant within running game
-  int engine_version;
+  VersionType engine_version;
   int emulation;
   int initial_move_delay[MAX_PLAYERS];
   int initial_move_delay_value[MAX_PLAYERS];

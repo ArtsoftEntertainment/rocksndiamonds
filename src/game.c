@@ -3032,16 +3032,16 @@ static void InitGameEngine(void)
   }
 
 #if 0
-  Debug("game:init:level", "level %d: level.game_version  == %06d", level_nr,
-	level.game_version);
-  Debug("game:init:level", "          tape.file_version   == %06d",
-	tape.file_version);
-  Debug("game:init:level", "          tape.game_version   == %06d",
-	tape.game_version);
-  Debug("game:init:level", "          tape.engine_version == %06d",
-	tape.engine_version);
-  Debug("game:init:level", "       => game.engine_version == %06d [tape mode: %s]",
-	game.engine_version, (tape.playing ? "PLAYING" : "RECORDING"));
+  Debug("game:init:level", "level %d: level.game_version  == %s", level_nr,
+	getVersionString(level.game_version));
+  Debug("game:init:level", "          tape.file_version   == %s",
+	getVersionString(tape.file_version));
+  Debug("game:init:level", "          tape.game_version   == %s",
+	getVersionString(tape.game_version));
+  Debug("game:init:level", "          tape.engine_version == %s",
+	getVersionString(tape.engine_version));
+  Debug("game:init:level", "       => game.engine_version == %s [tape mode: %s]",
+	getVersionString(game.engine_version), (tape.playing ? "PLAYING" : "RECORDING"));
 #endif
 
   // --------------------------------------------------------------------------

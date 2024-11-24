@@ -229,8 +229,8 @@ int putFile32BitInteger(FILE *, int, int);
 
 boolean getFileChunk(File *, char *, int *, int);
 int putFileChunk(FILE *, char *, int, int);
-int getFileVersion(File *);
-int putFileVersion(FILE *, int);
+VersionType getFileVersion(File *);
+int putFileVersion(FILE *, VersionType);
 
 void ReadBytesFromFile(File *, byte *, unsigned int);
 void WriteBytesToFile(FILE *, byte *, unsigned int);

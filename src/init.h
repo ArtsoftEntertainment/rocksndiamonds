@@ -28,7 +28,7 @@ boolean getBitfieldProperty(int *, int, int);
 
 void ResolveGroupElement(int);
 void InitElementPropertiesStatic(void);
-void InitElementPropertiesEngine(int);
+void InitElementPropertiesEngine(VersionType);
 void InitElementPropertiesGfxElement(void);
 
 void ReloadCustomArtwork(int);

@@ -44,10 +44,10 @@ int default_score[LEVEL_SCORE_ELEMENTS] =
 // level file functions
 // ============================================================================
 
-static void ReadChunk_MM_VERS(File *file, int *file_version, int *game_version)
+static void ReadChunk_MM_VERS(File *file, VersionType *file_version, VersionType *game_version)
 {
-  int file_version_major, file_version_minor, file_version_patch;
-  int game_version_major, game_version_minor, game_version_patch;
+  VersionSubType file_version_major, file_version_minor, file_version_patch;
+  VersionSubType game_version_major, game_version_minor, game_version_patch;
 
   file_version_major = getFile8Bit(file);
   file_version_minor = getFile8Bit(file);
@@ -68,14 +68,14 @@ static void ReadChunk_MM_VERS(File *file, int *file_version, int *game_version)
 				   game_version_patch);
 }
 
-static void WriteChunk_MM_VERS(FILE *file, int file_version, int game_version)
+static void WriteChunk_MM_VERS(FILE *file, VersionType file_version, VersionType game_version)
 {
-  int file_version_major = MM_VERSION_MAJOR(file_version);
-  int file_version_minor = MM_VERSION_MINOR(file_version);
-  int file_version_patch = MM_VERSION_PATCH(file_version);
-  int game_version_major = MM_VERSION_MAJOR(game_version);
-  int game_version_minor = MM_VERSION_MINOR(game_version);
-  int game_version_patch = MM_VERSION_PATCH(game_version);
+  VersionSubType file_version_major = MM_VERSION_MAJOR(file_version);
+  VersionSubType file_version_minor = MM_VERSION_MINOR(file_version);
+  VersionSubType file_version_patch = MM_VERSION_PATCH(file_version);
+  VersionSubType game_version_major = MM_VERSION_MAJOR(game_version);
+  VersionSubType game_version_minor = MM_VERSION_MINOR(game_version);
+  VersionSubType game_version_patch = MM_VERSION_PATCH(game_version);
 
   fputc(file_version_major, file);
   fputc(file_version_minor, file);

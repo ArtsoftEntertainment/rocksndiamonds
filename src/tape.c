@@ -1739,7 +1739,7 @@ static int AutoPlayTapesExt(boolean initialize)
 
     NULL
   };
-  static int patch_version_first[] =
+  static VersionType patch_version_first[] =
   {
     VERSION_IDENT(0,0,0,0),
     VERSION_IDENT(3,3,1,0),
@@ -1748,7 +1748,7 @@ static int AutoPlayTapesExt(boolean initialize)
 
     -1
   };
-  static int patch_version_last[] =
+  static VersionType patch_version_last[] =
   {
     VERSION_IDENT(9,9,9,9),
     VERSION_IDENT(4,0,1,1),

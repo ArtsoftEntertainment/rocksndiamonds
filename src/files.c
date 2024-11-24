@@ -3140,7 +3140,7 @@ int getMappedElement(int element)
   return element;
 }
 
-static int getMappedElementByVersion(int element, int game_version)
+static int getMappedElementByVersion(int element, VersionType game_version)
 {
   // remap some elements due to certain game version
 
@@ -9091,8 +9091,9 @@ void DumpLevel(struct LevelInfo *level)
   }
 
   PrintLine("-", 79);
-  Print("Level xxx (file version %08d, game version %08d)\n",
-	level->file_version, level->game_version);
+  Print("Level xxx (file version %s, game version %s)\n",
+	getVersionString(level->file_version),
+	getVersionString(level->game_version));
   PrintLine("-", 79);
 
   Print("Level author: '%s'\n", level->author);
@@ -9299,7 +9300,7 @@ static int LoadTape_HEAD(File *file, int chunk_size, struct TapeInfo *tape)
   if (tape->file_version >= FILE_VERSION_1_2)
   {
     byte store_participating_players = getFile8Bit(file);
-    int engine_version;
+    VersionType engine_version;
 
     // since version 1.2, tapes store which players participate in the tape
     tape->num_participating_players = 0;
@@ -9689,12 +9690,12 @@ void LoadTapeFromFilename(char *filename)
   tape.length_seconds = GetTapeLengthSeconds();
 
 #if 0
-  Debug("files:LoadTapeFromFilename", "tape file version: %d",
-	tape.file_version);
-  Debug("files:LoadTapeFromFilename", "tape game version: %d",
-	tape.game_version);
-  Debug("files:LoadTapeFromFilename", "tape engine version: %d",
-	tape.engine_version);
+  Debug("files:LoadTapeFromFilename", "tape file version:   %s",
+        getVersionString(tape.file_version));
+  Debug("files:LoadTapeFromFilename", "tape game version:   %s",
+	getVersionString(tape.game_version));
+  Debug("files:LoadTapeFromFilename", "tape engine version: %s",
+	getVersionString(tape.engine_version));
 #endif
 }
 
@@ -9948,10 +9949,12 @@ void DumpTape(struct TapeInfo *tape)
 
   PrintLine("-", 79);
 
-  Print("Tape of Level %03d (file version %08d, game version %08d)\n",
-	tape->level_nr, tape->file_version, tape->game_version);
-  Print("                  (effective engine version %08d)\n",
-	tape->engine_version);
+  Print("Tape of Level %03d (file version %s, game version %s)\n",
+	tape->level_nr,
+	getVersionString(tape->file_version),
+	getVersionString(tape->game_version));
+  Print("                  (effective engine version %s)\n",
+	getVersionString(tape->engine_version));
   Print("Level series identifier: '%s'\n", tape->level_identifier);
 
   Print("Solution tape: %s\n",

@@ -2077,8 +2077,8 @@ boolean HandleKeysDebug(Key key, int key_status)
     }
     else if (key == KSYM_v)
     {
-      Debug("event:key:debug", "currently using game engine version %d",
-	    game.engine_version);
+      Debug("event:key:debug", "currently using game engine version %s",
+	    getVersionString(game.engine_version));
 
       return TRUE;
     }

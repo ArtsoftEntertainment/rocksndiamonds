@@ -2221,7 +2221,7 @@ void fprintFileHeader(FILE *file, char *basename)
   fprintf(file, "\n");
 }
 
-int getFileVersionFromCookieString(const char *cookie)
+VersionType getFileVersionFromCookieString(const char *cookie)
 {
   const char *ptr_cookie1, *ptr_cookie2;
   const char *pattern1 = "_FILE_VERSION_";
@@ -2230,7 +2230,7 @@ int getFileVersionFromCookieString(const char *cookie)
   const int len_pattern1 = strlen(pattern1);
   const int len_pattern2 = strlen(pattern2);
   const int len_pattern = len_pattern1 + len_pattern2;
-  int version_super, version_major;
+  VersionSubType version_super, version_major;
 
   if (len_cookie <= len_pattern)
     return -1;

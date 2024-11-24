@@ -4836,7 +4836,7 @@ void InitElementPropertiesStatic(void)
   clipboard_elements_initialized = TRUE;
 }
 
-void InitElementPropertiesEngine(int engine_version)
+void InitElementPropertiesEngine(VersionType engine_version)
 {
   static int no_wall_properties[] =
   {

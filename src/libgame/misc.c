@@ -2227,25 +2227,24 @@ int putFileChunk(FILE *file, char *chunk_name, int chunk_size,
   return num_bytes;
 }
 
-int getFileVersion(File *file)
+VersionType getFileVersion(File *file)
 {
-  int version_super = getByteFromFile(file);
-  int version_major = getByteFromFile(file);
-  int version_minor = getByteFromFile(file);
-  int version_patch = getByteFromFile(file);
+  VersionSubType version_super = getByteFromFile(file);
+  VersionSubType version_major = getByteFromFile(file);
+  VersionSubType version_minor = getByteFromFile(file);
+  VersionSubType version_patch = getByteFromFile(file);
 
-  return VERSION_IDENT(version_super, version_major, version_minor,
-		       version_patch);
+  return VERSION_IDENT(version_super, version_major, version_minor, version_patch);
 }
 
-int putFileVersion(FILE *file, int version)
+int putFileVersion(FILE *file, VersionType version)
 {
   if (file != NULL)
   {
-    int version_super = VERSION_SUPER(version);
-    int version_major = VERSION_MAJOR(version);
-    int version_minor = VERSION_MINOR(version);
-    int version_patch = VERSION_PATCH(version);
+    VersionSubType version_super = VERSION_SUPER(version);
+    VersionSubType version_major = VERSION_MAJOR(version);
+    VersionSubType version_minor = VERSION_MINOR(version);
+    VersionSubType version_patch = VERSION_PATCH(version);
 
     fputc(version_super, file);
     fputc(version_major, file);

@@ -776,16 +776,20 @@
 
 
 // macros for version handling
-#define VERSION_PART_1(x)		((x) / 1000000)
-#define VERSION_PART_2(x)		(((x) % 1000000) / 10000)
-#define VERSION_PART_3(x)		(((x) % 10000) / 100)
-#define VERSION_PART_4(x)		((x) % 100)
+#define VERSION_PART_1(x)		((VersionSubType)(((x) >> 56) & 0xff))
+#define VERSION_PART_2(x)		((VersionSubType)(((x) >> 48) & 0xff))
+#define VERSION_PART_3(x)		((VersionSubType)(((x) >> 40) & 0xff))
+#define VERSION_PART_4(x)		((VersionSubType)(((x) >> 32) & 0xff))
 
 #define VERSION_SUPER(x)		VERSION_PART_1(x)
 #define VERSION_MAJOR(x)		VERSION_PART_2(x)
 #define VERSION_MINOR(x)		VERSION_PART_3(x)
 #define VERSION_PATCH(x)		VERSION_PART_4(x)
-#define VERSION_IDENT(a,b,c,d)		((a) * 1000000 + (b) * 10000 + (c) * 100 + (d))
+
+#define VERSION_IDENT(a,b,c,d)		(((VersionType)(a) << 56) |	\
+					 ((VersionType)(b) << 48) |	\
+					 ((VersionType)(c) << 40) |	\
+					 ((VersionType)(d) << 32))
 
 
 // macros for parent/child process identification
@@ -979,7 +983,29 @@
 }
 
 
+// type definitions
+
+typedef unsigned long VersionType;
+typedef unsigned char VersionSubType;
+
+
 // structure definitions
+
+struct VersionInfo
+{
+  // this structure is currently only used to document the content bytes of "VersionType"
+
+  // standard version info
+  VersionSubType super;		// incremented for extraordinary changes (almost never)
+  VersionSubType major;		// incremented for major changes
+  VersionSubType minor;		// incremented for minor changes
+  VersionSubType patch;		// incremented for bug fixes only
+
+  // extended version info
+  VersionSubType stable;	// set to "1" for stable versions, "0" for test versions
+  VersionSubType extra;		// set to extra (test or pre-release) version number
+  unsigned short build;		// set to build number
+};
 
 struct ProgramInfo
 {
@@ -1005,11 +1031,11 @@ struct ProgramInfo
   FILE *log_file;		// file handle for log files
   FILE *log_file_default;	// default log file handle
 
-  int version_super;
-  int version_major;
-  int version_minor;
-  int version_patch;
-  int version_ident;
+  VersionSubType version_super;
+  VersionSubType version_major;
+  VersionSubType version_minor;
+  VersionSubType version_patch;
+  VersionType version_ident;
 
   char *version_string;
 
@@ -1953,7 +1979,7 @@ extern int			FrameCounter;
 // function definitions
 
 void InitProgramInfo(char *, char *, char *, char *, char *, char *, char *,
-		     char *, int);
+		     char *, VersionType);
 void InitNetworkInfo(boolean, boolean, boolean, char *, int);
 void InitRuntimeInfo(void);
 
@@ -2080,6 +2106,8 @@ void InitJoysticks(void);
 boolean ReadJoystick(int, int *, int *, boolean *, boolean *);
 boolean CheckJoystickOpened(int);
 void ClearJoystickState(void);
+
+char *getVersionString(VersionType);
 
 void InitEmscriptenFilesystem(void);
 void SyncEmscriptenFilesystem(void);

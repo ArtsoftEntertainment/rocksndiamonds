@@ -3660,8 +3660,8 @@ struct ScoreEntry
 
 struct ScoreInfo
 {
-  int file_version;	// file format version the score is stored with
-  int game_version;	// game release version the score was created with
+  VersionType file_version;		// file format version the score is stored with
+  VersionType game_version;		// game release version the score was created with
 
   char level_identifier[MAX_FILENAME_LEN + 1];
   int level_nr;
@@ -3733,8 +3733,8 @@ struct LevelInfo
   struct LevelInfo_SP *native_sp_level;
   struct LevelInfo_MM *native_mm_level;
 
-  int file_version;			// file format version the level is stored with
-  int game_version;			// game release version the level was created with
+  VersionType file_version;		// file format version the level is stored with
+  VersionType game_version;		// game release version the level was created with
 
   struct DateInfo creation_date;
 

@@ -354,7 +354,7 @@ void InitUserDataDirectory(void);
 void SetFilePermissions(char *, int);
 
 void fprintFileHeader(FILE *, char *);
-int getFileVersionFromCookieString(const char *);
+VersionType getFileVersionFromCookieString(const char *);
 boolean checkCookieString(const char *, const char *);
 
 char *getFormattedSetupEntry(char *, char *);

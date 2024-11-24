@@ -172,8 +172,8 @@ struct GameInfo_MM
 
 struct LevelInfo_MM
 {
-  int file_version;		// version of file the level was stored with
-  int game_version;		// version of game engine to play this level
+  VersionType file_version;		// version of file the level was stored with
+  VersionType game_version;		// version of game engine to play this level
   boolean encoding_16bit_field;		// level contains 16-bit elements
 
   int fieldx;
