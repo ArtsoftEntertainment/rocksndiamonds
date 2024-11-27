@@ -2577,7 +2577,12 @@ static void HandleMainMenu_SelectLevel(int step, int direction,
 
     SaveLevelSetup_SeriesInfo();
 
+    // when using icon graphics with color template, icons must be redrawn for each level
+    UpdateScreenMenuGadgets(SCREEN_MASK_MAIN_HAS_SOLUTION, FALSE);
     UpdateScreenMenuGadgets(SCREEN_MASK_MAIN_HAS_SOLUTION, hasSolutionTape());
+    UpdateScreenMenuGadgets(SCREEN_MASK_MAIN_HAS_LEVELSET_INFO, FALSE);
+    UpdateScreenMenuGadgets(SCREEN_MASK_MAIN_HAS_LEVELSET_INFO, hasLevelSetInfo(FALSE));
+    UpdateScreenMenuGadgets(SCREEN_MASK_MAIN_HAS_LEVEL_INFO, FALSE);
     UpdateScreenMenuGadgets(SCREEN_MASK_MAIN_HAS_LEVEL_INFO, hasLevelInfo(FALSE));
 
     // force redraw of playfield area (may be reset at this point)
