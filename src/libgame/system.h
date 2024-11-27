@@ -780,16 +780,29 @@
 #define VERSION_PART_2(x)		((VersionSubType)(((x) >> 48) & 0xff))
 #define VERSION_PART_3(x)		((VersionSubType)(((x) >> 40) & 0xff))
 #define VERSION_PART_4(x)		((VersionSubType)(((x) >> 32) & 0xff))
+#define VERSION_PART_5(x)		((VersionSubType)(((x) >> 24) & 0xff))
+#define VERSION_PART_6(x)		((VersionSubType)(((x) >> 16) & 0xff))
+#define VERSION_PART_7(x)		((VersionSubType)(((x)) & 0xffff))
 
 #define VERSION_SUPER(x)		VERSION_PART_1(x)
 #define VERSION_MAJOR(x)		VERSION_PART_2(x)
 #define VERSION_MINOR(x)		VERSION_PART_3(x)
 #define VERSION_PATCH(x)		VERSION_PART_4(x)
+#define VERSION_STABLE(x)		VERSION_PART_5(x)
+#define VERSION_EXTRA(x)		VERSION_PART_6(x)
+#define VERSION_BUILD(x)		VERSION_PART_7(x)
 
-#define VERSION_IDENT(a,b,c,d)		(((VersionType)(a) << 56) |	\
+#define VERSION_IDENT_STANDARD(a,b,c,d)	(((VersionType)(a) << 56) |	\
 					 ((VersionType)(b) << 48) |	\
 					 ((VersionType)(c) << 40) |	\
 					 ((VersionType)(d) << 32))
+#define VERSION_IDENT_EXTENDED(e,f,g)	(((VersionType)(e) << 24) |	\
+					 ((VersionType)(f) << 16) |	\
+					 ((VersionType)(g)))
+
+#define VERSION_IDENT(a,b,c,d)			(VERSION_IDENT_STANDARD(a,b,c,d))
+#define VERSION_IDENT_FULL(a,b,c,d, e,f,g)	(VERSION_IDENT_STANDARD(a,b,c,d) |	\
+						 VERSION_IDENT_EXTENDED(e,f,g))
 
 
 // macros for parent/child process identification
