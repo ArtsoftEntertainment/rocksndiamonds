@@ -46,18 +46,22 @@ char *getVersionString(VersionType version)
           VERSION_MINOR(version),
           VERSION_PATCH(version));
 
+  if (!VERSION_STABLE(version))
+  {
+    if (VERSION_EXTRA(version))
+      sprintf(&version_string[strlen(version_string)], "-%s-%d",
+              PROGRAM_VERSION_EXTRA_TEXT, VERSION_EXTRA(version));
+    else if (VERSION_BUILD(version))
+      sprintf(&version_string[strlen(version_string)], "-%s-%d",
+              PROGRAM_VERSION_BUILD_TEXT, VERSION_BUILD(version));
+  }
+
   return version_string;
 }
 
 char *getProgramRealVersionString(void)
 {
-  static char program_version_string[32];
-
-  sprintf(program_version_string, "%d.%d.%d.%d%s",
-	  PROGRAM_VERSION_SUPER, PROGRAM_VERSION_MAJOR, PROGRAM_VERSION_MINOR,
-	  PROGRAM_VERSION_PATCH, PROGRAM_VERSION_EXTRA);
-
-  return program_version_string;
+  return getVersionString(GAME_VERSION_ACTUAL);
 }
 
 char *getProgramVersionString(void)
