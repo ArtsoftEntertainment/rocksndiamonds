@@ -2184,13 +2184,14 @@ void DrawMainMenu(void)
   if (setup.allow_skipping_levels != STATE_TRUE && level_nr > leveldir_current->handicap_level)
     level_nr = leveldir_current->handicap_level;
 
+  // needed if last screen (level choice) changed graphics, sounds or music
+  ReloadCustomArtwork(0);
+
+  // level may use image color template, so reload custom artwork before loading level
   LoadLevel(level_nr);
   LoadScore(level_nr);
 
   SaveLevelSetup_SeriesInfo();
-
-  // needed if last screen (level choice) changed graphics, sounds or music
-  ReloadCustomArtwork(0);
 
   if (CheckTitleScreen(levelset_has_changed))
   {
