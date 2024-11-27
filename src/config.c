@@ -41,10 +41,10 @@ char *getVersionString(VersionType version)
   version_string_nr = (version_string_nr + 1) % 10;
 
   sprintf(version_string, "%d.%d.%d.%d",
-          VERSION_PART_1(version),
-          VERSION_PART_2(version),
-          VERSION_PART_3(version),
-          VERSION_PART_4(version));
+          VERSION_SUPER(version),
+          VERSION_MAJOR(version),
+          VERSION_MINOR(version),
+          VERSION_PATCH(version));
 
   return version_string;
 }
