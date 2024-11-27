@@ -10673,8 +10673,23 @@ int getBeltSwitchElementFromBeltNrAndBeltDir(int belt_nr, int belt_dir)
 
 boolean useOldEngine_BD(void)
 {
-  // only use old BD game engine if playing specifically tagged tapes
-  return (tape.playing && (tape.property_bits & TAPE_PROPERTY_BD_OLD_ENGINE));
+  // never use old BD game engine for new games (but only when playing tapes)
+  if (!tape.playing)
+    return FALSE;
+
+  // use old BD game engine if playing specifically tagged native BD replays
+  if (tape.bd_replay)
+    return TRUE;
+
+  // use old BD game engine if playing specifically tagged or patched tapes
+  if (tape.property_bits & TAPE_PROPERTY_BD_OLD_ENGINE)
+    return TRUE;
+
+  // use old BD game engine if playing tapes from old 4.4.0.0 pre-release versions
+  if (tape.game_version < VERSION_IDENT_FULL(4,4,0,0, 0,4,0))
+    return TRUE;
+
+  return FALSE;
 }
 
 boolean getTimePlayed_BD(void)
