@@ -59,7 +59,8 @@
 // (nothing at all if unchanged)
 #define LEVEL_CHUNK_ELEM_UNCHANGED	0
 
-#define TAPE_CHUNK_VERS_SIZE	8	// size of file version chunk
+#define TAPE_CHUNK_VERS_SIZE	8	// size of standard tape versions chunk
+#define TAPE_CHUNK_VERX_SIZE	8	// size of extended tape versions chunk
 #define TAPE_CHUNK_HEAD_SIZE	20	// size of tape file header
 #define TAPE_CHUNK_SCRN_SIZE	2	// size of screen size chunk
 
@@ -9332,6 +9333,14 @@ static int LoadTape_HEAD(File *file, int chunk_size, struct TapeInfo *tape)
   return chunk_size;
 }
 
+static int LoadTape_VERX(File *file, int chunk_size, struct TapeInfo *tape)
+{
+  tape->game_version   |= getFileVersionExtended(file);
+  tape->engine_version |= getFileVersionExtended(file);
+
+  return chunk_size;
+}
+
 static int LoadTape_SCRN(File *file, int chunk_size, struct TapeInfo *tape)
 {
   tape->scr_fieldx = getFile8Bit(file);
@@ -9637,6 +9646,7 @@ void LoadTapeFromFilename(char *filename)
     {
       { "VERS", TAPE_CHUNK_VERS_SIZE,	LoadTape_VERS },
       { "HEAD", TAPE_CHUNK_HEAD_SIZE,	LoadTape_HEAD },
+      { "VERX", TAPE_CHUNK_VERX_SIZE,	LoadTape_VERX },
       { "SCRN", TAPE_CHUNK_SCRN_SIZE,	LoadTape_SCRN },
       { "INFO", -1,			LoadTape_INFO },
       { "BODY", -1,			LoadTape_BODY },
@@ -9778,6 +9788,12 @@ static void SaveTape_HEAD(FILE *file, struct TapeInfo *tape)
   putFileVersion(file, tape->engine_version);
 }
 
+static void SaveTape_VERX(FILE *file, struct TapeInfo *tape)
+{
+  putFileVersionExtended(file, tape->game_version);
+  putFileVersionExtended(file, tape->engine_version);
+}
+
 static void SaveTape_SCRN(FILE *file, struct TapeInfo *tape)
 {
   putFile8Bit(file, tape->scr_fieldx);
@@ -9848,6 +9864,9 @@ void SaveTapeToFilename(char *filename)
 
   putFileChunkBE(file, "HEAD", TAPE_CHUNK_HEAD_SIZE);
   SaveTape_HEAD(file, &tape);
+
+  putFileChunkBE(file, "VERX", TAPE_CHUNK_VERX_SIZE);
+  SaveTape_VERX(file, &tape);
 
   if (checkSaveTape_SCRN(&tape))
   {

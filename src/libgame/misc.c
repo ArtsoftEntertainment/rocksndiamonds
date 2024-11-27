@@ -2237,6 +2237,11 @@ VersionType getFileVersion(File *file)
   return VERSION_IDENT(version_super, version_major, version_minor, version_patch);
 }
 
+VersionType getFileVersionExtended(File *file)
+{
+  return getFileVersion(file) >> 32;
+}
+
 int putFileVersion(FILE *file, VersionType version)
 {
   if (file != NULL)
@@ -2253,6 +2258,11 @@ int putFileVersion(FILE *file, VersionType version)
   }
 
   return 4;
+}
+
+int putFileVersionExtended(FILE *file, VersionType version)
+{
+  return putFileVersion(file, version << 32);
 }
 
 void ReadBytesFromFile(File *file, byte *buffer, unsigned int bytes)
