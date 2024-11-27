@@ -9949,19 +9949,15 @@ void DumpTape(struct TapeInfo *tape)
 
   PrintLine("-", 79);
 
-  Print("Tape of Level %03d (file version %s, game version %s)\n",
-	tape->level_nr,
-	getVersionString(tape->file_version),
-	getVersionString(tape->game_version));
-  Print("                  (effective engine version %s)\n",
-	getVersionString(tape->engine_version));
-  Print("Level series identifier: '%s'\n", tape->level_identifier);
+  Print("Tape of level set '%s', level %03d\n", tape->level_identifier, tape->level_nr);
+  Print("- file version:   %s\n", getVersionString(tape->file_version));
+  Print("- game version:   %s\n", getVersionString(tape->game_version));
+  Print("- engine version: %s\n", getVersionString(tape->engine_version));
 
-  Print("Solution tape: %s\n",
-	tape->solved ? "yes" :
-	tape->game_version < VERSION_IDENT(4,3,2,3) ? "unknown" : "no");
+  Print("- solution tape: %s\n",
+	tape->solved ? "yes" : tape->game_version < VERSION_IDENT(4,3,2,3) ? "unknown" : "no");
 
-  Print("Special tape properties: ");
+  Print("- special tape properties: ");
   if (tape->property_bits == TAPE_PROPERTY_NONE)
     Print("[none]");
   if (tape->property_bits & TAPE_PROPERTY_BD_OLD_ENGINE)
@@ -9991,7 +9987,7 @@ void DumpTape(struct TapeInfo *tape)
   int month = month_index + 1;
   int day = tape->date % 100;
 
-  Print("Tape date: %04d-%02d-%02d\n", year4, month, day);
+  Print("- tape date: %04d-%02d-%02d\n", year4, month, day);
 
   PrintLine("-", 79);
 
