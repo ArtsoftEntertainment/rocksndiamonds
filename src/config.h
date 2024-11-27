@@ -17,6 +17,7 @@
 char *getSourceDateString(void);
 char *getSourceHashString(void);
 char *getProgramTitleString(void);
+char *getVersionString(VersionType);
 char *getProgramRealVersionString(void);
 char *getProgramVersionString(void);
 char *getProgramPlatformString(void);

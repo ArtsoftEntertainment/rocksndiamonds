@@ -2107,8 +2107,6 @@ boolean ReadJoystick(int, int *, int *, boolean *, boolean *);
 boolean CheckJoystickOpened(int);
 void ClearJoystickState(void);
 
-char *getVersionString(VersionType);
-
 void InitEmscriptenFilesystem(void);
 void SyncEmscriptenFilesystem(void);
 

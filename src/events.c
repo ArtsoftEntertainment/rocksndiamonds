@@ -21,6 +21,7 @@
 #include "tape.h"
 #include "anim.h"
 #include "network.h"
+#include "config.h"
 
 
 #define	DEBUG_EVENTS		0

@@ -1926,28 +1926,6 @@ void ClearJoystickState(void)
 
 
 // ============================================================================
-// version functions
-// ============================================================================
-
-char *getVersionString(VersionType version)
-{
-  // this function can be called up to ten times before version string gets overwritten
-  static char version_string_array[10][32];
-  static int version_string_nr = 0;
-  char *version_string = version_string_array[version_string_nr];
-
-  version_string_nr = (version_string_nr + 1) % 10;
-
-  sprintf(version_string, "%d.%d.%d.%d",
-          VERSION_PART_1(version),
-          VERSION_PART_2(version),
-          VERSION_PART_3(version),
-          VERSION_PART_4(version));
-
-  return version_string;
-}
-
-// ============================================================================
 // Emscripten functions
 // ============================================================================
 
