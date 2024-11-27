@@ -9947,9 +9947,17 @@ void DumpTape(struct TapeInfo *tape)
     return;
   }
 
+  int year2 = tape->date / 10000;
+  int year4 = (year2 < 70 ? 2000 + year2 : 1900 + year2);
+  int month_index_raw = (tape->date / 100) % 100;
+  int month_index = month_index_raw % 12;	// prevent invalid index
+  int month = month_index + 1;
+  int day = tape->date % 100;
+
   PrintLine("-", 79);
 
   Print("Tape of level set '%s', level %03d\n", tape->level_identifier, tape->level_nr);
+  Print("- tape date: %04d-%02d-%02d\n", year4, month, day);
   Print("- file version:   %s\n", getVersionString(tape->file_version));
   Print("- game version:   %s\n", getVersionString(tape->game_version));
   Print("- engine version: %s\n", getVersionString(tape->engine_version));
@@ -9979,15 +9987,6 @@ void DumpTape(struct TapeInfo *tape)
   if (tape->property_bits & TAPE_PROPERTY_SMALL_GRAPHICS)
     Print("[small_graphics]");
   Print("\n");
-
-  int year2 = tape->date / 10000;
-  int year4 = (year2 < 70 ? 2000 + year2 : 1900 + year2);
-  int month_index_raw = (tape->date / 100) % 100;
-  int month_index = month_index_raw % 12;	// prevent invalid index
-  int month = month_index + 1;
-  int day = tape->date % 100;
-
-  Print("- tape date: %04d-%02d-%02d\n", year4, month, day);
 
   PrintLine("-", 79);
 
