@@ -1264,6 +1264,16 @@ GdElementProperty gd_element_properties[] =
     "GUYBIRTH3", 0, 34, 34, 34
   },
   {
+    O_PLAYER_START, O_PLAYER_START_scanned, N_("Player start"),
+    P_PLAYER | P_CAN_DIG,
+    "GUYSTART", 0, i_player, i_player, 35, 32
+  },    // has ckdelay
+  {
+    O_PLAYER_START_scanned, O_PLAYER_START, N_("Player start (scanned)"),
+    P_SCANNED,
+    "SCANN_GUYSTART", 0, i_player, i_player, 35
+  },
+  {
     O_PLAYER, O_PLAYER_scanned, N_("Player"),
     P_BLOWS_UP_FLIES | P_EXPLODES_BY_HIT | P_PLAYER | P_CAN_DIG,
     "GUY", 0, i_player, i_player, 35, 32

@@ -968,6 +968,7 @@ static void explode(GdCave *cave, int x, int y)
       break;
 
     case O_PLAYER:
+    case O_PLAYER_START:
     case O_PLAYER_BOMB:
     case O_PLAYER_GLUED:
     case O_PLAYER_STIRRING:
@@ -1966,6 +1967,10 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	// ======================================================================================
 	//    P L A Y E R S
 	// ======================================================================================
+
+	case O_PLAYER_START:
+	  store(cave, x, y, O_PLAYER);
+          // FALL THROUGH
 
 	case O_PLAYER:
 	  if (cave->kill_player)
@@ -3604,6 +3609,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
 	    // if scanning stopped by a player... start falling!
 	    if (get(cave, x, yy) == O_PLAYER ||
+		get(cave, x, yy) == O_PLAYER_START ||
 		get(cave, x, yy) == O_PLAYER_GLUED ||
 		get(cave, x, yy) == O_PLAYER_BOMB)
 	    {
@@ -3862,7 +3868,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
           if (!cave->hatched)                    // no player birth before hatching
             break;
 	  cave->player_seen_ago = 0;
-	  store(cave, x, y, O_PLAYER);
+	  store(cave, x, y, O_PLAYER_START);     // newly born player invulnerable for one frame
 	  break;
 
 	case O_PRE_DIA_1:

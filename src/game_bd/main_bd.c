@@ -381,6 +381,7 @@ void GameActions_BD(byte action[MAX_PLAYERS])
 	int element = *cave->getp(cave, x, y);
 
 	if (element == O_PLAYER ||
+	    element == O_PLAYER_START ||
 	    element == O_PLAYER_BOMB ||
 	    element == O_PLAYER_STIRRING ||
 	    element == O_PLAYER_PNEUMATIC_LEFT ||

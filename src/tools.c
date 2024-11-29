@@ -6956,6 +6956,10 @@ bd_object_mapping_list[] =
     EL_BDX_PLAYER,				ACTION_GROWING, -1
   },
   {
+    O_PLAYER_START,				TRUE,
+    EL_BDX_PLAYER,				-1, -1
+  },
+  {
     O_PLAYER,					TRUE,
     EL_BDX_PLAYER,				-1, -1
   },

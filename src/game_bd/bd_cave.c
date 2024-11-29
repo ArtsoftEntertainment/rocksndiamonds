@@ -1573,9 +1573,11 @@ void gd_drawcave_game(const GdCave *cave,
   }
 
   elemmapping[O_PLAYER] = map;
+  elemmapping[O_PLAYER_START] = map;
   elemmapping[O_PLAYER_GLUED] = map;
 
   elemdrawing[O_PLAYER] = draw;
+  elemdrawing[O_PLAYER_START] = draw;
   elemdrawing[O_PLAYER_GLUED] = draw;
 
   // player with bomb/rocketlauncher does not blink or tap - no graphics drawn for that.

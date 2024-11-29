@@ -262,6 +262,8 @@ typedef enum _element
   O_PRE_PL_1,
   O_PRE_PL_2,
   O_PRE_PL_3,
+  O_PLAYER_START,
+  O_PLAYER_START_scanned,
   O_PLAYER,
   O_PLAYER_scanned,
   O_PLAYER_BOMB,
