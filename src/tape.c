@@ -718,9 +718,11 @@ void TapeErase(void)
 
   tape.random_seed = InitRND(level.random_seed);
 
-  tape.file_version = FILE_VERSION_ACTUAL;
-  tape.game_version = GAME_VERSION_ACTUAL;
-  tape.engine_version = level.game_version;
+  tape.file_version        = FILE_VERSION_ACTUAL;
+  tape.game_version        = GAME_VERSION_ACTUAL;
+  tape.game_version_full   = GAME_VERSION_ACTUAL_FULL;
+  tape.engine_version      = level.game_version;
+  tape.engine_version_full = level.game_version;
 
   tape.property_bits = TAPE_PROPERTY_NONE;
 

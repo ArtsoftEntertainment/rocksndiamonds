@@ -61,7 +61,7 @@ char *getVersionString(VersionType version)
 
 char *getProgramRealVersionString(void)
 {
-  return getVersionString(GAME_VERSION_ACTUAL);
+  return getVersionString(GAME_VERSION_ACTUAL_FULL);
 }
 
 char *getProgramVersionString(void)

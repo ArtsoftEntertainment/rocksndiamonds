@@ -9286,6 +9286,8 @@ static int LoadTape_VERS(File *file, int chunk_size, struct TapeInfo *tape)
   tape->file_version = getFileVersion(file);
   tape->game_version = getFileVersion(file);
 
+  tape->game_version_full = tape->game_version;
+
   return chunk_size;
 }
 
@@ -9328,6 +9330,8 @@ static int LoadTape_HEAD(File *file, int chunk_size, struct TapeInfo *tape)
       tape->engine_version = engine_version;
     else
       tape->engine_version = tape->game_version;
+
+    tape->engine_version_full = tape->engine_version;
   }
 
   return chunk_size;
@@ -9335,8 +9339,8 @@ static int LoadTape_HEAD(File *file, int chunk_size, struct TapeInfo *tape)
 
 static int LoadTape_VERX(File *file, int chunk_size, struct TapeInfo *tape)
 {
-  tape->game_version   |= getFileVersionExtended(file);
-  tape->engine_version |= getFileVersionExtended(file);
+  tape->game_version_full   = tape->game_version   | getFileVersionExtended(file);
+  tape->engine_version_full = tape->engine_version | getFileVersionExtended(file);
 
   return chunk_size;
 }
@@ -9625,7 +9629,8 @@ void LoadTapeFromFilename(char *filename)
     }
 
     // pre-2.0 tape files have no game version, so use file version here
-    tape.game_version = tape.file_version;
+    tape.game_version      = tape.file_version;
+    tape.game_version_full = tape.file_version;
   }
 
   if (tape.file_version < FILE_VERSION_1_2)
@@ -9703,9 +9708,9 @@ void LoadTapeFromFilename(char *filename)
   Debug("files:LoadTapeFromFilename", "tape file version:   %s",
         getVersionString(tape.file_version));
   Debug("files:LoadTapeFromFilename", "tape game version:   %s",
-	getVersionString(tape.game_version));
+	getVersionString(tape.game_version_full));
   Debug("files:LoadTapeFromFilename", "tape engine version: %s",
-	getVersionString(tape.engine_version));
+	getVersionString(tape.engine_version_full));
 #endif
 }
 
@@ -9790,8 +9795,8 @@ static void SaveTape_HEAD(FILE *file, struct TapeInfo *tape)
 
 static void SaveTape_VERX(FILE *file, struct TapeInfo *tape)
 {
-  putFileVersionExtended(file, tape->game_version);
-  putFileVersionExtended(file, tape->engine_version);
+  putFileVersionExtended(file, tape->game_version_full);
+  putFileVersionExtended(file, tape->engine_version_full);
 }
 
 static void SaveTape_SCRN(FILE *file, struct TapeInfo *tape)
@@ -9889,8 +9894,9 @@ static void SaveTapeExt(char *filename)
 {
   int i;
 
-  tape.file_version = FILE_VERSION_ACTUAL;
-  tape.game_version = GAME_VERSION_ACTUAL;
+  tape.file_version      = FILE_VERSION_ACTUAL;
+  tape.game_version      = GAME_VERSION_ACTUAL;
+  tape.game_version_full = GAME_VERSION_ACTUAL_FULL;
 
   tape.num_participating_players = 0;
 
@@ -9978,8 +9984,8 @@ void DumpTape(struct TapeInfo *tape)
   Print("Tape of level set '%s', level %03d\n", tape->level_identifier, tape->level_nr);
   Print("- tape date: %04d-%02d-%02d\n", year4, month, day);
   Print("- file version:   %s\n", getVersionString(tape->file_version));
-  Print("- game version:   %s\n", getVersionString(tape->game_version));
-  Print("- engine version: %s\n", getVersionString(tape->engine_version));
+  Print("- game version:   %s\n", getVersionString(tape->game_version_full));
+  Print("- engine version: %s\n", getVersionString(tape->engine_version_full));
 
   Print("- solution tape: %s\n",
 	tape->solved ? "yes" : tape->game_version < VERSION_IDENT(4,3,2,3) ? "unknown" : "no");

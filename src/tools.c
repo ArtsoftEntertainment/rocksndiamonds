@@ -10690,7 +10690,7 @@ boolean useOldEngine_BD(void)
     return TRUE;
 
   // use old BD game engine if playing tapes from old 4.4.0.0 pre-release versions
-  if (tape.game_version < VERSION_IDENT_FULL(4,4,0,0, 0,4,0))
+  if (tape.game_version_full < VERSION_IDENT_FULL(4,4,0,0, 0,4,0))
     return TRUE;
 
   return FALSE;
