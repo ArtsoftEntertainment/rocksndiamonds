@@ -11,6 +11,7 @@
 
 #include <stdarg.h>
 #include <string.h>
+#include <math.h>
 
 #include "gadgets.h"
 #include "image.h"
