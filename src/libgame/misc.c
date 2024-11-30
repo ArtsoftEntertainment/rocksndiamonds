@@ -1253,12 +1253,11 @@ char *getStringToLower(const char *s)
 static char *getStringVPrint(char *format, va_list ap)
 {
   va_list ap_test;
-  char test[1];
 
   va_copy(ap_test, ap);
 
   // determine required size of string to be printed
-  int size = vsnprintf(test, 1, format, ap_test);
+  int size = vsnprintf(NULL, 0, format, ap_test);
 
   va_end(ap_test);
 
