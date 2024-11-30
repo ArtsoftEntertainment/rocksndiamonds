@@ -12,18 +12,25 @@ MANIFEST_TMPL="$MANIFEST_FILE.tmpl"
 
 MAIN_H="$SRC_DIR/main.h"
 
-VERSION_SUPER=`grep "#define PROGRAM_VERSION_SUPER" $MAIN_H | awk '{print $3}'`
-VERSION_MAJOR=`grep "#define PROGRAM_VERSION_MAJOR" $MAIN_H | awk '{print $3}'`
-VERSION_MINOR=`grep "#define PROGRAM_VERSION_MINOR" $MAIN_H | awk '{print $3}'`
-VERSION_PATCH=`grep "#define PROGRAM_VERSION_PATCH" $MAIN_H | awk '{print $3}'`
-VERSION_EXTRA=`grep "#define PROGRAM_VERSION_EXTRA" $MAIN_H	\
-    | awk -F\" '{print $2}'					\
+VERSION_SUPER=`grep "#define PROGRAM_VERSION_SUPER[[:space:]]" $MAIN_H | awk '{print $3}'`
+VERSION_MAJOR=`grep "#define PROGRAM_VERSION_MAJOR[[:space:]]" $MAIN_H | awk '{print $3}'`
+VERSION_MINOR=`grep "#define PROGRAM_VERSION_MINOR[[:space:]]" $MAIN_H | awk '{print $3}'`
+VERSION_PATCH=`grep "#define PROGRAM_VERSION_PATCH[[:space:]]" $MAIN_H | awk '{print $3}'`
+VERSION_EXTRA=`grep "#define PROGRAM_VERSION_EXTRA[[:space:]]" $MAIN_H | awk '{print $3}'`
+VERSION_EXTRA_TEXT=`grep "#define PROGRAM_VERSION_EXTRA_TEXT[[:space:]]" $MAIN_H	\
+    | awk -F\" '{print $2}'								\
     | tr '[A-Z ]' '[a-z-]'`
 
 UNIQUE_VERSION=`echo "$VERSION_SUPER" | wc -l | awk '{ print $1 }'`
 if [ "$UNIQUE_VERSION" != "1" ]; then
-    echo "ERROR: program version number ('PROGRAM_VERSION_SUPER') not unique!"
-    exit
+    echo "ERROR: program super version number ('PROGRAM_VERSION_SUPER') not unique!"
+    exit 10
+fi
+
+UNIQUE_VERSION=`echo "$VERSION_EXTRA" | wc -l | awk '{ print $1 }'`
+if [ "$UNIQUE_VERSION" != "1" ]; then
+    echo "ERROR: program extra version number ('PROGRAM_VERSION_EXTRA') not unique!"
+    exit 10
 fi
 
 VERSION_NAME="$VERSION_SUPER.$VERSION_MAJOR.$VERSION_MINOR.$VERSION_PATCH"
@@ -33,8 +40,8 @@ VERSION_CODE=$(printf '%d%02d%02d%02d'	\
     "$VERSION_MINOR"			\
     "$VERSION_PATCH")
 
-if [ "$VERSION_EXTRA" != "" ]; then
-    VERSION_NAME="$VERSION_NAME$VERSION_EXTRA"
+if [ "$VERSION_EXTRA" != "0" ]; then
+    VERSION_NAME="$VERSION_NAME-$VERSION_EXTRA_TEXT-$VERSION_EXTRA"
 fi
 
 # echo "::: VERSION_NAME == '$VERSION_NAME'"
