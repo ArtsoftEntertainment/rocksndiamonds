@@ -2129,10 +2129,10 @@ static int AutoPlayTapesExt(boolean initialize)
 	      level_nr,  tape_patch_info,
 	      tape.length_seconds / 60, tape.length_seconds % 60,
 	      "not suitable for version",
-	      (tape.engine_version / 1000000) % 100,
-	      (tape.engine_version / 10000  ) % 100,
-	      (tape.engine_version / 100    ) % 100,
-	      (tape.engine_version          ) % 100);
+	      VERSION_SUPER(tape.engine_version),
+	      VERSION_MAJOR(tape.engine_version),
+	      VERSION_MINOR(tape.engine_version),
+	      VERSION_PATCH(tape.engine_version));
 
 	skip_patch = TRUE;
       }
@@ -2279,10 +2279,10 @@ int AutoPlayTapesContinue(void)
 static boolean PatchTape(struct TapeInfo *tape, char *mode)
 {
   Print("[%d.%d.%d.%d]: ",
-	(tape->engine_version / 1000000) % 100,
-	(tape->engine_version / 10000  ) % 100,
-	(tape->engine_version / 100    ) % 100,
-	(tape->engine_version          ) % 100);
+	VERSION_SUPER(tape->engine_version),
+	VERSION_MAJOR(tape->engine_version),
+	VERSION_MINOR(tape->engine_version),
+	VERSION_PATCH(tape->engine_version));
 
   if (strEqual(mode, "info"))
   {
