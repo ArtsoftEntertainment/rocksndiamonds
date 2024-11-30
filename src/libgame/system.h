@@ -998,8 +998,8 @@
 
 // type definitions
 
-typedef unsigned long VersionType;
-typedef unsigned char VersionSubType;
+typedef uint64_t	VersionType;
+typedef uint8_t		VersionSubType;
 
 
 // structure definitions
