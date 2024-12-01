@@ -1162,6 +1162,7 @@ static GdElement player_eat_element(GdCave *cave, const GdElement element, int x
       cave->time += cave->time_bonus * cave->timing_factor;
       if (cave->time > cave->max_time * cave->timing_factor)
 	cave->time -= cave->max_time * cave->timing_factor;
+      setTimeLeft_BD();
       // no space, rather a dirt remains there...
       return O_DIRT;
 

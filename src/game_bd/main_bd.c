@@ -262,6 +262,11 @@ int getTimeLeft_BD(void)
   return 0;
 }
 
+void setTimeLeft_BD(void)
+{
+  SetTimeLeft(getTimeLeft_BD());
+}
+
 void SetTimeFrames_BD(int frames_played)
 {
   // needed to store final time after solving game (before counting down remaining time)

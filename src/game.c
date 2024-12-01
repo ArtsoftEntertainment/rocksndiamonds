@@ -15968,6 +15968,11 @@ boolean isSoundPlaying_BD(int element_bd, int sample)
   return FALSE;
 }
 
+void SetTimeLeft(int time_left)
+{
+  TimeLeft = time_left;
+}
+
 void PlayLevelSound_EM(int xx, int yy, int element_em, int sample)
 {
   int element = (element_em > -1 ? map_element_EM_to_RND_game(element_em) : 0);

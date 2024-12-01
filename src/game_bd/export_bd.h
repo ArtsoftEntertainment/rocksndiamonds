@@ -121,6 +121,7 @@ boolean checkBonusTime_BD(void);
 int getNonScannedElement_BD(int);
 int getFramesPerSecond_BD(void);
 int getTimeLeft_BD(void);
+void setTimeLeft_BD(void);
 void SetTimeFrames_BD(int);
 
 void InitGfxBuffers_BD(void);
