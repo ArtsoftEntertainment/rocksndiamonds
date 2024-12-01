@@ -1201,6 +1201,7 @@ static GdElement player_eat_element(GdCave *cave, const GdElement element, int x
 
     case O_ROCKET:
       cave->rockets_collected++;
+      gd_sound_play(cave, GD_S_BOMB_COLLECTING, element, x, y);
       return O_SPACE;
 
     case O_OUTBOX:
@@ -2210,6 +2211,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      // placing a rocket into empty space
 	      if (is_like_space(cave, x, y, player_move))
 	      {
+                boolean rocket_launched = TRUE;
+
 		switch (player_move)
 		{
 		  case GD_MV_RIGHT:
@@ -2246,10 +2249,12 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
 		  default:
 		    // cannot fire in other directions
+                    rocket_launched = FALSE;
 		    break;
 		}
 
-		gd_sound_play(cave, GD_S_BOMB_PLACING, O_BOMB, x, y);
+                if (rocket_launched)
+                  gd_sound_play(cave, GD_S_BOMB_PLACING, O_BOMB, x, y);
 	      }
 
 	      // a player with rocket launcher cannot snap elements, so stop here
