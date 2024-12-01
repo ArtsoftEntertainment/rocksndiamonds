@@ -12491,6 +12491,7 @@ static void DrawPropertiesInfo(void)
 #define TEXT_GAME_OF_LIFE_4		"Max neighbours to create"
 #define TEXT_TIME_BONUS			"Extra time to solve level"
 #define TEXT_TIME_PENALTY		"Time penalty if destroyed"
+#define TEXT_TIME_PENALTY_2		"Time penalty for voodoo doll"
 #define TEXT_PERMEABILITY_RATE		"slime permeability rate"
 #define TEXT_PERMEABILITY_BITS		"slime permeability bits"
 #define TEXT_RANDOM_SEED		"slime random number seed"
@@ -12620,6 +12621,8 @@ static struct
   { EL_BDX_CLOCK,		&level.bd_clock_extra_time,		TEXT_TIME_BONUS,
 				-100, 100							},
   { EL_BDX_VOODOO_DOLL,		&level.bd_voodoo_penalty_time,		TEXT_TIME_PENALTY,
+				0, 100								},
+  { EL_BDX_TIME_PENALTY,	&level.bd_voodoo_penalty_time,		TEXT_TIME_PENALTY_2,
 				0, 100								},
   { EL_BDX_SLIME,		&level.bd_slime_permeability_rate,	TEXT_PERMEABILITY_RATE,
 				0, 100								},
