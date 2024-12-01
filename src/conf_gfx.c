@@ -1002,6 +1002,10 @@ struct ConfigInfo image_config[] =
   { "bdx_time_penalty.xpos",				"3"				},
   { "bdx_time_penalty.ypos",				"6"				},
   { "bdx_time_penalty.frames",				"1"				},
+  { "bdx_time_penalty.EDITOR",				"RocksBD2.png"			},
+  { "bdx_time_penalty.EDITOR.xpos",			"3"				},
+  { "bdx_time_penalty.EDITOR.ypos",			"5"				},
+  { "bdx_time_penalty.EDITOR.frames",			"1"				},
 
   { "bdx_gravestone",					"RocksBD.png"			},
   { "bdx_gravestone.xpos",				"3"				},
