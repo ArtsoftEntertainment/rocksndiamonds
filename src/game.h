@@ -291,6 +291,8 @@ struct GameInfo
 
   boolean RestartGameRequested;
   boolean InitGameRequested;
+
+  boolean InitColorTemplateImagesNeeded;
 };
 
 struct PlayerInfo

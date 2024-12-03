@@ -3723,6 +3723,9 @@ void InitGame(void)
 
   FadeOut(fade_mask);
 
+  if (game.InitColorTemplateImagesNeeded)
+    InitColorTemplateImages();
+
   if (restarting)
   {
     // force restarting global animations displayed during game play

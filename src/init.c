@@ -381,15 +381,27 @@ void InitColorTemplateImages(void)
       CreateImgesFromColorTemplate(i, GetColoredBitmapFromTemplate_BD);
 
   InitImageTextures();
+
+  game.InitColorTemplateImagesNeeded = FALSE;
 }
 
 void InitColorTemplateImagesIfNeeded(void)
 {
+  game.InitColorTemplateImagesNeeded = FALSE;
+
   if (program.headless)
     return;
 
-  if (anyImagehasColorTemplate())
-    InitColorTemplateImages();
+  if (!anyImagehasColorTemplate())
+    return;
+
+  game.InitColorTemplateImagesNeeded = TRUE;
+
+  // if game still playing, init color template images later
+  if (game_status == GAME_MODE_PLAYING)
+    return;
+
+  InitColorTemplateImages();
 }
 
 void InitImageTextures(void)
