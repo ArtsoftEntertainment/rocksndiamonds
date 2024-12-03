@@ -381,10 +381,10 @@ void gd_sound_off(void)
     halt_channel(i);
 }
 
-void gd_sound_play_bonus_life(void)
+void gd_sound_play_bonus_life(GdCave *cave)
 {
   // required to set extended sound information for native sound engine
-  gd_sound_play(NULL, GD_S_BONUS_LIFE, O_NONE, -1, -1);
+  gd_sound_play(cave, GD_S_BONUS_LIFE, O_NONE, -1, -1);
 
   // now play the sound directly (on non-standard sound channel)
   play_sound(gd_sound_get_channel(GD_S_BONUS_LIFE), GD_S_BONUS_LIFE);

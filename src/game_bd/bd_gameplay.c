@@ -52,7 +52,7 @@ static void add_bonus_life(GdGame *game, boolean inform_user)
 {
   if (inform_user)
   {
-    gd_sound_play_bonus_life();
+    gd_sound_play_bonus_life(game->cave);
     game->bonus_life_flash = 100;
   }
 
