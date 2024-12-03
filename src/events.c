@@ -2191,6 +2191,10 @@ void HandleKey(Key key, int key_status)
 	    tape.property_bits |= TAPE_PROPERTY_TAS_KEYS;
 	  }
 	}
+
+        // also handle suicide key for the first player only
+        if (key == setup.shortcut.suicide)
+          key_action |= KEY_SUICIDE;
       }
 
       if (key_status == KEY_PRESSED)

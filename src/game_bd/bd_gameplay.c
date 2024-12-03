@@ -238,6 +238,8 @@ GdGame *gd_game_new(const int cave, const int level)
   game->player_move = GD_MV_STILL;
   game->player_move_stick = FALSE;
   game->player_fire = FALSE;
+  game->player_suicide = FALSE;
+  game->player_suicide_stick = FALSE;
 
   game->state_counter = GAME_INT_LOAD_CAVE;
 
@@ -253,10 +255,8 @@ boolean check_iteration_reached(GdGame *game)
   return (game->milliseconds_game + millisecs_elapsed >= game->cave->speed);
 }
 
-static void iterate_cave(GdGame *game, GdDirection player_move, boolean fire)
+static void iterate_cave(GdGame *game, GdDirection player_move, boolean fire, boolean suicide)
 {
-  boolean suicide = FALSE;
-
   // ANYTHING EXCEPT A TIMEOUT, WE ITERATE THE CAVE
   if (game->cave->player_state != GD_PL_TIMEOUT)
   {
@@ -270,6 +270,7 @@ static void iterate_cave(GdGame *game, GdDirection player_move, boolean fire)
 
 	player_move = ((action_bd & GD_REPLAY_MOVE_MASK));
 	fire        = ((action_bd & GD_REPLAY_FIRE_MASK)    != 0);
+	suicide     = ((action_bd & GD_REPLAY_SUICIDE_MASK) != 0);
       }
     }
 
@@ -470,7 +471,7 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
       // reset cycle frame counter for the next cave iteration
       game->itercycle = 0;
 
-      iterate_cave(game, game->player_move, game->player_fire);
+      iterate_cave(game, game->player_move, game->player_fire, game->player_suicide);
 
       game->cycle_counter++;
 
@@ -482,6 +483,16 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
       {
 	game->player_move_stick = TRUE;
 	game->player_move = GD_MV_STILL;
+      }
+
+      if (game->player_suicide == FALSE)
+      {
+	game->player_suicide_stick = FALSE;
+      }
+      else
+      {
+	game->player_suicide_stick = TRUE;
+	game->player_suicide = FALSE;
       }
 
       // as we iterated, the score and the like could have been changed.
@@ -660,6 +671,7 @@ void play_game_func(GdGame *game, int action)
   boolean move_left  = ((action & JOY_LEFT)    != 0);
   boolean move_right = ((action & JOY_RIGHT)   != 0);
   boolean fire       = ((action & JOY_BUTTON)  != 0);
+  boolean suicide    = ((action & KEY_SUICIDE) != 0);
 
   if (game->player_move_stick || move_up || move_down || move_left || move_right) // no "fire"!
   {
@@ -674,6 +686,9 @@ void play_game_func(GdGame *game, int action)
   // if no direction was stored before, allow setting fire to current state
   if (game->player_move == GD_MV_STILL)
     game->player_fire = fire;
+
+  if (game->player_suicide_stick || suicide)
+    game->player_suicide = suicide;
 
   // tell the interrupt "20ms has passed"
   state = gd_game_main_int(game, !game->out_of_window, FALSE);

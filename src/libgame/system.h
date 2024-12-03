@@ -199,6 +199,7 @@
 #define DEFAULT_KEY_SNAP_DOWN		KSYM_UNDEFINED
 #define DEFAULT_KEY_SPEED_FAST		KSYM_f
 #define DEFAULT_KEY_SPEED_SLOW		KSYM_s
+#define DEFAULT_KEY_SUICIDE		KSYM_F12
 
 // default debug setup keys and values
 #define DEFAULT_FRAME_DELAY_0		20		// 100 % speed
@@ -284,8 +285,9 @@
 
 #define NUM_PLAYER_ACTIONS		6
 
-// values for special "focus player" bitmasks
+// values for special "focus player" and "suicide" bitmasks
 #define BIT_SET_FOCUS			6
+#define BIT_SUICIDE			7
 
 // values for drawing stages for global animations
 #define DRAW_GLOBAL_ANIM_STAGE_1	1
@@ -327,6 +329,7 @@
 #define KEY_ACTION			(KEY_MOTION | KEY_BUTTON)
 
 #define KEY_SET_FOCUS			(1 << BIT_SET_FOCUS)
+#define KEY_SUICIDE			(1 << BIT_SUICIDE)
 
 #define MV_DIR_FROM_BIT(x)		((x) < NUM_DIRECTIONS ? 1 << (x) :	  \
 					 (x) == MV_BIT_UPLEFT    ? MV_UPLEFT    : \
@@ -1435,6 +1438,8 @@ struct SetupShortcutInfo
 
   Key speed_fast;
   Key speed_slow;
+
+  Key suicide;
 };
 
 struct SetupSystemInfo

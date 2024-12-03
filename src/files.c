@@ -12040,6 +12040,8 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->shortcut.speed_fast	= DEFAULT_KEY_SPEED_FAST;
   si->shortcut.speed_slow	= DEFAULT_KEY_SPEED_SLOW;
 
+  si->shortcut.suicide		= DEFAULT_KEY_SUICIDE;
+
   for (i = 0; i < MAX_PLAYERS; i++)
   {
     si->input[i].use_joystick = FALSE;
