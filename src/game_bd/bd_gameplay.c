@@ -268,8 +268,8 @@ static void iterate_cave(GdGame *game, GdDirection player_move, boolean fire)
       {
 	int action_bd = map_action_RND_to_BD(action_rnd[0]);
 
-	player_move = (action_bd & GD_REPLAY_MOVE_MASK);
-	fire        = (action_bd & GD_REPLAY_FIRE_MASK) != 0;
+	player_move = ((action_bd & GD_REPLAY_MOVE_MASK));
+	fire        = ((action_bd & GD_REPLAY_FIRE_MASK)    != 0);
       }
     }
 
@@ -655,11 +655,11 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
 void play_game_func(GdGame *game, int action)
 {
   GdGameState state;
-  boolean move_up    = ((action & JOY_UP)    != 0);
-  boolean move_down  = ((action & JOY_DOWN)  != 0);
-  boolean move_left  = ((action & JOY_LEFT)  != 0);
-  boolean move_right = ((action & JOY_RIGHT) != 0);
-  boolean fire  = ((action & (JOY_BUTTON_1 | JOY_BUTTON_2)) != 0);
+  boolean move_up    = ((action & JOY_UP)      != 0);
+  boolean move_down  = ((action & JOY_DOWN)    != 0);
+  boolean move_left  = ((action & JOY_LEFT)    != 0);
+  boolean move_right = ((action & JOY_RIGHT)   != 0);
+  boolean fire       = ((action & (JOY_BUTTON_1 | JOY_BUTTON_2)) != 0);
 
   if (game->player_move_stick || move_up || move_down || move_left || move_right) // no "fire"!
   {
