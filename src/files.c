@@ -11422,6 +11422,10 @@ static struct TokenInfo shortcut_setup_tokens[] =
     TYPE_KEY_X11,
     &setup.shortcut.speed_slow,			"shortcut.speed_slow"
   },
+  {
+    TYPE_KEY_X11,
+    &setup.shortcut.suicide,			"shortcut.suicide"
+  },
 };
 
 static struct SetupInputInfo setup_input;
@@ -11666,6 +11670,10 @@ static struct TokenInfo internal_setup_tokens[] =
   {
     TYPE_BOOLEAN,
     &setup.internal.menu_shortcuts_speed,	"menu_shortcuts_speed"
+  },
+  {
+    TYPE_BOOLEAN,
+    &setup.internal.menu_shortcuts_engine,	"menu_shortcuts_engine"
   },
   {
     TYPE_BOOLEAN,

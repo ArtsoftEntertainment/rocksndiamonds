@@ -1498,6 +1498,7 @@ struct SetupInternalInfo
   boolean menu_shortcuts_sound;
   boolean menu_shortcuts_snap;
   boolean menu_shortcuts_speed;
+  boolean menu_shortcuts_engine;
 
   boolean info_title;
   boolean info_elements;

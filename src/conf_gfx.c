@@ -9312,6 +9312,8 @@ struct ConfigInfo image_config[] =
   { "menu.draw_yoffset.SETUP[SHORTCUTS_5]",		"0"				},
   { "menu.draw_xoffset.SETUP[SHORTCUTS_6]",		"0"				},
   { "menu.draw_yoffset.SETUP[SHORTCUTS_6]",		"0"				},
+  { "menu.draw_xoffset.SETUP[SHORTCUTS_7]",		"0"				},
+  { "menu.draw_yoffset.SETUP[SHORTCUTS_7]",		"0"				},
   { "menu.draw_xoffset.SETUP[CHOOSE_ARTWORK]",		"0"				},
   { "menu.draw_yoffset.SETUP[CHOOSE_ARTWORK]",		"0"				},
   { "menu.draw_xoffset.SETUP[CHOOSE_OTHER]",		"0"				},
