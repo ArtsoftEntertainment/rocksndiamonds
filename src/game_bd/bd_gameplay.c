@@ -659,7 +659,7 @@ void play_game_func(GdGame *game, int action)
   boolean move_down  = ((action & JOY_DOWN)    != 0);
   boolean move_left  = ((action & JOY_LEFT)    != 0);
   boolean move_right = ((action & JOY_RIGHT)   != 0);
-  boolean fire       = ((action & (JOY_BUTTON_1 | JOY_BUTTON_2)) != 0);
+  boolean fire       = ((action & JOY_BUTTON)  != 0);
 
   if (game->player_move_stick || move_up || move_down || move_left || move_right) // no "fire"!
   {

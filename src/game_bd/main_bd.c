@@ -202,15 +202,15 @@ int map_action_RND_to_BD(int action)
 						       action & JOY_DOWN,
 						       action & JOY_LEFT,
 						       action & JOY_RIGHT);
-  boolean player_fire    = (action & (JOY_BUTTON_1 | JOY_BUTTON_2));
+  int player_fire    = ((action & JOY_BUTTON)  != 0 ? GD_REPLAY_FIRE_MASK    : 0);
 
-  return (player_move | (player_fire ? GD_REPLAY_FIRE_MASK : 0));
+  return (player_move | player_fire);
 }
 
 int map_action_BD_to_RND(int action)
 {
-  GdDirection player_move    = action & GD_REPLAY_MOVE_MASK;
-  boolean     player_fire    = action & GD_REPLAY_FIRE_MASK;
+  GdDirection player_move    = ((action & GD_REPLAY_MOVE_MASK));
+  boolean     player_fire    = ((action & GD_REPLAY_FIRE_MASK)    != 0);
 
   int action_move = (player_move == GD_MV_UP		? JOY_UP		:
 		     player_move == GD_MV_UP_RIGHT	? JOY_UP   | JOY_RIGHT	:
