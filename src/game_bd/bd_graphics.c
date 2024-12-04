@@ -58,42 +58,6 @@ static int cell_size = 0;
 // graphic info for game objects/frames and players/actions/frames
 struct GraphicInfo_BD graphic_info_bd_object[O_MAX_ALL][8];
 
-#if 0
-
-static inline int c64_png_colors(int r, int g, int b, int a)
-{
-  static const int c64_png_cols[] =
-  {
-    // ABGR
-
-    /* 0000 */ 0,	// transparent
-    /* 0001 */ 0,
-    /* 0010 */ 0,
-    /* 0011 */ 0,
-    /* 0100 */ 0,
-    /* 0101 */ 0,
-    /* 0110 */ 0,
-    /* 0111 */ 0,
-    /* 1000 */ 1,	// black - background
-    /* 1001 */ 2,	// red - foreg1
-    /* 1010 */ 5,	// green - amoeba
-    /* 1011 */ 4,	// yellow - foreg3
-    /* 1100 */ 6,	// blue - slime
-    /* 1101 */ 3,	// purple - foreg2
-    /* 1110 */ 7,	// black around arrows (used in editor) is coded as cyan
-    /* 1111 */ 8,	// white is the arrow
-  };
-
-  int c = ((a >> 7) * 8 +
-	   (b >> 7) * 4 +
-	   (g >> 7) * 2 +
-	   (r >> 7) * 1);
-
-  return c64_png_cols[c];
-}
-
-#endif
-
 void set_cell_size(int s)
 {
   cell_size = s;
@@ -339,8 +303,6 @@ boolean gd_scroll(GdGame *game, boolean exact_scroll, boolean immediate)
   return player_out_of_window(game, player_x, player_y);
 }
 
-#if 1
-
 static SDL_Color get_template_color(GdColor color_raw)
 {
   GdColor color_rgb = gd_color_get_rgb(color_raw);
@@ -469,130 +431,6 @@ Bitmap *gd_get_colored_bitmap_from_template(Bitmap *template_bitmap)
 
   return colored_bitmap;
 }
-
-#else
-
-// sets one of the colors in the indexed palette of an sdl surface to a GdColor.
-static void set_surface_palette_color(SDL_Surface *surface, int index, GdColor col)
-{
-  if (surface->format->BytesPerPixel != 1)
-    return;
-
-  SDL_Color c;
-
-  c.r = gd_color_get_r(col);
-  c.g = gd_color_get_g(col);
-  c.b = gd_color_get_b(col);
-
-  SDL_SetPaletteColors(surface->format->palette, &c, index, 1);
-}
-
-// takes a c64_gfx.png-coded 32-bit surface, and creates a paletted surface in our internal format.
-static SDL_Surface *get_tile_surface_c64(SDL_Surface *surface, int scale_down_factor)
-{
-  static SDL_Surface *tile_surface_c64 = NULL;
-  static unsigned char *pixels = NULL;
-  int width  = surface->w;
-  int height = surface->h;
-  int out = 0;
-  int x, y;
-
-  if (surface->format->BytesPerPixel != 4)
-    Fail("C64 style surface has wrong color depth -- should not happen");
-
-  if (tile_surface_c64 != NULL)
-    SDL_FreeSurface(tile_surface_c64);
-
-  checked_free(pixels);
-
-  pixels = checked_malloc(width * height);
-
-  SDL_LockSurface(surface);
-
-  for (y = 0; y < height; y++)
-  {
-    unsigned int *p = (unsigned int *)((char *)surface->pixels + y * surface->pitch);
-
-    for (x = 0; x < width; x++)
-    {
-      int r = (p[x] & surface->format->Rmask) >> surface->format->Rshift << surface->format->Rloss;
-      int g = (p[x] & surface->format->Gmask) >> surface->format->Gshift << surface->format->Gloss;
-      int b = (p[x] & surface->format->Bmask) >> surface->format->Bshift << surface->format->Bloss;
-      // should be:
-      // a = (p[x]&surface->format->Amask) >> surface->format->Ashift << surface->format->Aloss;
-      // but we do not use the alpha channel in sdash, so we just use 255 (max alpha)
-
-      pixels[out++] = c64_png_colors(r, g, b, 255);
-    }
-  }
-
-  SDL_UnlockSurface(surface);
-
-  // create new surface from pixel data
-  tile_surface_c64 =
-    SDL_CreateRGBSurfaceFrom((void *)pixels, width, height, 8, width, 0, 0, 0, 0);
-
-  if (tile_surface_c64 == NULL)
-    Fail("SDL_CreateRGBSurfaceFrom() failed: %s", SDL_GetError());
-
-  if (scale_down_factor > 1)
-  {
-    SDL_Surface *surface_old = tile_surface_c64;
-    int width_scaled  = width  / scale_down_factor;
-    int height_scaled = height / scale_down_factor;
-
-    // replace surface with scaled-down variant
-    tile_surface_c64 = SDLZoomSurface(surface_old, width_scaled, height_scaled);
-
-    // free previous (non-scaled) surface
-    SDL_FreeSurface(surface_old);
-  }
-
-  return tile_surface_c64;
-}
-
-static Bitmap *get_tile_bitmap_c64(GdCave *cave, SDL_Surface *surface)
-{
-  static Bitmap *tile_bitmap_c64 = NULL;
-
-  if (surface == NULL)
-    return NULL;
-
-  if (tile_bitmap_c64 != NULL)
-    FreeBitmap(tile_bitmap_c64);
-
-  // set surface color palette to cave colors
-  set_surface_palette_color(surface, 0, 0);
-  set_surface_palette_color(surface, 1, gd_color_get_rgb(cave->color0));
-  set_surface_palette_color(surface, 2, gd_color_get_rgb(cave->color1));
-  set_surface_palette_color(surface, 3, gd_color_get_rgb(cave->color2));
-  set_surface_palette_color(surface, 4, gd_color_get_rgb(cave->color3));
-  set_surface_palette_color(surface, 5, gd_color_get_rgb(cave->color4));
-  set_surface_palette_color(surface, 6, gd_color_get_rgb(cave->color5));
-  set_surface_palette_color(surface, 7, 0);
-  set_surface_palette_color(surface, 8, 0);
-
-  // set background color to be transparent for masked tile bitmap
-  int bg_color = gd_color_get_rgb(cave->color0);
-  int bg_r = gd_color_get_r(bg_color);
-  int bg_g = gd_color_get_g(bg_color);
-  int bg_b = gd_color_get_b(bg_color);
-
-  // create bitmap from C64 surface
-  tile_bitmap_c64 = SDLGetBitmapFromSurface_WithMaskedColor(surface, bg_r, bg_g, bg_b);
-
-  return tile_bitmap_c64;
-}
-
-Bitmap *gd_get_colored_bitmap_from_template(Bitmap *template_bitmap)
-{
-  SDL_Surface *template_surface = get_tile_surface_c64(template_bitmap->surface, 1);
-  Bitmap *colored_bitmap = get_tile_bitmap_c64(native_bd_level.cave, template_surface);
-
-  return colored_bitmap;
-}
-
-#endif
 
 // returns true if the element has a certain property
 static inline boolean has_property(const int element, const int property)
