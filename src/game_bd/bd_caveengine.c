@@ -4104,8 +4104,10 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
   // PLAYER
 
-  // check if player is alive. (delay reduced from 15 to 1 to faster detect game over)
-  if ((cave->player_state == GD_PL_LIVING && cave->player_seen_ago > 1) || cave->kill_player)
+  // check if player is alive. (delay reduced from 15 to 1 to faster detect game over,
+  // but may be set back to 15 if a dead player can be re-created from effects element)
+  if (cave->kill_player ||
+      (cave->player_state == GD_PL_LIVING && cave->player_seen_ago > cave->player_seen_ago_limit))
     cave->player_state = GD_PL_DIED;
 
   // check if any voodoo exploded, and kill players the next scan if that happended.

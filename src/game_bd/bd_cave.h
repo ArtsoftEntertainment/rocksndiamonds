@@ -336,6 +336,9 @@ typedef struct _gd_c64_random_generator
 #define GD_HIGHSCORE_NUM		20
 #define GD_PLAYER_MEM_SIZE		16
 
+#define GD_PLAYER_GONE_LIMIT_STANDARD	1
+#define GD_PLAYER_GONE_LIMIT_EXTENDED	15
+
 typedef struct _gd_cave
 {
   // Defined by the editor. public data :)
@@ -626,6 +629,7 @@ typedef struct _gd_cave
   GdMagicWallState magic_wall_state;    // State of magic wall
   GdPlayerState player_state;           // Player state. not yet living, living, exited...
   int player_seen_ago;                  // player was seen this number of scans ago
+  int player_seen_ago_limit;            // number of scans player has to be gone for game over
   boolean voodoo_touched;               // as its name says
   boolean kill_player;                  // Voodoo died, or used pressed escape to restart level.
   boolean sweet_eaten;                  // player ate sweet, he's strong. prob_sweet applies,

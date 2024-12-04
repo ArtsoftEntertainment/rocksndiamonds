@@ -1430,7 +1430,7 @@ GdCave *gd_cave_new_rendered(const GdCave *data, const int level, const unsigned
 {
   GdCave *cave;
   GdElement element;
-  int x, y;
+  int i, x, y;
   List *iter;
 
   // make a copy
@@ -1586,6 +1586,60 @@ GdCave *gd_cave_new_rendered(const GdCave *data, const int level, const unsigned
 
   cave->last_direction = GD_MV_STILL;
   cave->last_horizontal_direction = GD_MV_STILL;
+
+  // list of cave variables for effects that can create other game elements
+  GdElement *effects_list[] =
+  {
+    &cave->amoeba_enclosed_effect,
+    &cave->amoeba_too_big_effect,
+    &cave->amoeba_2_enclosed_effect,
+    &cave->amoeba_2_too_big_effect,
+    &cave->amoeba_2_explosion_effect,
+    &cave->acid_turns_to,
+    &cave->nut_turns_to_when_crushed,
+    &cave->slime_converts_1,
+    &cave->slime_converts_2,
+    &cave->slime_converts_3,
+    &cave->explosion_effect,
+    &cave->explosion_3_effect,
+    &cave->diamond_birth_effect,
+    &cave->bomb_explosion_effect,
+    &cave->nitro_explosion_effect,
+    &cave->firefly_explode_to,
+    &cave->alt_firefly_explode_to,
+    &cave->butterfly_explode_to,
+    &cave->alt_butterfly_explode_to,
+    &cave->stonefly_explode_to,
+    &cave->dragonfly_explode_to,
+    &cave->stone_falling_effect,
+    &cave->diamond_falling_effect,
+    &cave->stone_bouncing_effect,
+    &cave->diamond_bouncing_effect,
+    &cave->magic_stone_to,
+    &cave->magic_diamond_to,
+    &cave->magic_mega_stone_to,
+    &cave->magic_light_stone_to,
+    &cave->magic_nitro_pack_to,
+    &cave->magic_nut_to,
+    &cave->magic_flying_stone_to,
+    &cave->magic_flying_diamond_to,
+  };
+
+  // default: immediate game over if player not seen on playfield anymore
+  cave->player_seen_ago_limit = GD_PLAYER_GONE_LIMIT_STANDARD;
+
+  // check if player can be created from effects element in this cave
+  for (i = 0; i < ARRAY_SIZE(effects_list); i++)
+  {
+    int element = *effects_list[i];
+
+    if ((element >= O_PRE_PL_1 && element <= O_PRE_PL_3) ||
+        (gd_element_properties[element].properties & P_PLAYER) != 0)
+    {
+      // wait some extra time if player can be re-created from effects element
+      cave->player_seen_ago_limit = GD_PLAYER_GONE_LIMIT_EXTENDED;
+    }
+  }
 
   return cave;
 }
