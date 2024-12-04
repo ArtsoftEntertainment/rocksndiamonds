@@ -58,6 +58,8 @@ static int cell_size = 0;
 // graphic info for game objects/frames and players/actions/frames
 struct GraphicInfo_BD graphic_info_bd_object[O_MAX_ALL][8];
 
+#if 0
+
 static inline int c64_png_colors(int r, int g, int b, int a)
 {
   static const int c64_png_cols[] =
@@ -89,6 +91,8 @@ static inline int c64_png_colors(int r, int g, int b, int a)
 
   return c64_png_cols[c];
 }
+
+#endif
 
 void set_cell_size(int s)
 {
@@ -335,6 +339,139 @@ boolean gd_scroll(GdGame *game, boolean exact_scroll, boolean immediate)
   return player_out_of_window(game, player_x, player_y);
 }
 
+#if 1
+
+static SDL_Color get_template_color(GdColor color_raw)
+{
+  GdColor color_rgb = gd_color_get_rgb(color_raw);
+  SDL_Color color_sdl;
+
+  color_sdl.r = gd_color_get_r(color_rgb);
+  color_sdl.g = gd_color_get_g(color_rgb);
+  color_sdl.b = gd_color_get_b(color_rgb);
+
+  return color_sdl;
+}
+
+// Copy surface, replace all "pure" RGB colors with BD colors, and keep all other colors.
+// (A "pure" RGB color in this sense has the same value for all RGB channels, or zero.)
+static SDL_Surface *get_colored_surface_from_template(GdCave *cave, SDL_Surface *surface)
+{
+  static SDL_Surface *new_surface = NULL;
+  static unsigned int *pixels = NULL;
+  SDL_PixelFormat *format = surface->format;
+  SDL_Color color[8];
+  int width  = surface->w;
+  int height = surface->h;
+  int bytes_per_pixel = 4;
+  int out = 0;
+  int x, y;
+
+  if (format->BytesPerPixel != bytes_per_pixel)
+    Fail("Color template bitmap has wrong color depth -- should not happen");
+
+  if (new_surface != NULL)
+    SDL_FreeSurface(new_surface);
+
+  checked_free(pixels);
+
+  pixels = checked_malloc(width * height * bytes_per_pixel);
+
+  SDL_LockSurface(surface);
+
+  // set surface color palette to cave colors
+  color[0] = get_template_color(cave->color0);		// replace black
+  color[1] = get_template_color(cave->color1);		// replace red
+  color[2] = get_template_color(cave->color4);		// replace green
+  color[3] = get_template_color(cave->color3);		// replace yellow
+  color[4] = get_template_color(cave->color5);		// replace blue
+  color[5] = get_template_color(cave->color2);		// replace purple
+  color[6] = get_template_color(0);			// replace cyan
+  color[7] = get_template_color(0);			// replace white
+
+  for (y = 0; y < height; y++)
+  {
+    unsigned int *p = (unsigned int *)((char *)surface->pixels + y * surface->pitch);
+
+    for (x = 0; x < width; x++)
+    {
+      int r = (p[x] & format->Rmask) >> format->Rshift << format->Rloss;
+      int g = (p[x] & format->Gmask) >> format->Gshift << format->Gloss;
+      int b = (p[x] & format->Bmask) >> format->Bshift << format->Bloss;
+      int a = (p[x] & format->Amask) >> format->Ashift << format->Aloss;
+      int color_value = (r > 0 ? r :
+                         g > 0 ? g :
+                         b > 0 ? b : 255);
+
+      if ((r == 0 || r == color_value) &&
+          (g == 0 || g == color_value) &&
+          (b == 0 || b == color_value))
+      {
+        int index = ((r > 0 ? 1 : 0) +
+                     (g > 0 ? 2 : 0) +
+                     (b > 0 ? 4 : 0));
+
+        r = color[index].r * color_value / 255;
+        g = color[index].g * color_value / 255;
+        b = color[index].b * color_value / 255;
+      }
+
+      pixels[out++] = ((r << format->Rshift >> format->Rloss) |
+                       (g << format->Gshift >> format->Gloss) |
+                       (b << format->Bshift >> format->Bloss) |
+                       (a << format->Ashift >> format->Aloss));
+    }
+  }
+
+  SDL_UnlockSurface(surface);
+
+  // create new surface from pixel data
+  new_surface = SDL_CreateRGBSurfaceFrom(pixels, width, height, 32, width * bytes_per_pixel,
+                                         format->Rmask,
+                                         format->Gmask,
+                                         format->Bmask,
+                                         format->Amask);
+
+  if (new_surface == NULL)
+    Fail("SDL_CreateRGBSurfaceFrom() failed: %s", SDL_GetError());
+
+  return new_surface;
+}
+
+static Bitmap *get_masked_bitmap_from_surface(GdCave *cave, SDL_Surface *surface)
+{
+  static Bitmap *bitmap = NULL;
+
+  if (surface == NULL)
+    return NULL;
+
+  if (bitmap != NULL)
+    FreeBitmap(bitmap);
+
+  // set background color to be transparent for masked bitmap
+  int color = gd_color_get_rgb(cave->color0);
+  int r = gd_color_get_r(color);
+  int g = gd_color_get_g(color);
+  int b = gd_color_get_b(color);
+
+  // create bitmap from surface
+  bitmap = SDLGetBitmapFromSurface_WithMaskedColor(surface, r, g, b);
+
+  return bitmap;
+}
+
+Bitmap *gd_get_colored_bitmap_from_template(Bitmap *template_bitmap)
+{
+  GdCave *cave = native_bd_level.cave;
+  SDL_Surface *template_surface = template_bitmap->surface;
+  SDL_Surface *colored_surface = get_colored_surface_from_template(cave, template_surface);
+  Bitmap *colored_bitmap = get_masked_bitmap_from_surface(cave, colored_surface);
+
+  return colored_bitmap;
+}
+
+#else
+
 // sets one of the colors in the indexed palette of an sdl surface to a GdColor.
 static void set_surface_palette_color(SDL_Surface *surface, int index, GdColor col)
 {
@@ -454,6 +591,8 @@ Bitmap *gd_get_colored_bitmap_from_template(Bitmap *template_bitmap)
 
   return colored_bitmap;
 }
+
+#endif
 
 // returns true if the element has a certain property
 static inline boolean has_property(const int element, const int property)
