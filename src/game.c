@@ -15275,12 +15275,6 @@ static boolean SnapField(struct PlayerInfo *player, int dx, int dy)
 {
   int jx = player->jx, jy = player->jy;
   int x = jx + dx, y = jy + dy;
-  int snap_direction = (dx == -1 ? MV_LEFT  :
-			dx == +1 ? MV_RIGHT :
-			dy == -1 ? MV_UP    :
-			dy == +1 ? MV_DOWN  : MV_NONE);
-  boolean can_continue_snapping = (level.continuous_snapping &&
-				   WasJustFalling[x][y] < CHECK_DELAY_FALLING);
 
   if (player->MovPos != 0 && game.engine_version >= VERSION_IDENT(2,2,0,0))
     return FALSE;
@@ -15307,6 +15301,13 @@ static boolean SnapField(struct PlayerInfo *player, int dx, int dy)
 
     return FALSE;
   }
+
+  int snap_direction = (dx == -1 ? MV_LEFT  :
+			dx == +1 ? MV_RIGHT :
+			dy == -1 ? MV_UP    :
+			dy == +1 ? MV_DOWN  : MV_NONE);
+  boolean can_continue_snapping = (level.continuous_snapping &&
+				   WasJustFalling[x][y] < CHECK_DELAY_FALLING);
 
   // prevent snapping with already pressed snap key when not allowed
   if (player->is_snapping && !can_continue_snapping)
