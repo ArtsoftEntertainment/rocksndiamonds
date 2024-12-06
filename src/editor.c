@@ -8136,10 +8136,10 @@ static void ReinitializeElementList(void)
   // fill element list
   for (i = 0; editor_elements_info[i].setup_value != NULL; i++)
   {
-    boolean found_inactive_cascade = FALSE;
-
     if (*editor_elements_info[i].setup_value)
     {
+      boolean found_inactive_cascade = FALSE;
+
       if (setup.editor.el_headlines)
       {
 	// required for correct padding of palette headline buttons
@@ -10480,19 +10480,22 @@ static boolean CopyCustomElement(int element_old, int element_new,
 {
   int copy_mode_orig = copy_mode;
 
-  if (copy_mode == GADGET_ID_CUSTOM_COPY)
+  if (element_old == -1 || element_new == -1)	// special case for copy/paste element
   {
-    element_new = (IS_CUSTOM_ELEMENT(element_old) ?
-		   EL_INTERNAL_CLIPBOARD_CUSTOM : EL_INTERNAL_CLIPBOARD_GROUP);
-    copy_mode = GADGET_ID_CUSTOM_COPY_TO;
-  }
-  else if (copy_mode == GADGET_ID_CUSTOM_PASTE)
-  {
-    element_old = (IS_CUSTOM_ELEMENT(element_new) ?
-		   EL_INTERNAL_CLIPBOARD_CUSTOM : EL_INTERNAL_CLIPBOARD_GROUP);
-    copy_mode = GADGET_ID_CUSTOM_COPY_TO;
+    if (copy_mode == GADGET_ID_CUSTOM_COPY)
+    {
+      element_new = (IS_CUSTOM_ELEMENT(element_old) ?
+		     EL_INTERNAL_CLIPBOARD_CUSTOM : EL_INTERNAL_CLIPBOARD_GROUP);
+      copy_mode = GADGET_ID_CUSTOM_COPY_TO;
+    }
+    else if (copy_mode == GADGET_ID_CUSTOM_PASTE)
+    {
+      element_old = (IS_CUSTOM_ELEMENT(element_new) ?
+		     EL_INTERNAL_CLIPBOARD_CUSTOM : EL_INTERNAL_CLIPBOARD_GROUP);
+      copy_mode = GADGET_ID_CUSTOM_COPY_TO;
 
-    level.changed = TRUE;
+      level.changed = TRUE;
+    }
   }
   else if (IS_CUSTOM_ELEMENT(element_old) && !IS_CUSTOM_ELEMENT(element_new))
   {
@@ -12332,7 +12335,6 @@ static void DrawPropertiesInfo(void)
   int num_elements_in_level = 0;
   int num_similar_in_level = 0;
   int num_hires_tiles_in_level = 0;
-  int num_standard_properties = 0;
   int font1_nr = FONT_TEXT_1;
   int font2_nr = FONT_TEXT_2;
   int font1_width = getFontWidth(font1_nr);
@@ -12429,6 +12431,8 @@ static void DrawPropertiesInfo(void)
       level.game_engine_type == GAME_ENGINE_TYPE_EM ||
       level.game_engine_type == GAME_ENGINE_TYPE_SP)
   {
+    int num_standard_properties = 0;
+
     DrawTextS(xpos, ypos, font1_nr, properties_text);
 
     ypos += line1_height;

@@ -671,7 +671,6 @@ static void SetGlobalAnimEventsForCustomElements(int list_pos)
 void InitGlobalAnimEventsForCustomElements(void)
 {
   int m, a, p;
-  int control;
 
   // custom element events for global animations only relevant while playing
   m = GAME_MODE_PLAYING;
@@ -679,8 +678,7 @@ void InitGlobalAnimEventsForCustomElements(void)
   for (a = 0; a < NUM_GLOBAL_ANIMS; a++)
   {
     int ctrl_id = GLOBAL_ANIM_ID_CONTROL_FIRST + a;
-
-    control = global_anim_info[ctrl_id].graphic[GLOBAL_ANIM_ID_PART_BASE][m];
+    int control = global_anim_info[ctrl_id].graphic[GLOBAL_ANIM_ID_PART_BASE][m];
 
     // if no base animation parameters defined, use default values
     if (control == IMG_UNDEFINED)
@@ -720,7 +718,7 @@ static void BlitGlobalAnimation(struct GlobalAnimPartControlInfo *part,
   Bitmap *fade_bitmap =
     (drawing_target == DRAW_TO_FADE_SOURCE ? gfx.fade_bitmap_source :
      drawing_target == DRAW_TO_FADE_TARGET ? gfx.fade_bitmap_target : NULL);
-  int alpha = (c->fade_mode & FADE_MODE_FADE ? part->fade_alpha : g->alpha);
+  int alpha = ((c->fade_mode & FADE_MODE_FADE) != 0 ? part->fade_alpha : g->alpha);
   int x, y;
 
   for (y = 0; y < c->stacked_yfactor; y++)
@@ -801,7 +799,6 @@ static void DrawGlobalAnimationsExt(int drawing_target, int drawing_stage)
     boolean before_fading = (global.anim_status == GAME_MODE_PSEUDO_FADING);
     boolean after_fading  = (anim_status_last   == GAME_MODE_PSEUDO_FADING);
     int anim_classes_next = game_mode_anim_classes[global.anim_status_next];
-    int i;
 
     if (drawing_target == DRAW_TO_FADE_TARGET)
       after_fading = TRUE;
@@ -2185,14 +2182,14 @@ static void ResetGlobalAnim_Clicked(void)
 
 void RestartGlobalAnimsByStatus(int status)
 {
-  int anim_status_last = global.anim_status;
+  int global_anim_status_last = global.anim_status;
 
   global.anim_status = status;
 
   // force restarting global animations by changed global animation status
   DrawGlobalAnimationsExt(DRAW_TO_SCREEN, DRAW_GLOBAL_ANIM_STAGE_RESTART);
 
-  global.anim_status = anim_status_last;
+  global.anim_status = global_anim_status_last;
 }
 
 void SetAnimStatusBeforeFading(int status)
