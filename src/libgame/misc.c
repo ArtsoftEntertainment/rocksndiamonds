@@ -2304,6 +2304,9 @@ void WriteUnusedBytesToFile(FILE *file, unsigned int bytes)
 
 char *getUTF8FromLatin1(char *latin1)
 {
+  if (latin1 == NULL)
+    return NULL;
+
   int max_utf8_size = 2 * strlen(latin1) + 1;
   char *utf8 = checked_calloc(max_utf8_size);
   unsigned char *src = (unsigned char *)latin1;
@@ -2336,6 +2339,9 @@ char *getUTF8FromLatin1(char *latin1)
 
 char *getLatin1FromUTF8(char *utf8)
 {
+  if (utf8 == NULL)
+    return NULL;
+
   int max_latin1_size = strlen(utf8) + 1;
   char *latin1 = checked_calloc(max_latin1_size);
   unsigned char *src = (unsigned char *)utf8;
