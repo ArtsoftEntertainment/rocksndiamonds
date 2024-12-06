@@ -15739,6 +15739,9 @@ static int getSoundAction_BD(int sample)
     case GD_S_NITRO_PACK_EXPLODING:
       return ACTION_EXPLODING;
 
+    case GD_S_DYING:
+      return ACTION_DYING;
+
     case GD_S_COVERING:
     case GD_S_AMOEBA:
     case GD_S_MAGIC_WALL:

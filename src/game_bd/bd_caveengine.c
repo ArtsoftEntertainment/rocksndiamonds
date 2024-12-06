@@ -807,6 +807,9 @@ static void creature_explode(GdCave *cave, int x, int y, GdElement explode_to)
   cave->ckdelay_current += 1200;
   gd_sound_play(cave, GD_S_EXPLODING, get(cave, x, y), x, y);
 
+  if (is_player(cave, x, y))
+    gd_sound_play(cave, GD_S_DYING, get(cave, x, y), x, y);
+
   for (yy = y - 1; yy <= y + 1; yy++)
     for (xx = x - 1; xx <= x + 1; xx++)
       cell_explode(cave, xx, yy, explode_to);

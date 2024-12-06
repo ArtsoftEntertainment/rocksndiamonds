@@ -169,6 +169,7 @@ static SoundProperty sound_flags[] =
   { GD_S_BLADDER_SPENDER,		1, 8					},
   // very low precedence. biters tend to produce too much sound.
   { GD_S_BITER_EATING,			1, 3					},
+  { GD_S_DYING,				1, 100					},
 
   // channel2 sounds.
   { GD_S_DOOR_OPENING,			2, 10					},
