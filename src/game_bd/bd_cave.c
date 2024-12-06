@@ -1657,7 +1657,7 @@ void gd_drawcave_game(const GdCave *cave,
       if ((dir_to == GD_MV_LEFT || dir_to == GD_MV_RIGHT) &&
           !moved_by_conveyor_dir(cave, x, y, dir_to))
       {
-        if (actual == O_STONE || actual == O_STONE_F)
+        if (actual == O_STONE || actual == O_STONE_F || actual == O_WAITING_STONE)
         {
           if (dir_to == GD_MV_LEFT)
           {
