@@ -4440,7 +4440,7 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
 
   SetWrappedText_GenericScreen(tmi, screen_nr, use_global_screens);
 
-  if (wrapped_text->total_height > wrapped_text->max_height)
+  if (wrapped_text != NULL && wrapped_text->total_height > wrapped_text->max_height)
   {
     // re-wrap text with text width reduced by scroll bar width
     tmi->width -= SC_SCROLL_VERTICAL_XSIZE;
