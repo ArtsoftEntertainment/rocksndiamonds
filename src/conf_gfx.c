@@ -442,9 +442,13 @@ struct ConfigInfo image_config[] =
   { "bdx_diamond.falling.EDITOR.ypos",			"3"				},
 
   { "bdx_magic_wall",					UNDEFINED_FILENAME		},
-  { "bdx_magic_wall.clone_from",			"bd_magic_wall"			},
-  { "bdx_magic_wall.active",				UNDEFINED_FILENAME		},
-  { "bdx_magic_wall.active.clone_from",			"bd_magic_wall.active"		},
+  { "bdx_magic_wall.clone_from",			"bdx_wall"			},
+  { "bdx_magic_wall.active",				"RocksBD.png"			},
+  { "bdx_magic_wall.active.xpos",			"4"				},
+  { "bdx_magic_wall.active.ypos",			"13"				},
+  { "bdx_magic_wall.active.frames",			"8"				},
+  { "bdx_magic_wall.active.delay",			"2"				},
+  { "bdx_magic_wall.active.global_sync",		"true"				},
 
   { "bdx_amoeba_1",					"RocksBD.png"			},
   { "bdx_amoeba_1.xpos",				"4"				},
