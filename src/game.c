@@ -15682,6 +15682,7 @@ static int getSoundAction_BD(int sample)
     case GD_S_SLIME:
     case GD_S_LAVA:
     case GD_S_ACID_SPREADING:
+    case GD_S_BLADDER_CONVERTING:
       return ACTION_GROWING;
 
     case GD_S_DIAMOND_COLLECTING:
@@ -15703,7 +15704,6 @@ static int getSoundAction_BD(int sample)
       return ACTION_MOVING;
 
     case GD_S_BLADDER_SPENDER:
-    case GD_S_BLADDER_CONVERTING:
     case GD_S_GRAVITY_CHANGING:
       return ACTION_CHANGING;
 
