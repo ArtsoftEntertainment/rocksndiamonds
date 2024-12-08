@@ -1350,7 +1350,9 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 	    break;
 	}
 
+	// only push game element if not already moving
 	if (is_like_space(cave, x, y, twice[player_move]) &&
+	    game_bd.game->dir_buffer_to[what_y][what_x] == GD_MV_STILL &&
 	    gd_rand_int_range(cave->random, 0, 1000000) < prob)
 	{
 	  // if decided that he will be able to push,
