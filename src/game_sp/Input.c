@@ -9,17 +9,17 @@ int map_key_RND_to_SP(int key)
 {
   if (key & KEY_BUTTON)
   {
-    return (key & MV_UP		? keySpaceUp	:
-	    key & MV_LEFT	? keySpaceLeft	:
-	    key & MV_DOWN	? keySpaceDown	:
-	    key & MV_RIGHT	? keySpaceRight	: keySpace);
+    return ((key & MV_UP)	? keySpaceUp	:
+	    (key & MV_LEFT)	? keySpaceLeft	:
+	    (key & MV_DOWN)	? keySpaceDown	:
+	    (key & MV_RIGHT)	? keySpaceRight	: keySpace);
   }
   else
   {
-    return (key & MV_UP		? keyUp		:
-	    key & MV_LEFT	? keyLeft	:
-	    key & MV_DOWN	? keyDown	:
-	    key & MV_RIGHT	? keyRight	: keyNone);
+    return ((key & MV_UP)	? keyUp		:
+	    (key & MV_LEFT)	? keyLeft	:
+	    (key & MV_DOWN)	? keyDown	:
+	    (key & MV_RIGHT)	? keyRight	: keyNone);
   }
 }
 

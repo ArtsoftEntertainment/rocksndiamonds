@@ -305,8 +305,8 @@ static void DrawVideoDisplay_DateTime(unsigned int state, unsigned int value)
 	pos->y == -1)
       continue;
 
-    xpos = VX + pos->x + (type & DATETIME_XOFFSET_1 ? pos->xoffset  :
-			  type & DATETIME_XOFFSET_2 ? pos->xoffset2 : 0);
+    xpos = VX + pos->x + ((type & DATETIME_XOFFSET_1) ? pos->xoffset  :
+			  (type & DATETIME_XOFFSET_2) ? pos->xoffset2 : 0);
     ypos = VY + pos->y;
 
     if ((type & DATETIME_DATE) && (state & VIDEO_STATE_DATE_ON))
@@ -319,11 +319,11 @@ static void DrawVideoDisplay_DateTime(unsigned int state, unsigned int value)
       int month = month_index + 1;
       int day = value % 100;
 
-      strcpy(s, (type & DATETIME_DATE_YYYY ? int2str(year4, 4) :
-		 type & DATETIME_DATE_YY   ? int2str(year2, 2) :
-		 type & DATETIME_DATE_MON  ? month_shortnames[month_index] :
-		 type & DATETIME_DATE_MM   ? int2str(month, 2) :
-		 type & DATETIME_DATE_DD   ? int2str(day, 2) : ""));
+      strcpy(s, ((type & DATETIME_DATE_YYYY) ? int2str(year4, 4) :
+		 (type & DATETIME_DATE_YY)   ? int2str(year2, 2) :
+		 (type & DATETIME_DATE_MON)  ? month_shortnames[month_index] :
+		 (type & DATETIME_DATE_MM)   ? int2str(month, 2) :
+		 (type & DATETIME_DATE_DD)   ? int2str(day, 2) : ""));
 
       DrawText(xpos, ypos, s, pos->font);
     }
@@ -335,10 +335,10 @@ static void DrawVideoDisplay_DateTime(unsigned int state, unsigned int value)
       int mm = (value / 60) % 60;
       int ss = value % 60;
 
-      strcpy(s, (type & DATETIME_TIME_HH  ? int2str(hh, 2) :
-		 type & DATETIME_TIME_MIN ? int2str(min, 2) :
-		 type & DATETIME_TIME_MM  ? int2str(mm, 2) :
-		 type & DATETIME_TIME_SS  ? int2str(ss, 2) : ""));
+      strcpy(s, ((type & DATETIME_TIME_HH)  ? int2str(hh, 2) :
+		 (type & DATETIME_TIME_MIN) ? int2str(min, 2) :
+		 (type & DATETIME_TIME_MM)  ? int2str(mm, 2) :
+		 (type & DATETIME_TIME_SS)  ? int2str(ss, 2) : ""));
 
       DrawText(xpos, ypos, s, pos->font);
     }

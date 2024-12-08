@@ -59,9 +59,9 @@
 #define SOUND_VOLUME_LOOPS(v)  SOUND_VOLUME_FROM_PERCENT(v, setup.volume_loops)
 #define SOUND_VOLUME_MUSIC(v)  SOUND_VOLUME_FROM_PERCENT(v, setup.volume_music)
 
-#define SETUP_SOUND_VOLUME(v, s)	((s) & SND_CTRL_MUSIC ?		\
+#define SETUP_SOUND_VOLUME(v, s)	(((s) & SND_CTRL_MUSIC) ?	\
 					 SOUND_VOLUME_MUSIC(v) :	\
-					 (s) & SND_CTRL_LOOP ?		\
+					 ((s) & SND_CTRL_LOOP) ?	\
 					 SOUND_VOLUME_LOOPS(v) :	\
 					 SOUND_VOLUME_SIMPLE(v))
 

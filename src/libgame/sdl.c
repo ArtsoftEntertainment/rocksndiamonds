@@ -3084,10 +3084,10 @@ static void DrawTouchInputOverlay_ShowGridButtons(int alpha)
       if (draw_outlined)
       {
 	int rect_x = rect.x +
-	  (outline_border & MV_LEFT  ? border_size : 0);
+	  ((outline_border & MV_LEFT)  ? border_size : 0);
 	int rect_w = rect.w -
-	  (outline_border & MV_LEFT  ? border_size : 0) -
-	  (outline_border & MV_RIGHT ? border_size : 0);
+	  ((outline_border & MV_LEFT)  ? border_size : 0) -
+	  ((outline_border & MV_RIGHT) ? border_size : 0);
 
 	if (outline_border & MV_LEFT)
 	  RenderFillRectangle(rect.x, rect.y, border_size, rect.h);

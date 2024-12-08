@@ -8981,7 +8981,7 @@ static int getSetupValueFont(int type, void *value)
   if (type & TYPE_GHOSTED)
     return FONT_OPTION_OFF;
   else if (type & TYPE_KEY)
-    return (type & TYPE_QUERY ? FONT_INPUT_1_ACTIVE : FONT_VALUE_1);
+    return ((type & TYPE_QUERY) ? FONT_INPUT_1_ACTIVE : FONT_VALUE_1);
   else if (type & TYPE_STRING)
     return FONT_VALUE_2;
   else if (type & TYPE_ECS_AGA)

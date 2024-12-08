@@ -5582,8 +5582,8 @@ static void InitMovingField(int x, int y, int direction)
 void Moving2Blocked(int x, int y, int *goes_to_x, int *goes_to_y)
 {
   int direction = MovDir[x][y];
-  int newx = x + (direction & MV_LEFT ? -1 : direction & MV_RIGHT ? +1 : 0);
-  int newy = y + (direction & MV_UP   ? -1 : direction & MV_DOWN  ? +1 : 0);
+  int newx = x + ((direction & MV_LEFT) ? -1 : (direction & MV_RIGHT) ? +1 : 0);
+  int newy = y + ((direction & MV_UP)   ? -1 : (direction & MV_DOWN)  ? +1 : 0);
 
   *goes_to_x = newx;
   *goes_to_y = newy;
@@ -5592,8 +5592,8 @@ void Moving2Blocked(int x, int y, int *goes_to_x, int *goes_to_y)
 void Blocked2Moving(int x, int y, int *comes_from_x, int *comes_from_y)
 {
   int direction = MovDir[x][y];
-  int oldx = x + (direction & MV_LEFT ? +1 : direction & MV_RIGHT ? -1 : 0);
-  int oldy = y + (direction & MV_UP   ? +1 : direction & MV_DOWN  ? -1 : 0);
+  int oldx = x + ((direction & MV_LEFT) ? +1 : (direction & MV_RIGHT) ? -1 : 0);
+  int oldy = y + ((direction & MV_UP)   ? +1 : (direction & MV_DOWN)  ? -1 : 0);
 
   *comes_from_x = oldx;
   *comes_from_y = oldy;
@@ -13091,8 +13091,8 @@ static boolean canFallDown(struct PlayerInfo *player)
 static boolean canPassField(int x, int y, int move_dir)
 {
   int opposite_dir = MV_DIR_OPPOSITE(move_dir);
-  int dx = (move_dir & MV_LEFT ? -1 : move_dir & MV_RIGHT ? +1 : 0);
-  int dy = (move_dir & MV_UP   ? -1 : move_dir & MV_DOWN  ? +1 : 0);
+  int dx = ((move_dir & MV_LEFT) ? -1 : (move_dir & MV_RIGHT) ? +1 : 0);
+  int dy = ((move_dir & MV_UP)   ? -1 : (move_dir & MV_DOWN)  ? +1 : 0);
   int nextx = x + dx;
   int nexty = y + dy;
   int element = Tile[x][y];
@@ -13107,8 +13107,8 @@ static boolean canPassField(int x, int y, int move_dir)
 static boolean canMoveToValidFieldWithGravity(int x, int y, int move_dir)
 {
   int opposite_dir = MV_DIR_OPPOSITE(move_dir);
-  int dx = (move_dir & MV_LEFT ? -1 : move_dir & MV_RIGHT ? +1 : 0);
-  int dy = (move_dir & MV_UP   ? -1 : move_dir & MV_DOWN  ? +1 : 0);
+  int dx = ((move_dir & MV_LEFT) ? -1 : (move_dir & MV_RIGHT) ? +1 : 0);
+  int dy = ((move_dir & MV_UP)   ? -1 : (move_dir & MV_DOWN)  ? +1 : 0);
   int newx = x + dx;
   int newy = y + dy;
 
