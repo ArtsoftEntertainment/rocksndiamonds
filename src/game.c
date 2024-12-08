@@ -1775,6 +1775,11 @@ static void InitPlayerField(int x, int y, int element, boolean init_game)
       Tile[x][y] = EL_PLAYER_1;
     }
   }
+  else if (element < EL_PLAYER_1 || element > EL_PLAYER_4)
+  {
+    // needed for BD engine with preferred player other than first player
+    Tile[x][y] = GET_PLAYER_ELEMENT(element);
+  }
 
   if (init_game)
   {
@@ -1886,6 +1891,12 @@ static void InitField(int x, int y, boolean init_game)
     case EL_PLAYER_2:
     case EL_PLAYER_3:
     case EL_PLAYER_4:
+    case EL_BDX_INBOX:
+    case EL_BDX_PLAYER:
+    case EL_BDX_PLAYER_WITH_BOMB:
+    case EL_BDX_PLAYER_WITH_ROCKET_LAUNCHER:
+    case EL_BDX_PLAYER_GLUED:
+    case EL_BDX_PLAYER_SCANNED:
       InitPlayerField(x, y, element, init_game);
       break;
 
