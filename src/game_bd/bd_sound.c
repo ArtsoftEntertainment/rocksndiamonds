@@ -478,6 +478,10 @@ static void gd_sound_info_to_play(int channel, int x, int y, int element, int so
 // plays sound in a cave
 void gd_sound_play(GdCave *cave, GdSound sound, GdElement element, int x, int y)
 {
+  // fix wrap-around cave positions
+  x = (x + cave->w) % cave->w;
+  y = (y + cave->h) % cave->h;
+
   if (sound == GD_S_NONE)
     return;
 
@@ -495,10 +499,6 @@ void gd_sound_play(GdCave *cave, GdSound sound, GdElement element, int x, int y)
 
   if (!game.use_native_bd_sound_engine)
   {
-    // fix wrap-around cave positions for non-native sound engine
-    x = (x + cave->w) % cave->w;
-    y = (y + cave->h) % cave->h;
-
     // when not using native sound engine, just play the sound
     PlayLevelSound_BD(x, y, element, sound);
 
