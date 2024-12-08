@@ -3261,6 +3261,29 @@ struct RequestButtonInfo
   struct TextPosInfo touch_confirm;
 };
 
+struct RequestInfo
+{
+  struct RequestButtonInfo button;
+  int x, y;
+  int width, height;
+  int border_size;
+  int line_spacing;
+  int step_offset;
+  int step_delay;
+  int anim_mode;
+  int align;
+  int valign;
+  int sort_priority;
+  boolean autowrap;
+  boolean centered;
+  boolean wrap_single_words;
+
+  // run-time values
+  Bitmap *bitmap;
+  int sx, sy;
+  int xsize, ysize;
+};
+
 struct MenuTextInfo
 {
   struct TextPosInfo title;
@@ -3477,6 +3500,8 @@ struct MenuInfo
   struct MenuInfoInfo info;
   struct MenuSetupInfo setup;
   struct MenuScoresInfo scores;
+
+  struct RequestInfo request;
 };
 
 struct DoorInfo
@@ -3498,29 +3523,6 @@ struct DoorInfo
   int step_delay;
   int post_delay;
   int anim_mode;
-};
-
-struct RequestInfo
-{
-  struct RequestButtonInfo button;
-  int x, y;
-  int width, height;
-  int border_size;
-  int line_spacing;
-  int step_offset;
-  int step_delay;
-  int anim_mode;
-  int align;
-  int valign;
-  int sort_priority;
-  boolean autowrap;
-  boolean centered;
-  boolean wrap_single_words;
-
-  // run-time values
-  Bitmap *bitmap;
-  int sx, sy;
-  int xsize, ysize;
 };
 
 struct PreviewInfo
@@ -4591,7 +4593,6 @@ extern struct TitleMessageInfo		readme;
 extern struct InitInfo			init, init_last;
 extern struct MenuInfo			menu;
 extern struct DoorInfo			door_1, door_2;
-extern struct RequestInfo		request;
 extern struct PreviewInfo		preview;
 extern struct EditorInfo		editor;
 extern struct ElementInfo		element_info[];

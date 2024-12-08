@@ -3041,44 +3041,44 @@ static void PrepareEnvelopeRequestToScreen(Bitmap *bitmap, int sx, int sy,
   if (!global.use_envelope_request)
     return;
 
-  if (request.bitmap == NULL ||
-      xsize > request.xsize ||
-      ysize > request.ysize)
+  if (menu.request.bitmap == NULL ||
+      xsize > menu.request.xsize ||
+      ysize > menu.request.ysize)
   {
-    if (request.bitmap != NULL)
-      FreeBitmap(request.bitmap);
+    if (menu.request.bitmap != NULL)
+      FreeBitmap(menu.request.bitmap);
 
-    request.bitmap = CreateBitmap(xsize, ysize, DEFAULT_DEPTH);
+    menu.request.bitmap = CreateBitmap(xsize, ysize, DEFAULT_DEPTH);
 
-    SDL_Surface *surface = request.bitmap->surface;
+    SDL_Surface *surface = menu.request.bitmap->surface;
 
-    if ((request.bitmap->surface_masked = SDLGetNativeSurface(surface)) == NULL)
+    if ((menu.request.bitmap->surface_masked = SDLGetNativeSurface(surface)) == NULL)
       Fail("SDLGetNativeSurface() failed");
   }
 
-  BlitBitmap(bitmap, request.bitmap, sx, sy, xsize, ysize, 0, 0);
+  BlitBitmap(bitmap, menu.request.bitmap, sx, sy, xsize, ysize, 0, 0);
 
   // create masked surface for request bitmap, if needed
   if (graphic_info[IMG_BACKGROUND_REQUEST].draw_masked)
   {
-    SDL_Surface *surface        = request.bitmap->surface;
-    SDL_Surface *surface_masked = request.bitmap->surface_masked;
+    SDL_Surface *surface        = menu.request.bitmap->surface;
+    SDL_Surface *surface_masked = menu.request.bitmap->surface_masked;
 
     SDLBlitSurface(surface, surface_masked, 0, 0, xsize, ysize, 0, 0);
     SDL_SetColorKey(surface_masked, SET_TRANSPARENT_PIXEL,
 		    SDL_MapRGB(surface_masked->format, 0x00, 0x00, 0x00));
   }
 
-  SDLFreeBitmapTextures(request.bitmap);
-  SDLCreateBitmapTextures(request.bitmap);
+  SDLFreeBitmapTextures(menu.request.bitmap);
+  SDLCreateBitmapTextures(menu.request.bitmap);
 
-  ResetBitmapAlpha(request.bitmap);
+  ResetBitmapAlpha(menu.request.bitmap);
 
   // set envelope request run-time values
-  request.sx = sx;
-  request.sy = sy;
-  request.xsize = xsize;
-  request.ysize = ysize;
+  menu.request.sx = sx;
+  menu.request.sy = sy;
+  menu.request.xsize = xsize;
+  menu.request.ysize = ysize;
 }
 
 void DrawEnvelopeRequestToScreen(int drawing_target)
@@ -3089,14 +3089,14 @@ void DrawEnvelopeRequestToScreen(int drawing_target)
   {
     struct GraphicInfo *g = &graphic_info[IMG_BACKGROUND_REQUEST];
 
-    SetBitmapAlphaNextBlit(request.bitmap, g->alpha);
+    SetBitmapAlphaNextBlit(menu.request.bitmap, g->alpha);
 
     if (g->draw_masked)
-      BlitToScreenMasked(request.bitmap, 0, 0, request.xsize, request.ysize,
-			 request.sx, request.sy);
+      BlitToScreenMasked(menu.request.bitmap, 0, 0, menu.request.xsize, menu.request.ysize,
+			 menu.request.sx, menu.request.sy);
     else
-      BlitToScreen(request.bitmap, 0, 0, request.xsize, request.ysize,
-		   request.sx, request.sy);
+      BlitToScreen(menu.request.bitmap, 0, 0, menu.request.xsize, menu.request.ysize,
+		   menu.request.sx, menu.request.sy);
   }
 }
 
@@ -3104,20 +3104,20 @@ static void setRequestBasePosition(int *x, int *y)
 {
   int sx_base, sy_base;
 
-  if (request.x != -1)
-    sx_base = request.x;
-  else if (request.align == ALIGN_LEFT)
+  if (menu.request.x != -1)
+    sx_base = menu.request.x;
+  else if (menu.request.align == ALIGN_LEFT)
     sx_base = SX;
-  else if (request.align == ALIGN_RIGHT)
+  else if (menu.request.align == ALIGN_RIGHT)
     sx_base = SX + SXSIZE;
   else
     sx_base = SX + SXSIZE / 2;
 
-  if (request.y != -1)
-    sy_base = request.y;
-  else if (request.valign == VALIGN_TOP)
+  if (menu.request.y != -1)
+    sy_base = menu.request.y;
+  else if (menu.request.valign == VALIGN_TOP)
     sy_base = SY;
-  else if (request.valign == VALIGN_BOTTOM)
+  else if (menu.request.valign == VALIGN_BOTTOM)
     sy_base = SY + SYSIZE;
   else
     sy_base = SY + SYSIZE / 2;
@@ -3129,22 +3129,22 @@ static void setRequestBasePosition(int *x, int *y)
 static void setRequestPositionExt(int *x, int *y, int width, int height,
 				  boolean add_border_size)
 {
-  int border_size = request.border_size;
+  int border_size = menu.request.border_size;
   int sx_base, sy_base;
   int sx, sy;
 
   setRequestBasePosition(&sx_base, &sy_base);
 
-  if (request.align == ALIGN_LEFT)
+  if (menu.request.align == ALIGN_LEFT)
     sx = sx_base;
-  else if (request.align == ALIGN_RIGHT)
+  else if (menu.request.align == ALIGN_RIGHT)
     sx = sx_base - width;
   else
     sx = sx_base - width  / 2;
 
-  if (request.valign == VALIGN_TOP)
+  if (menu.request.valign == VALIGN_TOP)
     sy = sy_base;
-  else if (request.valign == VALIGN_BOTTOM)
+  else if (menu.request.valign == VALIGN_BOTTOM)
     sy = sy_base - height;
   else
     sy = sy_base - height / 2;
@@ -3164,7 +3164,7 @@ static void setRequestPositionExt(int *x, int *y, int width, int height,
 
 static void setRequestPosition(int *x, int *y, boolean add_border_size)
 {
-  setRequestPositionExt(x, y, request.width, request.height, add_border_size);
+  setRequestPositionExt(x, y, menu.request.width, menu.request.height, add_border_size);
 }
 
 static void DrawEnvelopeRequestText(int sx, int sy, char *text)
@@ -3177,11 +3177,11 @@ static void DrawEnvelopeRequestText(int sx, int sy, char *text)
   int font_nr = FONT_REQUEST;
   int font_width = getFontWidth(font_nr);
   int font_height = getFontHeight(font_nr);
-  int border_size = request.border_size;
-  int line_spacing = request.line_spacing;
+  int border_size = menu.request.border_size;
+  int line_spacing = menu.request.line_spacing;
   int line_height = font_height + line_spacing;
-  int max_text_width  = request.width  - 2 * border_size;
-  int max_text_height = request.height - 2 * border_size;
+  int max_text_width  = menu.request.width  - 2 * border_size;
+  int max_text_height = menu.request.height - 2 * border_size;
   int line_length = max_text_width  / font_width;
   int max_lines   = max_text_height / line_height;
   int text_width = line_length * font_width;
@@ -3191,10 +3191,10 @@ static void DrawEnvelopeRequestText(int sx, int sy, char *text)
   // force DOOR font inside door area
   SetFontStatus(GAME_MODE_PSEUDO_DOOR);
 
-  if (request.centered)
-    sx_offset = (request.width - text_width) / 2;
+  if (menu.request.centered)
+    sx_offset = (menu.request.width - text_width) / 2;
 
-  if (request.wrap_single_words && !request.autowrap)
+  if (menu.request.wrap_single_words && !menu.request.autowrap)
   {
     char *src_text_ptr, *dst_text_ptr;
 
@@ -3230,7 +3230,7 @@ static void DrawEnvelopeRequestText(int sx, int sy, char *text)
 
   DrawTextBuffer(sx + sx_offset, sy + sy_offset, text_final, font_nr,
 		 line_length, -1, max_lines, -1, -1, -1, line_spacing, mask_mode,
-		 request.autowrap, request.centered, FALSE);
+		 menu.request.autowrap, menu.request.centered, FALSE);
 
   if (text_door_style)
     free(text_door_style);
@@ -3242,9 +3242,9 @@ static void DrawEnvelopeRequest(char *text, unsigned int req_state)
 {
   DrawBuffer *drawto_last = drawto;
   int graphic = IMG_BACKGROUND_REQUEST;
-  int width = request.width;
-  int height = request.height;
-  int tile_size = MAX(request.step_offset, 1);
+  int width = menu.request.width;
+  int height = menu.request.height;
+  int tile_size = MAX(menu.request.step_offset, 1);
   int x_steps = width  / tile_size;
   int y_steps = height / tile_size;
   int sx, sy;
@@ -3278,7 +3278,7 @@ static void DrawEnvelopeRequest(char *text, unsigned int req_state)
 static void AnimateEnvelopeRequest(int anim_mode, int action)
 {
   boolean game_ended = (game_status == GAME_MODE_PLAYING && checkGameEnded());
-  int delay_value_normal = request.step_delay;
+  int delay_value_normal = menu.request.step_delay;
   int delay_value_fast = delay_value_normal / 2;
   boolean ffwd_delay = (tape.playing && tape.fast_forward);
   boolean no_delay = (tape.warp_forward);
@@ -3286,9 +3286,9 @@ static void AnimateEnvelopeRequest(int anim_mode, int action)
   int anim_delay_value = MAX(1, (no_delay ? 0 : delay_value) / 2);
   DelayCounter anim_delay = { anim_delay_value };
 
-  int tile_size = MAX(request.step_offset, 1);
-  int max_xsize = request.width  / tile_size;
-  int max_ysize = request.height / tile_size;
+  int tile_size = MAX(menu.request.step_offset, 1);
+  int max_xsize = menu.request.width  / tile_size;
+  int max_ysize = menu.request.height / tile_size;
   int max_xsize_inner = max_xsize - 2;
   int max_ysize_inner = max_ysize - 2;
 
@@ -3368,7 +3368,7 @@ static void ShowEnvelopeRequest(char *text, unsigned int req_state, int action)
   int graphic = IMG_BACKGROUND_REQUEST;
   int sound_opening = SND_REQUEST_OPENING;
   int sound_closing = SND_REQUEST_CLOSING;
-  int anim_mode_1 = request.anim_mode;			// (higher priority)
+  int anim_mode_1 = menu.request.anim_mode;		// (higher priority)
   int anim_mode_2 = graphic_info[graphic].anim_mode;	// (lower priority)
   int anim_mode = (anim_mode_1 != ANIM_DEFAULT ? anim_mode_1 : anim_mode_2);
   int main_anim_mode = (anim_mode == ANIM_NONE ? ANIM_VERTICAL|ANIM_HORIZONTAL:
@@ -4535,8 +4535,8 @@ static int RequestHandleEvents(unsigned int req_state, int draw_buffer_game)
 {
   boolean game_ended = (game_status == GAME_MODE_PLAYING && checkGameEnded());
   int draw_buffer_last = GetDrawtoField();
-  int width  = request.width;
-  int height = request.height;
+  int width  = menu.request.width;
+  int height = menu.request.height;
   int sx, sy;
   int result;
 
@@ -4907,7 +4907,7 @@ static void setRequestDoorTextProperties(char *text,
 					 int *set_max_line_length)
 {
   struct RectWithBorder *vp_door_1 = &viewport.door_1[game_status];
-  struct TextPosInfo *pos = &request.button.confirm;
+  struct TextPosInfo *pos = &menu.request.button.confirm;
   int button_ypos = pos->y;
   int font_nr = FONT_TEXT_2;
   int font_width = getFontWidth(font_nr);
@@ -5789,43 +5789,43 @@ static struct
 } toolbutton_info[NUM_TOOL_BUTTONS] =
 {
   {
-    IMG_GFX_REQUEST_BUTTON_YES,		&request.button.yes,
+    IMG_GFX_REQUEST_BUTTON_YES,		&menu.request.button.yes,
     TOOL_CTRL_ID_YES, FALSE,		"yes"
   },
   {
-    IMG_GFX_REQUEST_BUTTON_NO,		&request.button.no,
+    IMG_GFX_REQUEST_BUTTON_NO,		&menu.request.button.no,
     TOOL_CTRL_ID_NO, FALSE,		"no"
   },
   {
-    IMG_GFX_REQUEST_BUTTON_CONFIRM,	&request.button.confirm,
+    IMG_GFX_REQUEST_BUTTON_CONFIRM,	&menu.request.button.confirm,
     TOOL_CTRL_ID_CONFIRM, FALSE,	"confirm"
   },
   {
-    IMG_GFX_REQUEST_BUTTON_PLAYER_1,	&request.button.player_1,
+    IMG_GFX_REQUEST_BUTTON_PLAYER_1,	&menu.request.button.player_1,
     TOOL_CTRL_ID_PLAYER_1, FALSE,	"player 1"
   },
   {
-    IMG_GFX_REQUEST_BUTTON_PLAYER_2,	&request.button.player_2,
+    IMG_GFX_REQUEST_BUTTON_PLAYER_2,	&menu.request.button.player_2,
     TOOL_CTRL_ID_PLAYER_2, FALSE,	"player 2"
   },
   {
-    IMG_GFX_REQUEST_BUTTON_PLAYER_3,	&request.button.player_3,
+    IMG_GFX_REQUEST_BUTTON_PLAYER_3,	&menu.request.button.player_3,
     TOOL_CTRL_ID_PLAYER_3, FALSE,	"player 3"
   },
   {
-    IMG_GFX_REQUEST_BUTTON_PLAYER_4,	&request.button.player_4,
+    IMG_GFX_REQUEST_BUTTON_PLAYER_4,	&menu.request.button.player_4,
     TOOL_CTRL_ID_PLAYER_4, FALSE,	"player 4"
   },
   {
-    IMG_GFX_REQUEST_BUTTON_TOUCH_YES,	&request.button.touch_yes,
+    IMG_GFX_REQUEST_BUTTON_TOUCH_YES,	&menu.request.button.touch_yes,
     TOOL_CTRL_ID_TOUCH_YES, TRUE,	"yes"
   },
   {
-    IMG_GFX_REQUEST_BUTTON_TOUCH_NO,	&request.button.touch_no,
+    IMG_GFX_REQUEST_BUTTON_TOUCH_NO,	&menu.request.button.touch_no,
     TOOL_CTRL_ID_TOUCH_NO, TRUE,	"no"
   },
   {
-    IMG_GFX_REQUEST_BUTTON_TOUCH_CONFIRM, &request.button.touch_confirm,
+    IMG_GFX_REQUEST_BUTTON_TOUCH_CONFIRM, &menu.request.button.touch_confirm,
     TOOL_CTRL_ID_TOUCH_CONFIRM, TRUE,	"confirm"
   }
 };
@@ -5863,30 +5863,30 @@ void CreateToolButtons(void)
       setRequestPosition(&base_x, &base_y, TRUE);
 
       // check if request buttons are outside of envelope and fix, if needed
-      if (x < 0 || x + gfx->width  > request.width ||
-	  y < 0 || y + gfx->height > request.height)
+      if (x < 0 || x + gfx->width  > menu.request.width ||
+	  y < 0 || y + gfx->height > menu.request.height)
       {
 	if (id == TOOL_CTRL_ID_YES)
 	{
 	  x = 0;
-	  y = request.height - 2 * request.border_size - gfx->height;
+	  y = menu.request.height - 2 * menu.request.border_size - gfx->height;
 	}
 	else if (id == TOOL_CTRL_ID_NO)
 	{
-	  x = request.width  - 2 * request.border_size - gfx->width;
-	  y = request.height - 2 * request.border_size - gfx->height;
+	  x = menu.request.width  - 2 * menu.request.border_size - gfx->width;
+	  y = menu.request.height - 2 * menu.request.border_size - gfx->height;
 	}
 	else if (id == TOOL_CTRL_ID_CONFIRM)
 	{
-	  x = (request.width - 2 * request.border_size - gfx->width) / 2;
-	  y = request.height - 2 * request.border_size - gfx->height;
+	  x = (menu.request.width - 2 * menu.request.border_size - gfx->width) / 2;
+	  y = menu.request.height - 2 * menu.request.border_size - gfx->height;
 	}
 	else if (id >= TOOL_CTRL_ID_PLAYER_1 && id <= TOOL_CTRL_ID_PLAYER_4)
 	{
 	  int player_nr = id - TOOL_CTRL_ID_PLAYER_1;
 
-	  x = (request.width - 2 * request.border_size - gfx->width) / 2;
-	  y = request.height - 2 * request.border_size - gfx->height * 2;
+	  x = (menu.request.width - 2 * menu.request.border_size - gfx->width) / 2;
+	  y = menu.request.height - 2 * menu.request.border_size - gfx->height * 2;
 
 	  x += (player_nr == 3 ? -1 : player_nr == 1 ? +1 : 0) * gfx->width;
 	  y += (player_nr == 0 ? -1 : player_nr == 2 ? +1 : 0) * gfx->height;

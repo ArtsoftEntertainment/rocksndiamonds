@@ -2521,6 +2521,7 @@ sub print_config_vars
 	    $var =~ s/^info\./menu.info./;
 	    $var =~ s/^setup\./menu.setup./;
 	    $var =~ s/^scores\./menu.scores./;
+	    $var =~ s/^request\./menu.request./;
 	    $var =~ s/^\[player\]\./game.player_/;
 	    $var =~ s/^\[title_initial\]/title_initial_default/;
 	    $var =~ s/^\[title\]/title_default/;
@@ -2559,7 +2560,7 @@ sub print_config_vars
 	    $var =~ s/^(tape\.text\..*)\.chars$/$1.size/;
 	    $var =~ s/^(game\.panel\..*)\.chars$/$1.size/;
 	    $var =~ s/^(game\.panel\..*)\.tile_size$/$1.size/;
-	    $var =~ s/^(request\.button\..*)\.tile_size$/$1.size/;
+	    $var =~ s/^(menu\.request\.button\..*)\.tile_size$/$1.size/;
 	    $var =~ s/\.digits$/.size/;
 	    $var =~ s/\.2nd_offset$/.offset2/;
 	    $var =~ s/\.2nd_xoffset$/.xoffset2/;

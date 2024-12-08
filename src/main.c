@@ -162,7 +162,6 @@ struct TitleMessageInfo		readme;
 struct InitInfo			init, init_last;
 struct MenuInfo			menu;
 struct DoorInfo			door_1, door_2;
-struct RequestInfo		request;
 struct PreviewInfo		preview;
 struct EditorInfo		editor;
 
