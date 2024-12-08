@@ -1172,7 +1172,7 @@ static GdElement player_eat_element(GdCave *cave, const GdElement element, int x
     case O_DIAMOND:
     case O_FLYING_DIAMOND:
       // prevent diamond sounds for O_SKELETON (see below)
-      if (x != -1 && y != -1)
+      if (x != -1 || y != -1)
 	gd_sound_play(cave, (element == O_DIAMOND ? GD_S_DIAMOND_COLLECTING :
 			     GD_S_FLYING_DIAMOND_COLLECTING), element, x, y);
 
