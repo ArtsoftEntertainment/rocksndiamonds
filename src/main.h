@@ -900,6 +900,7 @@
 #define IS_BDX_PLAYER_ELEMENT(e)	((e) == EL_BDX_INBOX ||			\
 					 (e) == EL_BDX_PLAYER ||		\
 					 (e) == EL_BDX_PLAYER_WITH_BOMB ||	\
+					 (e) == EL_BDX_PLAYER_WITH_ROCKET_LAUNCHER || \
 					 (e) == EL_BDX_PLAYER_GLUED ||		\
 					 (e) == EL_BDX_PLAYER_STIRRING)
 
