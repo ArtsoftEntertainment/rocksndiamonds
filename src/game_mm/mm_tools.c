@@ -939,9 +939,6 @@ static void DrawTileCursor_Xsn(int draw_target)
     xsn.change_dir   = 0;
 
     xsn.alpha = XSN_ALPHA_DEFAULT;
-
-    for (i = 0; i < xsn.max_items; i++)
-      xsn_init_item(i);
   }
 
   if (xsn.area_xsize != gfx.win_xsize ||
@@ -950,6 +947,9 @@ static void DrawTileCursor_Xsn(int draw_target)
   {
     xsn.area_xsize = gfx.win_xsize;
     xsn.area_ysize = gfx.win_ysize;
+
+    for (i = 0; i < xsn.max_items; i++)
+      xsn_init_item(i);
 
     if (xsn.bitmap != NULL)
       FreeBitmap(xsn.bitmap);
