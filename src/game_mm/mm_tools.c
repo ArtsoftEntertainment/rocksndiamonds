@@ -1057,6 +1057,16 @@ static void DrawTileCursor_Xsn(int draw_target)
   }
 }
 
+static void FreeTileCursorTextures_Xsn(void)
+{
+  int i;
+
+  SDLFreeBitmapTextures(xsn.bitmap);
+
+  for (i = 0; i < num_xsn_data; i++)
+    SDLFreeBitmapTextures(xsn_data[i].bitmap);
+}
+
 void DrawTileCursor_MM(int draw_target, int drawing_stage,
 		       boolean tile_cursor_active)
 {
@@ -1122,6 +1132,11 @@ void DrawTileCursor_MM(int draw_target, int drawing_stage,
   else
     BlitBitmapMasked(src_bitmap, fade_bitmap, src_x, src_y, width, height,
 		     dst_x, dst_y);
+}
+
+void FreeTileCursorTextures_MM(void)
+{
+  FreeTileCursorTextures_Xsn();
 }
 
 Pixel ReadPixel(DrawBuffer *bitmap, int x, int y)

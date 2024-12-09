@@ -250,6 +250,7 @@ void GameActions_MM(struct MouseActionInfo);
 
 void DrawLaser_MM(void);
 void DrawTileCursor_MM(int, int, boolean);
+void FreeTileCursorTextures_MM(void);
 
 boolean ClickElement(int, int, int);
 

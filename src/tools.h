@@ -83,6 +83,7 @@ void DrawMaskedBorder_ALL(void);
 void DrawMaskedBorder(int);
 void DrawMaskedBorderToTarget(int);
 void DrawTileCursor(int, int);
+void FreeTileCursorTextures(void);
 
 void SetDrawtoField(int);
 int GetDrawtoField(void);

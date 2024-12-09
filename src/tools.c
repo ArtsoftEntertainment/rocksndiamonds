@@ -656,6 +656,11 @@ void DrawTileCursor(int draw_target, int drawing_stage)
   DrawTileCursor_MM(draw_target, drawing_stage, tile_cursor_active);
 }
 
+void FreeTileCursorTextures(void)
+{
+  FreeTileCursorTextures_MM();
+}
+
 void BlitScreenToBitmapExt_RND(Bitmap *target_bitmap, int fx, int fy)
 {
   BlitBitmap(drawto_field, target_bitmap, fx, fy, SXSIZE, SYSIZE, SX, SY);

@@ -89,6 +89,7 @@ void DrawWalls_MM(int, int, int);
 void DrawWallsAnimation_MM(int, int, int, int, int);
 void DrawMicroLevel_MM(int, int, boolean);
 void DrawTileCursor_MM(int, int, boolean);
+void FreeTileCursorTextures_MM(void);
 
 boolean Request(char *, unsigned int);
 unsigned int OpenDoor(unsigned int);

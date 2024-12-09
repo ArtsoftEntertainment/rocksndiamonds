@@ -452,6 +452,7 @@ void InitImageTextures(void)
 void FreeAllTextures(void)
 {
   FreeAllImageTextures();
+  FreeTileCursorTextures();
 }
 
 static int getFontSpecialSuffix(void)
