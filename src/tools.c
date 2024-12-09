@@ -11951,7 +11951,7 @@ void ChangeVsyncModeIfNeeded(void)
     video.fullscreen_enabled = !setup.fullscreen;
 
     // when creating new renderer, destroy textures linked to old renderer
-    FreeAllImageTextures();	// needs old renderer to free the textures
+    FreeAllTextures();		// needs old renderer to free the textures
 
     // re-create screen and renderer (including change of vsync mode)
     ChangeVideoModeIfNeeded(setup.fullscreen);
@@ -12304,7 +12304,7 @@ void ChangeViewportPropertiesIfNeeded(void)
   {
     // Debug("tools:viewport", "init_video_buffer");
 
-    FreeAllImageTextures();	// needs old renderer to free the textures
+    FreeAllTextures();		// needs old renderer to free the textures
 
     InitVideoBuffer(WIN_XSIZE, WIN_YSIZE, DEFAULT_DEPTH, setup.fullscreen);
     InitImageTextures();

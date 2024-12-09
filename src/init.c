@@ -449,6 +449,11 @@ void InitImageTextures(void)
     CreateImageTextures(texture_graphics[i]);
 }
 
+void FreeAllTextures(void)
+{
+  FreeAllImageTextures();
+}
+
 static int getFontSpecialSuffix(void)
 {
   int special = -1;

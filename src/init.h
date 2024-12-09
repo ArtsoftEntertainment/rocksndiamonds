@@ -39,6 +39,7 @@ void KeyboardAutoRepeatOffUnlessAutoplay(void);
 void InitGfxBuffers(void);
 void InitGadgets(void);
 void InitImageTextures(void);
+void FreeAllTextures(void);
 
 boolean anyImagehasColorTemplate(void);
 void InitColorTemplateImages(void);
