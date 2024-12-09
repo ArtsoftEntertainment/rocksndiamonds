@@ -403,7 +403,9 @@ SDL_Surface *SDLCreateNativeSurface(int, int, int);
 Bitmap *SDLGetBitmapFromSurface_WithMaskedColor(SDL_Surface *, int, int, int);
 Bitmap *SDLGetBitmapFromSurface(SDL_Surface *);
 void SDLCreateBitmapTextures(Bitmap *);
+void SDLFreeBitmapSurfaces(Bitmap *);
 void SDLFreeBitmapTextures(Bitmap *);
+void SDLFreeBitmapPointers(Bitmap *);
 
 SDL_Surface *SDL_DisplayFormat(SDL_Surface *);
 void SDLSetWindowScaling(int);
@@ -423,7 +425,6 @@ void SDLLimitScreenUpdates(boolean);
 void SDLInitVideoDisplay(void);
 void SDLInitVideoBuffer(boolean);
 boolean SDLSetVideoMode(boolean);
-void SDLFreeBitmapPointers(Bitmap *);
 void SDLBlitSurface(SDL_Surface *, SDL_Surface *, int, int, int, int, int, int);
 void SDLCopyArea(Bitmap *, Bitmap *, int, int, int, int, int, int, int);
 void SDLBlitTexture(Bitmap *, int, int, int, int, int, int, int);

@@ -550,13 +550,24 @@ void SDLCreateBitmapTextures(Bitmap *bitmap)
   if (bitmap == NULL)
     return;
 
-  if (bitmap->texture)
-    SDL_DestroyTexture(bitmap->texture);
-  if (bitmap->texture_masked)
-    SDL_DestroyTexture(bitmap->texture_masked);
+  SDLFreeBitmapTextures(bitmap);
 
   bitmap->texture        = SDLCreateTextureFromSurface(bitmap->surface);
   bitmap->texture_masked = SDLCreateTextureFromSurface(bitmap->surface_masked);
+}
+
+void SDLFreeBitmapSurfaces(Bitmap *bitmap)
+{
+  if (bitmap == NULL)
+    return;
+
+  if (bitmap->surface)
+    SDL_FreeSurface(bitmap->surface);
+  if (bitmap->surface_masked)
+    SDL_FreeSurface(bitmap->surface_masked);
+
+  bitmap->surface = NULL;
+  bitmap->surface_masked = NULL;
 }
 
 void SDLFreeBitmapTextures(Bitmap *bitmap)
@@ -571,6 +582,12 @@ void SDLFreeBitmapTextures(Bitmap *bitmap)
 
   bitmap->texture = NULL;
   bitmap->texture_masked = NULL;
+}
+
+void SDLFreeBitmapPointers(Bitmap *bitmap)
+{
+  SDLFreeBitmapSurfaces(bitmap);
+  SDLFreeBitmapTextures(bitmap);
 }
 
 void SDLInitVideoDisplay(void)
@@ -1042,25 +1059,6 @@ void SDLSetScreenVsyncMode(char *vsync_mode)
 void SDLRedrawWindow(void)
 {
   UpdateScreen_WithoutFrameDelay(NULL);
-}
-
-void SDLFreeBitmapPointers(Bitmap *bitmap)
-{
-  if (bitmap->surface)
-    SDL_FreeSurface(bitmap->surface);
-  if (bitmap->surface_masked)
-    SDL_FreeSurface(bitmap->surface_masked);
-
-  bitmap->surface = NULL;
-  bitmap->surface_masked = NULL;
-
-  if (bitmap->texture)
-    SDL_DestroyTexture(bitmap->texture);
-  if (bitmap->texture_masked)
-    SDL_DestroyTexture(bitmap->texture_masked);
-
-  bitmap->texture = NULL;
-  bitmap->texture_masked = NULL;
 }
 
 void SDLBlitSurface(SDL_Surface *src_surface, SDL_Surface *dst_surface,
