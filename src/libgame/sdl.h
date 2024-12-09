@@ -83,6 +83,8 @@ struct SDLSurfaceInfo
   SDL_Surface *surface_masked;
   SDL_Texture *texture;
   SDL_Texture *texture_masked;
+
+  SDL_Renderer *renderer;	// renderer used to create textures
 };
 
 struct MouseCursorInfo

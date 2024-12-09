@@ -554,6 +554,9 @@ void SDLCreateBitmapTextures(Bitmap *bitmap)
 
   bitmap->texture        = SDLCreateTextureFromSurface(bitmap->surface);
   bitmap->texture_masked = SDLCreateTextureFromSurface(bitmap->surface_masked);
+
+  // store renderer used to create textures
+  bitmap->renderer = sdl_renderer;
 }
 
 void SDLFreeBitmapSurfaces(Bitmap *bitmap)
@@ -574,6 +577,18 @@ void SDLFreeBitmapTextures(Bitmap *bitmap)
 {
   if (bitmap == NULL)
     return;
+
+  // check renderer used to create textures
+  if (bitmap->renderer != NULL &&
+      bitmap->renderer != sdl_renderer &&
+      (bitmap->texture != NULL || bitmap->texture_masked != NULL))
+  {
+    // if renderer was destroyed, all its textures were also destroyed
+    bitmap->texture = NULL;
+    bitmap->texture_masked = NULL;
+
+    Warn("trying to free textures already freed by destroying renderer!");
+  }
 
   if (bitmap->texture)
     SDL_DestroyTexture(bitmap->texture);
