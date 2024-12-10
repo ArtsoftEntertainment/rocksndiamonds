@@ -5707,7 +5707,7 @@ static int editor_el_boulderdash_native[] =
   EL_BDX_BITER_SWITCH_1,
   EL_BDX_BITER_UP,
   EL_BDX_COW_UP,
-  EL_BDX_ROCKET_LAUNCHER,
+  EL_BDX_POT,
 
   EL_BDX_BITER_LEFT,
   EL_BDX_COW_LEFT,
@@ -5799,7 +5799,7 @@ static int editor_el_boulderdash_native[] =
   EL_BDX_WALL_KEY_3,
   EL_BDX_WALL_DIAMOND,
 
-  EL_BDX_POT,
+  EL_BDX_ROCKET_LAUNCHER,
   EL_BDX_GRAVITY_SWITCH,
   EL_BDX_PNEUMATIC_HAMMER,
   EL_BDX_TELEPORTER,
