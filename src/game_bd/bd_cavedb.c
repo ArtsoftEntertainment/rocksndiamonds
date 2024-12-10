@@ -130,6 +130,11 @@ GdElementProperty gd_element_properties[] =
     "DIRT", '.', 2, 2, 2
   },
   {
+    O_DIRT_CRUMBLED, O_DIRT_CRUMBLED, N_("Dirt (crumbled)"),
+    P_AMOEBA_CONSUMES | P_VISUAL_EFFECT | P_DIRT | P_DIGGABLE,
+    "DIRT_CRUMBLED", 0, 2, 2, 2
+  },
+  {
     O_DIRT_SLOPED_UP_RIGHT, O_DIRT_SLOPED_UP_RIGHT, N_("Sloped dirt (up & right)"),
     P_DIRT | P_SLOPED_UP | P_SLOPED_RIGHT | P_AMOEBA_CONSUMES | P_DIGGABLE,
     "DIRTSLOPEDUPRIGHT", 0, 280, 280, 280

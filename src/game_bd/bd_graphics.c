@@ -542,6 +542,55 @@ static inline boolean el_smooth_movable(const int element)
           el_pushable(element));
 }
 
+static void gd_drawcave_crumbled(Bitmap *dest, GdGame *game, int x, int y, boolean draw_masked)
+{
+  void (*blit_bitmap)(Bitmap *, Bitmap *, int, int, int, int, int, int) =
+    (draw_masked ? BlitBitmapMasked : BlitBitmap);
+  GdCave *cave = game->cave;
+  int sx = x * cell_size - scroll_x;
+  int sy = y * cell_size - scroll_y;
+  int frame = game->animcycle;
+  int border_size = cell_size / 8;
+  struct GraphicInfo_BD *gfx = &graphic_info_bd_object[O_DIRT][frame];
+  struct GraphicInfo_BD *crm = &graphic_info_bd_object[O_DIRT_CRUMBLED][frame];
+  int dirs[] = { GD_MV_UP, GD_MV_LEFT, GD_MV_RIGHT, GD_MV_DOWN };
+  int i;
+
+  // first draw middle part only (because element might be drawn in masked mode)
+  blit_bitmap(gfx->bitmap, dest, gfx->src_x + border_size, gfx->src_y + border_size,
+              cell_size - 2 * border_size, cell_size - 2 * border_size,
+              sx + border_size, sy + border_size);
+
+  // then draw crumbled sand borders if not next to sand, else draw normal sand borders
+  for (i = 0; i < ARRAY_SIZE(dirs); i++)
+  {
+    int dir = dirs[i];
+    int dx = gd_dx[dir];
+    int dy = gd_dy[dir];
+    int xx = (x + dx + cave->w) % cave->w;
+    int yy = (y + dy + cave->h) % cave->h;
+    int tile = game->element_buffer[yy][xx];
+    int tile_last = game->last_element_buffer[yy][xx];
+    int xoffset = (dx > 0 ? cell_size - border_size : 0);
+    int yoffset = (dy > 0 ? cell_size - border_size : 0);
+    int xsize = (dx == 0 ? cell_size : border_size);
+    int ysize = (dy == 0 ? cell_size : border_size);
+    int dir_to = game->dir_buffer_to[yy][xx];
+    boolean is_moving_to = (dir_to != GD_MV_STILL);
+
+    // do not crumble sand that is just being digged away
+    if (tile_last == O_DIRT && is_moving_to)
+      continue;
+
+    if (tile == O_DIRT)
+      blit_bitmap(gfx->bitmap, dest, gfx->src_x + xoffset, gfx->src_y + yoffset,
+                  xsize, ysize, sx + xoffset, sy + yoffset);
+    else
+      blit_bitmap(crm->bitmap, dest, crm->src_x + xoffset, crm->src_y + yoffset,
+                  xsize, ysize, sx + xoffset, sy + yoffset);
+  }
+}
+
 static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean draw_masked)
 {
   void (*blit_bitmap)(Bitmap *, Bitmap *, int, int, int, int, int, int) =
@@ -675,7 +724,10 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   {
     struct GraphicInfo_BD *g = &graphic_info_bd_object[draw][frame];
 
-    blit_bitmap(g->bitmap, dest, g->src_x, g->src_y, cell_size, cell_size, sx, sy);
+    if (draw == O_DIRT)
+      gd_drawcave_crumbled(dest, game, x, y, draw_masked);
+    else
+      blit_bitmap(g->bitmap, dest, g->src_x, g->src_y, cell_size, cell_size, sx, sy);
 
     return;
   }
@@ -792,6 +844,7 @@ int gd_drawcave(Bitmap *dest, GdGame *game, boolean force_redraw)
     for (x = cave->x1; x <= cave->x2; x++)
     {
       if (redraw_all ||
+	  game->drawing_buffer[y][x] == O_DIRT ||
 	  game->gfx_buffer[y][x] & GD_REDRAW ||
 	  game->dir_buffer_from[y][x] != GD_MV_STILL ||
 	  game->dir_buffer_to[y][x]   != GD_MV_STILL)

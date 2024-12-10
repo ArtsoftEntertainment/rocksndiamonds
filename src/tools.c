@@ -11151,6 +11151,10 @@ void InitGraphicInfo_BD(void)
 				    g->anim_start_frame,
 				    sync_frame);
 
+      // add special definitions for crumbled sand
+      if (i == O_DIRT_CRUMBLED)
+        graphic = el_act2crm(EL_BDX_SAND, ACTION_DEFAULT);
+
       getGraphicSourceExt(graphic, frame, &src_bitmap, &src_x, &src_y, FALSE);
 
       g_bd->bitmap = src_bitmap;
