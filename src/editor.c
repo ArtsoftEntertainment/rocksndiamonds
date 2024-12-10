@@ -6263,6 +6263,11 @@ static int editor_el_emerald_mine_club[] =
   EL_YAMYAM_DOWN,
   EL_BALLOON_SWITCH_DOWN,
   EL_BALLOON_SWITCH_NONE,
+
+  EL_EXPANDABLE_WALL_HORIZONTAL,
+  EL_EXPANDABLE_WALL_VERTICAL,
+  EL_EMPTY,
+  EL_EMPTY,
 };
 static int *editor_hl_emerald_mine_club_ptr = editor_hl_emerald_mine_club;
 static int *editor_el_emerald_mine_club_ptr = editor_el_emerald_mine_club;
@@ -6281,8 +6286,8 @@ static int editor_el_rnd[] =
 {
   EL_DYNAMITE,			// RND
   EL_DYNAMITE_ACTIVE,		// RND
-  EL_EMPTY,
-  EL_EMPTY,
+  EL_EXPANDABLE_WALL_ANY,
+  EL_EXPANDABLE_WALL,
 
   EL_KEY_1,
   EL_KEY_2,
@@ -6358,11 +6363,6 @@ static int editor_el_rnd[] =
   EL_MOLE_DOWN,
   EL_INVISIBLE_STEELWALL,
   EL_INVISIBLE_WALL,
-
-  EL_EXPANDABLE_WALL,
-  EL_EXPANDABLE_WALL_HORIZONTAL,
-  EL_EXPANDABLE_WALL_VERTICAL,
-  EL_EXPANDABLE_WALL_ANY,
 };
 static int *editor_hl_rnd_ptr = editor_hl_rnd;
 static int *editor_el_rnd_ptr = editor_el_rnd;
