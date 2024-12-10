@@ -348,8 +348,8 @@ static SDL_Surface *get_colored_surface_from_template(GdCave *cave, SDL_Surface 
   color[3] = get_template_color(cave->color3);		// replace yellow
   color[4] = get_template_color(cave->color5);		// replace blue
   color[5] = get_template_color(cave->color2);		// replace purple
-  color[6] = get_template_color(0);			// replace cyan
-  color[7] = get_template_color(0);			// replace white
+  color[6] = get_template_color(GD_GDASH_GRAY2);	// replace cyan
+  color[7] = get_template_color(GD_GDASH_WHITE);	// replace white
 
   for (y = 0; y < height; y++)
   {
