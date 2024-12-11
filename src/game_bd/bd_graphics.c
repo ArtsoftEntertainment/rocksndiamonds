@@ -551,8 +551,20 @@ static void gd_drawcave_crumbled(Bitmap *dest, GdGame *game, int x, int y, boole
   int sy = y * cell_size - scroll_y;
   int frame = game->animcycle;
   int border_size = cell_size / 8;
-  struct GraphicInfo_BD *gfx = &graphic_info_bd_object[O_DIRT][frame];
-  struct GraphicInfo_BD *crm = &graphic_info_bd_object[O_DIRT_CRUMBLED][frame];
+  int dir_to = game->dir_buffer_to[y][x];
+  boolean is_moving_to = (dir_to != GD_MV_STILL);
+  int tile_gfx = (!is_moving_to ? O_DIRT :
+                  dir_to == GD_MV_LEFT  ? O_DIRT_DIGGING_LEFT  :
+                  dir_to == GD_MV_RIGHT ? O_DIRT_DIGGING_RIGHT :
+                  dir_to == GD_MV_UP    ? O_DIRT_DIGGING_UP    :
+                  dir_to == GD_MV_DOWN  ? O_DIRT_DIGGING_DOWN  : O_DIRT);
+  int tile_crm = (!is_moving_to ? O_DIRT_CRUMBLED :
+                  dir_to == GD_MV_LEFT  ? O_DIRT_DIGGING_LEFT_CRUMBLED  :
+                  dir_to == GD_MV_RIGHT ? O_DIRT_DIGGING_RIGHT_CRUMBLED :
+                  dir_to == GD_MV_UP    ? O_DIRT_DIGGING_UP_CRUMBLED    :
+                  dir_to == GD_MV_DOWN  ? O_DIRT_DIGGING_DOWN_CRUMBLED  : O_DIRT_CRUMBLED);
+  struct GraphicInfo_BD *gfx = &graphic_info_bd_object[tile_gfx][frame];
+  struct GraphicInfo_BD *crm = &graphic_info_bd_object[tile_crm][frame];
   int dirs[] = { GD_MV_UP, GD_MV_LEFT, GD_MV_RIGHT, GD_MV_DOWN };
   int i;
 
@@ -575,12 +587,13 @@ static void gd_drawcave_crumbled(Bitmap *dest, GdGame *game, int x, int y, boole
     int yoffset = (dy > 0 ? cell_size - border_size : 0);
     int xsize = (dx == 0 ? cell_size : border_size);
     int ysize = (dy == 0 ? cell_size : border_size);
-    int dir_to = game->dir_buffer_to[yy][xx];
-    boolean is_moving_to = (dir_to != GD_MV_STILL);
 
-    // do not crumble sand that is just being digged away
+    dir_to = game->dir_buffer_to[yy][xx];
+    is_moving_to = (dir_to != GD_MV_STILL);
+
+    // do not crumble border if next to sand that is just being digged away
     if (tile_last == O_DIRT && is_moving_to)
-      continue;
+      tile = O_DIRT;
 
     if (tile == O_DIRT)
       blit_bitmap(gfx->bitmap, dest, gfx->src_x + xoffset, gfx->src_y + yoffset,
@@ -620,6 +633,9 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   boolean is_diagonal_movement_to = (dx_to != 0 && dy_to != 0);
   boolean is_double_movement = (dir_from > GD_MV_TWICE);
   boolean use_smooth_movements = use_bd_smooth_movements();
+  struct GraphicInfo_BD *gfx = &graphic_info_bd_object[O_DIRT][0];
+  struct GraphicInfo_BD *crm = &graphic_info_bd_object[O_DIRT_CRUMBLED][0];
+  boolean draw_crumbled = (gfx->graphic != crm->graphic);
 
   // if element is moving away from this tile, determine element that is moving
   if (is_moving_from)
@@ -724,7 +740,7 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   {
     struct GraphicInfo_BD *g = &graphic_info_bd_object[draw][frame];
 
-    if (draw == O_DIRT)
+    if (draw_crumbled && draw == O_DIRT)
       gd_drawcave_crumbled(dest, game, x, y, draw_masked);
     else
       blit_bitmap(g->bitmap, dest, g->src_x, g->src_y, cell_size, cell_size, sx, sy);
@@ -743,7 +759,16 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
     int draw_back = (!is_moving_to ? draw : digging_tile ? draw_last : O_SPACE);
     struct GraphicInfo_BD *g = &graphic_info_bd_object[draw_back][frame];
 
-    blit_bitmap(g->bitmap, dest, g->src_x, g->src_y, cell_size, cell_size, sx, sy);
+    if (draw_crumbled && draw_last == O_DIRT)
+    {
+      gd_drawcave_crumbled(dest, game, x, y, draw_masked);
+
+      blit_bitmap = BlitBitmapMasked;
+    }
+    else
+    {
+      blit_bitmap(g->bitmap, dest, g->src_x, g->src_y, cell_size, cell_size, sx, sy);
+    }
   }
 
   // get shifted position between cave fields the game element is moving from/to

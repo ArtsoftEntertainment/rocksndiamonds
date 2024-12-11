@@ -6133,6 +6133,42 @@ bd_object_mapping_list[] =
     EL_BDX_SAND,				-1, -1
   },
   {
+    O_DIRT_CRUMBLED,				FALSE,
+    EL_BDX_SAND,				-1, -1
+  },
+  {
+    O_DIRT_DIGGING_LEFT,			FALSE,
+    EL_BDX_SAND,				ACTION_DIGGING, MV_BIT_LEFT
+  },
+  {
+    O_DIRT_DIGGING_RIGHT,			FALSE,
+    EL_BDX_SAND,				ACTION_DIGGING, MV_BIT_RIGHT
+  },
+  {
+    O_DIRT_DIGGING_UP,				FALSE,
+    EL_BDX_SAND,				ACTION_DIGGING, MV_BIT_UP
+  },
+  {
+    O_DIRT_DIGGING_DOWN,			FALSE,
+    EL_BDX_SAND,				ACTION_DIGGING, MV_BIT_DOWN
+  },
+  {
+    O_DIRT_DIGGING_LEFT_CRUMBLED,		FALSE,
+    EL_BDX_SAND,				ACTION_DIGGING, MV_BIT_LEFT
+  },
+  {
+    O_DIRT_DIGGING_RIGHT_CRUMBLED,		FALSE,
+    EL_BDX_SAND,				ACTION_DIGGING, MV_BIT_RIGHT
+  },
+  {
+    O_DIRT_DIGGING_UP_CRUMBLED,			FALSE,
+    EL_BDX_SAND,				ACTION_DIGGING, MV_BIT_UP
+  },
+  {
+    O_DIRT_DIGGING_DOWN_CRUMBLED,		FALSE,
+    EL_BDX_SAND,				ACTION_DIGGING, MV_BIT_DOWN
+  },
+  {
     O_DIRT_SLOPED_UP_RIGHT,			TRUE,
     EL_BDX_SAND_SLOPED_UP_RIGHT,		-1, -1
   },
@@ -11124,7 +11160,14 @@ void InitGraphicInfo_BD(void)
     {
       int effective_element = element;
       int effective_action = action;
-      int graphic = (direction == MV_NONE ?
+      int graphic = (i == O_DIRT_CRUMBLED ?
+                     graphic = el_act2crm(effective_element, effective_action) :
+                     i == O_DIRT_DIGGING_LEFT_CRUMBLED  ||
+                     i == O_DIRT_DIGGING_RIGHT_CRUMBLED ||
+                     i == O_DIRT_DIGGING_UP_CRUMBLED    ||
+                     i == O_DIRT_DIGGING_DOWN_CRUMBLED ?
+                     graphic = el_act_dir2crm(effective_element, effective_action, direction) :
+                     direction == MV_NONE ?
                      el_act2img(effective_element, effective_action) :
                      el_act_dir2img(effective_element, effective_action, direction));
       struct GraphicInfo *g = &graphic_info[graphic];
@@ -11144,16 +11187,20 @@ void InitGraphicInfo_BD(void)
 			BD_GFX_RANGE(O_NITRO_EXPL_1, 4, e)    ? BD_GFX_FRAME(O_NITRO_EXPL_1, e) :
 			BD_GFX_RANGE(O_AMOEBA_2_EXPL_1, 4, e) ? BD_GFX_FRAME(O_AMOEBA_2_EXPL_1, e):
 			e == O_INBOX_OPEN || e == O_OUTBOX_OPEN ? j :
+			e == O_DIRT_DIGGING_LEFT           ||
+			e == O_DIRT_DIGGING_RIGHT          ||
+			e == O_DIRT_DIGGING_UP             ||
+			e == O_DIRT_DIGGING_DOWN           ||
+			e == O_DIRT_DIGGING_LEFT_CRUMBLED  ||
+			e == O_DIRT_DIGGING_RIGHT_CRUMBLED ||
+			e == O_DIRT_DIGGING_UP_CRUMBLED    ||
+			e == O_DIRT_DIGGING_DOWN_CRUMBLED ? j * 2 % 8:
 			j * 2);
       int frame = getAnimationFrame(g->anim_frames,
 				    g->anim_delay,
 				    g->anim_mode,
 				    g->anim_start_frame,
 				    sync_frame);
-
-      // add special definitions for crumbled sand
-      if (i == O_DIRT_CRUMBLED)
-        graphic = el_act2crm(EL_BDX_SAND, ACTION_DEFAULT);
 
       getGraphicSourceExt(graphic, frame, &src_bitmap, &src_x, &src_y, FALSE);
 
