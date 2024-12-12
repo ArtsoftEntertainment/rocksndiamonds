@@ -506,7 +506,14 @@ static inline boolean el_can_dig(const int element)
 static inline boolean el_has_crumbled(const int element)
 {
   int tile_gfx = element;
-  int tile_crm = (element == O_DIRT ? O_DIRT_CRUMBLED : element);
+  int tile_crm = (element == O_DIRT           ? O_DIRT_CRUMBLED           :
+                  element == O_DIRT2          ? O_DIRT2_CRUMBLED          :
+                  element == O_DIRT_GLUED     ? O_DIRT_GLUED_CRUMBLED     :
+                  element == O_BITER_SWITCH_1 ? O_BITER_SWITCH_1_CRUMBLED :
+                  element == O_BITER_SWITCH_2 ? O_BITER_SWITCH_2_CRUMBLED :
+                  element == O_BITER_SWITCH_3 ? O_BITER_SWITCH_3_CRUMBLED :
+                  element == O_BITER_SWITCH_4 ? O_BITER_SWITCH_4_CRUMBLED :
+                  element);
   struct GraphicInfo_BD *gfx = &graphic_info_bd_object[tile_gfx][0];
   struct GraphicInfo_BD *crm = &graphic_info_bd_object[tile_crm][0];
 
@@ -553,6 +560,56 @@ static inline boolean el_smooth_movable(const int element)
           el_pushable(element));
 }
 
+static int get_dirt_element(int element, int dir, boolean crumbled)
+{
+  switch (element)
+  {
+    case O_DIRT:
+      return (crumbled ?
+              (dir == GD_MV_LEFT  ? O_DIRT_DIGGING_LEFT_CRUMBLED  :
+               dir == GD_MV_RIGHT ? O_DIRT_DIGGING_RIGHT_CRUMBLED :
+               dir == GD_MV_UP    ? O_DIRT_DIGGING_UP_CRUMBLED    :
+               dir == GD_MV_DOWN  ? O_DIRT_DIGGING_DOWN_CRUMBLED  : O_DIRT_CRUMBLED) :
+
+              (dir == GD_MV_LEFT  ? O_DIRT_DIGGING_LEFT   :
+               dir == GD_MV_RIGHT ? O_DIRT_DIGGING_RIGHT  :
+               dir == GD_MV_UP    ? O_DIRT_DIGGING_UP     :
+               dir == GD_MV_DOWN  ? O_DIRT_DIGGING_DOWN   : O_DIRT));
+
+    case O_DIRT2:
+      return (crumbled ?
+              (dir == GD_MV_LEFT  ? O_DIRT2_DIGGING_LEFT_CRUMBLED  :
+               dir == GD_MV_RIGHT ? O_DIRT2_DIGGING_RIGHT_CRUMBLED :
+               dir == GD_MV_UP    ? O_DIRT2_DIGGING_UP_CRUMBLED    :
+               dir == GD_MV_DOWN  ? O_DIRT2_DIGGING_DOWN_CRUMBLED  : O_DIRT2_CRUMBLED) :
+
+              (dir == GD_MV_LEFT  ? O_DIRT2_DIGGING_LEFT   :
+               dir == GD_MV_RIGHT ? O_DIRT2_DIGGING_RIGHT  :
+               dir == GD_MV_UP    ? O_DIRT2_DIGGING_UP     :
+               dir == GD_MV_DOWN  ? O_DIRT2_DIGGING_DOWN   : O_DIRT2));
+
+    case O_DIRT_GLUED:
+      return (crumbled ? O_DIRT_GLUED_CRUMBLED : O_DIRT_GLUED);
+
+    case O_BITER_SWITCH_1:
+      return (crumbled ? O_BITER_SWITCH_1_CRUMBLED : O_BITER_SWITCH_1);
+
+    case O_BITER_SWITCH_2:
+      return (crumbled ? O_BITER_SWITCH_2_CRUMBLED : O_BITER_SWITCH_2);
+
+    case O_BITER_SWITCH_3:
+      return (crumbled ? O_BITER_SWITCH_3_CRUMBLED : O_BITER_SWITCH_3);
+
+    case O_BITER_SWITCH_4:
+      return (crumbled ? O_BITER_SWITCH_4_CRUMBLED : O_BITER_SWITCH_4);
+
+    default:
+      break;
+  }
+
+  return element;
+}
+
 static void gd_drawcave_crumbled(Bitmap *dest, GdGame *game, int x, int y, boolean draw_masked)
 {
   void (*blit_bitmap)(Bitmap *, Bitmap *, int, int, int, int, int, int) =
@@ -562,18 +619,14 @@ static void gd_drawcave_crumbled(Bitmap *dest, GdGame *game, int x, int y, boole
   int sy = y * cell_size - scroll_y;
   int frame = game->animcycle;
   int border_size = cell_size / 8;
+  int draw = game->drawing_buffer[y][x];
+  int draw_last = game->last_drawing_buffer[y][x];
   int dir_to = game->dir_buffer_to[y][x];
   boolean is_moving_to = (dir_to != GD_MV_STILL);
-  int tile_gfx = (!is_moving_to ? O_DIRT :
-                  dir_to == GD_MV_LEFT  ? O_DIRT_DIGGING_LEFT  :
-                  dir_to == GD_MV_RIGHT ? O_DIRT_DIGGING_RIGHT :
-                  dir_to == GD_MV_UP    ? O_DIRT_DIGGING_UP    :
-                  dir_to == GD_MV_DOWN  ? O_DIRT_DIGGING_DOWN  : O_DIRT);
-  int tile_crm = (!is_moving_to ? O_DIRT_CRUMBLED :
-                  dir_to == GD_MV_LEFT  ? O_DIRT_DIGGING_LEFT_CRUMBLED  :
-                  dir_to == GD_MV_RIGHT ? O_DIRT_DIGGING_RIGHT_CRUMBLED :
-                  dir_to == GD_MV_UP    ? O_DIRT_DIGGING_UP_CRUMBLED    :
-                  dir_to == GD_MV_DOWN  ? O_DIRT_DIGGING_DOWN_CRUMBLED  : O_DIRT_CRUMBLED);
+  boolean is_diggable_last = el_diggable(draw_last);
+  int tile = (is_moving_to && is_diggable_last ? draw_last : draw);
+  int tile_gfx = get_dirt_element(tile, dir_to, FALSE);
+  int tile_crm = get_dirt_element(tile, dir_to, TRUE);
   struct GraphicInfo_BD *gfx = &graphic_info_bd_object[tile_gfx][frame];
   struct GraphicInfo_BD *crm = &graphic_info_bd_object[tile_crm][frame];
   int dirs[] = { GD_MV_UP, GD_MV_LEFT, GD_MV_RIGHT, GD_MV_DOWN };
@@ -592,19 +645,19 @@ static void gd_drawcave_crumbled(Bitmap *dest, GdGame *game, int x, int y, boole
     int dy = gd_dy[dir];
     int xx = (x + dx + cave->w) % cave->w;
     int yy = (y + dy + cave->h) % cave->h;
-    int tile = game->element_buffer[yy][xx];
-    int tile_last = game->last_element_buffer[yy][xx];
     int xoffset = (dx > 0 ? cell_size - border_size : 0);
     int yoffset = (dy > 0 ? cell_size - border_size : 0);
     int xsize = (dx == 0 ? cell_size : border_size);
     int ysize = (dy == 0 ? cell_size : border_size);
 
+    draw = game->drawing_buffer[yy][xx];
+    draw_last = game->last_drawing_buffer[yy][xx];
     dir_to = game->dir_buffer_to[yy][xx];
     is_moving_to = (dir_to != GD_MV_STILL);
 
     // do not crumble border if next tile is also crumbled or is just being digged away
-    boolean draw_normal = ((el_has_crumbled(tile)) ||
-                           (el_has_crumbled(tile_last) && is_moving_to));
+    boolean draw_normal = ((el_has_crumbled(draw)) ||
+                           (el_has_crumbled(draw_last) && is_moving_to));
 
     if (draw_normal)
       blit_bitmap(gfx->bitmap, dest, gfx->src_x + xoffset, gfx->src_y + yoffset,
@@ -767,7 +820,7 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
     int draw_back = (!is_moving_to ? draw : digging_tile ? draw_last : O_SPACE);
     struct GraphicInfo_BD *g = &graphic_info_bd_object[draw_back][frame];
 
-    if (el_has_crumbled(draw_last))
+    if (el_has_crumbled(draw_back))
     {
       gd_drawcave_crumbled(dest, game, x, y, draw_masked);
 

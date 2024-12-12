@@ -240,6 +240,51 @@ GdElementProperty gd_element_properties[] =
     "DIRT2", 0, 3, 3, 3
   },
   {
+    O_DIRT2_CRUMBLED, O_DIRT2_CRUMBLED, N_("Dirt 2 (crumbled)"),
+    P_DIRT | P_AMOEBA_CONSUMES | P_DIGGABLE,
+    "DIRT2_CRUMBLED", 0, 3, 3, 3
+  },
+  {
+    O_DIRT2_DIGGING_LEFT, O_DIRT2_DIGGING_LEFT, N_("Dirt 2 (digging left)"),
+    P_DIRT | P_AMOEBA_CONSUMES | P_DIGGABLE,
+    "DIRT2_DIGGING_LEFT", 0, 3, 3, 3
+  },
+  {
+    O_DIRT2_DIGGING_RIGHT, O_DIRT2_DIGGING_RIGHT, N_("Dirt 2 (digging right)"),
+    P_DIRT | P_AMOEBA_CONSUMES | P_DIGGABLE,
+    "DIRT2_DIGGING_RIGHT", 0, 3, 3, 3
+  },
+  {
+    O_DIRT2_DIGGING_UP, O_DIRT2_DIGGING_UP, N_("Dirt 2 (digging up)"),
+    P_DIRT | P_AMOEBA_CONSUMES | P_DIGGABLE,
+    "DIRT2_DIGGING_UP", 0, 3, 3, 3
+  },
+  {
+    O_DIRT2_DIGGING_DOWN, O_DIRT2_DIGGING_DOWN, N_("Dirt 2 (digging down)"),
+    P_DIRT | P_AMOEBA_CONSUMES | P_DIGGABLE,
+    "DIRT2_DIGGING_", 0, 3, 3, 3
+  },
+  {
+    O_DIRT2_DIGGING_LEFT_CRUMBLED, O_DIRT2_DIGGING_LEFT_CRUMBLED, N_("Dirt 2 (digging left, crumbled)"),
+    P_DIRT | P_AMOEBA_CONSUMES | P_DIGGABLE,
+    "DIRT2_DIGGING_LEFT_CRUMBLED", 0, 3, 3, 3
+  },
+  {
+    O_DIRT2_DIGGING_RIGHT_CRUMBLED, O_DIRT2_DIGGING_RIGHT_CRUMBLED, N_("Dirt 2 (digging right, crumbled)"),
+    P_DIRT | P_AMOEBA_CONSUMES | P_DIGGABLE,
+    "DIRT2_DIGGING_RIGHT_CRUMBLED", 0, 3, 3, 3
+  },
+  {
+    O_DIRT2_DIGGING_UP_CRUMBLED, O_DIRT2_DIGGING_UP_CRUMBLED, N_("Dirt 2 (digging up, crumbled)"),
+    P_DIRT | P_AMOEBA_CONSUMES | P_DIGGABLE,
+    "DIRT2_DIGGING_UP_CRUMBLED", 0, 3, 3, 3
+  },
+  {
+    O_DIRT2_DIGGING_DOWN_CRUMBLED, O_DIRT2_DIGGING_DOWN_CRUMBLED, N_("Dirt 2 (digging down, crumbled)"),
+    P_DIRT | P_AMOEBA_CONSUMES | P_DIGGABLE,
+    "DIRT2_DIGGING_DOWN_CRUMBLED", 0, 3, 3, 3
+  },
+  {
     O_BRICK, O_BRICK, N_("Brick wall"),
     P_SLOPED|P_BLADDER_SLOPED|P_CAN_BE_HAMMERED,
     "WALL", 'w', 5, 5, 5
@@ -643,6 +688,11 @@ GdElementProperty gd_element_properties[] =
     O_DIRT_GLUED, O_DIRT_GLUED, N_("Glued dirt"),
     0,
     "GLUEDDIRT", 0, i_dirt_glued, i_dirt_glued, 2
+  },
+  {
+    O_DIRT_GLUED_CRUMBLED, O_DIRT_GLUED_CRUMBLED, N_("Glued dirt (crumbled)"),
+    0,
+    "GLUEDDIRT_CRUMBLED", 0, i_dirt_glued, i_dirt_glued, 2
   },
   {
     O_KEY_1, O_KEY_1, N_("Key 1"),
@@ -1947,6 +1997,26 @@ GdElementProperty gd_element_properties[] =
   },
   {
     O_BITER_SWITCH_4, O_BITER_SWITCH_4, NULL,
+    0,
+    NULL, 0, 15, 15, 15
+  },
+  {
+    O_BITER_SWITCH_1_CRUMBLED, O_BITER_SWITCH_1_CRUMBLED, NULL,
+    0,
+    NULL, 0, 12, 12, 12
+  },
+  {
+    O_BITER_SWITCH_2_CRUMBLED, O_BITER_SWITCH_2_CRUMBLED, NULL,
+    0,
+    NULL, 0, 13, 13, 13
+  },
+  {
+    O_BITER_SWITCH_3_CRUMBLED, O_BITER_SWITCH_3_CRUMBLED, NULL,
+    0,
+    NULL, 0, 14, 14, 14
+  },
+  {
+    O_BITER_SWITCH_4_CRUMBLED, O_BITER_SWITCH_4_CRUMBLED, NULL,
     0,
     NULL, 0, 15, 15, 15
   },

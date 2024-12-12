@@ -6213,6 +6213,42 @@ bd_object_mapping_list[] =
     EL_BDX_GRASS,				-1, -1
   },
   {
+    O_DIRT2_CRUMBLED,				FALSE,
+    EL_BDX_GRASS,				-1, -1
+  },
+  {
+    O_DIRT2_DIGGING_LEFT,			FALSE,
+    EL_BDX_GRASS,				ACTION_DIGGING, MV_BIT_LEFT
+  },
+  {
+    O_DIRT2_DIGGING_RIGHT,			FALSE,
+    EL_BDX_GRASS,				ACTION_DIGGING, MV_BIT_RIGHT
+  },
+  {
+    O_DIRT2_DIGGING_UP,				FALSE,
+    EL_BDX_GRASS,				ACTION_DIGGING, MV_BIT_UP
+  },
+  {
+    O_DIRT2_DIGGING_DOWN,			FALSE,
+    EL_BDX_GRASS,				ACTION_DIGGING, MV_BIT_DOWN
+  },
+  {
+    O_DIRT2_DIGGING_LEFT_CRUMBLED,		FALSE,
+    EL_BDX_GRASS,				ACTION_DIGGING, MV_BIT_LEFT
+  },
+  {
+    O_DIRT2_DIGGING_RIGHT_CRUMBLED,		FALSE,
+    EL_BDX_GRASS,				ACTION_DIGGING, MV_BIT_RIGHT
+  },
+  {
+    O_DIRT2_DIGGING_UP_CRUMBLED,			FALSE,
+    EL_BDX_GRASS,				ACTION_DIGGING, MV_BIT_UP
+  },
+  {
+    O_DIRT2_DIGGING_DOWN_CRUMBLED,		FALSE,
+    EL_BDX_GRASS,				ACTION_DIGGING, MV_BIT_DOWN
+  },
+  {
     O_BRICK,					TRUE,
     EL_BDX_WALL,				-1, -1
   },
@@ -6478,6 +6514,10 @@ bd_object_mapping_list[] =
   },
   {
     O_DIRT_GLUED,				TRUE,
+    EL_BDX_SAND_GLUED,				-1, -1
+  },
+  {
+    O_DIRT_GLUED_CRUMBLED,			FALSE,
     EL_BDX_SAND_GLUED,				-1, -1
   },
   {
@@ -7944,6 +7984,22 @@ bd_object_mapping_list[] =
   },
   {
     O_BITER_SWITCH_4,				FALSE,
+    EL_BDX_BITER_SWITCH_4,			-1, -1
+  },
+  {
+    O_BITER_SWITCH_1_CRUMBLED,			FALSE,
+    EL_BDX_BITER_SWITCH_1,			-1, -1
+  },
+  {
+    O_BITER_SWITCH_2_CRUMBLED,			FALSE,
+    EL_BDX_BITER_SWITCH_2,			-1, -1
+  },
+  {
+    O_BITER_SWITCH_3_CRUMBLED,			FALSE,
+    EL_BDX_BITER_SWITCH_3,			-1, -1
+  },
+  {
+    O_BITER_SWITCH_4_CRUMBLED,			FALSE,
     EL_BDX_BITER_SWITCH_4,			-1, -1
   },
   {
@@ -11160,12 +11216,22 @@ void InitGraphicInfo_BD(void)
     {
       int effective_element = element;
       int effective_action = action;
-      int graphic = (i == O_DIRT_CRUMBLED ?
+      int graphic = (i == O_DIRT_CRUMBLED           ||
+                     i == O_DIRT2_CRUMBLED          ||
+                     i == O_DIRT_GLUED_CRUMBLED     ||
+                     i == O_BITER_SWITCH_1_CRUMBLED ||
+                     i == O_BITER_SWITCH_2_CRUMBLED ||
+                     i == O_BITER_SWITCH_3_CRUMBLED ||
+                     i == O_BITER_SWITCH_4_CRUMBLED ?
                      graphic = el_act2crm(effective_element, effective_action) :
-                     i == O_DIRT_DIGGING_LEFT_CRUMBLED  ||
-                     i == O_DIRT_DIGGING_RIGHT_CRUMBLED ||
-                     i == O_DIRT_DIGGING_UP_CRUMBLED    ||
-                     i == O_DIRT_DIGGING_DOWN_CRUMBLED ?
+                     i == O_DIRT_DIGGING_LEFT_CRUMBLED   ||
+                     i == O_DIRT_DIGGING_RIGHT_CRUMBLED  ||
+                     i == O_DIRT_DIGGING_UP_CRUMBLED     ||
+                     i == O_DIRT_DIGGING_DOWN_CRUMBLED   ||
+                     i == O_DIRT2_DIGGING_LEFT_CRUMBLED  ||
+                     i == O_DIRT2_DIGGING_RIGHT_CRUMBLED ||
+                     i == O_DIRT2_DIGGING_UP_CRUMBLED    ||
+                     i == O_DIRT2_DIGGING_DOWN_CRUMBLED ?
                      graphic = el_act_dir2crm(effective_element, effective_action, direction) :
                      direction == MV_NONE ?
                      el_act2img(effective_element, effective_action) :
@@ -11187,14 +11253,22 @@ void InitGraphicInfo_BD(void)
 			BD_GFX_RANGE(O_NITRO_EXPL_1, 4, e)    ? BD_GFX_FRAME(O_NITRO_EXPL_1, e) :
 			BD_GFX_RANGE(O_AMOEBA_2_EXPL_1, 4, e) ? BD_GFX_FRAME(O_AMOEBA_2_EXPL_1, e):
 			e == O_INBOX_OPEN || e == O_OUTBOX_OPEN ? j :
-			e == O_DIRT_DIGGING_LEFT           ||
-			e == O_DIRT_DIGGING_RIGHT          ||
-			e == O_DIRT_DIGGING_UP             ||
-			e == O_DIRT_DIGGING_DOWN           ||
-			e == O_DIRT_DIGGING_LEFT_CRUMBLED  ||
-			e == O_DIRT_DIGGING_RIGHT_CRUMBLED ||
-			e == O_DIRT_DIGGING_UP_CRUMBLED    ||
-			e == O_DIRT_DIGGING_DOWN_CRUMBLED ? j * 2 % 8:
+			e == O_DIRT_DIGGING_LEFT            ||
+			e == O_DIRT_DIGGING_RIGHT           ||
+			e == O_DIRT_DIGGING_UP              ||
+			e == O_DIRT_DIGGING_DOWN            ||
+			e == O_DIRT_DIGGING_LEFT_CRUMBLED   ||
+			e == O_DIRT_DIGGING_RIGHT_CRUMBLED  ||
+			e == O_DIRT_DIGGING_UP_CRUMBLED     ||
+			e == O_DIRT_DIGGING_DOWN_CRUMBLED   ||
+			e == O_DIRT2_DIGGING_LEFT           ||
+			e == O_DIRT2_DIGGING_RIGHT          ||
+			e == O_DIRT2_DIGGING_UP             ||
+			e == O_DIRT2_DIGGING_DOWN           ||
+			e == O_DIRT2_DIGGING_LEFT_CRUMBLED  ||
+			e == O_DIRT2_DIGGING_RIGHT_CRUMBLED ||
+			e == O_DIRT2_DIGGING_UP_CRUMBLED    ||
+			e == O_DIRT2_DIGGING_DOWN_CRUMBLED ? j * 2 % 8:
 			j * 2);
       int frame = getAnimationFrame(g->anim_frames,
 				    g->anim_delay,
