@@ -403,7 +403,7 @@ typedef struct _gd_cave
   GdColor colorb;                       // border color
   GdColor color0, color1, color2, color3, color4, color5;    // c64-style colors;
                                                              // color 4 and 5 are amoeba and slime.
-
+  GdColor color6, color7;                                    // extra colors
   int diamond_value;                    // Score for a diamond.
   int extra_diamond_value;              // Score for a diamond, when gate is open.
 

@@ -2246,6 +2246,16 @@ const GdStructDescriptor gd_cave_properties[] =
     N_("Slime color"), STRUCT_OFFSET(GdCave, color5), 1,
     N_("Slime color for C64 graphics")
   },
+  {
+    "Colors", GD_TYPE_COLOR, GD_ALWAYS_SAVE,
+    N_("Extra color 1"), STRUCT_OFFSET(GdCave, color6), 1,
+    N_("Extra color 1 for C64 graphics")
+  },
+  {
+    "Colors", GD_TYPE_COLOR, GD_ALWAYS_SAVE,
+    N_("Extra color 2"), STRUCT_OFFSET(GdCave, color7), 1,
+    N_("Extra color 2 for C64 graphics")
+  },
 
   // difficulty
   {

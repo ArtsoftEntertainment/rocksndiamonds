@@ -3953,6 +3953,8 @@ struct LevelInfo
   int bd_color_3;			// BD engine C64-style cave color (wall)
   int bd_color_4;			// BD engine C64-style cave color (amoeba)
   int bd_color_5;			// BD engine C64-style cave color (slime)
+  int bd_color_6;			// BD engine C64-style cave color (extra color 1)
+  int bd_color_7;			// BD engine C64-style cave color (extra color 2)
 
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
   boolean em_explodes_by_fire;		// EM style chain explosion behaviour

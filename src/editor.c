@@ -702,6 +702,8 @@ enum
   GADGET_ID_BD_COLOR_TEXT_3,
   GADGET_ID_BD_COLOR_TEXT_4,
   GADGET_ID_BD_COLOR_TEXT_5,
+  GADGET_ID_BD_COLOR_TEXT_6,
+  GADGET_ID_BD_COLOR_TEXT_7,
   GADGET_ID_ELEMENT_NAME,
 
   // text area identifiers
@@ -723,6 +725,8 @@ enum
   GADGET_ID_BD_COLOR_C64_3,
   GADGET_ID_BD_COLOR_C64_4,
   GADGET_ID_BD_COLOR_C64_5,
+  GADGET_ID_BD_COLOR_C64_6,
+  GADGET_ID_BD_COLOR_C64_7,
   GADGET_ID_WIND_DIRECTION,
   GADGET_ID_PLAYER_SPEED,
   GADGET_ID_BD_GRAVITY_DIRECTION,
@@ -786,6 +790,8 @@ enum
   GADGET_ID_BD_COLOR_PICK_3,
   GADGET_ID_BD_COLOR_PICK_4,
   GADGET_ID_BD_COLOR_PICK_5,
+  GADGET_ID_BD_COLOR_PICK_6,
+  GADGET_ID_BD_COLOR_PICK_7,
 
   // gadgets for scrolling of drawing area
 
@@ -1047,6 +1053,8 @@ enum
   ED_TEXTINPUT_ID_BD_COLOR_TEXT_3,
   ED_TEXTINPUT_ID_BD_COLOR_TEXT_4,
   ED_TEXTINPUT_ID_BD_COLOR_TEXT_5,
+  ED_TEXTINPUT_ID_BD_COLOR_TEXT_6,
+  ED_TEXTINPUT_ID_BD_COLOR_TEXT_7,
   ED_TEXTINPUT_ID_ELEMENT_NAME,
 
   ED_NUM_TEXTINPUT
@@ -1059,7 +1067,7 @@ enum
 #define ED_TEXTINPUT_ID_LEVELSET_LAST	ED_TEXTINPUT_ID_LEVELSET_AUTHOR
 
 #define ED_TEXTINPUT_ID_COLORS_FIRST	ED_TEXTINPUT_ID_BD_COLOR_TEXT_B
-#define ED_TEXTINPUT_ID_COLORS_LAST	ED_TEXTINPUT_ID_BD_COLOR_TEXT_5
+#define ED_TEXTINPUT_ID_COLORS_LAST	ED_TEXTINPUT_ID_BD_COLOR_TEXT_7
 
 // values for text area gadgets
 enum
@@ -1088,6 +1096,8 @@ enum
   ED_SELECTBOX_ID_BD_COLOR_C64_3,
   ED_SELECTBOX_ID_BD_COLOR_C64_4,
   ED_SELECTBOX_ID_BD_COLOR_C64_5,
+  ED_SELECTBOX_ID_BD_COLOR_C64_6,
+  ED_SELECTBOX_ID_BD_COLOR_C64_7,
   ED_SELECTBOX_ID_WIND_DIRECTION,
   ED_SELECTBOX_ID_PLAYER_SPEED,
   ED_SELECTBOX_ID_BD_GRAVITY_DIRECTION,
@@ -1131,7 +1141,7 @@ enum
 #define ED_SELECTBOX_ID_ENGINE_LAST	ED_SELECTBOX_ID_BD_SCHEDULING_TYPE
 
 #define ED_SELECTBOX_ID_COLORS_FIRST	ED_SELECTBOX_ID_BD_COLOR_C64_B
-#define ED_SELECTBOX_ID_COLORS_LAST	ED_SELECTBOX_ID_BD_COLOR_C64_5
+#define ED_SELECTBOX_ID_COLORS_LAST	ED_SELECTBOX_ID_BD_COLOR_C64_7
 
 #define ED_SELECTBOX_ID_CUSTOM1_FIRST	ED_SELECTBOX_ID_CUSTOM_ACCESS_TYPE
 #define ED_SELECTBOX_ID_CUSTOM1_LAST	ED_SELECTBOX_ID_CUSTOM_WALK_TO_ACTION
@@ -1193,6 +1203,8 @@ enum
   ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_3,
   ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_4,
   ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_5,
+  ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_6,
+  ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_7,
 
   ED_NUM_GRAPHICBUTTONS
 };
@@ -1201,7 +1213,7 @@ enum
 #define ED_GRAPHICBUTTON_ID_CHANGE_LAST   ED_GRAPHICBUTTON_ID_PASTE_CHANGE_PAGE
 
 #define ED_GRAPHICBUTTON_ID_PICK_FIRST    ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_B
-#define ED_GRAPHICBUTTON_ID_PICK_LAST     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_5
+#define ED_GRAPHICBUTTON_ID_PICK_LAST     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_7
 
 // values for checkbutton gadgets
 enum
@@ -1720,7 +1732,7 @@ static boolean levelset_use_levelset_artwork = FALSE;
 static boolean levelset_copy_level_template = FALSE;
 static int levelset_save_mode = LEVELSET_SAVE_MODE_UPDATE;
 
-#define MAX_BD_COLORS			7
+#define MAX_BD_COLORS			9
 #define MAX_BD_COLOR_TEXT_LEN		12
 
 static int bd_color_type_default = GD_COLOR_TYPE_RGB;
@@ -1737,6 +1749,8 @@ static int *bd_color[MAX_BD_COLORS] =
   &level.bd_color_3,
   &level.bd_color_4,
   &level.bd_color_5,
+  &level.bd_color_6,
+  &level.bd_color_7,
 };
 
 static struct
@@ -2271,6 +2285,22 @@ static struct
     MAX_BD_COLOR_TEXT_LEN,
     bd_color_text[6],
     NULL, "Slime color:       ", NULL,		"Enter slime color (C64 graphics)"
+  },
+  {
+    ED_TEXTINPUT_ID_BD_COLOR_TEXT_6,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(8),
+    GADGET_ID_BD_COLOR_TEXT_6,
+    MAX_BD_COLOR_TEXT_LEN,
+    bd_color_text[7],
+    NULL, "Extra color 1:     ", NULL,		"Enter extra color 1 (C64 graphics)"
+  },
+  {
+    ED_TEXTINPUT_ID_BD_COLOR_TEXT_7,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(9),
+    GADGET_ID_BD_COLOR_TEXT_7,
+    MAX_BD_COLOR_TEXT_LEN,
+    bd_color_text[8],
+    NULL, "Extra color 2:     ", NULL,		"Enter extra color 2 (C64 graphics)"
   },
 
   // ---------- element settings: configure (several elements) ----------------
@@ -3236,6 +3266,24 @@ static struct
     &bd_color_c64[6],
     NULL, "Slime color:       ", NULL,		"Select slime color (C64 graphics)"
   },
+  {
+    ED_SELECTBOX_ID_BD_COLOR_C64_6,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(8),
+    GADGET_ID_BD_COLOR_C64_6,			GADGET_ID_NONE,
+    -1,
+    options_bd_color_c64_name,
+    &bd_color_c64[7],
+    NULL, "Extra color 1:     ", NULL,		"Select extra color 1 (C64 graphics)"
+  },
+  {
+    ED_SELECTBOX_ID_BD_COLOR_C64_7,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(9),
+    GADGET_ID_BD_COLOR_C64_7,			GADGET_ID_NONE,
+    -1,
+    options_bd_color_c64_name,
+    &bd_color_c64[8],
+    NULL, "Extra color 2:     ", NULL,		"Select extra color 2 (C64 graphics)"
+  },
 
   // ---------- element settings: configure (several elements) ----------------
 
@@ -3661,7 +3709,7 @@ static struct
 
   {
     ED_TEXTBUTTON_ID_BD_SET_RANDOM_COLORS,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(8),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(10),
     GADGET_ID_BD_SET_RANDOM_COLORS,		GADGET_ID_NONE,
     -1,						"Set random colors",
     NULL, NULL, NULL,				"Create and set random level colors"
@@ -3754,6 +3802,20 @@ static struct
     -1,						ED_ENGINE_SETTINGS_YPOS(7),
     GADGET_ID_BD_COLOR_PICK_5,			GADGET_ID_BD_COLOR_TEXT_5,
     NULL, NULL,					"Pick slime color (C64 graphics)"
+  },
+  {
+    ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_6,
+    IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
+    -1,						ED_ENGINE_SETTINGS_YPOS(8),
+    GADGET_ID_BD_COLOR_PICK_6,			GADGET_ID_BD_COLOR_TEXT_6,
+    NULL, NULL,					"Pick extra color 1 (C64 graphics)"
+  },
+  {
+    ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_7,
+    IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
+    -1,						ED_ENGINE_SETTINGS_YPOS(9),
+    GADGET_ID_BD_COLOR_PICK_7,			GADGET_ID_BD_COLOR_TEXT_7,
+    NULL, NULL,					"Pick extra color 2 (C64 graphics)"
   },
 };
 
@@ -11873,6 +11935,8 @@ void SetCurrentLevelColors_BD(void)
   cave->color3 = level.bd_color_3;
   cave->color4 = level.bd_color_4;
   cave->color5 = level.bd_color_5;
+  cave->color6 = level.bd_color_6;
+  cave->color7 = level.bd_color_7;
 }
 
 void SetRandomLevelColors_BD(int bd_color_type)
@@ -11891,6 +11955,8 @@ void SetRandomLevelColors_BD(int bd_color_type)
   level.bd_color_3 = cave->color3;
   level.bd_color_4 = cave->color4;
   level.bd_color_5 = cave->color5;
+  level.bd_color_6 = cave->color6;
+  level.bd_color_7 = cave->color7;
 }
 
 static void DrawColorBox_BD(int nr)

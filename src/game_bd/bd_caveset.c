@@ -509,6 +509,8 @@ static void brc_import(byte *data)
       cave->color3 = 0xffffff;    // white for brick
       cave->color4 = 0xe5ad23;    // fixed for amoeba
       cave->color5 = 0x8af713;    // fixed for slime
+      cave->color6 = 0x888888;    // extra color 1 - gray
+      cave->color7 = 0xffffff;    // extra color 2 - white
 
       if (import_effect)
       {

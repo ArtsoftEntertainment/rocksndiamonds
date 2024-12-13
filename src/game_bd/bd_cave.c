@@ -791,6 +791,7 @@ void gd_cave_set_random_c64_colors(GdCave *cave)
 {
   const int bright_colors[] = { 1, 3, 7 };
   const int dark_colors[] = { 2, 6, 8, 9, 11 };
+  const int gray_colors[] = { 11, 12, 15 };
 
   // always black
   cave->colorb = gd_c64_color(0);
@@ -817,6 +818,10 @@ void gd_cave_set_random_c64_colors(GdCave *cave)
   // copy amoeba and slime color
   cave->color4 = cave->color3;
   cave->color5 = cave->color1;
+
+  // extra colors
+  cave->color6 = gd_c64_color(gray_colors[gd_random_int_range(0, ARRAY_SIZE(gray_colors))]);
+  cave->color7 = gd_c64_color(1);
 }
 
 static void cave_set_random_indexed_colors(GdCave *cave, GdColor (*color_indexer_func) (int, int))
@@ -855,6 +860,10 @@ static void cave_set_random_indexed_colors(GdCave *cave, GdColor (*color_indexer
   cave->color4 = color_indexer_func(gd_random_int_range(11, 13), gd_random_int_range(6, 12));
   // some blueish thing
   cave->color5 = color_indexer_func(gd_random_int_range(7, 10),  gd_random_int_range(0, 6));
+
+  // extra colors
+  cave->color6 = color_indexer_func(0, bri1);
+  cave->color7 = color_indexer_func(0, 15);
 }
 
 static void gd_cave_set_random_atari_colors(GdCave *cave)
@@ -937,6 +946,10 @@ static void gd_cave_set_random_rgb_colors(GdCave *cave)
   cave->color4 = gd_color_get_from_hsv(gd_random_int_range(100, 140), s2, v2);
   // blue(240+-20) with saturation and brightness of dirt
   cave->color5 = gd_color_get_from_hsv(gd_random_int_range(220, 260), s1, v1);
+
+  // extra colors
+  cave->color6 = gd_color_get_from_hsv(0, 0, v1);      // gray with brightness of dirt
+  cave->color7 = gd_color_get_from_hsv(0, 0, 1);       // white
 }
 
 void gd_cave_set_random_colors(GdCave *cave, GdColorType type)

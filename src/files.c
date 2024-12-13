@@ -352,6 +352,16 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
     TYPE_INTEGER,			CONF_VALUE_32_BIT(9),
     &li.bd_color_5,			GD_C64_COLOR(6)
   },
+  {
+    -1,					-1,
+    TYPE_INTEGER,			CONF_VALUE_32_BIT(10),
+    &li.bd_color_6,			GD_C64_COLOR(12)
+  },
+  {
+    -1,					-1,
+    TYPE_INTEGER,			CONF_VALUE_32_BIT(11),
+    &li.bd_color_7,			GD_C64_COLOR(1)
+  },
 
   {
     -1,					-1,
@@ -4492,6 +4502,8 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->color3				= level->bd_color_3;
   cave->color4				= level->bd_color_4;
   cave->color5				= level->bd_color_5;
+  cave->color6				= level->bd_color_6;
+  cave->color7				= level->bd_color_7;
 
   // level name
   strncpy(cave->name, level->name, sizeof(GdString));
@@ -4680,6 +4692,8 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_color_3			= cave->color3;
   level->bd_color_4			= cave->color4;
   level->bd_color_5			= cave->color5;
+  level->bd_color_6			= cave->color6;
+  level->bd_color_7			= cave->color7;
 
   // set default color type and colors for BD style level colors
   SetDefaultLevelColorType_BD();

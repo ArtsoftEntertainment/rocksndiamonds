@@ -483,6 +483,8 @@ static boolean cave_process_tags_func(const char *attrib, const char *param, GdC
       cave->color3 = gd_color_get_from_string(params[2]);
       cave->color4 = cave->color3;      // amoeba
       cave->color5 = cave->color1;      // slime
+      cave->color6 = gd_c64_color(12);  // extra color 1 - gray
+      cave->color7 = gd_c64_color(1);   // extra color 2 - white
     }
     else if (paramcount == 5)
     {
@@ -494,6 +496,8 @@ static boolean cave_process_tags_func(const char *attrib, const char *param, GdC
       cave->color3 = gd_color_get_from_string(params[4]);
       cave->color4 = cave->color3;      // amoeba
       cave->color5 = cave->color1;      // slime
+      cave->color6 = gd_c64_color(12);  // extra color 1 - gray
+      cave->color7 = gd_c64_color(1);   // extra color 2 - white
     }
     else if (paramcount == 7)
     {
@@ -505,6 +509,8 @@ static boolean cave_process_tags_func(const char *attrib, const char *param, GdC
       cave->color3 = gd_color_get_from_string(params[4]);
       cave->color4 = gd_color_get_from_string(params[5]);    // amoeba
       cave->color5 = gd_color_get_from_string(params[6]);    // slime
+      cave->color6 = gd_c64_color(12);                       // extra color 1 - gray
+      cave->color7 = gd_c64_color(1);                        // extra color 2 - white
     }
     else
     {
@@ -521,7 +527,9 @@ static boolean cave_process_tags_func(const char *attrib, const char *param, GdC
 	gd_color_is_unknown(cave->color2) ||
 	gd_color_is_unknown(cave->color3) ||
 	gd_color_is_unknown(cave->color4) ||
-	gd_color_is_unknown(cave->color5))
+	gd_color_is_unknown(cave->color5) ||
+	gd_color_is_unknown(cave->color6) ||
+	gd_color_is_unknown(cave->color7))
     {
       Warn("created a new C64 color scheme.");
 

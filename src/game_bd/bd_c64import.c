@@ -830,6 +830,8 @@ static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_byte
     cave->color5 = gd_atari_color(data[0x16]);      // in atari, slime was green
     cave->colorb = gd_atari_color(data[0x17]);      // border = background
     cave->color0 = gd_atari_color(data[0x17]);      // background
+    cave->color6 = gd_atari_color(8);               // extra color 1 - gray
+    cave->color7 = gd_atari_color(15);              // extra color 2 - white
   }
   else
   {
@@ -841,6 +843,8 @@ static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_byte
     cave->color3 = gd_c64_color(data[0x15] & 0x7);  // lower 3 bits only (vic-ii worked this way)
     cave->color4 = cave->color3;                    // in bd1, amoeba was color3
     cave->color5 = cave->color3;                    // no slime, but let it be color 3
+    cave->color6 = gd_c64_color(12);                // extra color 1 - gray
+    cave->color7 = gd_c64_color(1);                 // extra color 2 - white
   }
 
   // random fill
@@ -1377,6 +1381,8 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
     cave->color3 = gd_c64_color(data[index + 2] & 0x7); // lower 3 bits only!
     cave->color4 = cave->color1;                        // in bd2, amoeba was color1
     cave->color5 = cave->color1;                        // slime too
+    cave->color6 = gd_c64_color(12);                    // extra color 1 - gray
+    cave->color7 = gd_c64_color(1);                     // extra color 2 - white
     index += 3;
   }
   else
@@ -1389,6 +1395,8 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
     cave->color5 = gd_atari_color(data[index + 3]);
     cave->colorb = gd_atari_color(data[index + 4]);     // background and border
     cave->color0 = gd_atari_color(data[index + 4]);
+    cave->color6 = gd_atari_color(8);                   // extra color 1 - gray
+    cave->color7 = gd_atari_color(15);                  // extra color 2 - white
     index += 5;
   }
 
@@ -1533,6 +1541,10 @@ static int cave_copy_from_plck(GdCave *cave, const byte *data,
     // (maybe they could have been changed in a hex editor)
     cave->color4 = gd_atari_color(data[0x1e1]);
     cave->color5 = gd_atari_color(data[0x1e1]);
+
+    // extra colors
+    cave->color6 = gd_atari_color(8);               // extra color 1 - gray
+    cave->color7 = gd_atari_color(15);              // extra color 2 - white
   }
   else
   {
@@ -1544,6 +1556,8 @@ static int cave_copy_from_plck(GdCave *cave, const byte *data,
     cave->color3 = gd_c64_color(data[0x1e3] & 0x7); // lower 3 bits only!
     cave->color4 = cave->color3;                    // in plck, amoeba was color3
     cave->color5 = cave->color3;                    // same for slime
+    cave->color6 = gd_c64_color(12);                // extra color 1 - gray
+    cave->color7 = gd_c64_color(1);                 // extra color 2 - white
   }
 
   // ... the cave is stored like a map.
@@ -1654,6 +1668,8 @@ static int cave_copy_from_dlb(GdCave *cave, const byte *data, int remaining_byte
   cave->color3 = gd_c64_color(data[12] & 0x7);    // lower 3 bits only!
   cave->color4 = cave->color3;                    // in plck, amoeba was color3
   cave->color5 = cave->color3;                    // same for slime
+  cave->color6 = gd_c64_color(12);                // extra color 1 - gray
+  cave->color7 = gd_c64_color(1);                 // extra color 2 - white
 
   // cave map is compressed.
   // employ a state machine to decompress data.
@@ -1910,6 +1926,8 @@ static int cave_copy_from_1stb(GdCave *cave, const byte *data, int remaining_byt
   cave->color3 = gd_c64_color(data[0x388] & 0x7);     // lower 3 bits only!
   cave->color4 = cave->color1;
   cave->color5 = cave->color1;
+  cave->color6 = gd_c64_color(12);                    // extra color 1 - gray
+  cave->color7 = gd_c64_color(1);                     // extra color 2 - white
 
   cave->amoeba_growth_prob      = amoeba_probability(data[0x382]);
   cave->amoeba_fast_growth_prob = amoeba_probability(data[0x383]);
@@ -2029,6 +2047,8 @@ static int cave_copy_from_crdr_7(GdCave *cave, const byte *data, int remaining_b
   cave->color3 = gd_c64_color(data[0x18] & 0x7);    // lower 3 bits only!
   cave->color4 = cave->color3;
   cave->color5 = cave->color1;
+  cave->color6 = gd_c64_color(12);                  // extra color 1 - gray
+  cave->color7 = gd_c64_color(1);                   // extra color 2 - white
 
   cave->intermission = (data[0x19] != 0);
 
@@ -2500,6 +2520,8 @@ static int cave_copy_from_crli(GdCave *cave, const byte *data, int remaining_byt
   cave->color3 = gd_c64_color(uncompressed[0x388] & 0x7);    // lower 3 bits only!
   cave->color4 = cave->color3;
   cave->color5 = cave->color1;
+  cave->color6 = gd_c64_color(12);                           // extra color 1 - gray
+  cave->color7 = gd_c64_color(1);                            // extra color 2 - white
 
   cave->intermission = (uncompressed[0x389] != 0);
 
