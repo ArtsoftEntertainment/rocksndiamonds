@@ -387,6 +387,7 @@ void InitColorTemplateImages(void)
 
 void InitColorTemplateImagesIfNeeded(void)
 {
+  gfx.has_extended_color_template = FALSE;
   game.InitColorTemplateImagesNeeded = FALSE;
 
   if (program.headless)

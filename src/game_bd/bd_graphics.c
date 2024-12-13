@@ -376,6 +376,9 @@ static SDL_Surface *get_colored_surface_from_template(GdCave *cave, SDL_Surface 
         r = color[index].r * color_value / 255;
         g = color[index].g * color_value / 255;
         b = color[index].b * color_value / 255;
+
+        if (color_value > 0 && color_value < 255)
+          gfx.has_extended_color_template = TRUE;
       }
 
       pixels[out++] = ((r << format->Rshift >> format->Rloss) |
