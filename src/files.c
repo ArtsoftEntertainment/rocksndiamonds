@@ -320,47 +320,47 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
   {
     -1,					-1,
     TYPE_INTEGER,			CONF_VALUE_32_BIT(3),
-    &li.bd_color_b,			GD_C64_COLOR(0)
+    &li.bd_color_b,			GD_C64_COLOR_BLACK
   },
   {
     -1,					-1,
     TYPE_INTEGER,			CONF_VALUE_32_BIT(4),
-    &li.bd_color_0,			GD_C64_COLOR(0)
+    &li.bd_color_0,			GD_C64_COLOR_BLACK
   },
   {
     -1,					-1,
     TYPE_INTEGER,			CONF_VALUE_32_BIT(5),
-    &li.bd_color_1,			GD_C64_COLOR(8)
+    &li.bd_color_1,			GD_C64_COLOR_ORANGE
   },
   {
     -1,					-1,
     TYPE_INTEGER,			CONF_VALUE_32_BIT(6),
-    &li.bd_color_2,			GD_C64_COLOR(11)
+    &li.bd_color_2,			GD_C64_COLOR_GRAY1
   },
   {
     -1,					-1,
     TYPE_INTEGER,			CONF_VALUE_32_BIT(7),
-    &li.bd_color_3,			GD_C64_COLOR(1)
+    &li.bd_color_3,			GD_C64_COLOR_WHITE
   },
   {
     -1,					-1,
     TYPE_INTEGER,			CONF_VALUE_32_BIT(8),
-    &li.bd_color_4,			GD_C64_COLOR(5)
+    &li.bd_color_4,			GD_C64_COLOR_GREEN
   },
   {
     -1,					-1,
     TYPE_INTEGER,			CONF_VALUE_32_BIT(9),
-    &li.bd_color_5,			GD_C64_COLOR(6)
+    &li.bd_color_5,			GD_C64_COLOR_BLUE
   },
   {
     -1,					-1,
     TYPE_INTEGER,			CONF_VALUE_32_BIT(10),
-    &li.bd_color_6,			GD_C64_COLOR(12)
+    &li.bd_color_6,			GD_C64_COLOR_GRAY2
   },
   {
     -1,					-1,
     TYPE_INTEGER,			CONF_VALUE_32_BIT(11),
-    &li.bd_color_7,			GD_C64_COLOR(1)
+    &li.bd_color_7,			GD_C64_COLOR_WHITE
   },
 
   {

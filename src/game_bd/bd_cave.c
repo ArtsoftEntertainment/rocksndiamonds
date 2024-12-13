@@ -789,13 +789,30 @@ static inline void swap(int *i1, int *i2)
 
 void gd_cave_set_random_c64_colors(GdCave *cave)
 {
-  const int bright_colors[] = { 1, 3, 7 };
-  const int dark_colors[] = { 2, 6, 8, 9, 11 };
-  const int gray_colors[] = { 11, 12, 15 };
+  const int bright_colors[] =
+  {
+    GD_COLOR_INDEX_WHITE,
+    GD_COLOR_INDEX_CYAN,
+    GD_COLOR_INDEX_YELLOW,
+  };
+  const int dark_colors[] =
+  {
+    GD_COLOR_INDEX_RED,
+    GD_COLOR_INDEX_BLUE,
+    GD_COLOR_INDEX_ORANGE,
+    GD_COLOR_INDEX_BROWN,
+    GD_COLOR_INDEX_GRAY1,
+  };
+  const int gray_colors[] =
+  {
+    GD_COLOR_INDEX_GRAY1,
+    GD_COLOR_INDEX_GRAY2,
+    GD_COLOR_INDEX_GRAY3,
+  };
 
   // always black
-  cave->colorb = gd_c64_color(0);
-  cave->color0 = gd_c64_color(0);
+  cave->colorb = gd_c64_color(GD_COLOR_INDEX_BLACK);
+  cave->color0 = gd_c64_color(GD_COLOR_INDEX_BLACK);
 
   // choose some bright color for brick
   cave->color3 = gd_c64_color(bright_colors[gd_random_int_range(0, ARRAY_SIZE(bright_colors))]);
@@ -821,7 +838,7 @@ void gd_cave_set_random_c64_colors(GdCave *cave)
 
   // extra colors
   cave->color6 = gd_c64_color(gray_colors[gd_random_int_range(0, ARRAY_SIZE(gray_colors))]);
-  cave->color7 = gd_c64_color(1);
+  cave->color7 = gd_c64_color(GD_COLOR_INDEX_WHITE);
 }
 
 static void cave_set_random_indexed_colors(GdCave *cave, GdColor (*color_indexer_func) (int, int))
