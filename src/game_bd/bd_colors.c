@@ -769,24 +769,3 @@ boolean gd_color_is_unknown(GdColor color)
 {
   return (color >> 24) == GD_COLOR_TYPE_UNKNOWN;
 }
-
-GdColor gd_gdash_color(int c)
-{
-  // these values are taken from the title screen, drawn by cws.
-  // so menus and everything else will look nice!
-  // the 16 colors that can be used are the same as on c64.
-  // "Black", "White", "Red", "Cyan", "Purple", "Green", "Blue", "Yellow",
-  // "Orange", "Brown", "LightRed", "Gray1", "Gray2", "LightGreen", "LightBlue", "Gray3",
-  // not in the png: cyan, purple. gray3 is darker in the png.
-  // 17th color is the player's leg in the png. i not connected it to any c64
-  // color, but it is used for theme images for example.
-  const GdColor gdash_colors[] =
-  {
-    0x000000, 0xffffff, 0xe33939, 0x55aaaa, 0xaa55aa, 0x71aa55, 0x0039ff, 0xffff55,
-    0xe37139, 0xaa7139, 0xe09080, 0x555555, 0x717171, 0xc6e38e, 0xaaaaff, 0x8e8e8e,
-
-    0x5555aa,
-  };
-
-  return gdash_colors[c];
-}

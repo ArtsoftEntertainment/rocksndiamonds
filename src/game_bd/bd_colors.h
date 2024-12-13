@@ -58,28 +58,25 @@ typedef enum _color_type
 #define GD_COLOR_INDEX_LIGHTBLUE		14
 #define GD_COLOR_INDEX_GRAY3			15
 
-#define GD_GDASH_BLACK				gd_gdash_color(GD_COLOR_INDEX_BLACK)
-#define GD_GDASH_WHITE				gd_gdash_color(GD_COLOR_INDEX_WHITE)
-#define GD_GDASH_RED				gd_gdash_color(GD_COLOR_INDEX_RED)
-#define GD_GDASH_CYAN				gd_gdash_color(GD_COLOR_INDEX_CYAN)
-#define GD_GDASH_PURPLE				gd_gdash_color(GD_COLOR_INDEX_PURPLE)
-#define GD_GDASH_GREEN				gd_gdash_color(GD_COLOR_INDEX_GREEN)
-#define GD_GDASH_BLUE				gd_gdash_color(GD_COLOR_INDEX_BLUE)
-#define GD_GDASH_YELLOW				gd_gdash_color(GD_COLOR_INDEX_YELLOW)
-#define GD_GDASH_ORANGE				gd_gdash_color(GD_COLOR_INDEX_ORANGE)
-#define GD_GDASH_BROWN				gd_gdash_color(GD_COLOR_INDEX_BROWN)
-#define GD_GDASH_LIGHTRED			gd_gdash_color(GD_COLOR_INDEX_LIGHTRED)
-#define GD_GDASH_GRAY1				gd_gdash_color(GD_COLOR_INDEX_GRAY1)
-#define GD_GDASH_GRAY2				gd_gdash_color(GD_COLOR_INDEX_GRAY2)
-#define GD_GDASH_LIGHTGREEN			gd_gdash_color(GD_COLOR_INDEX_LIGHTGREEN)
-#define GD_GDASH_LIGHTBLUE			gd_gdash_color(GD_COLOR_INDEX_LIGHTBLUE)
-#define GD_GDASH_GRAY3				gd_gdash_color(GD_COLOR_INDEX_GRAY3)
-
-#define GD_GDASH_MIDDLEBLUE			gd_gdash_color(16)
-
-#define GD_COLOR_INVALID			0xFFFFFFFF
-
 #define GD_C64_COLOR(index)			((GD_COLOR_TYPE_C64 << 24) + (index))
+
+// traditional c64 color values.
+#define GD_C64_COLOR_BLACK			GD_C64_COLOR(GD_COLOR_INDEX_BLACK)
+#define GD_C64_COLOR_WHITE			GD_C64_COLOR(GD_COLOR_INDEX_WHITE)
+#define GD_C64_COLOR_RED			GD_C64_COLOR(GD_COLOR_INDEX_RED)
+#define GD_C64_COLOR_CYAN			GD_C64_COLOR(GD_COLOR_INDEX_CYAN)
+#define GD_C64_COLOR_PURPLE			GD_C64_COLOR(GD_COLOR_INDEX_PURPLE)
+#define GD_C64_COLOR_GREEN			GD_C64_COLOR(GD_COLOR_INDEX_GREEN)
+#define GD_C64_COLOR_BLUE			GD_C64_COLOR(GD_COLOR_INDEX_BLUE)
+#define GD_C64_COLOR_YELLOW			GD_C64_COLOR(GD_COLOR_INDEX_YELLOW)
+#define GD_C64_COLOR_ORANGE			GD_C64_COLOR(GD_COLOR_INDEX_ORANGE)
+#define GD_C64_COLOR_BROWN			GD_C64_COLOR(GD_COLOR_INDEX_BROWN)
+#define GD_C64_COLOR_LIGHTRED			GD_C64_COLOR(GD_COLOR_INDEX_LIGHTRED)
+#define GD_C64_COLOR_GRAY1			GD_C64_COLOR(GD_COLOR_INDEX_GRAY1)
+#define GD_C64_COLOR_GRAY2			GD_C64_COLOR(GD_COLOR_INDEX_GRAY2)
+#define GD_C64_COLOR_LIGHTGREEN			GD_C64_COLOR(GD_COLOR_INDEX_LIGHTGREEN)
+#define GD_C64_COLOR_LIGHTBLUE			GD_C64_COLOR(GD_COLOR_INDEX_LIGHTBLUE)
+#define GD_C64_COLOR_GRAY3			GD_C64_COLOR(GD_COLOR_INDEX_GRAY3)
 
 // palette numbers must match pointer array positions in source file
 #define GD_PALETTE_C64_VICE_NEW			0
@@ -136,7 +133,5 @@ boolean gd_color_is_c64(GdColor color);
 boolean gd_color_is_atari(GdColor color);
 boolean gd_color_is_dtv(GdColor color);
 boolean gd_color_is_unknown(GdColor color);
-
-GdColor gd_gdash_color(int c);
 
 #endif	// BD_COLORS_H
