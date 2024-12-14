@@ -11268,7 +11268,7 @@ void InitGraphicInfo_BD(void)
 			e == O_DIRT2_DIGGING_LEFT_CRUMBLED  ||
 			e == O_DIRT2_DIGGING_RIGHT_CRUMBLED ||
 			e == O_DIRT2_DIGGING_UP_CRUMBLED    ||
-			e == O_DIRT2_DIGGING_DOWN_CRUMBLED ? j * 2 % 8:
+			e == O_DIRT2_DIGGING_DOWN_CRUMBLED ? j :
 			j * 2);
       int frame = getAnimationFrame(g->anim_frames,
 				    g->anim_delay,

@@ -620,7 +620,7 @@ static void gd_drawcave_crumbled(Bitmap *dest, GdGame *game, int x, int y, boole
   GdCave *cave = game->cave;
   int sx = x * cell_size - scroll_x;
   int sy = y * cell_size - scroll_y;
-  int frame = game->animcycle;
+  int frame = game->itercycle;
   int border_size = cell_size / 8;
   int draw = game->drawing_buffer[y][x];
   int draw_last = game->last_drawing_buffer[y][x];
