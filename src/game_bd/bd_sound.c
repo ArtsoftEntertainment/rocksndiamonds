@@ -478,9 +478,12 @@ static void gd_sound_info_to_play(int channel, int x, int y, int element, int so
 // plays sound in a cave
 void gd_sound_play(GdCave *cave, GdSound sound, GdElement element, int x, int y)
 {
-  // fix wrap-around cave positions
-  x = (x + cave->w) % cave->w;
-  y = (y + cave->h) % cave->h;
+  if (x != -1 || y != -1)
+  {
+    // fix wrap-around cave positions
+    x = (x + cave->w) % cave->w;
+    y = (y + cave->h) % cave->h;
+  }
 
   if (sound == GD_S_NONE)
     return;
