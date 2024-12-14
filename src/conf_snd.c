@@ -103,6 +103,7 @@ struct ConfigInfo sound_config[] =
   { "bdx_pneumatic_hammer.active",		"hammer.wav"			},
   { "bdx_covered.active",			"jingle.wav"			},
   { "bdx_inbox.opening",			"crash.wav"			},
+  { "[bdx_exit].opening",			"crash.wav"			},
   { "bdx_bubble.moving",			"blurb.wav"			},
   { "bdx_bubble.pushing",			"blurb.wav"			},
 
