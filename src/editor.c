@@ -695,7 +695,6 @@ enum
   GADGET_ID_LEVEL_AUTHOR,
   GADGET_ID_LEVELSET_NAME,
   GADGET_ID_LEVELSET_AUTHOR,
-  GADGET_ID_BD_COLOR_TEXT_B,
   GADGET_ID_BD_COLOR_TEXT_0,
   GADGET_ID_BD_COLOR_TEXT_1,
   GADGET_ID_BD_COLOR_TEXT_2,
@@ -718,7 +717,6 @@ enum
   GADGET_ID_LEVELSET_SAVE_MODE,
   GADGET_ID_BD_SCHEDULING_TYPE,
   GADGET_ID_BD_COLOR_TYPE,
-  GADGET_ID_BD_COLOR_C64_B,
   GADGET_ID_BD_COLOR_C64_0,
   GADGET_ID_BD_COLOR_C64_1,
   GADGET_ID_BD_COLOR_C64_2,
@@ -783,7 +781,6 @@ enum
   GADGET_ID_NEXT_CHANGE_PAGE,
   GADGET_ID_COPY_CHANGE_PAGE,
   GADGET_ID_PASTE_CHANGE_PAGE,
-  GADGET_ID_BD_COLOR_PICK_B,
   GADGET_ID_BD_COLOR_PICK_0,
   GADGET_ID_BD_COLOR_PICK_1,
   GADGET_ID_BD_COLOR_PICK_2,
@@ -1046,7 +1043,6 @@ enum
   ED_TEXTINPUT_ID_LEVEL_AUTHOR,
   ED_TEXTINPUT_ID_LEVELSET_NAME,
   ED_TEXTINPUT_ID_LEVELSET_AUTHOR,
-  ED_TEXTINPUT_ID_BD_COLOR_TEXT_B,
   ED_TEXTINPUT_ID_BD_COLOR_TEXT_0,
   ED_TEXTINPUT_ID_BD_COLOR_TEXT_1,
   ED_TEXTINPUT_ID_BD_COLOR_TEXT_2,
@@ -1066,7 +1062,7 @@ enum
 #define ED_TEXTINPUT_ID_LEVELSET_FIRST	ED_TEXTINPUT_ID_LEVELSET_NAME
 #define ED_TEXTINPUT_ID_LEVELSET_LAST	ED_TEXTINPUT_ID_LEVELSET_AUTHOR
 
-#define ED_TEXTINPUT_ID_COLORS_FIRST	ED_TEXTINPUT_ID_BD_COLOR_TEXT_B
+#define ED_TEXTINPUT_ID_COLORS_FIRST	ED_TEXTINPUT_ID_BD_COLOR_TEXT_0
 #define ED_TEXTINPUT_ID_COLORS_LAST	ED_TEXTINPUT_ID_BD_COLOR_TEXT_7
 
 // values for text area gadgets
@@ -1089,7 +1085,6 @@ enum
   ED_SELECTBOX_ID_LEVELSET_SAVE_MODE,
   ED_SELECTBOX_ID_BD_SCHEDULING_TYPE,
   ED_SELECTBOX_ID_BD_COLOR_TYPE,
-  ED_SELECTBOX_ID_BD_COLOR_C64_B,
   ED_SELECTBOX_ID_BD_COLOR_C64_0,
   ED_SELECTBOX_ID_BD_COLOR_C64_1,
   ED_SELECTBOX_ID_BD_COLOR_C64_2,
@@ -1140,7 +1135,7 @@ enum
 #define ED_SELECTBOX_ID_ENGINE_FIRST	ED_SELECTBOX_ID_BD_SCHEDULING_TYPE
 #define ED_SELECTBOX_ID_ENGINE_LAST	ED_SELECTBOX_ID_BD_SCHEDULING_TYPE
 
-#define ED_SELECTBOX_ID_COLORS_FIRST	ED_SELECTBOX_ID_BD_COLOR_C64_B
+#define ED_SELECTBOX_ID_COLORS_FIRST	ED_SELECTBOX_ID_BD_COLOR_C64_0
 #define ED_SELECTBOX_ID_COLORS_LAST	ED_SELECTBOX_ID_BD_COLOR_C64_7
 
 #define ED_SELECTBOX_ID_CUSTOM1_FIRST	ED_SELECTBOX_ID_CUSTOM_ACCESS_TYPE
@@ -1196,7 +1191,6 @@ enum
   ED_GRAPHICBUTTON_ID_NEXT_CHANGE_PAGE,
   ED_GRAPHICBUTTON_ID_COPY_CHANGE_PAGE,
   ED_GRAPHICBUTTON_ID_PASTE_CHANGE_PAGE,
-  ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_B,
   ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_0,
   ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_1,
   ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_2,
@@ -1212,7 +1206,7 @@ enum
 #define ED_GRAPHICBUTTON_ID_CHANGE_FIRST  ED_GRAPHICBUTTON_ID_PREV_CHANGE_PAGE
 #define ED_GRAPHICBUTTON_ID_CHANGE_LAST   ED_GRAPHICBUTTON_ID_PASTE_CHANGE_PAGE
 
-#define ED_GRAPHICBUTTON_ID_PICK_FIRST    ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_B
+#define ED_GRAPHICBUTTON_ID_PICK_FIRST    ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_0
 #define ED_GRAPHICBUTTON_ID_PICK_LAST     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_7
 
 // values for checkbutton gadgets
@@ -1732,7 +1726,7 @@ static boolean levelset_use_levelset_artwork = FALSE;
 static boolean levelset_copy_level_template = FALSE;
 static int levelset_save_mode = LEVELSET_SAVE_MODE_UPDATE;
 
-#define MAX_BD_COLORS			9
+#define MAX_BD_COLORS			8
 #define MAX_BD_COLOR_TEXT_LEN		12
 
 static int bd_color_type_default = GD_COLOR_TYPE_RGB;
@@ -1742,7 +1736,6 @@ static char bd_color_text[MAX_BD_COLORS][MAX_BD_COLOR_TEXT_LEN + 1];
 static int bd_color_default[MAX_BD_COLORS];
 static int *bd_color[MAX_BD_COLORS] =
 {
-  &level.bd_color_b,
   &level.bd_color_0,
   &level.bd_color_1,
   &level.bd_color_2,
@@ -2231,75 +2224,67 @@ static struct
   // ---------- engine settings: colors ---------------------------------------
 
   {
-    ED_TEXTINPUT_ID_BD_COLOR_TEXT_B,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(1),
-    GADGET_ID_BD_COLOR_TEXT_B,
-    MAX_BD_COLOR_TEXT_LEN,
-    bd_color_text[0],
-    NULL, "Border color:      ", NULL,		"Enter border color (not used)"
-  },
-  {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_0,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(2),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(1),
     GADGET_ID_BD_COLOR_TEXT_0,
     MAX_BD_COLOR_TEXT_LEN,
-    bd_color_text[1],
+    bd_color_text[0],
     NULL, "Background color:  ", NULL,		"Enter background color (C64 graphics)"
   },
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_1,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(3),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(2),
     GADGET_ID_BD_COLOR_TEXT_1,
     MAX_BD_COLOR_TEXT_LEN,
-    bd_color_text[2],
+    bd_color_text[1],
     NULL, "Sand color:        ", NULL,		"Enter sand color (C64 graphics)"
   },
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_2,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(4),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(3),
     GADGET_ID_BD_COLOR_TEXT_2,
     MAX_BD_COLOR_TEXT_LEN,
-    bd_color_text[3],
+    bd_color_text[2],
     NULL, "Steel wall color:  ", NULL,		"Enter steel wall color (C64 graphics)"
   },
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_3,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(5),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(4),
     GADGET_ID_BD_COLOR_TEXT_3,
     MAX_BD_COLOR_TEXT_LEN,
-    bd_color_text[4],
+    bd_color_text[3],
     NULL, "Wall color:        ", NULL,		"Enter wall color (C64 graphics)"
   },
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_4,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(6),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(5),
     GADGET_ID_BD_COLOR_TEXT_4,
     MAX_BD_COLOR_TEXT_LEN,
-    bd_color_text[5],
+    bd_color_text[4],
     NULL, "Amoeba color:      ", NULL,		"Enter amoeba color (C64 graphics)"
   },
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_5,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(7),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(6),
     GADGET_ID_BD_COLOR_TEXT_5,
     MAX_BD_COLOR_TEXT_LEN,
-    bd_color_text[6],
+    bd_color_text[5],
     NULL, "Slime color:       ", NULL,		"Enter slime color (C64 graphics)"
   },
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_6,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(8),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(7),
     GADGET_ID_BD_COLOR_TEXT_6,
     MAX_BD_COLOR_TEXT_LEN,
-    bd_color_text[7],
+    bd_color_text[6],
     NULL, "Extra color 1:     ", NULL,		"Enter extra color 1 (C64 graphics)"
   },
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_7,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(9),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(8),
     GADGET_ID_BD_COLOR_TEXT_7,
     MAX_BD_COLOR_TEXT_LEN,
-    bd_color_text[8],
+    bd_color_text[7],
     NULL, "Extra color 2:     ", NULL,		"Enter extra color 2 (C64 graphics)"
   },
 
@@ -3204,84 +3189,75 @@ static struct
     "Color palette type:", NULL,		"Select color palette type"
   },
   {
-    ED_SELECTBOX_ID_BD_COLOR_C64_B,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(1),
-    GADGET_ID_BD_COLOR_C64_B,			GADGET_ID_NONE,
-    -1,
-    options_bd_color_c64_name,
-    &bd_color_c64[0],
-    NULL, "Border color:      ", NULL,		"Select border color (not used)"
-  },
-  {
     ED_SELECTBOX_ID_BD_COLOR_C64_0,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(2),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(1),
     GADGET_ID_BD_COLOR_C64_0,			GADGET_ID_NONE,
     -1,
     options_bd_color_c64_name,
-    &bd_color_c64[1],
+    &bd_color_c64[0],
     NULL, "Background color:  ", NULL,		"Select background color (C64 graphics)"
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_1,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(3),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(2),
     GADGET_ID_BD_COLOR_C64_1,			GADGET_ID_NONE,
     -1,
     options_bd_color_c64_name,
-    &bd_color_c64[2],
+    &bd_color_c64[1],
     NULL, "Sand color:        ", NULL,		"Select sand color (C64 graphics)"
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_2,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(4),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(3),
     GADGET_ID_BD_COLOR_C64_2,			GADGET_ID_NONE,
     -1,
     options_bd_color_c64_name,
-    &bd_color_c64[3],
+    &bd_color_c64[2],
     NULL, "Steel wall color:  ", NULL,		"Select steel wall color (C64 graphics)"
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_3,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(5),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(4),
     GADGET_ID_BD_COLOR_C64_3,			GADGET_ID_NONE,
     -1,
     options_bd_color_c64_name,
-    &bd_color_c64[4],
+    &bd_color_c64[3],
     NULL, "Wall color:        ", NULL,		"Select wall color (C64 graphics)"
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_4,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(6),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(5),
     GADGET_ID_BD_COLOR_C64_4,			GADGET_ID_NONE,
     -1,
     options_bd_color_c64_name,
-    &bd_color_c64[5],
+    &bd_color_c64[4],
     NULL, "Amoeba color:      ", NULL,		"Select amoeba color (C64 graphics)"
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_5,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(7),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(6),
     GADGET_ID_BD_COLOR_C64_5,			GADGET_ID_NONE,
     -1,
     options_bd_color_c64_name,
-    &bd_color_c64[6],
+    &bd_color_c64[5],
     NULL, "Slime color:       ", NULL,		"Select slime color (C64 graphics)"
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_6,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(8),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(7),
     GADGET_ID_BD_COLOR_C64_6,			GADGET_ID_NONE,
     -1,
     options_bd_color_c64_name,
-    &bd_color_c64[7],
+    &bd_color_c64[6],
     NULL, "Extra color 1:     ", NULL,		"Select extra color 1 (C64 graphics)"
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_7,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(9),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(8),
     GADGET_ID_BD_COLOR_C64_7,			GADGET_ID_NONE,
     -1,
     options_bd_color_c64_name,
-    &bd_color_c64[8],
+    &bd_color_c64[7],
     NULL, "Extra color 2:     ", NULL,		"Select extra color 2 (C64 graphics)"
   },
 
@@ -3709,7 +3685,7 @@ static struct
 
   {
     ED_TEXTBUTTON_ID_BD_SET_RANDOM_COLORS,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(10),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(9),
     GADGET_ID_BD_SET_RANDOM_COLORS,		GADGET_ID_NONE,
     -1,						"Set random colors",
     NULL, NULL, NULL,				"Create and set random level colors"
@@ -3755,65 +3731,58 @@ static struct
     NULL, NULL,					"Paste settings to this change page"
   },
   {
-    ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_B,
-    IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(1),
-    GADGET_ID_BD_COLOR_PICK_B,			GADGET_ID_BD_COLOR_TEXT_B,
-    NULL, NULL,					"Pick border color (not used)"
-  },
-  {
     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_0,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(2),
+    -1,						ED_ENGINE_SETTINGS_YPOS(1),
     GADGET_ID_BD_COLOR_PICK_0,			GADGET_ID_BD_COLOR_TEXT_0,
     NULL, NULL,					"Pick background color (C64 graphics)"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_1,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(3),
+    -1,						ED_ENGINE_SETTINGS_YPOS(2),
     GADGET_ID_BD_COLOR_PICK_1,			GADGET_ID_BD_COLOR_TEXT_1,
     NULL, NULL,					"Pick sand color (C64 graphics)"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_2,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(4),
+    -1,						ED_ENGINE_SETTINGS_YPOS(3),
     GADGET_ID_BD_COLOR_PICK_2,			GADGET_ID_BD_COLOR_TEXT_2,
     NULL, NULL,					"Pick steel wall color (C64 graphics)"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_3,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(5),
+    -1,						ED_ENGINE_SETTINGS_YPOS(4),
     GADGET_ID_BD_COLOR_PICK_3,			GADGET_ID_BD_COLOR_TEXT_3,
     NULL, NULL,					"Pick wall color (C64 graphics)"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_4,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(6),
+    -1,						ED_ENGINE_SETTINGS_YPOS(5),
     GADGET_ID_BD_COLOR_PICK_4,			GADGET_ID_BD_COLOR_TEXT_4,
     NULL, NULL,					"Pick amoeba color (C64 graphics)"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_5,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(7),
+    -1,						ED_ENGINE_SETTINGS_YPOS(6),
     GADGET_ID_BD_COLOR_PICK_5,			GADGET_ID_BD_COLOR_TEXT_5,
     NULL, NULL,					"Pick slime color (C64 graphics)"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_6,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(8),
+    -1,						ED_ENGINE_SETTINGS_YPOS(7),
     GADGET_ID_BD_COLOR_PICK_6,			GADGET_ID_BD_COLOR_TEXT_6,
     NULL, NULL,					"Pick extra color 1 (C64 graphics)"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_7,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(9),
+    -1,						ED_ENGINE_SETTINGS_YPOS(8),
     GADGET_ID_BD_COLOR_PICK_7,			GADGET_ID_BD_COLOR_TEXT_7,
     NULL, NULL,					"Pick extra color 2 (C64 graphics)"
   },
@@ -11928,7 +11897,6 @@ void SetCurrentLevelColors_BD(void)
   struct LevelInfo_BD *level_bd = level.native_bd_level;
   GdCave *cave = level_bd->cave;
 
-  cave->colorb = level.bd_color_b;
   cave->color0 = level.bd_color_0;
   cave->color1 = level.bd_color_1;
   cave->color2 = level.bd_color_2;
@@ -11948,7 +11916,6 @@ void SetRandomLevelColors_BD(int bd_color_type)
   gd_cave_set_random_colors(cave, bd_color_type);
 
   // copy colors to level editor
-  level.bd_color_b = cave->colorb;
   level.bd_color_0 = cave->color0;
   level.bd_color_1 = cave->color1;
   level.bd_color_2 = cave->color2;
