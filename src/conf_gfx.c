@@ -699,7 +699,10 @@ struct ConfigInfo image_config[] =
   { "bdx_wall_sloped_down_right.frames",		"1"				},
 
   { "bdx_wall_non_sloped",				UNDEFINED_FILENAME		},
-  { "bdx_wall_non_sloped.clone_from",			"wall"				},
+  { "bdx_wall_non_sloped.clone_from",			"bdx_wall"			},
+  { "bdx_wall_non_sloped.EDITOR",			"RocksBD2.png"			},
+  { "bdx_wall_non_sloped.EDITOR.xpos",			"4"				},
+  { "bdx_wall_non_sloped.EDITOR.ypos",			"5"				},
 
   { "bdx_wall_diggable",				UNDEFINED_FILENAME		},
   { "bdx_wall_diggable.clone_from",			"bdx_wall"			},
