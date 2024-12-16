@@ -807,9 +807,6 @@ static void creature_explode(GdCave *cave, int x, int y, GdElement explode_to)
   cave->ckdelay_current += 1200;
   gd_sound_play(cave, GD_S_EXPLODING, get(cave, x, y), x, y);
 
-  if (is_player(cave, x, y))
-    gd_sound_play(cave, GD_S_DYING, get(cave, x, y), x, y);
-
   for (yy = y - 1; yy <= y + 1; yy++)
     for (xx = x - 1; xx <= x + 1; xx++)
       cell_explode(cave, xx, yy, explode_to);
@@ -4163,7 +4160,11 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
   // but may be set back to 15 if a dead player can be re-created from effects element)
   if (cave->kill_player ||
       (cave->player_state == GD_PL_LIVING && cave->player_seen_ago > cave->player_seen_ago_limit))
+  {
     cave->player_state = GD_PL_DIED;
+
+    gd_sound_play(cave, GD_S_DYING, O_PLAYER, -1, -1);
+  }
 
   // check if any voodoo exploded, and kill players the next scan if that happended.
   if (cave->voodoo_touched)
