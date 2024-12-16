@@ -89,11 +89,9 @@ typedef struct _gd_game
   int itercycle;
   int itermax;
   int itermax_last;
-  int itermax2[2];
   int animcycle;
   int milliseconds_game;
   int milliseconds_anim;
-  int cycle_counter;
 
   int replay_no_more_movements;
   boolean show_story;           // to remember that story for a particular cave was already shown.

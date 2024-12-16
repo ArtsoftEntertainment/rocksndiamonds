@@ -334,8 +334,6 @@ void InitGameEngine_BD(void)
   game_bd.game->itercycle = 0;
   game_bd.game->itermax = 8;	// default; dynamically changed at runtime
   game_bd.game->itermax_last = game_bd.game->itermax;
-  game_bd.game->itermax2[0] = game_bd.game->itermax;
-  game_bd.game->itermax2[1] = game_bd.game->itermax;
 
   game_bd.game->use_old_engine = useOldEngine_BD();
 

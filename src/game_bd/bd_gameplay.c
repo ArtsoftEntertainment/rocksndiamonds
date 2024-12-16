@@ -150,8 +150,6 @@ static void load_cave(GdGame *game)
   game->milliseconds_anim = 0;
   game->milliseconds_game = 0;        // set game timer to zero, too
 
-  game->cycle_counter = 0;
-
   // create new element buffer
   game->element_buffer = gd_cave_map_new(game->cave, int);
 
@@ -462,18 +460,15 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
       // store last maximum number of cycle frames (to force redraw if changed)
       game->itermax_last = game->itermax;
 
-      // store maximum number of cycle frames separately for even and odd cycles
-      game->itermax2[game->cycle_counter % 2] = game->itercycle;
-
-      // update maximum number of cycle frames per cave iteration
-      game->itermax = game->itermax2[!(game->cycle_counter % 2)];
+      // calculate expected maximum number of cycle frames for next cave iteration
+      // (assuming constant cave speed, which in fact might not always be the case)
+      game->itermax =
+        (cavespeed - game->milliseconds_game + millisecs_elapsed - 1) / millisecs_elapsed;
 
       // reset cycle frame counter for the next cave iteration
       game->itercycle = 0;
 
       iterate_cave(game, game->player_move, game->player_fire, game->player_suicide);
-
-      game->cycle_counter++;
 
       if (game->player_move == GD_MV_STILL)
       {
