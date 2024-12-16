@@ -562,9 +562,13 @@ typedef enum _sound
   GD_S_SWITCH_EXPANDING,
   GD_S_SWITCH_CONVEYOR,
   GD_S_SWITCH_REPLICATOR,
+  GD_S_AMOEBA_GROWING,
+  GD_S_AMOEBA_2_GROWING,
 
   GD_S_AMOEBA,			// loop
+  GD_S_AMOEBA_2,		// loop
   GD_S_AMOEBA_MAGIC,		// loop
+  GD_S_AMOEBA_2_MAGIC,		// loop
   GD_S_MAGIC_WALL,		// loop
   GD_S_COVERING,		// loop
   GD_S_PNEUMATIC_HAMMER,	// loop

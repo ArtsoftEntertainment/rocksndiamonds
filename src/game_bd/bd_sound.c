@@ -205,10 +205,14 @@ static SoundProperty sound_flags[] =
   { GD_S_SWITCH_EXPANDING,		2, 10					},
   { GD_S_SWITCH_CONVEYOR,		2, 10					},
   { GD_S_SWITCH_REPLICATOR,		2, 10					},
+  { GD_S_AMOEBA_GROWING,		2, 10					},
+  { GD_S_AMOEBA_2_GROWING,		2, 10					},
 
   // channel 3 sounds.
   { GD_S_AMOEBA,			3, 30,  GD_SP_LOOPED			},
+  { GD_S_AMOEBA_2,			3, 30,  GD_SP_LOOPED			},
   { GD_S_AMOEBA_MAGIC,			3, 40,  GD_SP_LOOPED			},
+  { GD_S_AMOEBA_2_MAGIC,		3, 40,  GD_SP_LOOPED			},
   { GD_S_MAGIC_WALL,			3, 35,  GD_SP_LOOPED			},
   { GD_S_COVERING,			3, 100, GD_SP_LOOPED			},
   { GD_S_PNEUMATIC_HAMMER,		3, 50,  GD_SP_LOOPED			},

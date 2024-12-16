@@ -1834,7 +1834,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
     O_STONE
   };
 
-  boolean amoeba_sound, magic_sound;
+  boolean amoeba_1_sound, amoeba_2_sound, magic_sound;
 
   gd_cave_clear_sounds(cave);
 
@@ -3280,25 +3280,37 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		    case 0:
                       // let this be up. numbers indifferent.
 		      if (amoeba_eats(cave, x, y, GD_MV_UP))
+                      {
 			store_dir(cave, x, y, GD_MV_UP, O_AMOEBA);
+                        gd_sound_play(cave, GD_S_AMOEBA_GROWING, O_AMOEBA, -1, -1);
+                      }
 		      break;
 
 		    case 1:
                       // down
 		      if (amoeba_eats(cave, x, y, GD_MV_DOWN))
+                      {
 			store_dir(cave, x, y, GD_MV_DOWN, O_AMOEBA);
+                        gd_sound_play(cave, GD_S_AMOEBA_GROWING, O_AMOEBA, -1, -1);
+                      }
 		      break;
 
 		    case 2:
                       // left
 		      if (amoeba_eats(cave, x, y, GD_MV_LEFT))
+                      {
 			store_dir(cave, x, y, GD_MV_LEFT, O_AMOEBA);
+                        gd_sound_play(cave, GD_S_AMOEBA_GROWING, O_AMOEBA, -1, -1);
+                      }
 		      break;
 
 		    case 3:
                       // right
 		      if (amoeba_eats(cave, x, y, GD_MV_RIGHT))
+                      {
 			store_dir(cave, x, y, GD_MV_RIGHT, O_AMOEBA);
+                        gd_sound_play(cave, GD_S_AMOEBA_GROWING, O_AMOEBA, -1, -1);
+                      }
 		      break;
 		  }
 		}
@@ -3360,25 +3372,37 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		      case 0:
                         // let this be up. numbers indifferent.
 			if (amoeba_eats(cave, x, y, GD_MV_UP))
+                        {
 			  store_dir(cave, x, y, GD_MV_UP, O_AMOEBA_2);
+                          gd_sound_play(cave, GD_S_AMOEBA_2_GROWING, O_AMOEBA_2, -1, -1);
+                        }
 			break;
 
 		      case 1:
                         // down
 			if (amoeba_eats(cave, x, y, GD_MV_DOWN))
+                        {
 			  store_dir(cave, x, y, GD_MV_DOWN, O_AMOEBA_2);
+                          gd_sound_play(cave, GD_S_AMOEBA_2_GROWING, O_AMOEBA_2, -1, -1);
+                        }
 			break;
 
 		      case 2:
                         // left
 			if (amoeba_eats(cave, x, y, GD_MV_LEFT))
+                        {
 			  store_dir(cave, x, y, GD_MV_LEFT, O_AMOEBA_2);
+                          gd_sound_play(cave, GD_S_AMOEBA_2_GROWING, O_AMOEBA_2, -1, -1);
+                        }
 			break;
 
 		      case 3:
                         // right
 			if (amoeba_eats(cave, x, y, GD_MV_RIGHT))
+                        {
 			  store_dir(cave, x, y, GD_MV_RIGHT, O_AMOEBA_2);
+                          gd_sound_play(cave, GD_S_AMOEBA_2_GROWING, O_AMOEBA_2, -1, -1);
+                        }
 			break;
 		    }
 		  }
@@ -4072,34 +4096,43 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
   // SPECIAL SOUNDS
 
   // cave 3 sounds. precedence is controlled by the sound_play function.
-  // but we have to check amoeba&magic together as they had a different gritty sound when mixed
+  // but we have to check amoeba & magic together as they had a different gritty sound when mixed
   if (found_water)
     gd_sound_play(cave, GD_S_WATER, O_WATER, -1, -1);
 
   magic_sound = (cave->magic_wall_state == GD_MW_ACTIVE &&
 		 cave->magic_wall_sound);
 
-  amoeba_sound = (cave->hatched && cave->amoeba_sound &&
-		  ((amoeba_count > 0 && cave->amoeba_state == GD_AM_AWAKE) ||
-		   (amoeba_2_count > 0 && cave->amoeba_2_state == GD_AM_AWAKE)));
+  amoeba_1_sound = (cave->hatched && cave->amoeba_sound &&
+                    amoeba_count > 0 && cave->amoeba_state == GD_AM_AWAKE);
 
-  if (amoeba_sound && magic_sound)
+  amoeba_2_sound = (cave->hatched && cave->amoeba_sound &&
+                    amoeba_2_count > 0 && cave->amoeba_2_state == GD_AM_AWAKE);
+
+  if (amoeba_1_sound && magic_sound)
   {
     gd_sound_play(cave, GD_S_AMOEBA_MAGIC, O_AMOEBA, -1, -1);
   }
+  else if (amoeba_2_sound && magic_sound)
+  {
+    gd_sound_play(cave, GD_S_AMOEBA_2_MAGIC, O_AMOEBA_2, -1, -1);
+  }
   else
   {
-    if (amoeba_sound)
+    if (amoeba_1_sound)
       gd_sound_play(cave, GD_S_AMOEBA, O_AMOEBA, -1, -1);
+    else if (amoeba_2_sound)
+      gd_sound_play(cave, GD_S_AMOEBA_2, O_AMOEBA_2, -1, -1);
     else if (magic_sound)
       gd_sound_play(cave, GD_S_MAGIC_WALL, O_MAGIC_WALL, -1, -1);
   }
 
   if (cave->hatched)
   {
-    if ((amoeba_count   > 0 && cave->amoeba_state   == GD_AM_AWAKE) ||
-	(amoeba_2_count > 0 && cave->amoeba_2_state == GD_AM_AWAKE))
+    if (amoeba_count > 0 && cave->amoeba_state == GD_AM_AWAKE)
       play_sound_of_element(cave, O_AMOEBA, -1, -1);
+    else if (amoeba_2_count > 0 && cave->amoeba_2_state == GD_AM_AWAKE)
+      play_sound_of_element(cave, O_AMOEBA_2, -1, -1);
   }
 
 

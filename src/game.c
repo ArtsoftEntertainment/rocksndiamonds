@@ -15700,6 +15700,8 @@ static int getSoundAction_BD(int sample)
     case GD_S_LAVA:
     case GD_S_ACID_SPREADING:
     case GD_S_BLADDER_CONVERTING:
+    case GD_S_AMOEBA_GROWING:
+    case GD_S_AMOEBA_2_GROWING:
       return ACTION_GROWING;
 
     case GD_S_DIAMOND_COLLECTING:
@@ -15761,6 +15763,7 @@ static int getSoundAction_BD(int sample)
 
     case GD_S_COVERING:
     case GD_S_AMOEBA:
+    case GD_S_AMOEBA_2:
     case GD_S_MAGIC_WALL:
     case GD_S_PNEUMATIC_HAMMER:
     case GD_S_WATER:
@@ -15818,6 +15821,7 @@ static int getSoundAction_BD(int sample)
       return ACTION_OTHER;
 
     case GD_S_AMOEBA_MAGIC:
+    case GD_S_AMOEBA_2_MAGIC:
     case GD_S_FINISHED:
       // trigger special post-processing (and force sound to be looping)
       return ACTION_DEFAULT;
@@ -15933,6 +15937,10 @@ static int getSoundEffect_BD(int element_bd, int sample)
 
     case GD_S_AMOEBA_MAGIC:
       sound_effect = SND_BDX_AMOEBA_1_OTHER;
+      break;
+
+    case GD_S_AMOEBA_2_MAGIC:
+      sound_effect = SND_BDX_AMOEBA_2_OTHER;
       break;
 
     case GD_S_FINISHED:
