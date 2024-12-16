@@ -247,7 +247,7 @@ static void play_sound_of_element(GdCave *cave, GdElement element, int x, int y)
     case O_BITER_2:
     case O_BITER_3:
     case O_BITER_4:
-      gd_sound_play(cave, GD_S_BITER_EATING, element, x, y);
+      gd_sound_play(cave, GD_S_BITER_EATING, O_BITER, x, y);
       break;
 
     case O_DIRT_BALL:
@@ -2656,6 +2656,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
               // turn in place if nothing else possible
 	      store(cave, x, y, base + dirp);
             }
+
+            gd_sound_play(cave, GD_S_COW, O_COW, x, y);
 	  }
 	  break;
 
@@ -2777,6 +2779,17 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
               // turn in place if nothing else possible
 	      store(cave, x, y, base + dirp);
             }
+
+            if (base == O_FIREFLY_1)
+              gd_sound_play(cave, GD_S_FIREFLY, O_FIREFLY, x, y);
+            else if (base == O_ALT_FIREFLY_1)
+              gd_sound_play(cave, GD_S_ALT_FIREFLY, O_ALT_FIREFLY, x, y);
+            else if (base == O_BUTTER_1)
+              gd_sound_play(cave, GD_S_BUTTER, O_BUTTER, x, y);
+            else if (base == O_ALT_BUTTER_1)
+              gd_sound_play(cave, GD_S_ALT_BUTTER, O_ALT_BUTTER, x, y);
+            else if (base == O_STONEFLY_1)
+              gd_sound_play(cave, GD_S_STONEFLY, O_STONEFLY, x, y);
 	  }
 	  break;
 
@@ -3045,6 +3058,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    // if biter did move, we had sound. play it.
 	    if (made_sound_of != O_NONE)
 	      play_sound_of_element(cave, made_sound_of, x, y);
+            else
+              gd_sound_play(cave, GD_S_BITER, O_BITER, x, y);
 	  }
 	  break;
 
@@ -3097,6 +3112,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      // otherwise turns 90 degrees in place.
 	      store(cave, x, y, base + dirn);
             }
+
+            gd_sound_play(cave, GD_S_DRAGONFLY, O_DRAGONFLY, x, y);
 	  }
 	  break;
 

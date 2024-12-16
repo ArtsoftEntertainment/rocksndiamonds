@@ -836,6 +836,11 @@ GdElementProperty gd_element_properties[] =
     "WATER16", 0, 96, -96, -96
   },
   {
+    O_COW, O_COW, N_("Cow (internal)"),
+    0,
+    "COW", 0, 0, 0, 0,
+  },
+  {
     O_COW_1, O_COW_1_scanned, N_("Cow (left)"),
     P_CCW | P_CAN_MOVE,
     "COWl", 0, i_cow_1, -88, -88, 384
@@ -1063,6 +1068,11 @@ GdElementProperty gd_element_properties[] =
     "SCANN_GHOST", 0, 160, -160, -160
   },
   {
+    O_FIREFLY, O_FIREFLY, N_("Firefly (internal)"),
+    0,
+    "FIREFLY", 0, 0, 0, 0,
+  },
+  {
     O_FIREFLY_1, O_FIREFLY_1_scanned, N_("Firefly, left"),
     P_EXPLODES_BY_HIT | P_CCW | P_CAN_MOVE,
     "FIREFLYl", 'Q', i_firefly_1, -136, -136, 384
@@ -1101,6 +1111,11 @@ GdElementProperty gd_element_properties[] =
     O_FIREFLY_4_scanned, O_FIREFLY_4, N_("Firefly, down (scanned)"),
     P_SCANNED,
     "SCANN_FIREFLYd", 0, i_firefly_4, -136, -136
+  },
+  {
+    O_ALT_FIREFLY, O_ALT_FIREFLY, N_("Alternative firefly (internal)"),
+    0,
+    "A_FIREFLY", 0, 0, 0, 0,
   },
   {
     O_ALT_FIREFLY_1, O_ALT_FIREFLY_1_scanned, N_("Alternative firefly, left"),
@@ -1143,6 +1158,11 @@ GdElementProperty gd_element_properties[] =
     "SCANN_A_FIREFLYd", 0, i_alt_firefly_4, -104, -104
   },
   {
+    O_BUTTER, O_BUTTER, N_("Butterfly (internal)"),
+    0,
+    "BUTTERFLY", 0, 0, 0, 0,
+  },
+  {
     O_BUTTER_1, O_BUTTER_1_scanned, N_("Butterfly, left"),
     P_EXPLODES_BY_HIT | P_CAN_MOVE,
     "BUTTERFLYl", 'C', i_butter_1, -144, -144, 384
@@ -1181,6 +1201,11 @@ GdElementProperty gd_element_properties[] =
     O_BUTTER_4_scanned, O_BUTTER_4, N_("Butterfly, down (scanned)"),
     P_SCANNED,
     "SCANN_BUTTERFLYd", 0, i_butter_4, -144, -144
+  },
+  {
+    O_ALT_BUTTER, O_ALT_BUTTER, N_("Alternative butterfly (internal)"),
+    0,
+    "A_BUTTERFLY", 0, 0, 0, 0,
   },
   {
     O_ALT_BUTTER_1, O_ALT_BUTTER_1_scanned, N_("Alternative butterfly, left"),
@@ -1223,6 +1248,11 @@ GdElementProperty gd_element_properties[] =
     "SCANN_A_BUTTERFLYd", 0, i_alt_butter_4, -112, -112
   },
   {
+    O_STONEFLY, O_STONEFLY, N_("Stonefly (internal)"),
+    0,
+    "STONEFLY", 0, 0, 0, 0,
+  },
+  {
     O_STONEFLY_1, O_STONEFLY_1_scanned, N_("Stonefly, left"),
     P_EXPLODES_BY_HIT | P_CAN_MOVE,
     "STONEFLYl", 0, i_stonefly_1, -152, -152, 384
@@ -1263,6 +1293,11 @@ GdElementProperty gd_element_properties[] =
     "SCANN_STONEFLYd", 0, i_stonefly_4, -152, -152
   },
   {
+    O_BITER, O_BITER, N_("Biter (internal)"),
+    0,
+    "BITER", 0, 0, 0, 0,
+  },
+  {
     O_BITER_1, O_BITER_1_scanned, N_("Biter, up"),
     P_CAN_MOVE,
     "BITERu", 0, i_biter_1, -168, -168, 518
@@ -1301,6 +1336,11 @@ GdElementProperty gd_element_properties[] =
     O_BITER_4_scanned, O_BITER_4, N_("Biter, left (scanned)"),
     P_SCANNED,
     "SCANN_BITERl", 0, i_biter_4, -168, -168
+  },
+  {
+    O_DRAGONFLY, O_DRAGONFLY, N_("Dragonfly (internal)"),
+    0,
+    "DRAGONFLY", 0, 0, 0, 0,
   },
   {
     O_DRAGONFLY_1, O_DRAGONFLY_1_scanned, N_("Dragonfly, left"),

@@ -6697,6 +6697,10 @@ bd_object_mapping_list[] =
     EL_BDX_WATER,				-1, -1
   },
   {
+    O_COW,					TRUE,
+    EL_BDX_COW,					-1, -1
+  },
+  {
     O_COW_1,					TRUE,
     EL_BDX_COW_LEFT,				-1, -1
   },
@@ -6901,6 +6905,10 @@ bd_object_mapping_list[] =
     EL_BDX_GHOST,				-1, -1
   },
   {
+    O_FIREFLY,					TRUE,
+    EL_BDX_FIREFLY_1,				-1, -1
+  },
+  {
     O_FIREFLY_1,				TRUE,
     EL_BDX_FIREFLY_1_LEFT,			-1, -1
   },
@@ -6915,6 +6923,10 @@ bd_object_mapping_list[] =
   {
     O_FIREFLY_4,				TRUE,
     EL_BDX_FIREFLY_1_DOWN,			-1, -1
+  },
+  {
+    O_ALT_FIREFLY,				TRUE,
+    EL_BDX_FIREFLY_2,				-1, -1
   },
   {
     O_ALT_FIREFLY_1,				TRUE,
@@ -6933,6 +6945,10 @@ bd_object_mapping_list[] =
     EL_BDX_FIREFLY_2_DOWN,			-1, -1
   },
   {
+    O_BUTTER,					TRUE,
+    EL_BDX_BUTTERFLY_1,				-1, -1
+  },
+  {
     O_BUTTER_1,					TRUE,
     EL_BDX_BUTTERFLY_1_LEFT,			-1, -1
   },
@@ -6947,6 +6963,10 @@ bd_object_mapping_list[] =
   {
     O_BUTTER_4,					TRUE,
     EL_BDX_BUTTERFLY_1_DOWN,			-1, -1
+  },
+  {
+    O_ALT_BUTTER,				TRUE,
+    EL_BDX_BUTTERFLY_2,				-1, -1
   },
   {
     O_ALT_BUTTER_1,				TRUE,
@@ -6965,6 +6985,10 @@ bd_object_mapping_list[] =
     EL_BDX_BUTTERFLY_2_DOWN,			-1, -1
   },
   {
+    O_STONEFLY,					TRUE,
+    EL_BDX_STONEFLY,				-1, -1
+  },
+  {
     O_STONEFLY_1,				TRUE,
     EL_BDX_STONEFLY_LEFT,			-1, -1
   },
@@ -6981,6 +7005,10 @@ bd_object_mapping_list[] =
     EL_BDX_STONEFLY_DOWN,			-1, -1
   },
   {
+    O_BITER,					TRUE,
+    EL_BDX_BITER,				-1, -1
+  },
+  {
     O_BITER_1,					TRUE,
     EL_BDX_BITER_UP,				-1, -1
   },
@@ -6995,6 +7023,10 @@ bd_object_mapping_list[] =
   {
     O_BITER_4,					TRUE,
     EL_BDX_BITER_LEFT,				-1, -1
+  },
+  {
+    O_DRAGONFLY,				TRUE,
+    EL_BDX_DRAGONFLY,				-1, -1
   },
   {
     O_DRAGONFLY_1,				TRUE,

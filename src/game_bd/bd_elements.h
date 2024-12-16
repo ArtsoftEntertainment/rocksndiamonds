@@ -174,6 +174,7 @@ typedef enum _element
   O_WATER_14,
   O_WATER_15,
   O_WATER_16,
+  O_COW,
   O_COW_1,
   O_COW_2,
   O_COW_3,
@@ -221,6 +222,7 @@ typedef enum _element
   O_CHASING_STONE_scanned,
   O_GHOST,
   O_GHOST_scanned,
+  O_FIREFLY,
   O_FIREFLY_1,
   O_FIREFLY_2,
   O_FIREFLY_3,
@@ -229,6 +231,7 @@ typedef enum _element
   O_FIREFLY_2_scanned,
   O_FIREFLY_3_scanned,
   O_FIREFLY_4_scanned,
+  O_ALT_FIREFLY,
   O_ALT_FIREFLY_1,
   O_ALT_FIREFLY_2,
   O_ALT_FIREFLY_3,
@@ -237,6 +240,7 @@ typedef enum _element
   O_ALT_FIREFLY_2_scanned,
   O_ALT_FIREFLY_3_scanned,
   O_ALT_FIREFLY_4_scanned,
+  O_BUTTER,
   O_BUTTER_1,
   O_BUTTER_2,
   O_BUTTER_3,
@@ -245,6 +249,7 @@ typedef enum _element
   O_BUTTER_2_scanned,
   O_BUTTER_3_scanned,
   O_BUTTER_4_scanned,
+  O_ALT_BUTTER,
   O_ALT_BUTTER_1,
   O_ALT_BUTTER_2,
   O_ALT_BUTTER_3,
@@ -253,6 +258,7 @@ typedef enum _element
   O_ALT_BUTTER_2_scanned,
   O_ALT_BUTTER_3_scanned,
   O_ALT_BUTTER_4_scanned,
+  O_STONEFLY,
   O_STONEFLY_1,
   O_STONEFLY_2,
   O_STONEFLY_3,
@@ -261,6 +267,7 @@ typedef enum _element
   O_STONEFLY_2_scanned,
   O_STONEFLY_3_scanned,
   O_STONEFLY_4_scanned,
+  O_BITER,
   O_BITER_1,
   O_BITER_2,
   O_BITER_3,
@@ -269,6 +276,7 @@ typedef enum _element
   O_BITER_2_scanned,
   O_BITER_3_scanned,
   O_BITER_4_scanned,
+  O_DRAGONFLY,
   O_DRAGONFLY_1,
   O_DRAGONFLY_2,
   O_DRAGONFLY_3,
@@ -573,6 +581,14 @@ typedef enum _sound
   GD_S_COVERING,		// loop
   GD_S_PNEUMATIC_HAMMER,	// loop
   GD_S_WATER,			// loop
+  GD_S_COW,			// loop
+  GD_S_BITER,			// loop
+  GD_S_FIREFLY,			// loop
+  GD_S_ALT_FIREFLY,		// loop
+  GD_S_BUTTER,			// loop
+  GD_S_ALT_BUTTER,		// loop
+  GD_S_STONEFLY,		// loop
+  GD_S_DRAGONFLY,		// loop
 
   GD_S_CRACKING,
   GD_S_GRAVITY_CHANGING,

@@ -15767,6 +15767,14 @@ static int getSoundAction_BD(int sample)
     case GD_S_MAGIC_WALL:
     case GD_S_PNEUMATIC_HAMMER:
     case GD_S_WATER:
+    case GD_S_COW:
+    case GD_S_BITER:
+    case GD_S_FIREFLY:
+    case GD_S_ALT_FIREFLY:
+    case GD_S_BUTTER:
+    case GD_S_ALT_BUTTER:
+    case GD_S_STONEFLY:
+    case GD_S_DRAGONFLY:
       return ACTION_ACTIVE;
 
     case GD_S_DIAMOND_FALLING_RANDOM:
