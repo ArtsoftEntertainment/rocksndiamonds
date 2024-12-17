@@ -599,16 +599,23 @@ static int get_dirt_element(int element, int dir, boolean crumbled)
       return (crumbled ? O_DIRT_GLUED_CRUMBLED : O_DIRT_GLUED);
 
     case O_DIRT_SLOPED_UP_RIGHT:
-      return (crumbled ? O_DIRT_SLOPED_UP_RIGHT_CRUMBLED : O_DIRT_SLOPED_UP_RIGHT);
-
     case O_DIRT_SLOPED_UP_LEFT:
-      return (crumbled ? O_DIRT_SLOPED_UP_LEFT_CRUMBLED : O_DIRT_SLOPED_UP_LEFT);
-
     case O_DIRT_SLOPED_DOWN_LEFT:
-      return (crumbled ? O_DIRT_SLOPED_DOWN_LEFT_CRUMBLED : O_DIRT_SLOPED_DOWN_LEFT);
-
     case O_DIRT_SLOPED_DOWN_RIGHT:
-      return (crumbled ? O_DIRT_SLOPED_DOWN_RIGHT_CRUMBLED : O_DIRT_SLOPED_DOWN_RIGHT);
+      return (crumbled ?
+              (dir == GD_MV_LEFT  ? O_DIRT_DIGGING_LEFT_CRUMBLED  :
+               dir == GD_MV_RIGHT ? O_DIRT_DIGGING_RIGHT_CRUMBLED :
+               dir == GD_MV_UP    ? O_DIRT_DIGGING_UP_CRUMBLED    :
+               dir == GD_MV_DOWN  ? O_DIRT_DIGGING_DOWN_CRUMBLED  :
+               element == O_DIRT_SLOPED_UP_RIGHT   ? O_DIRT_SLOPED_UP_RIGHT_CRUMBLED   :
+               element == O_DIRT_SLOPED_UP_LEFT    ? O_DIRT_SLOPED_UP_LEFT_CRUMBLED    :
+               element == O_DIRT_SLOPED_DOWN_LEFT  ? O_DIRT_SLOPED_DOWN_LEFT_CRUMBLED  :
+               element == O_DIRT_SLOPED_DOWN_RIGHT ? O_DIRT_SLOPED_DOWN_RIGHT_CRUMBLED : element) :
+
+              (dir == GD_MV_LEFT  ? O_DIRT_DIGGING_LEFT  :
+               dir == GD_MV_RIGHT ? O_DIRT_DIGGING_RIGHT :
+               dir == GD_MV_UP    ? O_DIRT_DIGGING_UP    :
+               dir == GD_MV_DOWN  ? O_DIRT_DIGGING_DOWN  : element));
 
     case O_BITER_SWITCH_1:
       return (crumbled ? O_BITER_SWITCH_1_CRUMBLED : O_BITER_SWITCH_1);
