@@ -6185,6 +6185,22 @@ bd_object_mapping_list[] =
     EL_BDX_SAND_SLOPED_DOWN_RIGHT,		-1, -1
   },
   {
+    O_DIRT_SLOPED_UP_RIGHT_CRUMBLED,		FALSE,
+    EL_BDX_SAND_SLOPED_UP_RIGHT,		-1, -1
+  },
+  {
+    O_DIRT_SLOPED_UP_LEFT_CRUMBLED,		FALSE,
+    EL_BDX_SAND_SLOPED_UP_LEFT,			-1, -1
+  },
+  {
+    O_DIRT_SLOPED_DOWN_LEFT_CRUMBLED,		FALSE,
+    EL_BDX_SAND_SLOPED_DOWN_LEFT,		-1, -1
+  },
+  {
+    O_DIRT_SLOPED_DOWN_RIGHT_CRUMBLED,		FALSE,
+    EL_BDX_SAND_SLOPED_DOWN_RIGHT,		-1, -1
+  },
+  {
     O_DIRT_BALL,				TRUE,
     EL_BDX_GRASS_BALL,				-1, -1
   },
@@ -11248,13 +11264,17 @@ void InitGraphicInfo_BD(void)
     {
       int effective_element = element;
       int effective_action = action;
-      int graphic = (i == O_DIRT_CRUMBLED           ||
-                     i == O_DIRT2_CRUMBLED          ||
-                     i == O_DIRT_GLUED_CRUMBLED     ||
-                     i == O_BITER_SWITCH_1_CRUMBLED ||
-                     i == O_BITER_SWITCH_2_CRUMBLED ||
-                     i == O_BITER_SWITCH_3_CRUMBLED ||
-                     i == O_BITER_SWITCH_4_CRUMBLED ?
+      int graphic = (i == O_DIRT_CRUMBLED                   ||
+                     i == O_DIRT2_CRUMBLED                  ||
+                     i == O_DIRT_GLUED_CRUMBLED             ||
+                     i == O_DIRT_SLOPED_UP_RIGHT_CRUMBLED   ||
+                     i == O_DIRT_SLOPED_UP_LEFT_CRUMBLED    ||
+                     i == O_DIRT_SLOPED_DOWN_LEFT_CRUMBLED  ||
+                     i == O_DIRT_SLOPED_DOWN_RIGHT_CRUMBLED ||
+                     i == O_BITER_SWITCH_1_CRUMBLED         ||
+                     i == O_BITER_SWITCH_2_CRUMBLED         ||
+                     i == O_BITER_SWITCH_3_CRUMBLED         ||
+                     i == O_BITER_SWITCH_4_CRUMBLED         ?
                      graphic = el_act2crm(effective_element, effective_action) :
                      i == O_DIRT_DIGGING_LEFT_CRUMBLED   ||
                      i == O_DIRT_DIGGING_RIGHT_CRUMBLED  ||

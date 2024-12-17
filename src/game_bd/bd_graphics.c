@@ -509,13 +509,17 @@ static inline boolean el_can_dig(const int element)
 static inline boolean el_has_crumbled(const int element)
 {
   int tile_gfx = element;
-  int tile_crm = (element == O_DIRT           ? O_DIRT_CRUMBLED           :
-                  element == O_DIRT2          ? O_DIRT2_CRUMBLED          :
-                  element == O_DIRT_GLUED     ? O_DIRT_GLUED_CRUMBLED     :
-                  element == O_BITER_SWITCH_1 ? O_BITER_SWITCH_1_CRUMBLED :
-                  element == O_BITER_SWITCH_2 ? O_BITER_SWITCH_2_CRUMBLED :
-                  element == O_BITER_SWITCH_3 ? O_BITER_SWITCH_3_CRUMBLED :
-                  element == O_BITER_SWITCH_4 ? O_BITER_SWITCH_4_CRUMBLED :
+  int tile_crm = (element == O_DIRT                   ? O_DIRT_CRUMBLED                   :
+                  element == O_DIRT2                  ? O_DIRT2_CRUMBLED                  :
+                  element == O_DIRT_GLUED             ? O_DIRT_GLUED_CRUMBLED             :
+                  element == O_DIRT_SLOPED_UP_RIGHT   ? O_DIRT_SLOPED_UP_RIGHT_CRUMBLED   :
+                  element == O_DIRT_SLOPED_UP_LEFT    ? O_DIRT_SLOPED_UP_LEFT_CRUMBLED    :
+                  element == O_DIRT_SLOPED_DOWN_LEFT  ? O_DIRT_SLOPED_DOWN_LEFT_CRUMBLED  :
+                  element == O_DIRT_SLOPED_DOWN_RIGHT ? O_DIRT_SLOPED_DOWN_RIGHT_CRUMBLED :
+                  element == O_BITER_SWITCH_1         ? O_BITER_SWITCH_1_CRUMBLED         :
+                  element == O_BITER_SWITCH_2         ? O_BITER_SWITCH_2_CRUMBLED         :
+                  element == O_BITER_SWITCH_3         ? O_BITER_SWITCH_3_CRUMBLED         :
+                  element == O_BITER_SWITCH_4         ? O_BITER_SWITCH_4_CRUMBLED         :
                   element);
   struct GraphicInfo_BD *gfx = &graphic_info_bd_object[tile_gfx][0];
   struct GraphicInfo_BD *crm = &graphic_info_bd_object[tile_crm][0];
@@ -594,6 +598,18 @@ static int get_dirt_element(int element, int dir, boolean crumbled)
     case O_DIRT_GLUED:
       return (crumbled ? O_DIRT_GLUED_CRUMBLED : O_DIRT_GLUED);
 
+    case O_DIRT_SLOPED_UP_RIGHT:
+      return (crumbled ? O_DIRT_SLOPED_UP_RIGHT_CRUMBLED : O_DIRT_SLOPED_UP_RIGHT);
+
+    case O_DIRT_SLOPED_UP_LEFT:
+      return (crumbled ? O_DIRT_SLOPED_UP_LEFT_CRUMBLED : O_DIRT_SLOPED_UP_LEFT);
+
+    case O_DIRT_SLOPED_DOWN_LEFT:
+      return (crumbled ? O_DIRT_SLOPED_DOWN_LEFT_CRUMBLED : O_DIRT_SLOPED_DOWN_LEFT);
+
+    case O_DIRT_SLOPED_DOWN_RIGHT:
+      return (crumbled ? O_DIRT_SLOPED_DOWN_RIGHT_CRUMBLED : O_DIRT_SLOPED_DOWN_RIGHT);
+
     case O_BITER_SWITCH_1:
       return (crumbled ? O_BITER_SWITCH_1_CRUMBLED : O_BITER_SWITCH_1);
 
@@ -664,6 +680,17 @@ static void gd_drawcave_crumbled(Bitmap *dest, GdGame *game, int x, int y, boole
     // do not crumble border if next tile is also crumbled or is just being digged away
     boolean draw_normal = ((el_has_crumbled(draw)) ||
                            (el_has_crumbled(draw_last) && is_moving_to));
+
+    // special case: handle sloped sand sides separately
+    if ((dir == GD_MV_UP    && (draw == O_DIRT_SLOPED_DOWN_LEFT ||
+                                draw == O_DIRT_SLOPED_DOWN_RIGHT)) ||
+        (dir == GD_MV_DOWN  && (draw == O_DIRT_SLOPED_UP_LEFT ||
+                                draw == O_DIRT_SLOPED_UP_RIGHT)) ||
+        (dir == GD_MV_LEFT  && (draw == O_DIRT_SLOPED_UP_RIGHT ||
+                                draw == O_DIRT_SLOPED_DOWN_RIGHT)) ||
+        (dir == GD_MV_RIGHT && (draw == O_DIRT_SLOPED_UP_LEFT ||
+                                draw == O_DIRT_SLOPED_DOWN_LEFT)))
+      draw_normal = FALSE;
 
     if (draw_normal)
       blit_bitmap(gfx->bitmap, dest, gfx->src_x + xoffset, gfx->src_y + yoffset,
