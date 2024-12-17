@@ -515,8 +515,8 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
 	// higher levels get more bonus points per second remained
 	increment_score(game, game->cave->timevalue);
 
-	// if much time (> 60s) remained, fast counter :)
-	if (game->cave->time > 60 * game->cave->timing_factor)
+	// if much time (> 100s) remained, fast counter :)
+	if (game->cave->time > 100 * game->cave->timing_factor)
 	{
 	  // decrement by nine each frame, so it also looks like a fast counter. 9 is 8 + 1!
 	  game->cave->time -= 8 * game->cave->timing_factor;
