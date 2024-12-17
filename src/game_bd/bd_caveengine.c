@@ -326,7 +326,14 @@ void gd_cave_set_seconds_sound(GdCave *cave)
   // also skip timeout sounds when not using native sound engine
   if (game_bd.game == NULL || game_bd.game->state_counter != GAME_INT_CHECK_BONUS_TIME ||
       !game.use_native_bd_sound_engine)
+  {
+    // needed to play sound during last seconds of counting bonus time with non-native sounds
+    if (game_bd.game != NULL && game_bd.game->state_counter == GAME_INT_CHECK_BONUS_TIME &&
+        !game.use_native_bd_sound_engine)
+      gd_sound_play(cave, GD_S_FINISHED, O_NONE, -1, -1);
+
     return;
+  }
 
   // this is an integer division, so 0 seconds can be 0.5 seconds...
   // also, when this reaches 8, the player still has 8.9999 seconds.
