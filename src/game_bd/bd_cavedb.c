@@ -262,7 +262,7 @@ GdElementProperty gd_element_properties[] =
   {
     O_DIRT2_DIGGING_DOWN, O_DIRT2_DIGGING_DOWN, N_("Dirt 2 (digging down)"),
     P_DIRT | P_AMOEBA_CONSUMES | P_DIGGABLE,
-    "DIRT2_DIGGING_", 0, 3, 3, 3
+    "DIRT2_DIGGING_DOWN", 0, 3, 3, 3
   },
   {
     O_DIRT2_DIGGING_LEFT_CRUMBLED, O_DIRT2_DIGGING_LEFT_CRUMBLED, N_("Dirt 2 (digging left, crumbled)"),
