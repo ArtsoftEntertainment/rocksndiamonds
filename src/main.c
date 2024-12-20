@@ -9576,6 +9576,20 @@ static void print_version(void)
   }
 }
 
+static void print_render_drivers(void)
+{
+  int num_render_drivers = SDL_GetNumRenderDrivers();
+  int i;
+
+  for (i = 0; i < num_render_drivers; i++)
+  {
+    SDL_RendererInfo info;
+
+    if (SDL_GetRenderDriverInfo(i, &info) == 0)
+      Print("- SDL render driver #%d: '%s'\n", i, info.name);
+  }
+}
+
 static void InitProgramConfig(char *command_filename)
 {
   char *program_title = PROGRAM_TITLE_STRING;
@@ -9640,7 +9654,7 @@ int main(int argc, char *argv[])
   InitExitFunction(CloseAllAndExit);
   InitPlatformDependentStuff();
 
-  GetOptions(argc, argv, print_usage, print_version);
+  GetOptions(argc, argv, print_usage, print_version, print_render_drivers);
   OpenAll();
 
   EventLoop();

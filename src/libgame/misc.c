@@ -1693,7 +1693,8 @@ boolean isURL(const char *s)
 
 void GetOptions(int argc, char *argv[],
 		void (*print_usage_function)(void),
-		void (*print_version_function)(void))
+		void (*print_version_function)(void),
+		void (*print_render_drivers_function)(void))
 {
   char *base_path = getProgramMainDataPath(argv[0], BASE_PATH);
   char **argvplus = checked_calloc((argc + 1) * sizeof(char **));
@@ -1907,6 +1908,12 @@ void GetOptions(int argc, char *argv[],
 	     strncmp(option, "-V", option_len) == 0)
     {
       print_version_function();
+
+      exit(0);
+    }
+    else if (strncmp(option, "-list-render-drivers", option_len) == 0)
+    {
+      print_render_drivers_function();
 
       exit(0);
     }

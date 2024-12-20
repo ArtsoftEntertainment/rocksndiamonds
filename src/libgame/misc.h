@@ -207,7 +207,8 @@ boolean isURL(const char *);
 
 void GetOptions(int, char **,
 		void (*print_usage_function)(void),
-		void (*print_version_function)(void));
+		void (*print_version_function)(void),
+		void (*print_render_drivers_function)(void));
 
 void *checked_malloc(unsigned int);
 void *checked_calloc(unsigned int);
