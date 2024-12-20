@@ -1655,6 +1655,9 @@ struct UserInfo
 struct ZipFileInfo
 {
   int state;
+
+  char *top_dir_path;
+  char *top_dir_conf_filename;
 };
 
 struct TreeInfo

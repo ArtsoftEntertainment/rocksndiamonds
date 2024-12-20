@@ -3740,14 +3740,15 @@ int GetZipFileTreeType(char *zip_filename)
 
 static int CheckZipFileForDirectoryExt(char *zip_filename, char *directory, int tree_type)
 {
-  static char *top_dir_path = NULL;
   static char *top_dir_conf_filename = NULL;
 
-  checked_free(top_dir_path);
   checked_free(top_dir_conf_filename);
+  checked_free(zip_file.top_dir_path);
+  checked_free(zip_file.top_dir_conf_filename);
 
-  top_dir_path = NULL;
   top_dir_conf_filename = NULL;
+  zip_file.top_dir_path = NULL;
+  zip_file.top_dir_conf_filename = NULL;
 
   char *conf_basename = (tree_type == TREE_TYPE_LEVEL_DIR ? LEVELINFO_FILENAME :
 			 ARTWORKINFO_FILENAME(tree_type));
@@ -3769,7 +3770,7 @@ static int CheckZipFileForDirectoryExt(char *zip_filename, char *directory, int 
   if (!strSuffix(top_dir, "/"))
     return ZIP_FILE_ERROR_DIR_NOT_FOUND;
 
-  // get filename of configuration file in top level directory
+  // get relative filename of configuration file in top level directory
   top_dir_conf_filename = getStringCat2(top_dir, conf_basename);
 
   boolean found_top_dir_conf_filename = FALSE;
@@ -3794,15 +3795,18 @@ static int CheckZipFileForDirectoryExt(char *zip_filename, char *directory, int 
 
   // zip file seems valid -- now check if included directory already exists
 
-  // get path of extracted top level directory
-  top_dir_path = getPath2(directory, top_dir);
+  // get absolute path of extracted top level directory
+  zip_file.top_dir_path = getPath2(directory, top_dir);
+
+  // get absolute filename of configuration file in top level directory
+  zip_file.top_dir_conf_filename = getPath2(directory, top_dir_conf_filename);
 
   // remove trailing directory separator from top level directory path
   // (required to be able to check for file and directory in next step)
-  top_dir_path[strlen(top_dir_path) - 1] = '\0';
+  zip_file.top_dir_path[strlen(zip_file.top_dir_path) - 1] = '\0';
 
   // check if zip file's top level directory already exists in target directory
-  if (fileExists(top_dir_path))		// (checks for file and directory)
+  if (fileExists(zip_file.top_dir_path))	// (checks for file and directory)
     return ZIP_FILE_ERROR_DIR_EXISTS;
 
   return ZIP_FILE_OK;
