@@ -3812,7 +3812,7 @@ static int CheckZipFileForDirectoryExt(char *zip_filename, char *directory, int 
   return ZIP_FILE_OK;
 }
 
-static boolean CheckZipFileForDirectory(char *zip_filename, char *directory, int tree_type)
+boolean CheckZipFileForDirectory(char *zip_filename, char *directory, int tree_type)
 {
   zip_file.state = CheckZipFileForDirectoryExt(zip_filename, directory, tree_type);
 

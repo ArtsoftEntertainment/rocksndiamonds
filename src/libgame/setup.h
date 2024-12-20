@@ -384,6 +384,7 @@ int hash_key_strings_are_equal(void *, void *);
 int hash_key_integers_are_equal(void *, void *);
 
 int GetZipFileTreeType(char *);
+boolean CheckZipFileForDirectory(char *, char *, int);
 char *ExtractZipFileIntoDirectory(char *, char *, int);
 
 boolean AdjustGraphicsForEMC(void);

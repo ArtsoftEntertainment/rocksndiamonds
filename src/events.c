@@ -1544,6 +1544,49 @@ static int HandleDropFileEvent(char *filename)
       directory = getUserLevelDir(NULL);
   }
 
+  // check if level or artwork set directory already exists in target directory
+  if (!CheckZipFileForDirectory(filename, directory, tree_type) &&
+      zip_file.state == ZIP_FILE_ERROR_DIR_EXISTS)
+  {
+    char message[100];
+
+    sprintf(message, "%s set already exists! Replace with new set?",
+            (tree_type == TREE_TYPE_LEVEL_DIR ? "Level" : "Artwork"));
+
+    // ask if level or artwork set directory should be replaced (and fail if not)
+    if (!Request(message, REQ_ASK))
+      return TREE_TYPE_UNDEFINED;
+
+    time_t epoch_seconds = time(NULL);
+    struct tm *now = localtime(&epoch_seconds);
+    char suffix[100];
+
+    sprintf(suffix, ".REPLACED-%04d%02d%02d-%02d%02d%02d",
+            now->tm_year + 1900,
+            now->tm_mon + 1,
+            now->tm_mday,
+            now->tm_hour,
+            now->tm_min,
+            now->tm_sec);
+
+    // workaround: rename level or artwork set directory and topmost config file
+    // (change this so that the level or artwork set directory will be deleted)
+    char *conf_file_renamed = getStringCat2(zip_file.top_dir_conf_filename, suffix);
+    char *conf_path_renamed = getStringCat2(zip_file.top_dir_path, suffix);
+    boolean success = (rename(zip_file.top_dir_conf_filename, conf_file_renamed) == 0 &&
+                       rename(zip_file.top_dir_path, conf_path_renamed) == 0);
+
+    checked_free(conf_file_renamed);
+    checked_free(conf_path_renamed);
+
+    if (!success)
+    {
+      Request("Replacing old set failed!", REQ_CONFIRM);
+
+      return TREE_TYPE_UNDEFINED;
+    }
+  }
+
   // extract level or artwork set from zip file to target directory
   char *top_dir = ExtractZipFileIntoDirectory(filename, directory, tree_type);
 
