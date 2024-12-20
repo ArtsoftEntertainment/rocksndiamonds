@@ -3738,8 +3738,7 @@ int GetZipFileTreeType(char *zip_filename)
   return tree_type;
 }
 
-static boolean CheckZipFileForDirectory(char *zip_filename, char *directory,
-					int tree_type)
+static int CheckZipFileForDirectoryExt(char *zip_filename, char *directory, int tree_type)
 {
   static char *top_dir_path = NULL;
   static char *top_dir_conf_filename = NULL;
@@ -3755,20 +3754,20 @@ static boolean CheckZipFileForDirectory(char *zip_filename, char *directory,
 
   // check if valid configuration filename determined
   if (conf_basename == NULL || strEqual(conf_basename, ""))
-    return FALSE;
+    return ZIP_FILE_ERROR_CONF_INVALID;
 
   char **zip_entries = zip_list(zip_filename);
 
   // check if zip file successfully opened
   if (zip_entries == NULL || zip_entries[0] == NULL)
-    return FALSE;
+    return ZIP_FILE_ERROR_CANNOT_OPEN;
 
   // first zip file entry is expected to be top level directory
   char *top_dir = zip_entries[0];
 
   // check if valid top level directory found in zip file
   if (!strSuffix(top_dir, "/"))
-    return FALSE;
+    return ZIP_FILE_ERROR_DIR_NOT_FOUND;
 
   // get path of extracted top level directory
   top_dir_path = getPath2(directory, top_dir);
@@ -3779,7 +3778,7 @@ static boolean CheckZipFileForDirectory(char *zip_filename, char *directory,
 
   // check if zip file's top level directory already exists in target directory
   if (fileExists(top_dir_path))		// (checks for file and directory)
-    return FALSE;
+    return ZIP_FILE_ERROR_DIR_EXISTS;
 
   // get filename of configuration file in top level directory
   top_dir_conf_filename = getStringCat2(top_dir, conf_basename);
@@ -3791,7 +3790,7 @@ static boolean CheckZipFileForDirectory(char *zip_filename, char *directory,
   {
     // check if every zip file entry is below top level directory
     if (!strPrefix(zip_entries[i], top_dir))
-      return FALSE;
+      return ZIP_FILE_ERROR_FILE_INVALID;
 
     // check if this zip file entry is the configuration filename
     if (strEqual(zip_entries[i], top_dir_conf_filename))
@@ -3802,9 +3801,16 @@ static boolean CheckZipFileForDirectory(char *zip_filename, char *directory,
 
   // check if valid configuration filename was found in zip file
   if (!found_top_dir_conf_filename)
-    return FALSE;
+    return ZIP_FILE_ERROR_CONF_NOT_FOUND;
 
-  return TRUE;
+  return ZIP_FILE_OK;
+}
+
+static boolean CheckZipFileForDirectory(char *zip_filename, char *directory, int tree_type)
+{
+  zip_file.state = CheckZipFileForDirectoryExt(zip_filename, directory, tree_type);
+
+  return (zip_file.state == ZIP_FILE_OK);
 }
 
 char *ExtractZipFileIntoDirectory(char *zip_filename, char *directory,

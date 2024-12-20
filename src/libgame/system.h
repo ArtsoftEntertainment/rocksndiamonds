@@ -1643,6 +1643,20 @@ struct UserInfo
   int nr;
 };
 
+#define ZIP_FILE_OK				0
+#define ZIP_FILE_ERROR_CANNOT_OPEN		1
+#define ZIP_FILE_ERROR_DIR_NOT_FOUND		2
+#define ZIP_FILE_ERROR_DIR_EXISTS		3
+#define ZIP_FILE_ERROR_FILE_INVALID		4
+#define ZIP_FILE_ERROR_CONF_INVALID		5
+#define ZIP_FILE_ERROR_CONF_NOT_FOUND		6
+#define ZIP_FILE_ERROR_UNKNOWN			9
+
+struct ZipFileInfo
+{
+  int state;
+};
+
 struct TreeInfo
 {
   struct TreeInfo **node_top;	// topmost node in tree
@@ -1973,6 +1987,7 @@ extern struct ArtworkInfo	artwork;
 extern struct JoystickInfo	joystick;
 extern struct SetupInfo		setup;
 extern struct UserInfo		user;
+extern struct ZipFileInfo	zip_file;
 
 extern LevelDirTree	       *leveldir_first_all;
 extern LevelDirTree	       *leveldir_first;
