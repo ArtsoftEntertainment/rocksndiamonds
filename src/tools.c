@@ -10827,7 +10827,7 @@ boolean useOldEngine_BD(void)
     return FALSE;
 
   // use old BD game engine if playing specifically tagged native BD replays
-  if (tape.bd_replay)
+  if (tape.bd_replay && leveldir_current->replay_with_old_engine)
     return TRUE;
 
   // use old BD game engine if playing specifically tagged or patched tapes
