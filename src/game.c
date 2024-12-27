@@ -15980,6 +15980,7 @@ void PlayLevelSound_BD(int xx, int yy, int element_bd, int sample)
   // some sound actions are always non-looping in native BD game engine
   if (sound_action == ACTION_FALLING ||
       sound_action == ACTION_MOVING ||
+      sound_action == ACTION_GROWING ||
       sound_action == ACTION_OTHER)
     is_loop_sound = FALSE;
 
