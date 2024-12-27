@@ -408,9 +408,8 @@ static void play_sounds(GdSound sound1, GdSound sound2, GdSound sound3)
   // CHANNEL 1 is for small sounds
   if (sound1 != GD_S_NONE)
   {
-    // start new sound if higher or same precedence than the one currently playing
-    if (gd_sound_get_precedence(sound1) >= gd_sound_get_precedence(sound_playing(1)))
-      play_sound(1, sound1);
+    // start new sound
+    play_sound(1, sound1);
   }
   else
   {
