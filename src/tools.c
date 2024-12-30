@@ -3229,6 +3229,21 @@ static void DrawEnvelopeRequestText(int sx, int sy, char *text)
 
     text_final = text_door_style;
   }
+  else if (strlen(text_final) * font_width > max_text_width)
+  {
+    // prevent multi-line request text overlapping with request buttons
+    max_text_height = menu.request.button.confirm.y - sy_offset;
+
+    struct WrappedTextInfo *wrapped_text =
+      GetWrappedTextBuffer(text_final, font_nr, -1, -1, -1,
+                           max_text_width, -1, max_text_height, line_spacing, mask_mode,
+                           menu.request.autowrap, menu.request.centered, FALSE);
+
+    if (wrapped_text != NULL && wrapped_text->total_height > wrapped_text->max_height)
+      use_narrow_font = TRUE;
+
+    FreeWrappedText(wrapped_text);
+  }
 
   if (use_narrow_font)
   {
