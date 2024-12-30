@@ -3192,6 +3192,7 @@ static void DrawEnvelopeRequestText(int sx, int sy, char *text)
   int text_width = line_length * font_width;
   int sx_offset = border_size;
   int sy_offset = border_size;
+  boolean use_narrow_font = FALSE;
 
   // force DOOR font inside door area
   SetFontStatus(GAME_MODE_PSEUDO_DOOR);
@@ -3204,11 +3205,7 @@ static void DrawEnvelopeRequestText(int sx, int sy, char *text)
     char *src_text_ptr, *dst_text_ptr;
 
     if (maxWordLengthInRequestString(text) > line_length)
-    {
-      font_nr = FONT_REQUEST_NARROW;
-      font_width = getFontWidth(font_nr);
-      line_length = max_text_width  / font_width;
-    }
+      use_narrow_font = TRUE;
 
     text_door_style = checked_malloc(2 * strlen(text) + 1);
 
@@ -3231,6 +3228,13 @@ static void DrawEnvelopeRequestText(int sx, int sy, char *text)
     *dst_text_ptr = '\0';
 
     text_final = text_door_style;
+  }
+
+  if (use_narrow_font)
+  {
+    font_nr = FONT_REQUEST_NARROW;
+    font_width = getFontWidth(font_nr);
+    line_length = max_text_width  / font_width;
   }
 
   DrawTextBuffer(sx + sx_offset, sy + sy_offset, text_final, font_nr,
