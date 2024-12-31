@@ -7911,6 +7911,10 @@ static void LoadLevel_InitSettings(struct LevelInfo *level)
        leveldir_current->force_level_name))
     snprintf(level->name, MAX_LEVEL_NAME_LEN + 1,
 	     leveldir_current->empty_level_name, level_nr);
+
+  // set default color type and colors for BD style level colors
+  SetDefaultLevelColorType_BD();
+  SetDefaultLevelColors_BD();
 }
 
 static void LoadLevel_InitStandardElements(struct LevelInfo *level)
