@@ -2373,7 +2373,7 @@ void setElementChangeInfoToDefaults(struct ElementChangeInfo *change)
   change->post_change_function = NULL;
 }
 
-static void setLevelInfoToDefaults_Level(struct LevelInfo *level)
+static void setLevelInfoToDefaults_Level(struct LevelInfo *level, boolean prepare_loading_level)
 {
   boolean add_border = FALSE;
   int x1 = 0;
@@ -2454,12 +2454,17 @@ static void setLevelInfoToDefaults_Level(struct LevelInfo *level)
   // detect custom elements when loading them
   level->file_has_custom_elements = FALSE;
 
-  // set random colors for BD style levels according to preferred color type
-  SetRandomLevelColors_BD(setup.bd_default_color_type);
+  // set random colors for new levels only, but never when loading existing level
+  // (as default colors are not stored in level file, which would result in wrong colors)
+  if (!prepare_loading_level)
+  {
+    // set random colors for BD style levels according to preferred color type
+    SetRandomLevelColors_BD(setup.bd_default_color_type);
 
-  // set default color type and colors for BD style level colors
-  SetDefaultLevelColorType_BD();
-  SetDefaultLevelColors_BD();
+    // set default color type and colors for BD style level colors
+    SetDefaultLevelColorType_BD();
+    SetDefaultLevelColors_BD();
+  }
 
   // set all bug compatibility flags to "false" => do not emulate this bug
   level->use_action_after_change_bug = FALSE;
@@ -2615,7 +2620,7 @@ static void setLevelInfoToDefaults(struct LevelInfo *level,
 				   boolean level_info_only,
 				   boolean prepare_loading_level)
 {
-  setLevelInfoToDefaults_Level(level);
+  setLevelInfoToDefaults_Level(level, prepare_loading_level);
 
   if (!level_info_only)
     setLevelInfoToDefaults_Elements(level);
