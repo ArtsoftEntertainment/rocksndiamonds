@@ -2613,14 +2613,14 @@ static void setLevelInfoToDefaults_Elements(struct LevelInfo *level)
 
 static void setLevelInfoToDefaults(struct LevelInfo *level,
 				   boolean level_info_only,
-				   boolean reset_file_status)
+				   boolean prepare_loading_level)
 {
   setLevelInfoToDefaults_Level(level);
 
   if (!level_info_only)
     setLevelInfoToDefaults_Elements(level);
 
-  if (reset_file_status)
+  if (prepare_loading_level)
   {
     level->no_valid_file = FALSE;
     level->no_level_file = FALSE;
