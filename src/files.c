@@ -682,7 +682,7 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   },
   {
     EL_BDX_PLAYER,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(6),
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
     &li.bd_snap_element,		EL_EMPTY
   },
 
