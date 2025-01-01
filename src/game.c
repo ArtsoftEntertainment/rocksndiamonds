@@ -5964,7 +5964,6 @@ static void RelocatePlayer(int jx, int jy, int el_player_raw)
   int wait_delay_value = (no_delay ? 0 : frame_delay_value);
   int old_jx = player->jx;
   int old_jy = player->jy;
-  int old_element = Tile[old_jx][old_jy];
   int element = Tile[jx][jy];
   boolean player_relocated = (old_jx != jx || old_jy != jy);
 
@@ -6009,14 +6008,19 @@ static void RelocatePlayer(int jx, int jy, int el_player_raw)
     player->is_moving = FALSE;
   }
 
-  if (IS_CUSTOM_ELEMENT(old_element))
-    CheckElementChangeByPlayer(old_jx, old_jy, old_element,
-			       CE_LEFT_BY_PLAYER,
-			       player->index_bit, leave_side);
+  if (IN_LEV_FIELD(old_jx, old_jy))
+  {
+    int old_element = Tile[old_jx][old_jy];
 
-  CheckTriggeredElementChangeByPlayer(old_jx, old_jy, old_element,
-				      CE_PLAYER_LEAVES_X,
-				      player->index_bit, leave_side);
+    if (IS_CUSTOM_ELEMENT(old_element))
+      CheckElementChangeByPlayer(old_jx, old_jy, old_element,
+				 CE_LEFT_BY_PLAYER,
+				 player->index_bit, leave_side);
+
+    CheckTriggeredElementChangeByPlayer(old_jx, old_jy, old_element,
+					CE_PLAYER_LEAVES_X,
+					player->index_bit, leave_side);
+  }
 
   Tile[jx][jy] = el_player;
   InitPlayerField(jx, jy, el_player, TRUE);
@@ -6037,24 +6041,27 @@ static void RelocatePlayer(int jx, int jy, int el_player_raw)
   TestIfPlayerTouchesBadThing(jx, jy);
   TestIfPlayerTouchesCustomElement(jx, jy);
 
-  if (IS_CUSTOM_ELEMENT(element))
-    CheckElementChangeByPlayer(jx, jy, element, CE_ENTERED_BY_PLAYER,
-			       player->index_bit, enter_side);
-
-  CheckTriggeredElementChangeByPlayer(jx, jy, element, CE_PLAYER_ENTERS_X,
-				      player->index_bit, enter_side);
-
-  if (player->is_switching)
+  if (IN_LEV_FIELD(old_jx, old_jy))
   {
-    /* ensure that relocation while still switching an element does not cause
-       a new element to be treated as also switched directly after relocation
-       (this is important for teleporter switches that teleport the player to
-       a place where another teleporter switch is in the same direction, which
-       would then incorrectly be treated as immediately switched before the
-       direction key that caused the switch was released) */
+    if (IS_CUSTOM_ELEMENT(element))
+      CheckElementChangeByPlayer(jx, jy, element, CE_ENTERED_BY_PLAYER,
+				 player->index_bit, enter_side);
 
-    player->switch_x += jx - old_jx;
-    player->switch_y += jy - old_jy;
+    CheckTriggeredElementChangeByPlayer(jx, jy, element, CE_PLAYER_ENTERS_X,
+					player->index_bit, enter_side);
+
+    if (player->is_switching)
+    {
+      /* ensure that relocation while still switching an element does not cause
+         a new element to be treated as also switched directly after relocation
+         (this is important for teleporter switches that teleport the player to
+         a place where another teleporter switch is in the same direction, which
+         would then incorrectly be treated as immediately switched before the
+         direction key that caused the switch was released) */
+
+      player->switch_x += jx - old_jx;
+      player->switch_y += jy - old_jy;
+    }
   }
 }
 
