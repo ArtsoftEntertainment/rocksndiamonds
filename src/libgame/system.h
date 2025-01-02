@@ -1256,6 +1256,7 @@ struct GfxInfo
   int cursor_mode_final;
   int mouse_x, mouse_y;
 
+  boolean has_reduced_color_template;
   boolean has_extended_color_template;
 };
 

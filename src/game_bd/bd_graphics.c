@@ -377,6 +377,9 @@ static SDL_Surface *get_colored_surface_from_template(GdCave *cave, SDL_Surface 
         g = color[index].g * color_value / 255;
         b = color[index].b * color_value / 255;
 
+        if (index > 5)
+          gfx.has_reduced_color_template = FALSE;
+
         if (color_value > 0 && color_value < 255)
           gfx.has_extended_color_template = TRUE;
       }
