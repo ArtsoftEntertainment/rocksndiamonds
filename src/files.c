@@ -7900,6 +7900,27 @@ static void LoadLevel_InitSettings_SB(struct LevelInfo *level)
   }
 }
 
+static void LoadLevel_InitColorSettings(struct LevelInfo *level)
+{
+  GdCave *cave = level->native_bd_level->cave;
+
+  // copy level colors to native BD level
+  // (this workaround is needed as long as color template handling is still BD specific)
+  cave->colorb = level->bd_color_b;
+  cave->color0 = level->bd_color_0;
+  cave->color1 = level->bd_color_1;
+  cave->color2 = level->bd_color_2;
+  cave->color3 = level->bd_color_3;
+  cave->color4 = level->bd_color_4;
+  cave->color5 = level->bd_color_5;
+  cave->color6 = level->bd_color_6;
+  cave->color7 = level->bd_color_7;
+
+  // set default color type and colors for BD style level colors
+  SetDefaultLevelColorType_BD();
+  SetDefaultLevelColors_BD();
+}
+
 static void LoadLevel_InitSettings(struct LevelInfo *level)
 {
   // adjust level settings for (non-native) Sokoban-style levels
@@ -7912,9 +7933,8 @@ static void LoadLevel_InitSettings(struct LevelInfo *level)
     snprintf(level->name, MAX_LEVEL_NAME_LEN + 1,
 	     leveldir_current->empty_level_name, level_nr);
 
-  // set default color type and colors for BD style level colors
-  SetDefaultLevelColorType_BD();
-  SetDefaultLevelColors_BD();
+  // initialize level specific colors
+  LoadLevel_InitColorSettings(level);
 }
 
 static void LoadLevel_InitStandardElements(struct LevelInfo *level)
