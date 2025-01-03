@@ -286,7 +286,7 @@ static void UpdateGameDoorValues_BD(void)
 
   game_bd.time_left = time_left;
   game_bd.gems_still_needed = gems_still_needed;
-  game_bd.score = game_bd.game->player_score;
+  game_bd.score = game_bd.game->player_score;			// use cave score here
 
   if (game.no_level_time_limit)
     game_bd.time_left = getTimePlayed_BD();
@@ -295,7 +295,7 @@ static void UpdateGameDoorValues_BD(void)
   {
     // update time and score in panel while counting bonus time
     game.LevelSolved_CountingTime  = game_bd.time_left;
-    game.LevelSolved_CountingScore = game_bd.score;
+    game.LevelSolved_CountingScore = game_bd.global_score;	// use global score here
   }
 }
 

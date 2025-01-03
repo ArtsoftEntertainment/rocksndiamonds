@@ -63,6 +63,7 @@ static void add_bonus_life(GdGame *game, boolean inform_user)
     // only add a life, if lives is > 0.
     // lives == 0 is a test run or a snapshot, no bonus life then.
     // also, obey max number of bonus lives.
+    game_bd.global_lives++;
     game->player_lives++;
   }
 }
@@ -74,6 +75,7 @@ static void increment_score(GdGame *game, int increment)
   int i;
 
   i = game->player_score / gd_caveset_data->bonus_life_score;
+  game_bd.global_score += increment;
   game->player_score += increment;
   game->cave_score += increment;
 

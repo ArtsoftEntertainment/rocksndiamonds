@@ -11015,6 +11015,10 @@ static struct TokenInfo global_setup_tokens[] =
   },
   {
     TYPE_SWITCH,
+    &setup.bd_multiple_lives,			"bd_multiple_lives"
+  },
+  {
+    TYPE_SWITCH,
     &setup.bd_skip_uncovering,			"bd_skip_uncovering"
   },
   {
@@ -11932,6 +11936,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->game_speed_extended = FALSE;
   si->game_frame_delay = GAME_FRAME_DELAY;
   si->default_game_engine_type	= GAME_ENGINE_TYPE_RND;
+  si->bd_multiple_lives = FALSE;
   si->bd_skip_uncovering = FALSE;
   si->bd_skip_hatching = FALSE;
   si->bd_scroll_delay = TRUE;

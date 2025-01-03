@@ -1579,6 +1579,7 @@ struct SetupInfo
   boolean game_speed_extended;
   int game_frame_delay;
   int default_game_engine_type;
+  boolean bd_multiple_lives;
   boolean bd_skip_uncovering;
   boolean bd_skip_hatching;
   boolean bd_scroll_delay;

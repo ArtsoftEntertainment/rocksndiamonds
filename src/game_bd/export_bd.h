@@ -54,6 +54,10 @@ struct GameInfo_BD
 
   // needed for saving score time
   int frames_played;
+
+  // global lives and score over more than one game
+  int global_lives;
+  int global_score;
 };
 
 struct LevelInfo_BD

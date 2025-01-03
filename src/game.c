@@ -2326,7 +2326,7 @@ static void UpdateGameControlValues(void)
   int score = (game.LevelSolved ?
 	       game.LevelSolved_CountingScore :
 	       level.game_engine_type == GAME_ENGINE_TYPE_BD ?
-	       game_bd.score :
+	       game_bd.global_score :
 	       level.game_engine_type == GAME_ENGINE_TYPE_EM ?
 	       game_em.lev->score :
 	       level.game_engine_type == GAME_ENGINE_TYPE_SP ?
@@ -3708,6 +3708,22 @@ void InitGame(void)
   if (!game.restart_level)
     CloseDoor(DOOR_CLOSE_1);
 
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+  {
+    if (setup.bd_multiple_lives && game_status == GAME_MODE_MAIN)
+    {
+      // new BD game with multiple lives started, so set initial number of lives and global score
+      game_bd.global_lives = level.native_bd_level->caveset->initial_lives;
+      game_bd.global_score = 0;
+    }
+    else if (!setup.bd_multiple_lives)
+    {
+      // new BD game with normal, single life started (resetting global score is important here)
+      game_bd.global_lives = 0;
+      game_bd.global_score = 0;
+    }
+  }
+
   if (restarting)
   {
     // force fading out global animations displayed during game play
@@ -5086,6 +5102,9 @@ void GameWon(void)
       time = time_final;
       score = score_final;
 
+      if (level.game_engine_type == GAME_ENGINE_TYPE_BD && setup.bd_multiple_lives)
+        score = game_bd.global_score;
+
       LevelSolved_DisplayFinalGameValues(time, score, health);
     }
 
@@ -5228,7 +5247,21 @@ void GameEnd(void)
   {
     boolean restart_game = FALSE;
 
-    if (setup.ask_on_game_over)
+    if (level.game_engine_type == GAME_ENGINE_TYPE_BD && setup.bd_multiple_lives &&
+        game_bd.global_lives > 0)
+    {
+      // do not restart intermission after game over (but continue with next level)
+      if (!level.bd_intermission)
+      {
+        // only decrement number of lives for normal levels, not for intermissions
+        game_bd.global_lives--;
+
+        // do not handle game end if game over and playing with remaining multiple lives
+        if (game_bd.global_lives > 0)
+          restart_game = TRUE;
+      }
+    }
+    else if (setup.ask_on_game_over)
     {
       // do not handle game end if game over and automatically asking for game restart
       // (this is a special case: player pressed "return" key or fire button shortly before
@@ -16490,6 +16523,11 @@ boolean CheckRestartGame(void)
 
   // do not ask to play again if this was disabled in setup menu
   if (!setup.ask_on_game_over)
+    return FALSE;
+
+  // do not ask to play again if playing BD game with multiple lifes
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD && setup.bd_multiple_lives &&
+      game_bd.global_lives > 0)
     return FALSE;
 
   game.RestartGameRequested = TRUE;

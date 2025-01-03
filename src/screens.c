@@ -8576,6 +8576,7 @@ static struct TokenInfo setup_info_engines[] =
   { TYPE_ECS_AGA,	&setup.prefer_aga_graphics,	"Game Graphics Style:"		},
   { TYPE_EMPTY,		NULL,				""				},
   { TYPE_HEADLINE,	NULL,				"Boulder Dash"			},
+  { TYPE_SWITCH,	&setup.bd_multiple_lives,	"Play with multiple lives:"	},
   { TYPE_SWITCH,	&setup.bd_skip_uncovering,	"Skip (un)covering screen:"	},
   { TYPE_SWITCH,	&setup.bd_skip_hatching,	"Skip hatching player:"		},
   { TYPE_SWITCH,	&setup.bd_scroll_delay,		"Scroll Delay:"			},
