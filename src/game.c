@@ -5224,17 +5224,27 @@ void GameEnd(void)
   // Important note: This function is not only called after "GameWon()", but also after
   // "game over" (if automatically asking for restarting the game is disabled in setup)
 
-  // do not handle game end if game over and automatically asking for game restart
-  if (game.GamePlayed && game_over && setup.ask_on_game_over)
+  if (game.GamePlayed && game_over)
   {
-    // (this is a special case: player pressed "return" key or fire button shortly before
-    // automatically asking to restart the game, so skip asking and restart right away)
+    boolean restart_game = FALSE;
 
-    CloseDoor(DOOR_CLOSE_1);
+    if (setup.ask_on_game_over)
+    {
+      // do not handle game end if game over and automatically asking for game restart
+      // (this is a special case: player pressed "return" key or fire button shortly before
+      // automatically asking to restart the game, so skip asking and restart right away)
 
-    StartGameActions(network.enabled, setup.autorecord, level.random_seed);
+      restart_game = TRUE;
+    }
 
-    return;
+    if (restart_game)
+    {
+      CloseDoor(DOOR_CLOSE_1);
+
+      StartGameActions(network.enabled, setup.autorecord, level.random_seed);
+
+      return;
+    }
   }
 
   // do not handle game end if request dialog is already active
