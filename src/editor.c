@@ -11969,8 +11969,12 @@ static void DrawEngineConfigColors(void)
     return;
   }
 
+  // when using native BD engine with "classic" template colors, skip the two extra colors
+  int skip = (level.game_engine_type == GAME_ENGINE_TYPE_BD &&
+              gfx.has_reduced_color_template ? 2 : 0);
+
   // copy level colors to either C64-style color index or color text
-  for (i = 0; i < MAX_BD_COLORS; i++)
+  for (i = 0; i < MAX_BD_COLORS - skip; i++)
   {
     int bd_color_x = (level.bd_color_type == GD_COLOR_TYPE_C64 ? *bd_color[i] & 0x0f :
 		      level.bd_color_type == GD_COLOR_TYPE_RGB ? gd_color_get_rgb(*bd_color[i]) :
@@ -11990,22 +11994,29 @@ static void DrawEngineConfigColors(void)
   if (level.bd_color_type == GD_COLOR_TYPE_C64)
   {
     // draw selectbox gadgets
-    for (i = ED_SELECTBOX_ID_COLORS_FIRST; i <= ED_SELECTBOX_ID_COLORS_LAST; i++)
+    for (i = ED_SELECTBOX_ID_COLORS_FIRST; i <= ED_SELECTBOX_ID_COLORS_LAST - skip; i++)
       MapSelectboxGadget(i);
   }
   else
   {
     // draw text input gadgets
-    for (i = ED_TEXTINPUT_ID_COLORS_FIRST; i <= ED_TEXTINPUT_ID_COLORS_LAST; i++)
+    for (i = ED_TEXTINPUT_ID_COLORS_FIRST; i <= ED_TEXTINPUT_ID_COLORS_LAST - skip; i++)
       MapTextInputGadget(i);
   }
 
   // draw graphic button gadgets
-  for (i = ED_GRAPHICBUTTON_ID_PICK_FIRST; i <= ED_GRAPHICBUTTON_ID_PICK_LAST; i++)
+  for (i = ED_GRAPHICBUTTON_ID_PICK_FIRST; i <= ED_GRAPHICBUTTON_ID_PICK_LAST - skip; i++)
     MapGraphicbuttonGadget(i);
 
-  for (i = 0; i < MAX_BD_COLORS; i++)
+  for (i = 0; i < MAX_BD_COLORS - skip; i++)
     DrawColorBox_BD(i);
+
+  if (skip > 0)
+  {
+    struct GadgetInfo *gi = level_editor_gadget[GADGET_ID_BD_SET_RANDOM_COLORS];
+
+    ModifyGadget(gi, GDI_Y, SY + ED_SETTINGS_Y(ED_ENGINE_SETTINGS_YPOS(7)), GDI_END);
+  }
 
   MapTextbuttonGadget(ED_TEXTBUTTON_ID_BD_SET_RANDOM_COLORS);
 }
