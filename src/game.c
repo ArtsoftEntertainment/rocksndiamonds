@@ -2787,6 +2787,14 @@ static void DisplayGameControlValues(void)
 	!setup.prefer_extra_panel_items)
       continue;
 
+    if (pos->class == get_hash_from_string("bd_pre_hatching") &&
+        (level.game_engine_type != GAME_ENGINE_TYPE_BD || game_bd.game->cave->hatched))
+      continue;
+
+    if (pos->class == get_hash_from_string("bd_post_hatching") &&
+        (level.game_engine_type == GAME_ENGINE_TYPE_BD && !game_bd.game->cave->hatched))
+      continue;
+
     gpc->last_value = value;
     gpc->last_frame = frame;
 
