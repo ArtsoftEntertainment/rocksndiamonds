@@ -11017,6 +11017,17 @@ struct ConfigInfo image_config[] =
   { "game.panel.player_name.class",			"none"				},
   { "game.panel.player_name.style",			"none"				},
 
+  { "game.panel.levelset_name.x",			"-1"				},
+  { "game.panel.levelset_name.y",			"-1"				},
+  { "game.panel.levelset_name.align",			"left"				},
+  { "game.panel.levelset_name.valign",			"top"				},
+  { "game.panel.levelset_name.chars",			"-1"				},
+  { "game.panel.levelset_name.font",			"font.text_2"			},
+  { "game.panel.levelset_name.draw_masked",		"true"				},
+  { "game.panel.levelset_name.draw_order",		"0"				},
+  { "game.panel.levelset_name.class",			"none"				},
+  { "game.panel.levelset_name.style",			"none"				},
+
   { "game.panel.level_name.x",				"-1"				},
   { "game.panel.level_name.y",				"-1"				},
   { "game.panel.level_name.align",			"left"				},
@@ -11027,6 +11038,7 @@ struct ConfigInfo image_config[] =
   { "game.panel.level_name.draw_order",			"0"				},
   { "game.panel.level_name.class",			"none"				},
   { "game.panel.level_name.style",			"none"				},
+
   { "game.panel.level_author.x",			"-1"				},
   { "game.panel.level_author.y",			"-1"				},
   { "game.panel.level_author.align",			"left"				},

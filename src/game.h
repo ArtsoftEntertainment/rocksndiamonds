@@ -106,6 +106,7 @@ struct GamePanelInfo
   struct TextPosInfo ce_score[NUM_PANEL_CE_SCORE];
   struct TextPosInfo ce_score_element[NUM_PANEL_CE_SCORE];
   struct TextPosInfo player_name;
+  struct TextPosInfo levelset_name;
   struct TextPosInfo level_name;
   struct TextPosInfo level_author;
 

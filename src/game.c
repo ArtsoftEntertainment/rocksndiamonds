@@ -205,10 +205,11 @@
 #define GAME_PANEL_CE_SCORE_7_ELEMENT		115
 #define GAME_PANEL_CE_SCORE_8_ELEMENT		116
 #define GAME_PANEL_PLAYER_NAME			117
-#define GAME_PANEL_LEVEL_NAME			118
-#define GAME_PANEL_LEVEL_AUTHOR			119
+#define GAME_PANEL_LEVELSET_NAME		118
+#define GAME_PANEL_LEVEL_NAME			119
+#define GAME_PANEL_LEVEL_AUTHOR			120
 
-#define NUM_GAME_PANEL_CONTROLS			120
+#define NUM_GAME_PANEL_CONTROLS			121
 
 struct GamePanelOrderInfo
 {
@@ -829,6 +830,11 @@ static struct GamePanelControlInfo game_panel_controls[] =
   {
     GAME_PANEL_PLAYER_NAME,
     &game.panel.player_name,
+    TYPE_STRING,
+  },
+  {
+    GAME_PANEL_LEVELSET_NAME,
+    &game.panel.levelset_name,
     TYPE_STRING,
   },
   {
@@ -2642,6 +2648,7 @@ static void UpdateGameControlValues(void)
        EL_UNDEFINED);
 
   game_panel_controls[GAME_PANEL_PLAYER_NAME].value = 0;
+  game_panel_controls[GAME_PANEL_LEVELSET_NAME].value = 0;
   game_panel_controls[GAME_PANEL_LEVEL_NAME].value = 0;
   game_panel_controls[GAME_PANEL_LEVEL_AUTHOR].value = 0;
 
@@ -2955,6 +2962,7 @@ static void DisplayGameControlValues(void)
       char *state = (active ? state_active : state_normal);
       char *s = (nr == GAME_PANEL_GRAVITY_STATE ? state :
 		 nr == GAME_PANEL_PLAYER_NAME   ? setup.player_name :
+		 nr == GAME_PANEL_LEVELSET_NAME ? leveldir_current->name :
 		 nr == GAME_PANEL_LEVEL_NAME    ? level.name :
 		 nr == GAME_PANEL_LEVEL_AUTHOR  ? level.author : NULL);
 
