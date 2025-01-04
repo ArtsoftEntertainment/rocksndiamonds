@@ -2986,6 +2986,16 @@ static void DisplayGameControlValues(void)
                nr == GAME_PANEL_LEVEL_NAME ||
                nr == GAME_PANEL_LEVEL_AUTHOR)
       {
+        if (nr == GAME_PANEL_LEVEL_NAME &&
+            level.game_engine_type == GAME_ENGINE_TYPE_BD && setup.bd_multiple_lives)
+        {
+          static char *level_name_and_lives = NULL;
+
+          setStringPrint(&level_name_and_lives, "%s (%d)", s, game_bd.global_lives);
+
+          s = level_name_and_lives;
+        }
+
         // use alternative (narrow) font if text larger than specified size or game panel width
         if ((size > 0 && strlen(s) > size) || strlen(s) * getFontWidth(font) > DXSIZE)
           font = pos->font_alt;
