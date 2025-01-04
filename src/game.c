@@ -2973,6 +2973,15 @@ static void DisplayGameControlValues(void)
 
 	font = (active ? font2 : font1);
       }
+      else if (nr == GAME_PANEL_PLAYER_NAME ||
+               nr == GAME_PANEL_LEVELSET_NAME ||
+               nr == GAME_PANEL_LEVEL_NAME ||
+               nr == GAME_PANEL_LEVEL_AUTHOR)
+      {
+        // use alternative (narrow) font if text larger than specified size or game panel width
+        if ((size > 0 && strlen(s) > size) || strlen(s) * getFontWidth(font) > DXSIZE)
+          font = pos->font_alt;
+      }
 
       if (s != NULL)
       {
