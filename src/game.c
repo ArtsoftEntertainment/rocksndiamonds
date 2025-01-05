@@ -3772,8 +3772,9 @@ void InitGame(void)
   {
     SetGameStatus(GAME_MODE_PLAYING);
 
-    // do not cover screen before fading out when starting from main menu
-    game_bd.cover_screen = FALSE;
+    // when using BD engine, do not cover screen before fading out when starting from main menu
+    if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+      game_bd.cover_screen = FALSE;
   }
 
   if (level_editor_test_game)
