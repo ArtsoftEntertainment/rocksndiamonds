@@ -1414,22 +1414,6 @@ void TapeRestartGame(void)
   if (!checkRestartGame("Restart game?"))
     return;
 
-  if (level.game_engine_type == GAME_ENGINE_TYPE_BD &&
-      setup.bd_multiple_lives && game_status == GAME_MODE_PLAYING)
-  {
-    if (game_bd.global_lives > 1)
-    {
-      // decrement number of lives (also for intermissions; will be added later)
-      game_bd.global_lives--;
-    }
-    else
-    {
-      // new BD game with multiple lives started, so set initial number of lives and global score
-      game_bd.global_lives = level.native_bd_level->caveset->initial_lives;
-      game_bd.global_score = 0;
-    }
-  }
-
   StartGameActions(network.enabled, setup.autorecord, level.random_seed);
 }
 

@@ -3747,13 +3747,20 @@ void InitGame(void)
   {
     if (!setup.bd_multiple_lives)
     {
-      // new BD game with normal, single life started (resetting global score is important here)
+      // newly started BD game with normal, single life (resetting global score is important here)
       game_bd.global_lives = 0;
       game_bd.global_score = 0;
     }
-    else if (game_status == GAME_MODE_MAIN)
+    else if (restarting && game_bd.global_lives > 1)
     {
-      // new BD game with multiple lives started, so set initial number of lives and global score
+      // restarted BD game with multiple (and remaining) lives, so decrement number of lives
+      // (also for intermissions; extra life will be added again later)
+      game_bd.global_lives--;
+    }
+    else if (restarting || game_status == GAME_MODE_MAIN)
+    {
+      // newly started BD game with multiple lives (or restarted BD game, but no remaining lives),
+      // so set initial number of lives and reset global score
       game_bd.global_lives = level.native_bd_level->caveset->initial_lives;
       game_bd.global_score = 0;
     }
