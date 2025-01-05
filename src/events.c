@@ -1409,6 +1409,16 @@ static void HandleButtonOrFinger(int mx, int my, int button)
 
 static boolean checkTextInputKey(Key key)
 {
+  static int game_status_last_static = -1;
+  int game_status_last = game_status_last_static;	// game status from previous function call
+
+  game_status_last_static = game_status;		// set game status for next function call
+
+  // needed after ending game using restart key without asking in BD engine with last life
+  // (to handle race condition due to handling all key events as key event and text event)
+  if (game_status_last == GAME_MODE_PLAYING)
+    return FALSE;
+
   // when playing, only handle raw key events and ignore text input
   if (game_status == GAME_MODE_PLAYING)
     return FALSE;
