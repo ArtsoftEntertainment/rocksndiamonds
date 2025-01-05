@@ -3745,16 +3745,16 @@ void InitGame(void)
 
   if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
   {
-    if (setup.bd_multiple_lives && game_status == GAME_MODE_MAIN)
-    {
-      // new BD game with multiple lives started, so set initial number of lives and global score
-      game_bd.global_lives = level.native_bd_level->caveset->initial_lives;
-      game_bd.global_score = 0;
-    }
-    else if (!setup.bd_multiple_lives)
+    if (!setup.bd_multiple_lives)
     {
       // new BD game with normal, single life started (resetting global score is important here)
       game_bd.global_lives = 0;
+      game_bd.global_score = 0;
+    }
+    else if (game_status == GAME_MODE_MAIN)
+    {
+      // new BD game with multiple lives started, so set initial number of lives and global score
+      game_bd.global_lives = level.native_bd_level->caveset->initial_lives;
       game_bd.global_score = 0;
     }
   }
