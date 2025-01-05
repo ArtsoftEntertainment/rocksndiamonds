@@ -3763,6 +3763,10 @@ void InitGame(void)
   {
     // force fading out global animations displayed during game play
     SetGameStatus(GAME_MODE_PSEUDO_RESTARTING);
+
+    // when using BD engine, cover screen before fading out when restarting game
+    if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+      game_bd.cover_screen = TRUE;
   }
   else
   {

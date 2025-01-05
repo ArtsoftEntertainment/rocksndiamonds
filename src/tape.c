@@ -1414,10 +1414,6 @@ void TapeRestartGame(void)
   if (!checkRestartGame("Restart game?"))
     return;
 
-  // when using BD game engine, cover screen before fading out
-  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
-    game_bd.cover_screen = TRUE;
-
   StartGameActions(network.enabled, setup.autorecord, level.random_seed);
 }
 
