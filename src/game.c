@@ -3766,7 +3766,16 @@ void InitGame(void)
 
     // when using BD engine, cover screen before fading out when restarting game
     if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+    {
       game_bd.cover_screen = TRUE;
+
+      // skip fading when covering screen, but only if not also skipping BD style uncovering
+      if (!setup.bd_skip_uncovering)
+      {
+        FadeSkipNextFadeOut();
+        FadeSkipNextFadeIn();
+      }
+    }
   }
   else
   {
