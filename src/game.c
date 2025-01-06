@@ -5070,7 +5070,7 @@ static boolean AdvanceToNextLevel(void)
   return FALSE;
 }
 
-void GameWon(void)
+static boolean GameWon(void)
 {
   static int time_count_steps;
   static int time, time_final;
@@ -5088,7 +5088,7 @@ void GameWon(void)
 
     // do not start end game actions before the player stops moving (to exit)
     if (local_player->active && local_player->MovPos)
-      return;
+      return FALSE;
 
     // calculate final game values after player finished walking into exit
     LevelSolved_SetFinalGameValues();
@@ -5231,7 +5231,7 @@ void GameWon(void)
       {
 	game_over_delay_1--;
 
-	return;
+	return FALSE;
       }
 
       int time_to_go = ABS(time_final - time);
@@ -5256,7 +5256,7 @@ void GameWon(void)
       else
 	PlaySound(SND_GAME_LEVELTIME_BONUS);
 
-      return;
+      return FALSE;
     }
 
     if (health != health_final)
@@ -5265,7 +5265,7 @@ void GameWon(void)
       {
 	game_over_delay_2--;
 
-	return;
+	return FALSE;
       }
 
       int health_count_dir = (health < health_final ? +1 : -1);
@@ -5282,7 +5282,7 @@ void GameWon(void)
       else
 	PlaySound(SND_GAME_LEVELTIME_BONUS);
 
-      return;
+      return FALSE;
     }
   }
 
@@ -5292,10 +5292,12 @@ void GameWon(void)
   {
     game_over_delay_3--;
 
-    return;
+    return FALSE;
   }
 
   GameEnd();
+
+  return TRUE;
 }
 
 void GameEnd(void)

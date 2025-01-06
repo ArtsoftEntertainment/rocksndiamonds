@@ -438,7 +438,6 @@ void InitGameSound(void);
 void InitGame(void);
 
 void UpdateEngineValues(int, int, int, int);
-void GameWon(void);
 void GameEnd(void);
 
 void MergeServerScore(void);
