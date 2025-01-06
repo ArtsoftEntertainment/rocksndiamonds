@@ -3803,6 +3803,9 @@ void InitGame(void)
       game_bd.cover_screen = FALSE;
   }
 
+  // cover BD screen before closing game panel door
+  CoverScreen();
+
   if (!game.restart_level)
     CloseDoor(DOOR_CLOSE_1);
 
