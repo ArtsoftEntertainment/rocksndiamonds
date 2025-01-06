@@ -3740,9 +3740,6 @@ void InitGame(void)
   // required here to update video display before fading (FIX THIS)
   DrawMaskedBorder(REDRAW_DOOR_2);
 
-  if (!game.restart_level)
-    CloseDoor(DOOR_CLOSE_1);
-
   if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
   {
     if (!setup.bd_multiple_lives)
@@ -3792,6 +3789,9 @@ void InitGame(void)
     if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
       game_bd.cover_screen = FALSE;
   }
+
+  if (!game.restart_level)
+    CloseDoor(DOOR_CLOSE_1);
 
   if (level_editor_test_game)
     FadeSkipNextFadeOut();
