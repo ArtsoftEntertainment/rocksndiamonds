@@ -12271,7 +12271,11 @@ static void GameActionsExt(void)
   CheckLevelSolved();
 
   if (game.LevelSolved && !game.LevelSolved_GameEnd)
-    GameWon();
+  {
+    // handle winning game until completely finished and game ended
+    if (GameWon())
+      return;
+  }
 
   if (game.all_players_gone && !TAPE_IS_STOPPED(tape))
     TapeStop();
