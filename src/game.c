@@ -3719,18 +3719,23 @@ static void DebugPrintPlayerStatus(char *message)
 
 void InitGame(void)
 {
+  static int last_level_nr = -1;
   int full_lev_fieldx = lev_fieldx + (BorderElement != EL_EMPTY ? 2 : 0);
   int full_lev_fieldy = lev_fieldy + (BorderElement != EL_EMPTY ? 2 : 0);
   int fade_mask = REDRAW_FIELD;
   boolean restarting = (game_status == GAME_MODE_PLAYING);
+  boolean restarting_same_level = (restarting && level_nr == last_level_nr);
   boolean level_story = (game_status == GAME_MODE_STORY);
   boolean emulate_bd = TRUE;	// unless non-BOULDERDASH elements found
   boolean emulate_sp = TRUE;	// unless non-SUPAPLEX    elements found
   int initial_move_dir = MV_DOWN;
   int i, j, x, y;
 
+  // store current level number to be able to detect restarting of same level later
+  last_level_nr = level_nr;
+
   // show level info before starting the game (if any exists)
-  if (!level_editor_test_game && !restarting && !level_story && !tape.playing)
+  if (!level_editor_test_game && !restarting_same_level && !level_story && !tape.playing)
     if (ShowStoryScreen_FromInitGame())
       return;
 
