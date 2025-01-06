@@ -1001,8 +1001,10 @@ static void SetScreenStates_AfterFadingOut(void)
 
 void CoverScreen(void)
 {
-  if (level.game_engine_type == GAME_ENGINE_TYPE_BD && game_bd.cover_screen)
-    CoverScreen_BD();
+  if (level.game_engine_type != GAME_ENGINE_TYPE_BD || !game_bd.cover_screen)
+    return;
+
+  CoverScreen_BD();
 }
 
 void FadeIn(int fade_mask)
