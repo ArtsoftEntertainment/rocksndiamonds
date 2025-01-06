@@ -4784,14 +4784,14 @@ static void DrawInfoScreen_FromMainMenuOrInitGame(int nr, boolean from_game_stat
   else
     return;
 
-  CloseDoor(DOOR_CLOSE_2);
-
   if (from_game_status == GAME_MODE_MAIN)
     SetGameStatus(GAME_MODE_INFO);
   else if (from_game_status == GAME_MODE_PLAYING)
     SetGameStatus(GAME_MODE_STORY);
   else
     return;
+
+  CloseDoor(DOOR_CLOSE_ALL);
 
   info_mode = nr;
 
