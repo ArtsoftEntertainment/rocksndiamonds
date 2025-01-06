@@ -5328,8 +5328,6 @@ void GameEnd(void)
 
     if (restart_game)
     {
-      CloseDoor(DOOR_CLOSE_1);
-
       StartGameActions(network.enabled, setup.autorecord, level.random_seed);
 
       return;
