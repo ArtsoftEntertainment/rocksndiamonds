@@ -3758,13 +3758,13 @@ void InitGame(void)
       game_bd.global_lives = 0;
       game_bd.global_score = 0;
     }
-    else if (restarting && game_bd.global_lives > 1)
+    else if (restarting_same_level && game_bd.global_lives > 1)
     {
       // restarted BD game with multiple (and remaining) lives, so decrement number of lives
       // (also for intermissions; extra life will be added again later)
       game_bd.global_lives--;
     }
-    else if (restarting || game_status == GAME_MODE_MAIN)
+    else if (restarting_same_level || game_status == GAME_MODE_MAIN)
     {
       // newly started BD game with multiple lives (or restarted BD game, but no remaining lives),
       // so set initial number of lives and reset global score
