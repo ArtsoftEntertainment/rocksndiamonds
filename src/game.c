@@ -5356,9 +5356,6 @@ void GameEnd(void)
     strcpy(tape.score_tape_basename, getScoreTapeBasename(setup.player_name));
   }
 
-  // if no tape is to be saved, close both doors simultaneously
-  CloseDoor(DOOR_CLOSE_ALL);
-
   if (level_editor_test_game || score_info_tape_play)
   {
     SetGameStatus(GAME_MODE_MAIN);
@@ -5393,6 +5390,8 @@ void GameEnd(void)
 
   if (game.LevelSolved_SaveScore && scores.last_added >= 0 && setup.show_scores_after_game)
   {
+    CloseDoor(DOOR_CLOSE_ALL);
+
     SetGameStatus(GAME_MODE_SCORES);
 
     DrawHallOfFame(last_level_nr);
