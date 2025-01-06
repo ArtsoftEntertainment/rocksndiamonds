@@ -5320,11 +5320,8 @@ void GameEnd(void)
       // do not restart intermission after game over (but continue with next level)
       if (!level.bd_intermission)
       {
-        // only decrement number of lives for normal levels, not for intermissions
-        game_bd.global_lives--;
-
         // do not handle game end if game over and playing with remaining multiple lives
-        if (game_bd.global_lives > 0)
+        if (game_bd.global_lives > 1)
           restart_game = TRUE;
       }
     }
