@@ -1004,6 +1004,16 @@ void CoverScreen(void)
   if (level.game_engine_type != GAME_ENGINE_TYPE_BD || !game_bd.cover_screen)
     return;
 
+  // before covering screen, close request door that might still be open
+  if (game.request_open)
+  {
+    // if request open after asking to save tape after game won, close all doors for hall of fame
+    if (setup.show_scores_after_game)
+      CloseDoor(DOOR_CLOSE_ALL);
+    else
+      CloseDoor(DOOR_CLOSE_1);
+  }
+
   CoverScreen_BD();
 }
 
