@@ -2157,6 +2157,9 @@ void DrawMainMenu(void)
     return;
   }
 
+  // close game panel door in main menu, but keep tape recorder door open
+  CloseDoor(DOOR_CLOSE_1);
+
   // reset flag to continue playing next level from hall of fame
   scores.continue_playing = FALSE;
 
