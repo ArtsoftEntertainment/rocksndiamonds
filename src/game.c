@@ -3720,12 +3720,14 @@ static void DebugPrintPlayerStatus(char *message)
 void InitGame(void)
 {
   static int last_level_nr = -1;
+  static int last_game_engine_type = -1;
   int full_lev_fieldx = lev_fieldx + (BorderElement != EL_EMPTY ? 2 : 0);
   int full_lev_fieldy = lev_fieldy + (BorderElement != EL_EMPTY ? 2 : 0);
   int fade_mask = REDRAW_FIELD;
   boolean restarting = (game_status == GAME_MODE_PLAYING);
   boolean restarting_same_level = (restarting && level_nr == last_level_nr);
   boolean level_story = (game_status == GAME_MODE_STORY);
+  boolean last_game_engine_type_was_bd = (last_game_engine_type == GAME_ENGINE_TYPE_BD);
   boolean emulate_bd = TRUE;	// unless non-BOULDERDASH elements found
   boolean emulate_sp = TRUE;	// unless non-SUPAPLEX    elements found
   int initial_move_dir = MV_DOWN;
@@ -3733,6 +3735,9 @@ void InitGame(void)
 
   // store current level number to be able to detect restarting of same level later
   last_level_nr = level_nr;
+
+  // store current game engine type to be able to cover BD screen of last level later
+  last_game_engine_type = level.game_engine_type;
 
   // show level info before starting the game (if any exists)
   if (!level_editor_test_game && !restarting_same_level && !level_story && !tape.playing)
@@ -3773,13 +3778,13 @@ void InitGame(void)
     // force fading out global animations displayed during game play
     SetGameStatus(GAME_MODE_PSEUDO_RESTARTING);
 
-    // when using BD engine, cover screen before fading out when restarting game
-    if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+    // when last level was using BD engine, cover screen before fading out when restarting game
+    if (last_game_engine_type_was_bd)
     {
       game_bd.cover_screen = TRUE;
 
       // skip fading when covering screen, but only if not also skipping BD style uncovering
-      if (!setup.bd_skip_uncovering)
+      if (level.game_engine_type == GAME_ENGINE_TYPE_BD && !setup.bd_skip_uncovering)
       {
         FadeSkipNextFadeOut();
         FadeSkipNextFadeIn();
