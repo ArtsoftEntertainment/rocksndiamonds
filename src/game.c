@@ -5393,9 +5393,9 @@ void GameEnd(void)
 
   if (game.LevelSolved_SaveScore && scores.last_added >= 0 && setup.show_scores_after_game)
   {
-    CloseDoor(DOOR_CLOSE_ALL);
-
     SetGameStatus(GAME_MODE_SCORES);
+
+    CloseDoor(DOOR_CLOSE_ALL);
 
     DrawHallOfFame(last_level_nr);
   }
