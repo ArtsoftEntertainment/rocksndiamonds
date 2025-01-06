@@ -56,10 +56,17 @@ void bd_close_all(void)
 
 void setLevelInfoToDefaults_BD_Ext(int width, int height)
 {
+  static GdCavesetData *caveset = NULL;		// used if no native cave loaded
   GdCave *cave = native_bd_level.cave;
+
+  if (caveset != NULL)
+    gd_caveset_data_free(caveset);
 
   if (cave != NULL)
     gd_cave_free(cave);
+
+  // get empty caveset, using default values
+  caveset = gd_caveset_data_new();
 
   // get empty cave, using default values
   cave = gd_cave_new();
@@ -81,7 +88,7 @@ void setLevelInfoToDefaults_BD_Ext(int width, int height)
   cave->selectable = TRUE;
   cave->intermission = FALSE;
 
-  native_bd_level.caveset = NULL;
+  native_bd_level.caveset = caveset;
   native_bd_level.cave = cave;
   native_bd_level.replay = NULL;
 
@@ -157,6 +164,7 @@ boolean LoadNativeLevel_BD(char *filename, int level_pos, boolean level_info_onl
   // set better initial cave speed (to set better native replay tape length)
   set_initial_cave_speed(native_bd_level.cave);
 
+  // caveset data for native levels managed separately -- do not free it!
   native_bd_level.caveset = gd_caveset_data;
   native_bd_level.loaded_from_caveset = TRUE;
 
