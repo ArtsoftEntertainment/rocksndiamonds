@@ -3761,8 +3761,11 @@ void InitGame(void)
     else if (restarting_same_level && game_bd.global_lives > 1)
     {
       // restarted BD game with multiple (and remaining) lives, so decrement number of lives
-      // (also for intermissions; extra life will be added again later)
       game_bd.global_lives--;
+
+      // subtract another life for restarted intermissions (extra life will be added again later)
+      if (level.bd_intermission)
+        game_bd.global_lives--;
     }
     else if (restarting_same_level || game_status == GAME_MODE_MAIN)
     {
