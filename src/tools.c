@@ -5058,6 +5058,12 @@ static int RequestDoor(char *text, unsigned int req_state)
     if (((old_door_state & DOOR_OPEN_1) && !(req_state & REQ_STAY_CLOSED)) ||
 	(req_state & REQ_REOPEN))
       OpenDoor(DOOR_OPEN_1 | DOOR_COPY_BACK);
+
+    game.request_open = FALSE;
+  }
+  else
+  {
+    game.request_open = TRUE;
   }
 
   return result;
@@ -5338,6 +5344,9 @@ unsigned int CloseDoor(unsigned int door_state)
 
     door_state &= ~DOOR_NO_COPY_BACK;
   }
+
+  if (door_state & DOOR_CLOSE_1)
+    game.request_open = FALSE;
 
   return MoveDoor(door_state);
 }

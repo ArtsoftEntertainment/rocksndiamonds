@@ -257,6 +257,7 @@ struct GameInfo
   boolean restart_level;
 
   // values for special request dialog control
+  boolean request_open;
   boolean request_active;
   boolean envelope_active;
   boolean any_door_active;

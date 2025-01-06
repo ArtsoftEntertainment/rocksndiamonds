@@ -4755,6 +4755,7 @@ void InitGame(void)
   }
 
   game.restart_level = FALSE;
+  game.request_open = FALSE;
   game.request_active = FALSE;
   game.envelope_active = FALSE;
   game.any_door_active = FALSE;
