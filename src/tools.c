@@ -999,6 +999,12 @@ static void SetScreenStates_AfterFadingOut(void)
     global.border_status = GAME_MODE_PLAYING;
 }
 
+void CoverScreen(void)
+{
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD && game_bd.cover_screen)
+    CoverScreen_BD();
+}
+
 void FadeIn(int fade_mask)
 {
   SetScreenStates_BeforeFadingIn();
@@ -1037,8 +1043,7 @@ void FadeOut(int fade_mask)
     BackToFront();
 
   // when using BD game engine, cover playfield before fading out after a game
-  if (game_bd.cover_screen)
-    CoverScreen_BD();
+  CoverScreen();
 
   SetScreenStates_BeforeFadingOut();
 

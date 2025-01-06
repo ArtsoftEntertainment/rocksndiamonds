@@ -5052,8 +5052,7 @@ static boolean AdvanceToNextLevel(void)
       scores.next_level_nr = level_nr;
 
       // cover screen before loading next level (which may have different size and color)
-      if (game_bd.cover_screen)
-        CoverScreen_BD();
+      CoverScreen();
 
       LoadLevel(level_nr);
 

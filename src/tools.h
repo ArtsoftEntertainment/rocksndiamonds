@@ -94,6 +94,8 @@ void BlitScreenToBitmap(Bitmap *);
 void BackToFront(void);
 void BackToFront_WithFrameDelay(unsigned int);
 
+void CoverScreen(void);
+
 void FadeIn(int);
 void FadeOut(int);
 void FadeSetEnterMenu(void);
