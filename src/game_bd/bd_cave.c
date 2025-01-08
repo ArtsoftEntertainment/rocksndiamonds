@@ -1611,7 +1611,7 @@ void gd_drawcave_game(const GdCave *cave,
   elemdrawing[O_PLAYER_GLUED] = draw;
 
   // player with bomb/rocketlauncher does not blink or tap - no graphics drawn for that.
-  // running is drawn using w/o bomb/rocketlauncher cells */
+  // running is drawn using w/o bomb/rocketlauncher cells
   if (cave->last_direction != GD_MV_STILL)
   {
     elemmapping[O_PLAYER_BOMB] = map;
