@@ -9972,6 +9972,11 @@ void SaveScoreTape(int nr)
   SaveTapeExt(filename);
 }
 
+static boolean SaveTapeRequest(char *msg, unsigned int req_state)
+{
+  return (!setup.ask_on_save_tape || Request(msg, req_state));
+}
+
 static boolean SaveTapeCheckedExt(int nr, char *msg_replace, char *msg_saved,
 				  unsigned int req_state_added)
 {
@@ -9979,12 +9984,12 @@ static boolean SaveTapeCheckedExt(int nr, char *msg_replace, char *msg_saved,
   boolean new_tape = !fileExists(filename);
   boolean tape_saved = FALSE;
 
-  if (new_tape || Request(msg_replace, REQ_ASK | req_state_added))
+  if (new_tape || SaveTapeRequest(msg_replace, REQ_ASK | req_state_added))
   {
     SaveTape(nr);
 
     if (new_tape)
-      Request(msg_saved, REQ_CONFIRM | req_state_added);
+      SaveTapeRequest(msg_saved, REQ_CONFIRM | req_state_added);
 
     tape_saved = TRUE;
   }
@@ -10971,6 +10976,10 @@ static struct TokenInfo global_setup_tokens[] =
   },
   {
     TYPE_SWITCH,
+    &setup.ask_on_save_tape,			"ask_on_save_tape"
+  },
+  {
+    TYPE_SWITCH,
     &setup.ask_on_game_over,			"ask_on_game_over"
   },
   {
@@ -11925,6 +11934,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->vsync_mode = getStringCopy(STR_VSYNC_MODE_DEFAULT);
   si->ask_on_escape = TRUE;
   si->ask_on_escape_editor = TRUE;
+  si->ask_on_save_tape = TRUE;
   si->ask_on_game_over = TRUE;
   si->ask_on_quit_game = TRUE;
   si->ask_on_quit_program = TRUE;
