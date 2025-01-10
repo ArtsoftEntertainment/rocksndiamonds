@@ -509,7 +509,7 @@ static inline boolean el_can_dig(const int element)
 }
 
 // returns true if the element has crumbled graphics
-static inline boolean el_has_crumbled(const int element)
+static inline boolean el_is_crumbled(const int element)
 {
   int tile_gfx = element;
   int tile_crm = (element == O_DIRT                   ? O_DIRT_CRUMBLED                   :
@@ -694,8 +694,8 @@ static void gd_drawcave_crumbled(Bitmap *dest, GdGame *game, int x, int y, boole
     is_moving_to = (dir_to != GD_MV_STILL);
 
     // do not crumble border if next tile is also crumbled or is just being digged away
-    boolean draw_normal = ((el_has_crumbled(draw)) ||
-                           (el_has_crumbled(draw_last) && is_moving_to));
+    boolean draw_normal = ((el_is_crumbled(draw)) ||
+                           (el_is_crumbled(draw_last) && is_moving_to));
 
     // special case: handle sloped sand sides separately
     if ((dir == GD_MV_UP    && (draw == O_DIRT_SLOPED_DOWN_LEFT ||
@@ -850,7 +850,7 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   {
     struct GraphicInfo_BD *g = &graphic_info_bd_object[draw][frame];
 
-    if (el_has_crumbled(draw))
+    if (el_is_crumbled(draw))
       gd_drawcave_crumbled(dest, game, x, y, draw_masked);
     else
       blit_bitmap(g->bitmap, dest, g->src_x, g->src_y, cell_size, cell_size, sx, sy);
@@ -869,7 +869,7 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
     int draw_back = (!is_moving_to ? draw : digging_tile ? draw_last : O_SPACE);
     struct GraphicInfo_BD *g = &graphic_info_bd_object[draw_back][frame];
 
-    if (el_has_crumbled(draw_back))
+    if (el_is_crumbled(draw_back))
     {
       gd_drawcave_crumbled(dest, game, x, y, draw_masked);
 
@@ -980,7 +980,7 @@ int gd_drawcave(Bitmap *dest, GdGame *game, boolean force_redraw)
     {
       if (redraw_all ||
 	  el_is_animated(game->drawing_buffer[y][x]) ||
-	  el_has_crumbled(game->drawing_buffer[y][x]) ||
+	  el_is_crumbled(game->drawing_buffer[y][x]) ||
 	  game->gfx_buffer[y][x] & GD_REDRAW ||
 	  game->dir_buffer_from[y][x] != GD_MV_STILL ||
 	  game->dir_buffer_to[y][x]   != GD_MV_STILL)
