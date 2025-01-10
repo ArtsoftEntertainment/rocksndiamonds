@@ -530,6 +530,12 @@ static inline boolean el_has_crumbled(const int element)
   return (gfx->graphic != crm->graphic);
 }
 
+// returns true if the element has animated graphics
+static inline boolean el_is_animated(const int element)
+{
+  return graphic_info_bd_object[element][0].animated;
+}
+
 // returns true if the element can fall
 static inline boolean el_falling(const int element)
 {
@@ -973,6 +979,7 @@ int gd_drawcave(Bitmap *dest, GdGame *game, boolean force_redraw)
     for (x = cave->x1; x <= cave->x2; x++)
     {
       if (redraw_all ||
+	  el_is_animated(game->drawing_buffer[y][x]) ||
 	  el_has_crumbled(game->drawing_buffer[y][x]) ||
 	  game->gfx_buffer[y][x] & GD_REDRAW ||
 	  game->dir_buffer_from[y][x] != GD_MV_STILL ||

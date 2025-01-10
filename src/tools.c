@@ -11383,6 +11383,8 @@ void InitGraphicInfo_BD(void)
 
       g_bd->graphic = graphic;
       g_bd->frame = frame;
+
+      g_bd->animated = IS_ANIMATED(graphic);
     }
   }
 }

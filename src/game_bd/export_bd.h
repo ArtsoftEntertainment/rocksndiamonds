@@ -80,6 +80,8 @@ struct GraphicInfo_BD
 
   int graphic;
   int frame;
+
+  boolean animated;
 };
 
 struct EngineSnapshotInfo_BD
