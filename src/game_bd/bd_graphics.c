@@ -981,6 +981,7 @@ int gd_drawcave(Bitmap *dest, GdGame *game, boolean force_redraw)
       if (redraw_all ||
 	  el_is_animated(game->drawing_buffer[y][x]) ||
 	  el_is_crumbled(game->drawing_buffer[y][x]) ||
+	  game->drawing_buffer[y][x] != game->last_drawing_buffer[y][x] ||
 	  game->gfx_buffer[y][x] & GD_REDRAW ||
 	  game->dir_buffer_from[y][x] != GD_MV_STILL ||
 	  game->dir_buffer_to[y][x]   != GD_MV_STILL)
