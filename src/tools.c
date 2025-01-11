@@ -11357,7 +11357,8 @@ void InitGraphicInfo_BD(void)
 			BD_GFX_RANGE(O_PRE_CLOCK_1, 4, e)     ? BD_GFX_FRAME(O_PRE_CLOCK_1, e) :
 			BD_GFX_RANGE(O_NITRO_EXPL_1, 4, e)    ? BD_GFX_FRAME(O_NITRO_EXPL_1, e) :
 			BD_GFX_RANGE(O_AMOEBA_2_EXPL_1, 4, e) ? BD_GFX_FRAME(O_AMOEBA_2_EXPL_1, e):
-			e == O_INBOX_OPEN || e == O_OUTBOX_OPEN ? j :
+			e == O_INBOX_OPEN                   ||
+			e == O_OUTBOX_OPEN                  ||
 			e == O_DIRT_DIGGING_LEFT            ||
 			e == O_DIRT_DIGGING_RIGHT           ||
 			e == O_DIRT_DIGGING_UP              ||
