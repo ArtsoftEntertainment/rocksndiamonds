@@ -1556,7 +1556,7 @@ void gd_drawcave_game(const GdCave *cave,
   }
 
   // player
-  if ((cave->last_direction) == GD_MV_STILL)
+  if (cave->last_direction == GD_MV_STILL)
   {
     // player is idle.
     if (player_blinking && player_tapping)
