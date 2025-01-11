@@ -8008,6 +8008,14 @@ bd_object_mapping_list[] =
     EL_BDX_PLAYER,				ACTION_PUSHING, MV_BIT_RIGHT
   },
   {
+    O_PLAYER_BOMB_TURNING,			FALSE,
+    EL_BDX_PLAYER_WITH_BOMB,			ACTION_TURNING, -1
+  },
+  {
+    O_PLAYER_ROCKET_LAUNCHER_TURNING,		FALSE,
+    EL_BDX_PLAYER_WITH_ROCKET_LAUNCHER,		ACTION_TURNING, -1
+  },
+  {
     O_CREATURE_SWITCH_ON,			FALSE,
     EL_BDX_CREATURE_SWITCH_ACTIVE,		-1, -1
   },
@@ -11365,7 +11373,9 @@ void InitGraphicInfo_BD(void)
 			e == O_DIRT2_DIGGING_LEFT_CRUMBLED  ||
 			e == O_DIRT2_DIGGING_RIGHT_CRUMBLED ||
 			e == O_DIRT2_DIGGING_UP_CRUMBLED    ||
-			e == O_DIRT2_DIGGING_DOWN_CRUMBLED ? j :
+			e == O_DIRT2_DIGGING_DOWN_CRUMBLED  ||
+			e == O_PLAYER_BOMB_TURNING          ||
+			e == O_PLAYER_ROCKET_LAUNCHER_TURNING ? j :
 			j * 2);
       int frame = getAnimationFrame(g->anim_frames,
 				    g->anim_delay,

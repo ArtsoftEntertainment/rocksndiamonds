@@ -1970,6 +1970,16 @@ GdElementProperty gd_element_properties[] =
     NULL, 0, 400, -400, -400
   },
   {
+    O_PLAYER_BOMB_TURNING, O_PLAYER_BOMB_TURNING, N_("Player with bomb (turning)"),
+    P_PLAYER,
+    NULL, 0, 42, 42, 42,
+  },
+  {
+    O_PLAYER_ROCKET_LAUNCHER_TURNING, O_PLAYER_ROCKET_LAUNCHER_TURNING, N_("Player with rocket launcher (turning)"),
+    P_PLAYER,
+    NULL, 0, 369, 369, 369,
+  },
+  {
     O_CREATURE_SWITCH_ON, O_CREATURE_SWITCH_ON, NULL,
     0,
     NULL, 0, 19, 19, 19

@@ -849,6 +849,11 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   if (!is_moving || !use_smooth_movements)
   {
     struct GraphicInfo_BD *g = &graphic_info_bd_object[draw][frame];
+    int itercycle_capped = MIN(game->itercycle * 8 / game->itermax, 7);
+
+    if (draw == O_PLAYER_BOMB_TURNING ||
+        draw == O_PLAYER_ROCKET_LAUNCHER_TURNING)
+      g = &graphic_info_bd_object[draw][itercycle_capped];
 
     if (el_is_crumbled(draw))
       gd_drawcave_crumbled(dest, game, x, y, draw_masked);

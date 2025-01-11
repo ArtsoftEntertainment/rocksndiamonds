@@ -1620,6 +1620,16 @@ void gd_drawcave_game(const GdCave *cave,
     elemmapping[O_PLAYER_ROCKET_LAUNCHER] = map;
     elemdrawing[O_PLAYER_ROCKET_LAUNCHER] = draw;
   }
+  else if (cave->last_direction_2nd != GD_MV_STILL)
+  {
+    // player with bomb/rocketlauncher which just stopped moving may have separate graphics
+
+    elemmapping[O_PLAYER_BOMB] = O_PLAYER_BOMB_TURNING;
+    elemdrawing[O_PLAYER_BOMB] = gd_element_properties[O_PLAYER_BOMB_TURNING].image_game;
+
+    elemmapping[O_PLAYER_ROCKET_LAUNCHER] = O_PLAYER_ROCKET_LAUNCHER_TURNING;
+    elemdrawing[O_PLAYER_ROCKET_LAUNCHER] = gd_element_properties[O_PLAYER_ROCKET_LAUNCHER_TURNING].image_game;
+  }
 
   elemmapping[O_INBOX] = (cave->inbox_flash_toggle ?
                           O_INBOX_OPEN :

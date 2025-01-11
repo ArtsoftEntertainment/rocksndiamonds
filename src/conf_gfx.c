@@ -396,11 +396,15 @@ struct ConfigInfo image_config[] =
   { "bdx_player_with_bomb.xpos",			"8"				},
   { "bdx_player_with_bomb.ypos",			"7"				},
   { "bdx_player_with_bomb.frames",			"1"				},
+  { "bdx_player_with_bomb.turning",			UNDEFINED_FILENAME		},
+  { "bdx_player_with_bomb.turning.clone_from",		"bdx_player_with_bomb"		},
 
   { "bdx_player_with_rocket_launcher",			"RocksBD.png"			},
   { "bdx_player_with_rocket_launcher.xpos",		"10"				},
   { "bdx_player_with_rocket_launcher.ypos",		"7"				},
   { "bdx_player_with_rocket_launcher.frames",		"1"				},
+  { "bdx_player_with_rocket_launcher.turning",		UNDEFINED_FILENAME		},
+  { "bdx_player_with_rocket_launcher.turning.clone_from", "bdx_player_with_rocket_launcher" },
 
   { "bdx_player_stirring",				"RocksBD.png"			},
   { "bdx_player_stirring.xpos",				"8"				},
