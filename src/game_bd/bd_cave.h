@@ -642,6 +642,7 @@ typedef struct _gd_cave
   boolean inbox_flash_toggle;           // negated every scan. helps drawing inboxes, and making
                                         // players be born at different times.
   GdDirection last_direction;           // last direction player moved. used by draw routines
+  GdDirection last_direction_2nd;       // 2nd last direction player moved. used by draw routines
   GdDirection last_horizontal_direction;
   int biters_wait_frame;                // number of frames to wait until biters will move again
   int replicators_wait_frame;           // number of frames to wait until replicators are

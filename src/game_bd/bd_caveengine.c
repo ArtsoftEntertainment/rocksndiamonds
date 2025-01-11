@@ -4392,6 +4392,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 #endif
 
   // set these for drawing.
+  cave->last_direction_2nd = cave->last_direction;
   cave->last_direction = player_move;
 
   // here we remember last movements for animation. this is needed here, as animation
