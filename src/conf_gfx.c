@@ -11437,6 +11437,7 @@ struct ConfigInfo image_config[] =
   { "game.use_native_sp_graphics_engine",		"true"				},
   { "game.use_masked_pushing",				"false"				},
   { "game.use_masked_elements",				"false"				},
+  { "game.keep_panel_open_when_restarting",		"false"				},
   { "game.tile_size",					"32"				},
 
   { "[player].boring_delay_fixed",			"1000"				},

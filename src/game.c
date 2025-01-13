@@ -3717,6 +3717,20 @@ static void DebugPrintPlayerStatus(char *message)
 }
 #endif
 
+static boolean checkCloseGamePanelDoor(boolean restarting)
+{
+  // do not close game panel door if game restart was triggered by CE action
+  if (game.restart_level)
+    return FALSE;
+
+  // do not close game panel door if configured to keep open when restarting game
+  if (restarting && game.keep_panel_open_when_restarting)
+    return FALSE;
+
+  // always close game panel door in all other cases
+  return TRUE;
+}
+
 void InitGame(void)
 {
   static int last_level_nr = -1;
@@ -3806,7 +3820,7 @@ void InitGame(void)
   // cover BD screen before closing game panel door
   CoverScreen();
 
-  if (!game.restart_level)
+  if (checkCloseGamePanelDoor(restarting))
     CloseDoor(DOOR_CLOSE_1);
 
   if (level_editor_test_game)

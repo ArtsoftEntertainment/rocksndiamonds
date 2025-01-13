@@ -173,6 +173,7 @@ struct GameInfo
   boolean use_masked_pushing;
   boolean use_masked_elements;
   boolean use_masked_elements_initial;
+  boolean keep_panel_open_when_restarting;
   int forced_scroll_x;
   int forced_scroll_y;
   int forced_scroll_delay_value;
