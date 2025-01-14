@@ -526,9 +526,6 @@ void CoverScreen_BD(void)
 
     BackToFront();
   }
-
-  // stop uncovering loop sound when not using native sound engine
-  FadeSounds();
 }
 
 void BlitScreenToBitmap_BD(Bitmap *target_bitmap)
