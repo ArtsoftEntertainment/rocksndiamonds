@@ -1126,6 +1126,7 @@ static void PlayLevelSoundElementActionIfLoop(int, int, int, int);
 static void PlayLevelSoundActionIfLoop(int, int, int);
 static void StopLevelSoundActionIfLoop(int, int, int);
 static void PlayLevelMusic(void);
+static void FadeLevelMusic(void);
 static void FadeLevelSoundsAndMusic(void);
 
 static void HandleGameButtons(struct GadgetInfo *);
@@ -3717,6 +3718,16 @@ static void DebugPrintPlayerStatus(char *message)
 }
 #endif
 
+static boolean checkKeepPlayingSoundsWhenRestarting(boolean restarting)
+{
+  // keep playing continuous loop sound during covering and uncovering screen for BD engine
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD &&
+      restarting && game.keep_panel_open_when_restarting)
+    return TRUE;
+
+  return FALSE;
+}
+
 static boolean checkCloseGamePanelDoor(boolean restarting)
 {
   // do not close game panel door if game restart was triggered by CE action
@@ -3820,7 +3831,10 @@ void InitGame(void)
   // cover BD screen before closing game panel door
   CoverScreen();
 
-  FadeLevelSoundsAndMusic();
+  if (checkKeepPlayingSoundsWhenRestarting(restarting))
+    FadeLevelMusic();
+  else
+    FadeLevelSoundsAndMusic();
 
   if (checkCloseGamePanelDoor(restarting))
     CloseDoor(DOOR_CLOSE_1);
