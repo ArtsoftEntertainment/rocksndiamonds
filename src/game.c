@@ -16554,7 +16554,6 @@ static void RequestRestartGame(void)
   char *message = getRestartGameMessage();
   boolean has_started_game = hasStartedNetworkGame();
   int request_mode = (has_started_game ? REQ_ASK : REQ_CONFIRM);
-  int door_state = DOOR_CLOSE_1;
 
   boolean restart_wanted = (Request(message, request_mode | REQ_STAY_OPEN) && has_started_game);
 
@@ -16568,18 +16567,10 @@ static void RequestRestartGame(void)
 
   if (restart_wanted)
   {
-    CloseDoor(door_state);
-
     StartGameActions(network.enabled, setup.autorecord, level.random_seed);
   }
   else
   {
-    // if game was invoked from level editor, also close tape recorder door
-    if (level_editor_test_game)
-      door_state = DOOR_CLOSE_ALL;
-
-    CloseDoor(door_state);
-
     SetGameStatus(GAME_MODE_MAIN);
 
     DrawMainMenu();
