@@ -3820,6 +3820,8 @@ void InitGame(void)
   // cover BD screen before closing game panel door
   CoverScreen();
 
+  FadeLevelSoundsAndMusic();
+
   if (checkCloseGamePanelDoor(restarting))
     CloseDoor(DOOR_CLOSE_1);
 
@@ -3830,8 +3832,6 @@ void InitGame(void)
 
   if (CheckFadeAll())
     fade_mask = REDRAW_ALL;
-
-  FadeLevelSoundsAndMusic();
 
   ExpireSoundLoops(TRUE);
 
