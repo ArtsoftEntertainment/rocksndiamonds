@@ -1015,6 +1015,11 @@ void CoverScreen(void)
   }
 
   CoverScreen_BD();
+
+  // if not playing or restarting game, stop sound loop played while covering the screen
+  if (game_status != GAME_MODE_PLAYING &&
+      game_status != GAME_MODE_PSEUDO_RESTARTING)
+    FadeSounds();
 }
 
 void FadeIn(int fade_mask)
