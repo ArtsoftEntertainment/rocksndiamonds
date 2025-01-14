@@ -19,9 +19,6 @@
 
 void gd_game_free(GdGame *game)
 {
-  // stop sounds
-  gd_sound_off();
-
   if (game->element_buffer)
     gd_cave_map_free(game->element_buffer);
   if (game->last_element_buffer)
