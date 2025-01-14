@@ -205,13 +205,13 @@ static void UpdateScreenExt(SDL_Rect *rect, boolean with_frame_delay)
   }
 #endif
 
-  // clear render target buffer
-  SDL_RenderClear(sdl_renderer);
-
   // set renderer to use target texture for rendering
   if (video.screen_rendering_mode == SPECIAL_RENDERING_TARGET ||
       video.screen_rendering_mode == SPECIAL_RENDERING_DOUBLE)
     SDL_SetRenderTarget(sdl_renderer, sdl_texture_target);
+
+  // clear render target buffer
+  SDL_RenderClear(sdl_renderer);
 
   // copy backbuffer texture to render target buffer
   if (video.screen_rendering_mode != SPECIAL_RENDERING_TARGET)
