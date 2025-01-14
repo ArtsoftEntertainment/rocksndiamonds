@@ -1004,6 +1004,10 @@ void CoverScreen(void)
   if (level.game_engine_type != GAME_ENGINE_TYPE_BD || !game_bd.cover_screen)
     return;
 
+  // do not cover screen if returning from playing to level editor
+  if (game_status == GAME_MODE_EDITOR)
+    return;
+
   // before covering screen, close request door that might still be open
   if (game.request_open)
   {
