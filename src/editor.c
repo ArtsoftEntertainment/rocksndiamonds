@@ -12026,12 +12026,9 @@ static void DrawEngineConfigColors(void)
   for (i = 0; i < MAX_BD_COLORS - skip; i++)
     DrawColorBox_BD(i);
 
-  if (skip > 0)
-  {
-    struct GadgetInfo *gi = level_editor_gadget[GADGET_ID_BD_SET_RANDOM_COLORS];
+  struct GadgetInfo *gi = level_editor_gadget[GADGET_ID_BD_SET_RANDOM_COLORS];
 
-    ModifyGadget(gi, GDI_Y, SY + ED_SETTINGS_Y(ED_ENGINE_SETTINGS_YPOS(7)), GDI_END);
-  }
+  ModifyGadget(gi, GDI_Y, SY + ED_SETTINGS_Y(ED_ENGINE_SETTINGS_YPOS(9 - skip)), GDI_END);
 
   MapTextbuttonGadget(ED_TEXTBUTTON_ID_BD_SET_RANDOM_COLORS);
 }
