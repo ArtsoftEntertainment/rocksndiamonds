@@ -5572,6 +5572,7 @@ static void DrawLevelConfigWindow(void);
 static void DrawPropertiesWindow(void);
 static void DrawPaletteWindow(void);
 static void UpdateCustomElementGraphicGadgets(void);
+static boolean checkLevelEngineConfig(void);
 static boolean checkPropertiesConfig(int);
 static void SetAutomaticNumberOfGemsNeeded(void);
 static void ClearEditorGadgetInfoText(void);
@@ -11626,8 +11627,8 @@ static void DrawLevelConfigTabulatorGadgets(void)
   int id_last  = ED_TEXTBUTTON_ID_LEVELCONFIG_EDITOR;
   int i;
 
-  // draw additional "engine" tabulator when using native BD engine
-  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+  // draw additional "engine" tabulator when using native BD engine or color template
+  if (checkLevelEngineConfig())
     id_last = ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE;
 
   for (i = id_first; i <= id_last; i++)
@@ -11843,6 +11844,20 @@ static void DrawEngineConfigConfig(void)
 {
   int i;
 
+  if (level.game_engine_type != GAME_ENGINE_TYPE_BD)
+  {
+    int font_nr = FONT_TEXT_1;
+    int font_height = getFontHeight(font_nr);
+    int yoffset_above = font_height + ED_GADGET_LINE_DISTANCE;
+    int xpos = ED_ENGINE_SETTINGS_X(0);
+    int ypos = ED_ENGINE_SETTINGS_Y(0);
+
+    PrintInfoText("No engine specific config available.", font_nr, xpos, ypos - yoffset_above);
+    PrintInfoText("(Only available for Boulder Dash.)", font_nr, xpos, ypos);
+
+    return;
+  }
+
   // draw counter gadgets
   if (level.bd_scheduling_type == GD_SCHEDULING_MILLISECONDS)
   {
@@ -12040,8 +12055,7 @@ static void DrawLevelConfigWindow(void)
   stick_element_properties_window = FALSE;
 
   // make sure that previous level config edit mode exists for this level
-  if (edit_mode_levelconfig == ED_MODE_LEVELCONFIG_ENGINE &&
-      level.game_engine_type != GAME_ENGINE_TYPE_BD)
+  if (edit_mode_levelconfig == ED_MODE_LEVELCONFIG_ENGINE && !checkLevelEngineConfig())
     edit_mode_levelconfig = ED_MODE_LEVELCONFIG_LEVEL;
 
   SetAutomaticNumberOfGemsNeeded();
@@ -12733,6 +12747,19 @@ static struct
 
   { -1,				NULL,					NULL			}
 };
+
+static boolean checkLevelEngineConfig(void)
+{
+  // always show engine settings if level uses native BD engine
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+    return TRUE;
+
+  // always show engine settings if level graphics use color template
+  if (anyImagehasColorTemplate())
+    return TRUE;
+
+  return FALSE;
+}
 
 static boolean checkPropertiesConfig(int element)
 {
