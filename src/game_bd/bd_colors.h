@@ -28,6 +28,16 @@ typedef unsigned int GdColor;
          2 for atari colors (bb=index)
 */
 
+typedef enum _coloring_type
+{
+  GD_COLORING_TYPE_SINGLE	= 0,
+  GD_COLORING_TYPE_GRADIENTS	= 1,
+
+  GD_COLORING_TYPE_UNKNOWN      // should be the last one
+} GdColoringType;
+
+#define GD_DEFAULT_COLORING_TYPE		GD_COLORING_TYPE_SINGLE
+
 typedef enum _color_type
 {
   GD_COLOR_TYPE_RGB	= 0,

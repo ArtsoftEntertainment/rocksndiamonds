@@ -703,6 +703,22 @@ enum
   GADGET_ID_BD_COLOR_TEXT_5,
   GADGET_ID_BD_COLOR_TEXT_6,
   GADGET_ID_BD_COLOR_TEXT_7,
+  GADGET_ID_BD_LO_COLOR_TEXT_0,
+  GADGET_ID_BD_LO_COLOR_TEXT_1,
+  GADGET_ID_BD_LO_COLOR_TEXT_2,
+  GADGET_ID_BD_LO_COLOR_TEXT_3,
+  GADGET_ID_BD_LO_COLOR_TEXT_4,
+  GADGET_ID_BD_LO_COLOR_TEXT_5,
+  GADGET_ID_BD_LO_COLOR_TEXT_6,
+  GADGET_ID_BD_LO_COLOR_TEXT_7,
+  GADGET_ID_BD_HI_COLOR_TEXT_0,
+  GADGET_ID_BD_HI_COLOR_TEXT_1,
+  GADGET_ID_BD_HI_COLOR_TEXT_2,
+  GADGET_ID_BD_HI_COLOR_TEXT_3,
+  GADGET_ID_BD_HI_COLOR_TEXT_4,
+  GADGET_ID_BD_HI_COLOR_TEXT_5,
+  GADGET_ID_BD_HI_COLOR_TEXT_6,
+  GADGET_ID_BD_HI_COLOR_TEXT_7,
   GADGET_ID_ELEMENT_NAME,
 
   // text area identifiers
@@ -716,6 +732,7 @@ enum
   GADGET_ID_GAME_ENGINE_TYPE,
   GADGET_ID_LEVELSET_SAVE_MODE,
   GADGET_ID_BD_SCHEDULING_TYPE,
+  GADGET_ID_BD_COLORING_TYPE,
   GADGET_ID_BD_COLOR_TYPE,
   GADGET_ID_BD_COLOR_C64_0,
   GADGET_ID_BD_COLOR_C64_1,
@@ -789,6 +806,22 @@ enum
   GADGET_ID_BD_COLOR_PICK_5,
   GADGET_ID_BD_COLOR_PICK_6,
   GADGET_ID_BD_COLOR_PICK_7,
+  GADGET_ID_BD_LO_COLOR_PICK_0,
+  GADGET_ID_BD_LO_COLOR_PICK_1,
+  GADGET_ID_BD_LO_COLOR_PICK_2,
+  GADGET_ID_BD_LO_COLOR_PICK_3,
+  GADGET_ID_BD_LO_COLOR_PICK_4,
+  GADGET_ID_BD_LO_COLOR_PICK_5,
+  GADGET_ID_BD_LO_COLOR_PICK_6,
+  GADGET_ID_BD_LO_COLOR_PICK_7,
+  GADGET_ID_BD_HI_COLOR_PICK_0,
+  GADGET_ID_BD_HI_COLOR_PICK_1,
+  GADGET_ID_BD_HI_COLOR_PICK_2,
+  GADGET_ID_BD_HI_COLOR_PICK_3,
+  GADGET_ID_BD_HI_COLOR_PICK_4,
+  GADGET_ID_BD_HI_COLOR_PICK_5,
+  GADGET_ID_BD_HI_COLOR_PICK_6,
+  GADGET_ID_BD_HI_COLOR_PICK_7,
 
   // gadgets for scrolling of drawing area
 
@@ -1051,6 +1084,22 @@ enum
   ED_TEXTINPUT_ID_BD_COLOR_TEXT_5,
   ED_TEXTINPUT_ID_BD_COLOR_TEXT_6,
   ED_TEXTINPUT_ID_BD_COLOR_TEXT_7,
+  ED_TEXTINPUT_ID_BD_LO_COLOR_TEXT_0,
+  ED_TEXTINPUT_ID_BD_LO_COLOR_TEXT_1,
+  ED_TEXTINPUT_ID_BD_LO_COLOR_TEXT_2,
+  ED_TEXTINPUT_ID_BD_LO_COLOR_TEXT_3,
+  ED_TEXTINPUT_ID_BD_LO_COLOR_TEXT_4,
+  ED_TEXTINPUT_ID_BD_LO_COLOR_TEXT_5,
+  ED_TEXTINPUT_ID_BD_LO_COLOR_TEXT_6,
+  ED_TEXTINPUT_ID_BD_LO_COLOR_TEXT_7,
+  ED_TEXTINPUT_ID_BD_HI_COLOR_TEXT_0,
+  ED_TEXTINPUT_ID_BD_HI_COLOR_TEXT_1,
+  ED_TEXTINPUT_ID_BD_HI_COLOR_TEXT_2,
+  ED_TEXTINPUT_ID_BD_HI_COLOR_TEXT_3,
+  ED_TEXTINPUT_ID_BD_HI_COLOR_TEXT_4,
+  ED_TEXTINPUT_ID_BD_HI_COLOR_TEXT_5,
+  ED_TEXTINPUT_ID_BD_HI_COLOR_TEXT_6,
+  ED_TEXTINPUT_ID_BD_HI_COLOR_TEXT_7,
   ED_TEXTINPUT_ID_ELEMENT_NAME,
 
   ED_NUM_TEXTINPUT
@@ -1064,6 +1113,15 @@ enum
 
 #define ED_TEXTINPUT_ID_COLORS_FIRST	ED_TEXTINPUT_ID_BD_COLOR_TEXT_0
 #define ED_TEXTINPUT_ID_COLORS_LAST	ED_TEXTINPUT_ID_BD_COLOR_TEXT_7
+
+#define ED_TEXTINPUT_ID_COLORS_2_FIRST	ED_TEXTINPUT_ID_BD_LO_COLOR_TEXT_0
+#define ED_TEXTINPUT_ID_COLORS_2_LAST	ED_TEXTINPUT_ID_BD_HI_COLOR_TEXT_7
+
+#define ED_TEXTINPUT_ID_COLORS_LO_FIRST	ED_TEXTINPUT_ID_BD_LO_COLOR_TEXT_0
+#define ED_TEXTINPUT_ID_COLORS_LO_LAST	ED_TEXTINPUT_ID_BD_LO_COLOR_TEXT_7
+
+#define ED_TEXTINPUT_ID_COLORS_HI_FIRST	ED_TEXTINPUT_ID_BD_HI_COLOR_TEXT_0
+#define ED_TEXTINPUT_ID_COLORS_HI_LAST	ED_TEXTINPUT_ID_BD_HI_COLOR_TEXT_7
 
 // values for text area gadgets
 enum
@@ -1084,6 +1142,7 @@ enum
   ED_SELECTBOX_ID_GAME_ENGINE_TYPE,
   ED_SELECTBOX_ID_LEVELSET_SAVE_MODE,
   ED_SELECTBOX_ID_BD_SCHEDULING_TYPE,
+  ED_SELECTBOX_ID_BD_COLORING_TYPE,
   ED_SELECTBOX_ID_BD_COLOR_TYPE,
   ED_SELECTBOX_ID_BD_COLOR_C64_0,
   ED_SELECTBOX_ID_BD_COLOR_C64_1,
@@ -1199,6 +1258,22 @@ enum
   ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_5,
   ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_6,
   ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_7,
+  ED_GRAPHICBUTTON_ID_BD_LO_COLOR_PICK_0,
+  ED_GRAPHICBUTTON_ID_BD_LO_COLOR_PICK_1,
+  ED_GRAPHICBUTTON_ID_BD_LO_COLOR_PICK_2,
+  ED_GRAPHICBUTTON_ID_BD_LO_COLOR_PICK_3,
+  ED_GRAPHICBUTTON_ID_BD_LO_COLOR_PICK_4,
+  ED_GRAPHICBUTTON_ID_BD_LO_COLOR_PICK_5,
+  ED_GRAPHICBUTTON_ID_BD_LO_COLOR_PICK_6,
+  ED_GRAPHICBUTTON_ID_BD_LO_COLOR_PICK_7,
+  ED_GRAPHICBUTTON_ID_BD_HI_COLOR_PICK_0,
+  ED_GRAPHICBUTTON_ID_BD_HI_COLOR_PICK_1,
+  ED_GRAPHICBUTTON_ID_BD_HI_COLOR_PICK_2,
+  ED_GRAPHICBUTTON_ID_BD_HI_COLOR_PICK_3,
+  ED_GRAPHICBUTTON_ID_BD_HI_COLOR_PICK_4,
+  ED_GRAPHICBUTTON_ID_BD_HI_COLOR_PICK_5,
+  ED_GRAPHICBUTTON_ID_BD_HI_COLOR_PICK_6,
+  ED_GRAPHICBUTTON_ID_BD_HI_COLOR_PICK_7,
 
   ED_NUM_GRAPHICBUTTONS
 };
@@ -1208,6 +1283,15 @@ enum
 
 #define ED_GRAPHICBUTTON_ID_PICK_FIRST    ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_0
 #define ED_GRAPHICBUTTON_ID_PICK_LAST     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_7
+
+#define ED_GRAPHICBUTTON_ID_PICK_2_FIRST  ED_GRAPHICBUTTON_ID_BD_LO_COLOR_PICK_0
+#define ED_GRAPHICBUTTON_ID_PICK_2_LAST   ED_GRAPHICBUTTON_ID_BD_HI_COLOR_PICK_7
+
+#define ED_GRAPHICBUTTON_ID_PICK_LO_FIRST ED_GRAPHICBUTTON_ID_BD_LO_COLOR_PICK_0
+#define ED_GRAPHICBUTTON_ID_PICK_LO_LAST  ED_GRAPHICBUTTON_ID_BD_LO_COLOR_PICK_7
+
+#define ED_GRAPHICBUTTON_ID_PICK_HI_FIRST ED_GRAPHICBUTTON_ID_BD_HI_COLOR_PICK_0
+#define ED_GRAPHICBUTTON_ID_PICK_HI_LAST  ED_GRAPHICBUTTON_ID_BD_HI_COLOR_PICK_7
 
 // values for checkbutton gadgets
 enum
@@ -1728,11 +1812,13 @@ static int levelset_save_mode = LEVELSET_SAVE_MODE_UPDATE;
 
 #define MAX_BD_COLORS			8
 #define MAX_BD_COLOR_TEXT_LEN		12
+#define MAX_BD_RGB_COLOR_TEXT_LEN	7
 
 static int bd_color_type_default = GD_COLOR_TYPE_RGB;
 static int bd_color_type_last = GD_COLOR_TYPE_RGB;
 static int bd_color_c64[MAX_BD_COLORS];
 static char bd_color_text[MAX_BD_COLORS][MAX_BD_COLOR_TEXT_LEN + 1];
+static char bd_base_color_text[MAX_BD_COLORS][MAX_BD_RGB_COLOR_TEXT_LEN + 1];
 static int bd_color_default[MAX_BD_COLORS];
 static int *bd_color[MAX_BD_COLORS] =
 {
@@ -1744,6 +1830,17 @@ static int *bd_color[MAX_BD_COLORS] =
   &level.bd_color_5,
   &level.bd_color_6,
   &level.bd_color_7,
+};
+static int *bd_base_color[MAX_BD_COLORS] =
+{
+  &level.bd_base_color_0,
+  &level.bd_base_color_1,
+  &level.bd_base_color_2,
+  &level.bd_base_color_3,
+  &level.bd_base_color_4,
+  &level.bd_base_color_5,
+  &level.bd_base_color_6,
+  &level.bd_base_color_7,
 };
 
 static struct
@@ -2221,11 +2318,11 @@ static struct
     "Author:", NULL, NULL,			"Enter author for this or new level set"
   },
 
-  // ---------- engine settings: colors ---------------------------------------
+  // ---------- engine settings: colors (single) ------------------------------
 
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_0,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(1),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(3),
     GADGET_ID_BD_COLOR_TEXT_0,
     MAX_BD_COLOR_TEXT_LEN,
     bd_color_text[0],
@@ -2233,7 +2330,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_1,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(2),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(4),
     GADGET_ID_BD_COLOR_TEXT_1,
     MAX_BD_COLOR_TEXT_LEN,
     bd_color_text[1],
@@ -2241,7 +2338,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_2,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(3),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(5),
     GADGET_ID_BD_COLOR_TEXT_2,
     MAX_BD_COLOR_TEXT_LEN,
     bd_color_text[2],
@@ -2249,7 +2346,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_3,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(4),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(6),
     GADGET_ID_BD_COLOR_TEXT_3,
     MAX_BD_COLOR_TEXT_LEN,
     bd_color_text[3],
@@ -2257,7 +2354,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_4,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(5),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(7),
     GADGET_ID_BD_COLOR_TEXT_4,
     MAX_BD_COLOR_TEXT_LEN,
     bd_color_text[4],
@@ -2265,7 +2362,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_5,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(6),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(8),
     GADGET_ID_BD_COLOR_TEXT_5,
     MAX_BD_COLOR_TEXT_LEN,
     bd_color_text[5],
@@ -2273,7 +2370,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_6,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(7),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(9),
     GADGET_ID_BD_COLOR_TEXT_6,
     MAX_BD_COLOR_TEXT_LEN,
     bd_color_text[6],
@@ -2281,11 +2378,142 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_7,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(8),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(10),
     GADGET_ID_BD_COLOR_TEXT_7,
     MAX_BD_COLOR_TEXT_LEN,
     bd_color_text[7],
     NULL, "Extra color 2:     ", NULL,		"Enter extra color 2 (C64 graphics)"
+  },
+
+  // ---------- engine settings: colors (gradients) ---------------------------
+
+  {
+    ED_TEXTINPUT_ID_BD_LO_COLOR_TEXT_0,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(1),
+    GADGET_ID_BD_LO_COLOR_TEXT_0,
+    MAX_BD_RGB_COLOR_TEXT_LEN,
+    bd_base_color_text[0],
+    NULL, "Color 0:  ", NULL,			"Enter RGB value for start color 0"
+  },
+  {
+    ED_TEXTINPUT_ID_BD_LO_COLOR_TEXT_1,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(2),
+    GADGET_ID_BD_LO_COLOR_TEXT_1,
+    MAX_BD_RGB_COLOR_TEXT_LEN,
+    bd_base_color_text[1],
+    NULL, "Color 1:  ", NULL,			"Enter RGB value for start color 1"
+  },
+  {
+    ED_TEXTINPUT_ID_BD_LO_COLOR_TEXT_2,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(3),
+    GADGET_ID_BD_LO_COLOR_TEXT_2,
+    MAX_BD_RGB_COLOR_TEXT_LEN,
+    bd_base_color_text[2],
+    NULL, "Color 2:  ", NULL,			"Enter RGB value for start color 2"
+  },
+  {
+    ED_TEXTINPUT_ID_BD_LO_COLOR_TEXT_3,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(4),
+    GADGET_ID_BD_LO_COLOR_TEXT_3,
+    MAX_BD_RGB_COLOR_TEXT_LEN,
+    bd_base_color_text[3],
+    NULL, "Color 3:  ", NULL,			"Enter RGB value for start color 3"
+  },
+  {
+    ED_TEXTINPUT_ID_BD_LO_COLOR_TEXT_4,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(5),
+    GADGET_ID_BD_LO_COLOR_TEXT_4,
+    MAX_BD_RGB_COLOR_TEXT_LEN,
+    bd_base_color_text[4],
+    NULL, "Color 4:  ", NULL,			"Enter RGB value for start color 4"
+  },
+  {
+    ED_TEXTINPUT_ID_BD_LO_COLOR_TEXT_5,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(6),
+    GADGET_ID_BD_LO_COLOR_TEXT_5,
+    MAX_BD_RGB_COLOR_TEXT_LEN,
+    bd_base_color_text[5],
+    NULL, "Color 5:  ", NULL,			"Enter RGB value for start color 5"
+  },
+  {
+    ED_TEXTINPUT_ID_BD_LO_COLOR_TEXT_6,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(7),
+    GADGET_ID_BD_LO_COLOR_TEXT_6,
+    MAX_BD_RGB_COLOR_TEXT_LEN,
+    bd_base_color_text[6],
+    NULL, "Color 6:  ", NULL,			"Enter RGB value for start color 6"
+  },
+  {
+    ED_TEXTINPUT_ID_BD_LO_COLOR_TEXT_7,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(8),
+    GADGET_ID_BD_LO_COLOR_TEXT_7,
+    MAX_BD_RGB_COLOR_TEXT_LEN,
+    bd_base_color_text[7],
+    NULL, "Color 7:  ", NULL,			"Enter RGB value for start color 7"
+  },
+  {
+    ED_TEXTINPUT_ID_BD_HI_COLOR_TEXT_0,
+    ED_ENGINE_SETTINGS_XPOS(12),		ED_ENGINE_SETTINGS_YPOS(1),
+    GADGET_ID_BD_HI_COLOR_TEXT_0,
+    MAX_BD_RGB_COLOR_TEXT_LEN,
+    bd_color_text[0],
+    NULL, "->  ", NULL,				"Enter RGB value for end color 0"
+  },
+  {
+    ED_TEXTINPUT_ID_BD_HI_COLOR_TEXT_1,
+    ED_ENGINE_SETTINGS_XPOS(12),		ED_ENGINE_SETTINGS_YPOS(2),
+    GADGET_ID_BD_HI_COLOR_TEXT_1,
+    MAX_BD_RGB_COLOR_TEXT_LEN,
+    bd_color_text[1],
+    NULL, "->  ", NULL,				"Enter RGB value for end color 1"
+  },
+  {
+    ED_TEXTINPUT_ID_BD_HI_COLOR_TEXT_2,
+    ED_ENGINE_SETTINGS_XPOS(12),		ED_ENGINE_SETTINGS_YPOS(3),
+    GADGET_ID_BD_HI_COLOR_TEXT_2,
+    MAX_BD_RGB_COLOR_TEXT_LEN,
+    bd_color_text[2],
+    NULL, "->  ", NULL,				"Enter RGB value for end color 2"
+  },
+  {
+    ED_TEXTINPUT_ID_BD_HI_COLOR_TEXT_3,
+    ED_ENGINE_SETTINGS_XPOS(12),		ED_ENGINE_SETTINGS_YPOS(4),
+    GADGET_ID_BD_HI_COLOR_TEXT_3,
+    MAX_BD_RGB_COLOR_TEXT_LEN,
+    bd_color_text[3],
+    NULL, "->  ", NULL,				"Enter RGB value for end color 3"
+  },
+  {
+    ED_TEXTINPUT_ID_BD_HI_COLOR_TEXT_4,
+    ED_ENGINE_SETTINGS_XPOS(12),		ED_ENGINE_SETTINGS_YPOS(5),
+    GADGET_ID_BD_HI_COLOR_TEXT_4,
+    MAX_BD_RGB_COLOR_TEXT_LEN,
+    bd_color_text[4],
+    NULL, "->  ", NULL,				"Enter RGB value for end color 4"
+  },
+  {
+    ED_TEXTINPUT_ID_BD_HI_COLOR_TEXT_5,
+    ED_ENGINE_SETTINGS_XPOS(12),		ED_ENGINE_SETTINGS_YPOS(6),
+    GADGET_ID_BD_HI_COLOR_TEXT_5,
+    MAX_BD_RGB_COLOR_TEXT_LEN,
+    bd_color_text[5],
+    NULL, "->  ", NULL,				"Enter RGB value for end color 5"
+  },
+  {
+    ED_TEXTINPUT_ID_BD_HI_COLOR_TEXT_6,
+    ED_ENGINE_SETTINGS_XPOS(12),		ED_ENGINE_SETTINGS_YPOS(7),
+    GADGET_ID_BD_HI_COLOR_TEXT_6,
+    MAX_BD_RGB_COLOR_TEXT_LEN,
+    bd_color_text[6],
+    NULL, "->  ", NULL,				"Enter RGB value for end color 6"
+  },
+  {
+    ED_TEXTINPUT_ID_BD_HI_COLOR_TEXT_7,
+    ED_ENGINE_SETTINGS_XPOS(12),		ED_ENGINE_SETTINGS_YPOS(8),
+    GADGET_ID_BD_HI_COLOR_TEXT_7,
+    MAX_BD_RGB_COLOR_TEXT_LEN,
+    bd_color_text[7],
+    NULL, "->  ", NULL,				"Enter RGB value for end color 7"
   },
 
   // ---------- element settings: configure (several elements) ----------------
@@ -3039,6 +3267,14 @@ static struct ValueTextInfo options_bd_scheduling_type[] =
   { -1,					  NULL				}
 };
 
+static struct ValueTextInfo options_bd_coloring_type[] =
+{
+  { GD_COLORING_TYPE_SINGLE,		"single colors"			},
+  { GD_COLORING_TYPE_GRADIENTS,		"color gradients"		},
+
+  { -1,					  NULL				}
+};
+
 static struct ValueTextInfo options_bd_color_type[] =
 {
   { GD_COLOR_TYPE_RGB,			"RGB colors"			},
@@ -3179,8 +3415,18 @@ static struct
   // ---------- engine settings: colors ---------------------------------------
 
   {
-    ED_SELECTBOX_ID_BD_COLOR_TYPE,
+    ED_SELECTBOX_ID_BD_COLORING_TYPE,
     ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(0),
+    GADGET_ID_BD_COLORING_TYPE,			GADGET_ID_NONE,
+    -1,
+    options_bd_coloring_type,
+    &level.bd_coloring_type,
+    "Level specific colors:",
+    "Coloring type:", NULL,			"Select color template coloring type"
+  },
+  {
+    ED_SELECTBOX_ID_BD_COLOR_TYPE,
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(2),
     GADGET_ID_BD_COLOR_TYPE,			GADGET_ID_NONE,
     -1,
     options_bd_color_type,
@@ -3190,7 +3436,7 @@ static struct
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_0,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(1),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(3),
     GADGET_ID_BD_COLOR_C64_0,			GADGET_ID_NONE,
     -1,
     options_bd_color_c64_name,
@@ -3199,7 +3445,7 @@ static struct
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_1,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(2),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(4),
     GADGET_ID_BD_COLOR_C64_1,			GADGET_ID_NONE,
     -1,
     options_bd_color_c64_name,
@@ -3208,7 +3454,7 @@ static struct
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_2,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(3),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(5),
     GADGET_ID_BD_COLOR_C64_2,			GADGET_ID_NONE,
     -1,
     options_bd_color_c64_name,
@@ -3217,7 +3463,7 @@ static struct
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_3,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(4),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(6),
     GADGET_ID_BD_COLOR_C64_3,			GADGET_ID_NONE,
     -1,
     options_bd_color_c64_name,
@@ -3226,7 +3472,7 @@ static struct
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_4,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(5),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(7),
     GADGET_ID_BD_COLOR_C64_4,			GADGET_ID_NONE,
     -1,
     options_bd_color_c64_name,
@@ -3235,7 +3481,7 @@ static struct
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_5,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(6),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(8),
     GADGET_ID_BD_COLOR_C64_5,			GADGET_ID_NONE,
     -1,
     options_bd_color_c64_name,
@@ -3244,7 +3490,7 @@ static struct
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_6,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(7),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(9),
     GADGET_ID_BD_COLOR_C64_6,			GADGET_ID_NONE,
     -1,
     options_bd_color_c64_name,
@@ -3253,7 +3499,7 @@ static struct
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_7,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(8),
+    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(10),
     GADGET_ID_BD_COLOR_C64_7,			GADGET_ID_NONE,
     -1,
     options_bd_color_c64_name,
@@ -3702,6 +3948,8 @@ static struct
   char *text_left, *text_right, *infotext;
 } graphicbutton_info[ED_NUM_GRAPHICBUTTONS] =
 {
+  // ---------- custom element settings ---------------------------------------
+
   {
     ED_GRAPHICBUTTON_ID_PREV_CHANGE_PAGE,
     IMG_EDITOR_COUNTER_DOWN,
@@ -3730,61 +3978,179 @@ static struct
     GADGET_ID_PASTE_CHANGE_PAGE,		GADGET_ID_COPY_CHANGE_PAGE,
     NULL, NULL,					"Paste settings to this change page"
   },
+
+  // ---------- engine settings: colors (single) ------------------------------
+
   {
     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_0,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(1),
+    -1,						ED_ENGINE_SETTINGS_YPOS(3),
     GADGET_ID_BD_COLOR_PICK_0,			GADGET_ID_BD_COLOR_TEXT_0,
     NULL, NULL,					"Pick background color (C64 graphics)"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_1,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(2),
+    -1,						ED_ENGINE_SETTINGS_YPOS(4),
     GADGET_ID_BD_COLOR_PICK_1,			GADGET_ID_BD_COLOR_TEXT_1,
     NULL, NULL,					"Pick sand color (C64 graphics)"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_2,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(3),
+    -1,						ED_ENGINE_SETTINGS_YPOS(5),
     GADGET_ID_BD_COLOR_PICK_2,			GADGET_ID_BD_COLOR_TEXT_2,
     NULL, NULL,					"Pick steel wall color (C64 graphics)"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_3,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(4),
+    -1,						ED_ENGINE_SETTINGS_YPOS(6),
     GADGET_ID_BD_COLOR_PICK_3,			GADGET_ID_BD_COLOR_TEXT_3,
     NULL, NULL,					"Pick wall color (C64 graphics)"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_4,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(5),
+    -1,						ED_ENGINE_SETTINGS_YPOS(7),
     GADGET_ID_BD_COLOR_PICK_4,			GADGET_ID_BD_COLOR_TEXT_4,
     NULL, NULL,					"Pick amoeba color (C64 graphics)"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_5,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(6),
+    -1,						ED_ENGINE_SETTINGS_YPOS(8),
     GADGET_ID_BD_COLOR_PICK_5,			GADGET_ID_BD_COLOR_TEXT_5,
     NULL, NULL,					"Pick slime color (C64 graphics)"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_6,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(7),
+    -1,						ED_ENGINE_SETTINGS_YPOS(9),
     GADGET_ID_BD_COLOR_PICK_6,			GADGET_ID_BD_COLOR_TEXT_6,
     NULL, NULL,					"Pick extra color 1 (C64 graphics)"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_7,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(8),
+    -1,						ED_ENGINE_SETTINGS_YPOS(10),
     GADGET_ID_BD_COLOR_PICK_7,			GADGET_ID_BD_COLOR_TEXT_7,
     NULL, NULL,					"Pick extra color 2 (C64 graphics)"
+  },
+
+  // ---------- engine settings: colors (gradients) ---------------------------
+
+  {
+    ED_GRAPHICBUTTON_ID_BD_LO_COLOR_PICK_0,
+    IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
+    -1,						ED_ENGINE_SETTINGS_YPOS(1),
+    GADGET_ID_BD_LO_COLOR_PICK_0,		GADGET_ID_BD_LO_COLOR_TEXT_0,
+    NULL, NULL,					"Pick start color 0"
+  },
+  {
+    ED_GRAPHICBUTTON_ID_BD_LO_COLOR_PICK_1,
+    IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
+    -1,						ED_ENGINE_SETTINGS_YPOS(2),
+    GADGET_ID_BD_LO_COLOR_PICK_1,		GADGET_ID_BD_LO_COLOR_TEXT_1,
+    NULL, NULL,					"Pick start color 1"
+  },
+  {
+    ED_GRAPHICBUTTON_ID_BD_LO_COLOR_PICK_2,
+    IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
+    -1,						ED_ENGINE_SETTINGS_YPOS(3),
+    GADGET_ID_BD_LO_COLOR_PICK_2,		GADGET_ID_BD_LO_COLOR_TEXT_2,
+    NULL, NULL,					"Pick start color 2"
+  },
+  {
+    ED_GRAPHICBUTTON_ID_BD_LO_COLOR_PICK_3,
+    IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
+    -1,						ED_ENGINE_SETTINGS_YPOS(4),
+    GADGET_ID_BD_LO_COLOR_PICK_3,		GADGET_ID_BD_LO_COLOR_TEXT_3,
+    NULL, NULL,					"Pick start color 3"
+  },
+  {
+    ED_GRAPHICBUTTON_ID_BD_LO_COLOR_PICK_4,
+    IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
+    -1,						ED_ENGINE_SETTINGS_YPOS(5),
+    GADGET_ID_BD_LO_COLOR_PICK_4,		GADGET_ID_BD_LO_COLOR_TEXT_4,
+    NULL, NULL,					"Pick start color 4"
+  },
+  {
+    ED_GRAPHICBUTTON_ID_BD_LO_COLOR_PICK_5,
+    IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
+    -1,						ED_ENGINE_SETTINGS_YPOS(6),
+    GADGET_ID_BD_LO_COLOR_PICK_5,		GADGET_ID_BD_LO_COLOR_TEXT_5,
+    NULL, NULL,					"Pick start color 5"
+  },
+  {
+    ED_GRAPHICBUTTON_ID_BD_LO_COLOR_PICK_6,
+    IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
+    -1,						ED_ENGINE_SETTINGS_YPOS(7),
+    GADGET_ID_BD_LO_COLOR_PICK_6,		GADGET_ID_BD_LO_COLOR_TEXT_6,
+    NULL, NULL,					"Pick start color 6"
+  },
+  {
+    ED_GRAPHICBUTTON_ID_BD_LO_COLOR_PICK_7,
+    IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
+    -1,						ED_ENGINE_SETTINGS_YPOS(8),
+    GADGET_ID_BD_LO_COLOR_PICK_7,		GADGET_ID_BD_LO_COLOR_TEXT_7,
+    NULL, NULL,					"Pick start color 7"
+  },
+  {
+    ED_GRAPHICBUTTON_ID_BD_HI_COLOR_PICK_0,
+    IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
+    -1,						ED_ENGINE_SETTINGS_YPOS(1),
+    GADGET_ID_BD_HI_COLOR_PICK_0,		GADGET_ID_BD_HI_COLOR_TEXT_0,
+    NULL, NULL,					"Pick end color 0"
+  },
+  {
+    ED_GRAPHICBUTTON_ID_BD_HI_COLOR_PICK_1,
+    IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
+    -1,						ED_ENGINE_SETTINGS_YPOS(2),
+    GADGET_ID_BD_HI_COLOR_PICK_1,		GADGET_ID_BD_HI_COLOR_TEXT_1,
+    NULL, NULL,					"Pick end color 1"
+  },
+  {
+    ED_GRAPHICBUTTON_ID_BD_HI_COLOR_PICK_2,
+    IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
+    -1,						ED_ENGINE_SETTINGS_YPOS(3),
+    GADGET_ID_BD_HI_COLOR_PICK_2,		GADGET_ID_BD_HI_COLOR_TEXT_2,
+    NULL, NULL,					"Pick end color 2"
+  },
+  {
+    ED_GRAPHICBUTTON_ID_BD_HI_COLOR_PICK_3,
+    IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
+    -1,						ED_ENGINE_SETTINGS_YPOS(4),
+    GADGET_ID_BD_HI_COLOR_PICK_3,		GADGET_ID_BD_HI_COLOR_TEXT_3,
+    NULL, NULL,					"Pick end color 3"
+  },
+  {
+    ED_GRAPHICBUTTON_ID_BD_HI_COLOR_PICK_4,
+    IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
+    -1,						ED_ENGINE_SETTINGS_YPOS(5),
+    GADGET_ID_BD_HI_COLOR_PICK_4,		GADGET_ID_BD_HI_COLOR_TEXT_4,
+    NULL, NULL,					"Pick end color 4"
+  },
+  {
+    ED_GRAPHICBUTTON_ID_BD_HI_COLOR_PICK_5,
+    IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
+    -1,						ED_ENGINE_SETTINGS_YPOS(6),
+    GADGET_ID_BD_HI_COLOR_PICK_5,		GADGET_ID_BD_HI_COLOR_TEXT_5,
+    NULL, NULL,					"Pick end color 5"
+  },
+  {
+    ED_GRAPHICBUTTON_ID_BD_HI_COLOR_PICK_6,
+    IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
+    -1,						ED_ENGINE_SETTINGS_YPOS(7),
+    GADGET_ID_BD_HI_COLOR_PICK_6,		GADGET_ID_BD_HI_COLOR_TEXT_6,
+    NULL, NULL,					"Pick end color 6"
+  },
+  {
+    ED_GRAPHICBUTTON_ID_BD_HI_COLOR_PICK_7,
+    IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
+    -1,						ED_ENGINE_SETTINGS_YPOS(8),
+    GADGET_ID_BD_HI_COLOR_PICK_7,		GADGET_ID_BD_HI_COLOR_TEXT_7,
+    NULL, NULL,					"Pick end color 7"
   },
 };
 
@@ -9979,13 +10345,54 @@ static void MapCheckbuttonGadget(int id)
   MapGadget(gi);
 }
 
-static void MapColorPickerGadget(int id, int color_nr)
+static int **getColorArrayFromGadgetTypeId(int type_id)
 {
+  return ((type_id >= ED_TEXTINPUT_ID_COLORS_LO_FIRST &&
+           type_id <= ED_TEXTINPUT_ID_COLORS_LO_LAST) ||
+          (type_id >= ED_GRAPHICBUTTON_ID_PICK_LO_FIRST &&
+           type_id <= ED_GRAPHICBUTTON_ID_PICK_LO_LAST) ? bd_base_color : bd_color);
+}
+
+static char *getColorTextFromGadgetTypeId(int type_id, int color_nr)
+{
+  return ((type_id >= ED_TEXTINPUT_ID_COLORS_LO_FIRST &&
+           type_id <= ED_TEXTINPUT_ID_COLORS_LO_LAST) ||
+          (type_id >= ED_GRAPHICBUTTON_ID_PICK_LO_FIRST &&
+           type_id <= ED_GRAPHICBUTTON_ID_PICK_LO_LAST) ?
+          bd_base_color_text[color_nr] : bd_color_text[color_nr]);
+}
+
+static int getColorNrFromGadgetTypeId(int type_id)
+{
+  return (type_id >= ED_TEXTINPUT_ID_COLORS_FIRST &&
+          type_id <= ED_TEXTINPUT_ID_COLORS_LAST ?
+          type_id -  ED_TEXTINPUT_ID_COLORS_FIRST :
+          type_id >= ED_TEXTINPUT_ID_COLORS_LO_FIRST &&
+          type_id <= ED_TEXTINPUT_ID_COLORS_LO_LAST ?
+          type_id -  ED_TEXTINPUT_ID_COLORS_LO_FIRST :
+          type_id >= ED_TEXTINPUT_ID_COLORS_HI_FIRST &&
+          type_id <= ED_TEXTINPUT_ID_COLORS_HI_LAST ?
+          type_id -  ED_TEXTINPUT_ID_COLORS_HI_FIRST :
+          type_id >= ED_GRAPHICBUTTON_ID_PICK_FIRST &&
+          type_id <= ED_GRAPHICBUTTON_ID_PICK_LAST ?
+          type_id -  ED_GRAPHICBUTTON_ID_PICK_FIRST :
+          type_id >= ED_GRAPHICBUTTON_ID_PICK_LO_FIRST &&
+          type_id <= ED_GRAPHICBUTTON_ID_PICK_LO_LAST ?
+          type_id -  ED_GRAPHICBUTTON_ID_PICK_LO_FIRST :
+          type_id >= ED_GRAPHICBUTTON_ID_PICK_HI_FIRST &&
+          type_id <= ED_GRAPHICBUTTON_ID_PICK_HI_LAST ?
+          type_id -  ED_GRAPHICBUTTON_ID_PICK_HI_FIRST : 0);
+}
+
+static void MapColorPickerGadget(int id, int type_id)
+{
+  int **color_array = getColorArrayFromGadgetTypeId(type_id);
+  int color_nr = getColorNrFromGadgetTypeId(type_id);
   static int color_values[COLORPICKER_MAX_VALUES] = { 0 };
   static char *color_names[COLORPICKER_MAX_VALUES] = { NULL };
   struct GadgetInfo *gi = level_editor_gadget[colorpicker_info[id].gadget_id];
   int color_type = level.bd_color_type;
-  int bd_color_value = *bd_color[color_nr];
+  int bd_color_value = *color_array[color_nr];
   int color_value_rgb = gd_color_get_rgb(bd_color_value);
   int color_value_index = bd_color_value & 0xff;
   int color_value = (color_type == GD_COLOR_TYPE_RGB ? color_value_rgb : color_value_index);
@@ -10033,7 +10440,7 @@ static void MapColorPickerGadget(int id, int color_nr)
     color_count = 0;
   }
 
-  ModifyGadget(gi, GDI_COLOR_NR,     color_nr,     GDI_END);
+  ModifyGadget(gi, GDI_COLOR_NR,     type_id,      GDI_END);
   ModifyGadget(gi, GDI_COLOR_TYPE,   color_type,   GDI_END);
   ModifyGadget(gi, GDI_COLOR_VALUE,  color_value,  GDI_END);
   ModifyGadget(gi, GDI_COLOR_VALUES, color_values, GDI_END);
@@ -11884,6 +12291,9 @@ static int GetCommonColorType_BD(void)
   int bd_color_type = *bd_color[0] >> 24;
   int i;
 
+  if (level.bd_coloring_type == GD_COLORING_TYPE_GRADIENTS)
+    return GD_COLOR_TYPE_RGB;
+
   // check if all colors have the same color type
   for (i = 1; i < MAX_BD_COLORS; i++)
     if ((*bd_color[i] >> 24) != bd_color_type)
@@ -11920,6 +12330,14 @@ void SetCurrentLevelColors_BD(void)
   cave->color5 = level.bd_color_5;
   cave->color6 = level.bd_color_6;
   cave->color7 = level.bd_color_7;
+  cave->base_color0 = level.bd_base_color_0;
+  cave->base_color1 = level.bd_base_color_1;
+  cave->base_color2 = level.bd_base_color_2;
+  cave->base_color3 = level.bd_base_color_3;
+  cave->base_color4 = level.bd_base_color_4;
+  cave->base_color5 = level.bd_base_color_5;
+  cave->base_color6 = level.bd_base_color_6;
+  cave->base_color7 = level.bd_base_color_7;
 }
 
 void SetRandomLevelColors_BD(int bd_color_type)
@@ -11939,12 +12357,21 @@ void SetRandomLevelColors_BD(int bd_color_type)
   level.bd_color_5 = cave->color5;
   level.bd_color_6 = cave->color6;
   level.bd_color_7 = cave->color7;
+  level.bd_base_color_0 = cave->base_color0;
+  level.bd_base_color_1 = cave->base_color1;
+  level.bd_base_color_2 = cave->base_color2;
+  level.bd_base_color_3 = cave->base_color3;
+  level.bd_base_color_4 = cave->base_color4;
+  level.bd_base_color_5 = cave->base_color5;
+  level.bd_base_color_6 = cave->base_color6;
+  level.bd_base_color_7 = cave->base_color7;
 }
 
-static void DrawColorBox_BD(int nr)
+static void DrawColorBox_BD(int type_id)
 {
-  int id = ED_SELECTBOX_ID_COLORS_FIRST + nr;
-  struct GadgetInfo *gi = level_editor_gadget[selectbox_info[id].gadget_id];
+  int **color_array = getColorArrayFromGadgetTypeId(type_id);
+  int color_nr = getColorNrFromGadgetTypeId(type_id);
+  struct GadgetInfo *gi = level_editor_gadget[textinput_info[type_id].gadget_id];
   int graphic = IMG_EDITOR_CHECKBOX;
   struct GraphicInfo *gd = &graphic_info[graphic];
   int offset = ED_GADGET_TEXT_DISTANCE;
@@ -11956,7 +12383,7 @@ static void DrawColorBox_BD(int nr)
   int ysize1 = gd->height;
   int xsize2 = xsize1 - 2 * offset;
   int ysize2 = ysize1 - 2 * offset;
-  int bd_color_x = *bd_color[nr];
+  int bd_color_x = *color_array[color_nr];
   int r = gd_color_get_r(bd_color_x);
   int g = gd_color_get_g(bd_color_x);
   int b = gd_color_get_b(bd_color_x);
@@ -11986,49 +12413,80 @@ static void DrawEngineConfigColors(void)
 
   // when using native BD engine with "classic" template colors, skip the two extra colors
   int skip = (level.game_engine_type == GAME_ENGINE_TYPE_BD &&
+              level.bd_coloring_type == GD_COLORING_TYPE_SINGLE &&
               gfx.has_reduced_color_template ? 2 : 0);
-
-  // copy level colors to either C64-style color index or color text
-  for (i = 0; i < MAX_BD_COLORS - skip; i++)
-  {
-    int bd_color_x = (level.bd_color_type == GD_COLOR_TYPE_C64 ? *bd_color[i] & 0x0f :
-		      level.bd_color_type == GD_COLOR_TYPE_RGB ? gd_color_get_rgb(*bd_color[i]) :
-		      *bd_color[i]);
-
-    if (level.bd_color_type == GD_COLOR_TYPE_C64)
-      bd_color_c64[i] = bd_color_x;
-    else
-      snprintf(bd_color_text[i], sizeof(bd_color_text[i]), "%s", gd_color_get_string(bd_color_x));
-  }
 
   // store last color type
   bd_color_type_last = level.bd_color_type;
 
-  MapSelectboxGadget(ED_SELECTBOX_ID_BD_COLOR_TYPE);
+  MapSelectboxGadget(ED_SELECTBOX_ID_BD_COLORING_TYPE);
 
-  if (level.bd_color_type == GD_COLOR_TYPE_C64)
+  if (level.bd_coloring_type == GD_COLORING_TYPE_SINGLE)
   {
-    // draw selectbox gadgets
-    for (i = ED_SELECTBOX_ID_COLORS_FIRST; i <= ED_SELECTBOX_ID_COLORS_LAST - skip; i++)
-      MapSelectboxGadget(i);
+    MapSelectboxGadget(ED_SELECTBOX_ID_BD_COLOR_TYPE);
+
+    // copy level colors to either C64-style color index or color text
+    for (i = 0; i < MAX_BD_COLORS - skip; i++)
+    {
+      int bd_color_x = (level.bd_color_type == GD_COLOR_TYPE_C64 ? *bd_color[i] & 0x0f :
+                        level.bd_color_type == GD_COLOR_TYPE_RGB ? gd_color_get_rgb(*bd_color[i]) :
+                        *bd_color[i]);
+
+      if (level.bd_color_type == GD_COLOR_TYPE_C64)
+        bd_color_c64[i] = bd_color_x;
+      else
+        snprintf(bd_color_text[i], sizeof(bd_color_text[i]), "%s", gd_color_get_string(bd_color_x));
+    }
+
+    if (level.bd_color_type == GD_COLOR_TYPE_C64)
+    {
+      // draw selectbox gadgets
+      for (i = ED_SELECTBOX_ID_COLORS_FIRST; i <= ED_SELECTBOX_ID_COLORS_LAST - skip; i++)
+        MapSelectboxGadget(i);
+    }
+    else
+    {
+      // draw text input gadgets
+      for (i = ED_TEXTINPUT_ID_COLORS_FIRST; i <= ED_TEXTINPUT_ID_COLORS_LAST - skip; i++)
+        MapTextInputGadget(i);
+    }
+
+    // draw graphic button gadgets
+    for (i = ED_GRAPHICBUTTON_ID_PICK_FIRST; i <= ED_GRAPHICBUTTON_ID_PICK_LAST - skip; i++)
+      MapGraphicbuttonGadget(i);
+
+    // draw color boxes
+    for (i = ED_TEXTINPUT_ID_COLORS_FIRST; i <= ED_TEXTINPUT_ID_COLORS_LAST - skip; i++)
+      DrawColorBox_BD(i);
   }
   else
   {
+    // copy level colors to color text
+    for (i = 0; i < MAX_BD_COLORS; i++)
+    {
+      snprintf(bd_color_text[i], sizeof(bd_color_text[i]), "%s",
+               gd_color_get_string(gd_color_get_rgb(*bd_color[i])));
+      snprintf(bd_base_color_text[i], sizeof(bd_base_color_text[i]), "%s",
+               gd_color_get_string(gd_color_get_rgb(*bd_base_color[i])));
+    }
+
     // draw text input gadgets
-    for (i = ED_TEXTINPUT_ID_COLORS_FIRST; i <= ED_TEXTINPUT_ID_COLORS_LAST - skip; i++)
+    for (i = ED_TEXTINPUT_ID_COLORS_2_FIRST; i <= ED_TEXTINPUT_ID_COLORS_2_LAST; i++)
       MapTextInputGadget(i);
+
+    // draw graphic button gadgets
+    for (i = ED_GRAPHICBUTTON_ID_PICK_2_FIRST; i <= ED_GRAPHICBUTTON_ID_PICK_2_LAST; i++)
+      MapGraphicbuttonGadget(i);
+
+    // draw color boxes
+    for (i = ED_TEXTINPUT_ID_COLORS_2_FIRST; i <= ED_TEXTINPUT_ID_COLORS_2_LAST; i++)
+      DrawColorBox_BD(i);
   }
 
-  // draw graphic button gadgets
-  for (i = ED_GRAPHICBUTTON_ID_PICK_FIRST; i <= ED_GRAPHICBUTTON_ID_PICK_LAST - skip; i++)
-    MapGraphicbuttonGadget(i);
-
-  for (i = 0; i < MAX_BD_COLORS - skip; i++)
-    DrawColorBox_BD(i);
-
   struct GadgetInfo *gi = level_editor_gadget[GADGET_ID_BD_SET_RANDOM_COLORS];
+  int ypos = (level.bd_coloring_type == GD_COLORING_TYPE_GRADIENTS ? 9 : 11) - skip;
 
-  ModifyGadget(gi, GDI_Y, SY + ED_SETTINGS_Y(ED_ENGINE_SETTINGS_YPOS(9 - skip)), GDI_END);
+  ModifyGadget(gi, GDI_Y, SY + ED_SETTINGS_Y(ED_ENGINE_SETTINGS_YPOS(ypos)), GDI_END);
 
   MapTextbuttonGadget(ED_TEXTBUTTON_ID_BD_SET_RANDOM_COLORS);
 }
@@ -16869,12 +17327,16 @@ static void HandleTextInputGadgets(struct GadgetInfo *gi)
 
     ModifyEditorElementList();	// update changed button info text
   }
-  else if (type_id >= ED_TEXTINPUT_ID_COLORS_FIRST &&
-	   type_id <= ED_TEXTINPUT_ID_COLORS_LAST)
+  else if ((type_id >= ED_TEXTINPUT_ID_COLORS_FIRST &&
+            type_id <= ED_TEXTINPUT_ID_COLORS_LAST) ||
+           (type_id >= ED_TEXTINPUT_ID_COLORS_2_FIRST &&
+            type_id <= ED_TEXTINPUT_ID_COLORS_2_LAST))
   {
-    int pos = type_id - ED_TEXTINPUT_ID_COLORS_FIRST;
+    int color_nr = getColorNrFromGadgetTypeId(type_id);
+    int **color_array = getColorArrayFromGadgetTypeId(type_id);
+    char *color_text = getColorTextFromGadgetTypeId(type_id, color_nr);
 
-    *bd_color[pos] = gd_color_get_from_string(bd_color_text[pos]);
+    *color_array[color_nr] = gd_color_get_from_string(color_text);
 
     DrawEditModeWindow();
   }
@@ -16946,6 +17408,11 @@ static void HandleSelectboxGadgets(struct GadgetInfo *gi)
   {
     // update BD cycle delay counter gadgets depending on BD scheduling type
     DrawLevelConfigWindow();
+  }
+  else if (type_id == ED_SELECTBOX_ID_BD_COLORING_TYPE)
+  {
+    // update BD color palette gadgets depending on template coloring type
+    DrawEditModeWindow();
   }
   else if (type_id == ED_SELECTBOX_ID_BD_COLOR_TYPE)
   {
@@ -17212,10 +17679,12 @@ static void HandleGraphicbuttonGadgets(struct GadgetInfo *gi)
 
     DrawPropertiesWindow();
   }
-  else if (type_id >= ED_GRAPHICBUTTON_ID_PICK_FIRST ||
-	   type_id <= ED_GRAPHICBUTTON_ID_PICK_LAST)
+  else if ((type_id >= ED_GRAPHICBUTTON_ID_PICK_FIRST &&
+            type_id <= ED_GRAPHICBUTTON_ID_PICK_LAST) ||
+           (type_id >= ED_GRAPHICBUTTON_ID_PICK_2_FIRST &&
+            type_id <= ED_GRAPHICBUTTON_ID_PICK_2_LAST))
   {
-    MapColorPickerGadget(ED_COLORPICKER_ID_PICK_COLOR, type_id - ED_GRAPHICBUTTON_ID_PICK_FIRST);
+    MapColorPickerGadget(ED_COLORPICKER_ID_PICK_COLOR, type_id);
   }
 }
 
@@ -17358,8 +17827,11 @@ static void HandleColorPickerGadgets(struct GadgetInfo *gi)
 
   if (type_id == ED_COLORPICKER_ID_PICK_COLOR)
   {
+    int **color_array = getColorArrayFromGadgetTypeId(gi->colorpicker.nr);
+    int color_nr = getColorNrFromGadgetTypeId(gi->colorpicker.nr);
+
     if (gi->colorpicker.value != -1)
-      *bd_color[gi->colorpicker.nr] = (gi->colorpicker.type << 24) + gi->colorpicker.value;
+      *color_array[color_nr] = (gi->colorpicker.type << 24) + gi->colorpicker.value;
 
     DrawEditModeWindow();
   }

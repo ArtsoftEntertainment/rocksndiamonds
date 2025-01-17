@@ -319,6 +319,11 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
   },
   {
     -1,					-1,
+    TYPE_INTEGER,			CONF_VALUE_8_BIT(25),
+    &li.bd_coloring_type,		GD_COLORING_TYPE_GRADIENTS
+  },
+  {
+    -1,					-1,
     TYPE_INTEGER,			CONF_VALUE_32_BIT(3),
     &li.bd_color_b,			GD_C64_COLOR_BLACK
   },
@@ -361,6 +366,46 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
     -1,					-1,
     TYPE_INTEGER,			CONF_VALUE_32_BIT(11),
     &li.bd_color_7,			GD_C64_COLOR_WHITE
+  },
+  {
+    -1,					-1,
+    TYPE_INTEGER,			CONF_VALUE_32_BIT(12),
+    &li.bd_base_color_0,		GD_C64_COLOR_BLACK
+  },
+  {
+    -1,					-1,
+    TYPE_INTEGER,			CONF_VALUE_32_BIT(13),
+    &li.bd_base_color_1,		GD_C64_COLOR_BLACK
+  },
+  {
+    -1,					-1,
+    TYPE_INTEGER,			CONF_VALUE_32_BIT(14),
+    &li.bd_base_color_2,		GD_C64_COLOR_BLACK
+  },
+  {
+    -1,					-1,
+    TYPE_INTEGER,			CONF_VALUE_32_BIT(15),
+    &li.bd_base_color_3,		GD_C64_COLOR_BLACK
+  },
+  {
+    -1,					-1,
+    TYPE_INTEGER,			CONF_VALUE_32_BIT(16),
+    &li.bd_base_color_4,		GD_C64_COLOR_BLACK
+  },
+  {
+    -1,					-1,
+    TYPE_INTEGER,			CONF_VALUE_32_BIT(17),
+    &li.bd_base_color_5,		GD_C64_COLOR_BLACK
+  },
+  {
+    -1,					-1,
+    TYPE_INTEGER,			CONF_VALUE_32_BIT(18),
+    &li.bd_base_color_6,		GD_C64_COLOR_BLACK
+  },
+  {
+    -1,					-1,
+    TYPE_INTEGER,			CONF_VALUE_32_BIT(19),
+    &li.bd_base_color_7,		GD_C64_COLOR_BLACK
   },
 
   {
@@ -4509,6 +4554,14 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->color5				= level->bd_color_5;
   cave->color6				= level->bd_color_6;
   cave->color7				= level->bd_color_7;
+  cave->base_color0			= level->bd_base_color_0;
+  cave->base_color1			= level->bd_base_color_1;
+  cave->base_color2			= level->bd_base_color_2;
+  cave->base_color3			= level->bd_base_color_3;
+  cave->base_color4			= level->bd_base_color_4;
+  cave->base_color5			= level->bd_base_color_5;
+  cave->base_color6			= level->bd_base_color_6;
+  cave->base_color7			= level->bd_base_color_7;
 
   // level name
   strncpy(cave->name, level->name, sizeof(GdString));
@@ -4699,6 +4752,17 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_color_5			= cave->color5;
   level->bd_color_6			= cave->color6;
   level->bd_color_7			= cave->color7;
+  level->bd_base_color_0		= cave->base_color0;
+  level->bd_base_color_1		= cave->base_color1;
+  level->bd_base_color_2		= cave->base_color2;
+  level->bd_base_color_3		= cave->base_color3;
+  level->bd_base_color_4		= cave->base_color4;
+  level->bd_base_color_5		= cave->base_color5;
+  level->bd_base_color_6		= cave->base_color6;
+  level->bd_base_color_7		= cave->base_color7;
+
+  // set default template coloring type for BD style level colors
+  level->bd_coloring_type = GD_COLORING_TYPE_SINGLE;
 
   // set default color type and colors for BD style level colors
   SetDefaultLevelColorType_BD();
@@ -7915,6 +7979,14 @@ static void LoadLevel_InitColorSettings(struct LevelInfo *level)
   cave->color5 = level->bd_color_5;
   cave->color6 = level->bd_color_6;
   cave->color7 = level->bd_color_7;
+  cave->base_color0 = level->bd_base_color_0;
+  cave->base_color1 = level->bd_base_color_1;
+  cave->base_color2 = level->bd_base_color_2;
+  cave->base_color3 = level->bd_base_color_3;
+  cave->base_color4 = level->bd_base_color_4;
+  cave->base_color5 = level->bd_base_color_5;
+  cave->base_color6 = level->bd_base_color_6;
+  cave->base_color7 = level->bd_base_color_7;
 
   // set default color type and colors for BD style level colors
   SetDefaultLevelColorType_BD();

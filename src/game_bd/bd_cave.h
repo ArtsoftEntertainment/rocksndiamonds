@@ -404,6 +404,14 @@ typedef struct _gd_cave
   GdColor color0, color1, color2, color3, color4, color5;    // c64-style colors;
                                                              // color 4 and 5 are amoeba and slime.
   GdColor color6, color7;                                    // extra colors
+  GdColor base_color0;                  // base color for color gradient
+  GdColor base_color1;                  // base color for color gradient
+  GdColor base_color2;                  // base color for color gradient
+  GdColor base_color3;                  // base color for color gradient
+  GdColor base_color4;                  // base color for color gradient
+  GdColor base_color5;                  // base color for color gradient
+  GdColor base_color6;                  // base color for color gradient
+  GdColor base_color7;                  // base color for color gradient
   int diamond_value;                    // Score for a diamond.
   int extra_diamond_value;              // Score for a diamond, when gate is open.
 

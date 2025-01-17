@@ -323,6 +323,7 @@ static SDL_Surface *get_colored_surface_from_template(GdCave *cave, SDL_Surface 
   static unsigned int *pixels = NULL;
   SDL_PixelFormat *format = surface->format;
   SDL_Color color[8];
+  SDL_Color base_color[8];
   int width  = surface->w;
   int height = surface->h;
   int bytes_per_pixel = 4;
@@ -342,14 +343,22 @@ static SDL_Surface *get_colored_surface_from_template(GdCave *cave, SDL_Surface 
   SDL_LockSurface(surface);
 
   // set surface color palette to cave colors
-  color[0] = get_template_color(cave->color0);		// replace black
-  color[1] = get_template_color(cave->color1);		// replace red
-  color[2] = get_template_color(cave->color4);		// replace green
-  color[3] = get_template_color(cave->color3);		// replace yellow
-  color[4] = get_template_color(cave->color5);		// replace blue
-  color[5] = get_template_color(cave->color2);		// replace purple
-  color[6] = get_template_color(cave->color6);		// replace cyan
-  color[7] = get_template_color(cave->color7);		// replace white
+  color[0] = get_template_color(cave->color0);			// replace black
+  color[1] = get_template_color(cave->color1);			// replace red
+  color[2] = get_template_color(cave->color4);			// replace green
+  color[3] = get_template_color(cave->color3);			// replace yellow
+  color[4] = get_template_color(cave->color5);			// replace blue
+  color[5] = get_template_color(cave->color2);			// replace purple
+  color[6] = get_template_color(cave->color6);			// replace cyan
+  color[7] = get_template_color(cave->color7);			// replace white
+  base_color[0] = get_template_color(cave->base_color0);	// replace black
+  base_color[1] = get_template_color(cave->base_color1);	// replace red
+  base_color[2] = get_template_color(cave->base_color4);	// replace green
+  base_color[3] = get_template_color(cave->base_color3);	// replace yellow
+  base_color[4] = get_template_color(cave->base_color5);	// replace blue
+  base_color[5] = get_template_color(cave->base_color2);	// replace purple
+  base_color[6] = get_template_color(cave->base_color6);	// replace cyan
+  base_color[7] = get_template_color(cave->base_color7);	// replace white
 
   for (y = 0; y < height; y++)
   {
@@ -373,9 +382,9 @@ static SDL_Surface *get_colored_surface_from_template(GdCave *cave, SDL_Surface 
                      (g > 0 ? 2 : 0) +
                      (b > 0 ? 4 : 0));
 
-        r = color[index].r * color_value / 255;
-        g = color[index].g * color_value / 255;
-        b = color[index].b * color_value / 255;
+        r = (base_color[index].r * (255 - color_value) + color[index].r * color_value) / 255;
+        g = (base_color[index].g * (255 - color_value) + color[index].g * color_value) / 255;
+        b = (base_color[index].b * (255 - color_value) + color[index].b * color_value) / 255;
 
         if (index > 5)
           gfx.has_reduced_color_template = FALSE;
