@@ -475,42 +475,42 @@ static boolean cave_process_tags_func(const char *attrib, const char *param, GdC
 
     if (paramcount == 3)
     {
-      // only color1,2,3
-      cave->colorb = gd_c64_color(0);   // border - black
-      cave->color0 = gd_c64_color(0);   // background - black
-      cave->color1 = gd_color_get_from_string(params[0]);
-      cave->color2 = gd_color_get_from_string(params[1]);
-      cave->color3 = gd_color_get_from_string(params[2]);
-      cave->color4 = cave->color3;      // amoeba
-      cave->color5 = cave->color1;      // slime
-      cave->color6 = gd_c64_color(12);  // extra color 1 - gray
-      cave->color7 = gd_c64_color(1);   // extra color 2 - white
+      // only colors 1,2,3
+      cave->color_b  = gd_c64_color(0);   // border - black
+      cave->color[0] = gd_c64_color(0);   // background - black
+      cave->color[1] = gd_color_get_from_string(params[0]);
+      cave->color[2] = gd_color_get_from_string(params[1]);
+      cave->color[3] = gd_color_get_from_string(params[2]);
+      cave->color[4] = cave->color[3];    // amoeba
+      cave->color[5] = cave->color[1];    // slime
+      cave->color[6] = gd_c64_color(12);  // extra color 1 - gray
+      cave->color[7] = gd_c64_color(1);   // extra color 2 - white
     }
     else if (paramcount == 5)
     {
-      // bg,color0,1,2,3
-      cave->colorb = gd_color_get_from_string(params[0]);
-      cave->color0 = gd_color_get_from_string(params[1]);
-      cave->color1 = gd_color_get_from_string(params[2]);
-      cave->color2 = gd_color_get_from_string(params[3]);
-      cave->color3 = gd_color_get_from_string(params[4]);
-      cave->color4 = cave->color3;      // amoeba
-      cave->color5 = cave->color1;      // slime
-      cave->color6 = gd_c64_color(12);  // extra color 1 - gray
-      cave->color7 = gd_c64_color(1);   // extra color 2 - white
+      // bg, color 0,1,2,3
+      cave->color_b  = gd_color_get_from_string(params[0]);
+      cave->color[0] = gd_color_get_from_string(params[1]);
+      cave->color[1] = gd_color_get_from_string(params[2]);
+      cave->color[2] = gd_color_get_from_string(params[3]);
+      cave->color[3] = gd_color_get_from_string(params[4]);
+      cave->color[4] = cave->color[3];    // amoeba
+      cave->color[5] = cave->color[1];    // slime
+      cave->color[6] = gd_c64_color(12);  // extra color 1 - gray
+      cave->color[7] = gd_c64_color(1);   // extra color 2 - white
     }
     else if (paramcount == 7)
     {
-      // bg,color0,1,2,3,amoeba,slime
-      cave->colorb = gd_color_get_from_string(params[0]);
-      cave->color0 = gd_color_get_from_string(params[1]);
-      cave->color1 = gd_color_get_from_string(params[2]);
-      cave->color2 = gd_color_get_from_string(params[3]);
-      cave->color3 = gd_color_get_from_string(params[4]);
-      cave->color4 = gd_color_get_from_string(params[5]);    // amoeba
-      cave->color5 = gd_color_get_from_string(params[6]);    // slime
-      cave->color6 = gd_c64_color(12);                       // extra color 1 - gray
-      cave->color7 = gd_c64_color(1);                        // extra color 2 - white
+      // bg, color 0,1,2,3, amoeba, slime
+      cave->color_b  = gd_color_get_from_string(params[0]);
+      cave->color[0] = gd_color_get_from_string(params[1]);
+      cave->color[1] = gd_color_get_from_string(params[2]);
+      cave->color[2] = gd_color_get_from_string(params[3]);
+      cave->color[3] = gd_color_get_from_string(params[4]);
+      cave->color[4] = gd_color_get_from_string(params[5]);    // amoeba
+      cave->color[5] = gd_color_get_from_string(params[6]);    // slime
+      cave->color[6] = gd_c64_color(12);                       // extra color 1 - gray
+      cave->color[7] = gd_c64_color(1);                        // extra color 2 - white
     }
     else
     {
@@ -521,15 +521,15 @@ static boolean cave_process_tags_func(const char *attrib, const char *param, GdC
 
     // now check and maybe make up some new.
     if (!ok ||
-	gd_color_is_unknown(cave->colorb) ||
-	gd_color_is_unknown(cave->color0) ||
-	gd_color_is_unknown(cave->color1) ||
-	gd_color_is_unknown(cave->color2) ||
-	gd_color_is_unknown(cave->color3) ||
-	gd_color_is_unknown(cave->color4) ||
-	gd_color_is_unknown(cave->color5) ||
-	gd_color_is_unknown(cave->color6) ||
-	gd_color_is_unknown(cave->color7))
+	gd_color_is_unknown(cave->color_b)  ||
+	gd_color_is_unknown(cave->color[0]) ||
+	gd_color_is_unknown(cave->color[1]) ||
+	gd_color_is_unknown(cave->color[2]) ||
+	gd_color_is_unknown(cave->color[3]) ||
+	gd_color_is_unknown(cave->color[4]) ||
+	gd_color_is_unknown(cave->color[5]) ||
+	gd_color_is_unknown(cave->color[6]) ||
+	gd_color_is_unknown(cave->color[7]))
     {
       Warn("created a new C64 color scheme.");
 

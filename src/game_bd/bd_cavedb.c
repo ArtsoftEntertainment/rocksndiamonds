@@ -2283,47 +2283,47 @@ const GdStructDescriptor gd_cave_properties[] =
   },
   {
     "Colors", GD_TYPE_COLOR, GD_ALWAYS_SAVE,
-    N_("Border color"), STRUCT_OFFSET(GdCave, colorb), 1,
+    N_("Border color"), STRUCT_OFFSET(GdCave, color_b), 1,
     N_("Border color for C64 graphics. Only for compatibility, not used by GDash.")
   },
   {
     "Colors", GD_TYPE_COLOR, GD_ALWAYS_SAVE,
-    N_("Background color"), STRUCT_OFFSET(GdCave, color0), 1,
+    N_("Background color"), STRUCT_OFFSET(GdCave, color[0]), 1,
     N_("Background color for C64 graphics")
   },
   {
     "Colors", GD_TYPE_COLOR, GD_ALWAYS_SAVE,
-    N_("Color 1 (dirt)"), STRUCT_OFFSET(GdCave, color1), 1,
+    N_("Color 1 (dirt)"), STRUCT_OFFSET(GdCave, color[1]), 1,
     N_("Foreground color 1 for C64 graphics")
   },
   {
     "Colors", GD_TYPE_COLOR, GD_ALWAYS_SAVE,
-    N_("Color 2 (steel wall)"), STRUCT_OFFSET(GdCave, color2), 1,
+    N_("Color 2 (steel wall)"), STRUCT_OFFSET(GdCave, color[2]), 1,
     N_("Foreground color 2 for C64 graphics")
   },
   {
     "Colors", GD_TYPE_COLOR, GD_ALWAYS_SAVE,
-    N_("Color 3 (brick wall)"), STRUCT_OFFSET(GdCave, color3), 1,
+    N_("Color 3 (brick wall)"), STRUCT_OFFSET(GdCave, color[3]), 1,
     N_("Foreground color 3 for C64 graphics")
   },
   {
     "Colors", GD_TYPE_COLOR, GD_ALWAYS_SAVE,
-    N_("Amoeba color"), STRUCT_OFFSET(GdCave, color4), 1,
+    N_("Amoeba color"), STRUCT_OFFSET(GdCave, color[4]), 1,
     N_("Amoeba color for C64 graphics")
   },
   {
     "Colors", GD_TYPE_COLOR, GD_ALWAYS_SAVE,
-    N_("Slime color"), STRUCT_OFFSET(GdCave, color5), 1,
+    N_("Slime color"), STRUCT_OFFSET(GdCave, color[5]), 1,
     N_("Slime color for C64 graphics")
   },
   {
     "Colors", GD_TYPE_COLOR, GD_ALWAYS_SAVE,
-    N_("Extra color 1"), STRUCT_OFFSET(GdCave, color6), 1,
+    N_("Extra color 1"), STRUCT_OFFSET(GdCave, color[6]), 1,
     N_("Extra color 1 for C64 graphics")
   },
   {
     "Colors", GD_TYPE_COLOR, GD_ALWAYS_SAVE,
-    N_("Extra color 2"), STRUCT_OFFSET(GdCave, color7), 1,
+    N_("Extra color 2"), STRUCT_OFFSET(GdCave, color[7]), 1,
     N_("Extra color 2 for C64 graphics")
   },
 
@@ -3323,13 +3323,13 @@ GdPropertyDefault gd_cave_defaults_gdash[] =
   { CAVE_OFFSET(y1),						0				},
   { CAVE_OFFSET(x2),						39				},
   { CAVE_OFFSET(y2),						21				},
-  { CAVE_OFFSET(colorb),					0				},
-  { CAVE_OFFSET(color0),					0				},
-  { CAVE_OFFSET(color1),					8				},
-  { CAVE_OFFSET(color2),					11				},
-  { CAVE_OFFSET(color3),					1				},
-  { CAVE_OFFSET(color4),					5				},
-  { CAVE_OFFSET(color5),					6				},
+  { CAVE_OFFSET(color_b),					0				},
+  { CAVE_OFFSET(color[0]),					0				},
+  { CAVE_OFFSET(color[1]),					8				},
+  { CAVE_OFFSET(color[2]),					11				},
+  { CAVE_OFFSET(color[3]),					1				},
+  { CAVE_OFFSET(color[4]),					5				},
+  { CAVE_OFFSET(color[5]),					6				},
 
   // difficulty
   { CAVE_OFFSET(level_diamonds[0]),				10				},

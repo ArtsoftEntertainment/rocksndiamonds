@@ -1810,7 +1810,7 @@ static boolean levelset_use_levelset_artwork = FALSE;
 static boolean levelset_copy_level_template = FALSE;
 static int levelset_save_mode = LEVELSET_SAVE_MODE_UPDATE;
 
-#define MAX_BD_COLORS			8
+#define MAX_BD_COLORS			MAX_LEVEL_COLORS
 #define MAX_BD_COLOR_TEXT_LEN		12
 #define MAX_BD_RGB_COLOR_TEXT_LEN	7
 
@@ -1822,25 +1822,25 @@ static char bd_base_color_text[MAX_BD_COLORS][MAX_BD_RGB_COLOR_TEXT_LEN + 1];
 static int bd_color_default[MAX_BD_COLORS];
 static int *bd_color[MAX_BD_COLORS] =
 {
-  &level.bd_color_0,
-  &level.bd_color_1,
-  &level.bd_color_2,
-  &level.bd_color_3,
-  &level.bd_color_4,
-  &level.bd_color_5,
-  &level.bd_color_6,
-  &level.bd_color_7,
+  &level.bd_color[0],
+  &level.bd_color[1],
+  &level.bd_color[2],
+  &level.bd_color[3],
+  &level.bd_color[4],
+  &level.bd_color[5],
+  &level.bd_color[6],
+  &level.bd_color[7],
 };
 static int *bd_base_color[MAX_BD_COLORS] =
 {
-  &level.bd_base_color_0,
-  &level.bd_base_color_1,
-  &level.bd_base_color_2,
-  &level.bd_base_color_3,
-  &level.bd_base_color_4,
-  &level.bd_base_color_5,
-  &level.bd_base_color_6,
-  &level.bd_base_color_7,
+  &level.bd_base_color[0],
+  &level.bd_base_color[1],
+  &level.bd_base_color[2],
+  &level.bd_base_color[3],
+  &level.bd_base_color[4],
+  &level.bd_base_color[5],
+  &level.bd_base_color[6],
+  &level.bd_base_color[7],
 };
 
 static struct
@@ -12321,50 +12321,30 @@ void SetCurrentLevelColors_BD(void)
 {
   struct LevelInfo_BD *level_bd = level.native_bd_level;
   GdCave *cave = level_bd->cave;
+  int i;
 
-  cave->color0 = level.bd_color_0;
-  cave->color1 = level.bd_color_1;
-  cave->color2 = level.bd_color_2;
-  cave->color3 = level.bd_color_3;
-  cave->color4 = level.bd_color_4;
-  cave->color5 = level.bd_color_5;
-  cave->color6 = level.bd_color_6;
-  cave->color7 = level.bd_color_7;
-  cave->base_color0 = level.bd_base_color_0;
-  cave->base_color1 = level.bd_base_color_1;
-  cave->base_color2 = level.bd_base_color_2;
-  cave->base_color3 = level.bd_base_color_3;
-  cave->base_color4 = level.bd_base_color_4;
-  cave->base_color5 = level.bd_base_color_5;
-  cave->base_color6 = level.bd_base_color_6;
-  cave->base_color7 = level.bd_base_color_7;
+  for (i = 0; i < MAX_LEVEL_COLORS; i++)
+  {
+    cave->color[i]	= level.bd_color[i];
+    cave->base_color[i]	= level.bd_base_color[i];
+  }
 }
 
 void SetRandomLevelColors_BD(int bd_color_type)
 {
   struct LevelInfo_BD *level_bd = level.native_bd_level;
   GdCave *cave = level_bd->cave;
+  int i;
 
   // create random cave colors
   gd_cave_set_random_colors(cave, bd_color_type);
 
   // copy colors to level editor
-  level.bd_color_0 = cave->color0;
-  level.bd_color_1 = cave->color1;
-  level.bd_color_2 = cave->color2;
-  level.bd_color_3 = cave->color3;
-  level.bd_color_4 = cave->color4;
-  level.bd_color_5 = cave->color5;
-  level.bd_color_6 = cave->color6;
-  level.bd_color_7 = cave->color7;
-  level.bd_base_color_0 = cave->base_color0;
-  level.bd_base_color_1 = cave->base_color1;
-  level.bd_base_color_2 = cave->base_color2;
-  level.bd_base_color_3 = cave->base_color3;
-  level.bd_base_color_4 = cave->base_color4;
-  level.bd_base_color_5 = cave->base_color5;
-  level.bd_base_color_6 = cave->base_color6;
-  level.bd_base_color_7 = cave->base_color7;
+  for (i = 0; i < MAX_LEVEL_COLORS; i++)
+  {
+    level.bd_color[i]	    = cave->color[i];
+    level.bd_base_color[i] = cave->base_color[i];
+  }
 }
 
 static void DrawColorBox_BD(int type_id)

@@ -811,34 +811,35 @@ void gd_cave_set_random_c64_colors(GdCave *cave)
   };
 
   // always black
-  cave->colorb = gd_c64_color(GD_COLOR_INDEX_BLACK);
-  cave->color0 = gd_c64_color(GD_COLOR_INDEX_BLACK);
+  cave->color_b  = gd_c64_color(GD_COLOR_INDEX_BLACK);
+  cave->color[0] = gd_c64_color(GD_COLOR_INDEX_BLACK);
 
   // choose some bright color for brick
-  cave->color3 = gd_c64_color(bright_colors[gd_random_int_range(0, ARRAY_SIZE(bright_colors))]);
+  cave->color[3] = gd_c64_color(bright_colors[gd_random_int_range(0, ARRAY_SIZE(bright_colors))]);
 
   // choose a dark color for dirt, but should not be == color of brick
   do
   {
-    cave->color1 = gd_c64_color(dark_colors[gd_random_int_range(0, ARRAY_SIZE(dark_colors))]);
+    cave->color[1] = gd_c64_color(dark_colors[gd_random_int_range(0, ARRAY_SIZE(dark_colors))]);
   }
-  while (cave->color1 == cave->color3);    // so it is not the same as color 1
+  while (cave->color[1] == cave->color[3]);    // so it is not the same as color 1
 
   // choose any but black for steel wall, but should not be == brick or dirt
   do
   {
     // between 1 and 15 - do not use black for this.
-    cave->color2 = gd_c64_color(gd_random_int_range(1, 16));
+    cave->color[2] = gd_c64_color(gd_random_int_range(1, 16));
   }
-  while (cave->color1 == cave->color2 || cave->color2 == cave->color3);    // so colors are not the same
+  while (cave->color[1] == cave->color[2] ||
+         cave->color[2] == cave->color[3]);    // so colors are not the same
 
   // copy amoeba and slime color
-  cave->color4 = cave->color3;
-  cave->color5 = cave->color1;
+  cave->color[4] = cave->color[3];
+  cave->color[5] = cave->color[1];
 
   // extra colors
-  cave->color6 = gd_c64_color(gray_colors[gd_random_int_range(0, ARRAY_SIZE(gray_colors))]);
-  cave->color7 = gd_c64_color(GD_COLOR_INDEX_WHITE);
+  cave->color[6] = gd_c64_color(gray_colors[gd_random_int_range(0, ARRAY_SIZE(gray_colors))]);
+  cave->color[7] = gd_c64_color(GD_COLOR_INDEX_WHITE);
 }
 
 static void cave_set_random_indexed_colors(GdCave *cave, GdColor (*color_indexer_func) (int, int))
@@ -847,7 +848,7 @@ static void cave_set_random_indexed_colors(GdCave *cave, GdColor (*color_indexer
   int hue_spread = gd_random_int_range(1, 6);    // 1..5
 
   // we only use 0..6, as saturation 15 is too bright (almost always white)
-  // also, saturation 0..1..2 is too dark. the color0=black is there for dark.
+  // also, saturation 0..1..2 is too dark. the color[0] = black is there for dark.
   // so this is also 1..5. when hue spread is low, brightness spread is high
   int bri_spread = 6 - hue_spread;
   int bri1 = 8, bri2 = 8 - bri_spread, bri3 = 8 + bri_spread;
@@ -867,20 +868,20 @@ static void cave_set_random_indexed_colors(GdCave *cave, GdColor (*color_indexer
   if (gd_random_boolean())    swap(&col2, &col3);
   if (gd_random_boolean())    swap(&col1, &col3);
 
-  cave->colorb = color_indexer_func(0, 0);
-  cave->color0 = color_indexer_func(0, 0);
-  cave->color1 = color_indexer_func(col1 + 1, bri1);
-  cave->color2 = color_indexer_func(col2 + 1, bri2);
-  cave->color3 = color_indexer_func(col3 + 1, bri3);
+  cave->color_b  = color_indexer_func(0, 0);
+  cave->color[0] = color_indexer_func(0, 0);
+  cave->color[1] = color_indexer_func(col1 + 1, bri1);
+  cave->color[2] = color_indexer_func(col2 + 1, bri2);
+  cave->color[3] = color_indexer_func(col3 + 1, bri3);
   // amoeba and slime are different
   // some green thing
-  cave->color4 = color_indexer_func(gd_random_int_range(11, 13), gd_random_int_range(6, 12));
+  cave->color[4] = color_indexer_func(gd_random_int_range(11, 13), gd_random_int_range(6, 12));
   // some blueish thing
-  cave->color5 = color_indexer_func(gd_random_int_range(7, 10),  gd_random_int_range(0, 6));
+  cave->color[5] = color_indexer_func(gd_random_int_range(7, 10),  gd_random_int_range(0, 6));
 
   // extra colors
-  cave->color6 = color_indexer_func(0, bri1);
-  cave->color7 = color_indexer_func(0, 15);
+  cave->color[6] = color_indexer_func(0, bri1);
+  cave->color[7] = color_indexer_func(0, 15);
 }
 
 static void gd_cave_set_random_atari_colors(GdCave *cave)
@@ -939,7 +940,7 @@ static void gd_cave_set_random_rgb_colors(GdCave *cave)
     s3 = 0.9;
   }
 
-  // randomly change values, but do not touch v3, as cave->color3 should be a bright color
+  // randomly change values, but do not touch v3, as cave->color[3] should be a bright color
   if (gd_random_boolean())    swapd(&v1, &v2);
 
   // randomly change hues and saturations
@@ -954,19 +955,19 @@ static void gd_cave_set_random_rgb_colors(GdCave *cave)
   h2 *= 360.0;
   h3 *= 360.0;
 
-  cave->colorb = gd_color_get_from_hsv(0, 0, 0);
-  cave->color0 = gd_color_get_from_hsv(0, 0, 0);       // black for background
-  cave->color1 = gd_color_get_from_hsv(h1, s1, v1);    // dirt
-  cave->color2 = gd_color_get_from_hsv(h2, s2, v2);    // steel
-  cave->color3 = gd_color_get_from_hsv(h3, s3, v3);    // brick
+  cave->color_b  = gd_color_get_from_hsv(0, 0, 0);
+  cave->color[0] = gd_color_get_from_hsv(0, 0, 0);       // black for background
+  cave->color[1] = gd_color_get_from_hsv(h1, s1, v1);    // dirt
+  cave->color[2] = gd_color_get_from_hsv(h2, s2, v2);    // steel
+  cave->color[3] = gd_color_get_from_hsv(h3, s3, v3);    // brick
   // green(120+-20) with the saturation and brightness of brick
-  cave->color4 = gd_color_get_from_hsv(gd_random_int_range(100, 140), s2, v2);
+  cave->color[4] = gd_color_get_from_hsv(gd_random_int_range(100, 140), s2, v2);
   // blue(240+-20) with saturation and brightness of dirt
-  cave->color5 = gd_color_get_from_hsv(gd_random_int_range(220, 260), s1, v1);
+  cave->color[5] = gd_color_get_from_hsv(gd_random_int_range(220, 260), s1, v1);
 
   // extra colors
-  cave->color6 = gd_color_get_from_hsv(0, 0, v1);      // gray with brightness of dirt
-  cave->color7 = gd_color_get_from_hsv(0, 0, 1);       // white
+  cave->color[6] = gd_color_get_from_hsv(0, 0, v1);      // gray with brightness of dirt
+  cave->color[7] = gd_color_get_from_hsv(0, 0, 1);       // white
 }
 
 void gd_cave_set_random_colors(GdCave *cave, GdColorType type)

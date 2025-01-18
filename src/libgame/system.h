@@ -574,6 +574,9 @@
 #define MAX_GLOBAL_ANIMS		32
 #define MAX_GLOBAL_ANIM_PARTS		32
 
+// maximum number of level specific colors in color template
+#define MAX_LEVEL_COLORS		8
+
 // minimum/maximum/default x/y grid size for virtual buttons
 #define MIN_GRID_XSIZE			3
 #define MIN_GRID_YSIZE			3

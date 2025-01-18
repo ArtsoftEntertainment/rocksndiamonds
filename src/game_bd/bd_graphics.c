@@ -322,13 +322,14 @@ static SDL_Surface *get_colored_surface_from_template(GdCave *cave, SDL_Surface 
   static SDL_Surface *new_surface = NULL;
   static unsigned int *pixels = NULL;
   SDL_PixelFormat *format = surface->format;
-  SDL_Color color[8];
-  SDL_Color base_color[8];
+  SDL_Color color[MAX_LEVEL_COLORS];
+  SDL_Color base_color[MAX_LEVEL_COLORS];
+  int color_mapping[MAX_LEVEL_COLORS] = { 0, 1, 4, 3, 5, 2, 6, 7 };
   int width  = surface->w;
   int height = surface->h;
   int bytes_per_pixel = 4;
   int out = 0;
-  int x, y;
+  int i, x, y;
 
   if (format->BytesPerPixel != bytes_per_pixel)
     Fail("Color template bitmap has wrong color depth -- should not happen");
@@ -343,22 +344,11 @@ static SDL_Surface *get_colored_surface_from_template(GdCave *cave, SDL_Surface 
   SDL_LockSurface(surface);
 
   // set surface color palette to cave colors
-  color[0] = get_template_color(cave->color0);			// replace black
-  color[1] = get_template_color(cave->color1);			// replace red
-  color[2] = get_template_color(cave->color4);			// replace green
-  color[3] = get_template_color(cave->color3);			// replace yellow
-  color[4] = get_template_color(cave->color5);			// replace blue
-  color[5] = get_template_color(cave->color2);			// replace purple
-  color[6] = get_template_color(cave->color6);			// replace cyan
-  color[7] = get_template_color(cave->color7);			// replace white
-  base_color[0] = get_template_color(cave->base_color0);	// replace black
-  base_color[1] = get_template_color(cave->base_color1);	// replace red
-  base_color[2] = get_template_color(cave->base_color4);	// replace green
-  base_color[3] = get_template_color(cave->base_color3);	// replace yellow
-  base_color[4] = get_template_color(cave->base_color5);	// replace blue
-  base_color[5] = get_template_color(cave->base_color2);	// replace purple
-  base_color[6] = get_template_color(cave->base_color6);	// replace cyan
-  base_color[7] = get_template_color(cave->base_color7);	// replace white
+  for (i = 0; i < MAX_LEVEL_COLORS; i++)
+  {
+    color[i]      = get_template_color(cave->color[color_mapping[i]]);
+    base_color[i] = get_template_color(cave->base_color[color_mapping[i]]);
+  }
 
   for (y = 0; y < height; y++)
   {
@@ -426,7 +416,7 @@ static Bitmap *get_masked_bitmap_from_surface(GdCave *cave, SDL_Surface *surface
     FreeBitmap(bitmap);
 
   // set background color to be transparent for masked bitmap
-  int color = gd_color_get_rgb(cave->color0);
+  int color = gd_color_get_rgb(cave->color[0]);
   int r = gd_color_get_r(color);
   int g = gd_color_get_g(color);
   int b = gd_color_get_b(color);

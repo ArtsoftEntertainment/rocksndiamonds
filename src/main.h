@@ -3947,22 +3947,8 @@ struct LevelInfo
   int bd_explosion_turns_to;		// BD other explosions change to specified element
   int bd_explosion_3_turns_to;		// BD other explosions change to specified element, stage 3
   int bd_color_b;			// BD engine C64-style cave color (border)
-  int bd_color_0;			// BD engine C64-style cave color (background)
-  int bd_color_1;			// BD engine C64-style cave color (sand)
-  int bd_color_2;			// BD engine C64-style cave color (steel wall)
-  int bd_color_3;			// BD engine C64-style cave color (wall)
-  int bd_color_4;			// BD engine C64-style cave color (amoeba)
-  int bd_color_5;			// BD engine C64-style cave color (slime)
-  int bd_color_6;			// BD engine C64-style cave color (extra color 1)
-  int bd_color_7;			// BD engine C64-style cave color (extra color 2)
-  int bd_base_color_0;			// BD engine C64-style cave base color (background)
-  int bd_base_color_1;			// BD engine C64-style cave base color (sand)
-  int bd_base_color_2;			// BD engine C64-style cave base color (steel wall)
-  int bd_base_color_3;			// BD engine C64-style cave base color (wall)
-  int bd_base_color_4;			// BD engine C64-style cave base color (amoeba)
-  int bd_base_color_5;			// BD engine C64-style cave base color (slime)
-  int bd_base_color_6;			// BD engine C64-style cave base color (extra color 1)
-  int bd_base_color_7;			// BD engine C64-style cave base color (extra color 2)
+  int bd_color[MAX_LEVEL_COLORS];	// BD engine C64-style cave colors
+  int bd_base_color[MAX_LEVEL_COLORS];	// BD engine C64-style cave base colors (for gradients)
 
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
   boolean em_explodes_by_fire;		// EM style chain explosion behaviour

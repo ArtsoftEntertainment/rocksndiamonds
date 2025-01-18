@@ -502,15 +502,15 @@ static void brc_import(byte *data)
       // colors
       colind = data[31 * c + datapos] % ARRAY_SIZE(brc_color_table);
 
-      cave->colorb = 0x000000;    // fixed rgb black
-      cave->color0 = 0x000000;    // fixed rgb black
-      cave->color1 = brc_color_table[colind];         // brc specified dirt color
-      cave->color2 = brc_color_table_comp[colind];    // complement
-      cave->color3 = 0xffffff;    // white for brick
-      cave->color4 = 0xe5ad23;    // fixed for amoeba
-      cave->color5 = 0x8af713;    // fixed for slime
-      cave->color6 = 0x888888;    // extra color 1 - gray
-      cave->color7 = 0xffffff;    // extra color 2 - white
+      cave->color_b  = 0x000000;    // fixed rgb black
+      cave->color[0] = 0x000000;    // fixed rgb black
+      cave->color[1] = brc_color_table[colind];         // brc specified dirt color
+      cave->color[2] = brc_color_table_comp[colind];    // complement
+      cave->color[3] = 0xffffff;    // white for brick
+      cave->color[4] = 0xe5ad23;    // fixed for amoeba
+      cave->color[5] = 0x8af713;    // fixed for slime
+      cave->color[6] = 0x888888;    // extra color 1 - gray
+      cave->color[7] = 0xffffff;    // extra color 2 - white
 
       if (import_effect)
       {
