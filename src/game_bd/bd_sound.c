@@ -486,6 +486,16 @@ static void gd_sound_info_to_play(int channel, int x, int y, int element, int so
   si->sound = sound;
 }
 
+static int get_middle_screen_level_position_x(GdCave *cave)
+{
+  return (cave->w < get_play_area_w() ? cave->w / 2 : get_play_area_w() / 2 + get_scroll_x());
+}
+
+static int get_middle_screen_level_position_y(GdCave *cave)
+{
+  return (cave->h < get_play_area_h() ? cave->h / 2 : get_play_area_h() / 2 + get_scroll_y());
+}
+
 // plays sound in a cave
 void gd_sound_play(GdCave *cave, GdSound sound, GdElement element, int x, int y)
 {
@@ -507,8 +517,8 @@ void gd_sound_play(GdCave *cave, GdSound sound, GdElement element, int x, int y)
   // when using native sound engine or if no position specified, use middle screen position
   if (game.use_native_bd_sound_engine || (x == -1 && y == -1))
   {
-    x = get_play_area_w() / 2 + get_scroll_x();
-    y = get_play_area_h() / 2 + get_scroll_y();
+    x = get_middle_screen_level_position_x(cave);
+    y = get_middle_screen_level_position_y(cave);
   }
 
   if (!game.use_native_bd_sound_engine)
