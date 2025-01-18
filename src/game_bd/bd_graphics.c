@@ -693,8 +693,9 @@ static void gd_drawcave_crumbled(Bitmap *dest, GdGame *game, int x, int y, boole
     is_moving_to = (dir_to != GD_MV_STILL);
 
     // do not crumble border if next tile is also crumbled or is just being digged away
+    boolean is_diagonal_movement = (gd_dx[dir_to] != 0 && gd_dy[dir_to] != 0);
     boolean draw_normal = ((el_is_crumbled(draw)) ||
-                           (el_is_crumbled(draw_last) && is_moving_to));
+                           (el_is_crumbled(draw_last) && is_moving_to && !is_diagonal_movement));
 
     // special case: handle sloped sand sides separately
     if ((dir == GD_MV_UP    && (draw == O_DIRT_SLOPED_DOWN_LEFT ||
@@ -743,6 +744,7 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   boolean is_moving = (is_moving_from || is_moving_to);
   boolean is_diagonal_movement_from = (dx_from != 0 && dy_from != 0);
   boolean is_diagonal_movement_to = (dx_to != 0 && dy_to != 0);
+  boolean is_diagonal_movement = (is_diagonal_movement_from || is_diagonal_movement_to);
   boolean is_double_movement = (dir_from > GD_MV_TWICE);
   boolean use_smooth_movements = use_bd_smooth_movements();
 
@@ -873,7 +875,7 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
     int draw_back = (!is_moving_to ? draw : digging_tile ? draw_last : O_SPACE);
     struct GraphicInfo_BD *g = &graphic_info_bd_object[draw_back][frame];
 
-    if (el_is_crumbled(draw_back))
+    if (el_is_crumbled(draw_back) && !is_diagonal_movement)
     {
       gd_drawcave_crumbled(dest, game, x, y, draw_masked);
 
