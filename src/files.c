@@ -324,11 +324,6 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
   },
   {
     -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_32_BIT(3),
-    &li.bd_color_b,			GD_C64_COLOR_BLACK
-  },
-  {
-    -1,					-1,
     TYPE_INTEGER,			CONF_VALUE_32_BIT(4),
     &li.bd_color[0],			GD_C64_COLOR_BLACK
   },
@@ -4545,8 +4540,6 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->explosion_effect		= LEVEL_TO_CAVE(level->bd_explosion_turns_to);
   cave->explosion_3_effect		= LEVEL_TO_CAVE(level->bd_explosion_3_turns_to);
 
-  cave->color_b				= level->bd_color_b;
-
   for (i = 0; i < MAX_LEVEL_COLORS; i++)
   {
     cave->color[i]			= level->bd_color[i];
@@ -4732,8 +4725,6 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_nitro_explosion_turns_to	= CAVE_TO_LEVEL(cave->nitro_explosion_effect);
   level->bd_explosion_turns_to		= CAVE_TO_LEVEL(cave->explosion_effect);
   level->bd_explosion_3_turns_to	= CAVE_TO_LEVEL(cave->explosion_3_effect);
-
-  level->bd_color_b			= cave->color_b;
 
   for (i = 0; i < MAX_LEVEL_COLORS; i++)
   {
@@ -7951,7 +7942,6 @@ static void LoadLevel_InitColorSettings(struct LevelInfo *level)
 
   // copy level colors to native BD level
   // (this workaround is needed as long as color template handling is still BD specific)
-  cave->color_b = level->bd_color_b;
   for (i = 0; i < MAX_LEVEL_COLORS; i++)
   {
     cave->color[i]	= level->bd_color[i];
