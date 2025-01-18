@@ -4168,9 +4168,10 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
   if (cave->kill_player ||
       (cave->player_state == GD_PL_LIVING && cave->player_seen_ago > cave->player_seen_ago_limit))
   {
-    cave->player_state = GD_PL_DIED;
+    if (cave->player_state != GD_PL_DIED)
+      gd_sound_play(cave, GD_S_DYING, O_PLAYER, -1, -1);
 
-    gd_sound_play(cave, GD_S_DYING, O_PLAYER, -1, -1);
+    cave->player_state = GD_PL_DIED;
   }
 
   // check if any voodoo exploded, and kill players the next scan if that happended.
