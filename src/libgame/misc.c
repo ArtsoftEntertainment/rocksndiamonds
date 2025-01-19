@@ -3364,6 +3364,29 @@ boolean touchFile(const char *filename)
   return TRUE;
 }
 
+size_t getSizeOfFile(const char *filename)
+{
+  struct stat file_status;
+
+  if (stat(filename, &file_status) == 0)
+    return file_status.st_size;
+
+#if defined(PLATFORM_ANDROID)
+  SDL_RWops *rw = SDL_RWFromFile(filename, MODE_READ);
+
+  if (rw != NULL)
+  {
+    int size = SDL_RWsize(rw);
+
+    SDL_RWclose(rw);
+
+    return size;
+  }
+#endif
+
+  return -1;
+}
+
 
 // ----------------------------------------------------------------------------
 // functions for directory handling

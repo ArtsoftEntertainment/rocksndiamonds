@@ -599,22 +599,22 @@ static void caveset_name_set_from_filename(char *filename)
 */
 boolean gd_caveset_load_from_file(char *filename)
 {
+  size_t filesize = getSizeOfFile(filename);
   size_t length;
   char *buf;
   List *new_caveset;
-  struct stat st;
   File *file;
 
-  if (stat(filename, &st) != 0)
+  if (filesize < 0)
   {
-    Warn("cannot stat() file");
+    Warn("cannot get size of file '%s'", filename);
 
     return FALSE;
   }
 
-  if (st.st_size > 1048576)
+  if (filesize > 1048576)
   {
-    Warn("file bigger than 1MiB, refusing to load");
+    Warn("cannot load file '%s' (bigger than 1 MB)", filename);
 
     return FALSE;
   }
@@ -626,13 +626,13 @@ boolean gd_caveset_load_from_file(char *filename)
     return FALSE;
   }
 
-  buf = checked_malloc(st.st_size + 1);
-  length = readFile(file, buf, 1, st.st_size);
+  buf = checked_malloc(filesize + 1);
+  length = readFile(file, buf, 1, filesize);
   buf[length] = '\0';
 
   closeFile(file);
 
-  if (length < st.st_size)
+  if (length < filesize)
   {
     Warn("cannot read file '%s'", filename);
 

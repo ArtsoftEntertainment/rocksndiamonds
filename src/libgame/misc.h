@@ -291,6 +291,7 @@ int getByteFromFile(File *);
 char *getStringFromFile(File *, char *, int);
 int copyFile(const char *, const char *);
 boolean touchFile(const char *);
+size_t getSizeOfFile(const char *);
 
 Directory *openDirectory(char *);
 int closeDirectory(Directory *);
