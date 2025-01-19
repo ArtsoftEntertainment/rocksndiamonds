@@ -205,13 +205,20 @@ static void UpdateScreenExt(SDL_Rect *rect, boolean with_frame_delay)
   }
 #endif
 
+#if defined(PLATFORM_ANDROID)
+  // clear render target (complete window on Android to clear off-screen areas with touch buttons)
+  SDL_RenderClear(sdl_renderer);
+#endif
+
   // set renderer to use target texture for rendering
   if (video.screen_rendering_mode == SPECIAL_RENDERING_TARGET ||
       video.screen_rendering_mode == SPECIAL_RENDERING_DOUBLE)
     SDL_SetRenderTarget(sdl_renderer, sdl_texture_target);
 
-  // clear render target buffer
+#if !defined(PLATFORM_ANDROID)
+  // clear render target (target texture only to prevent black flickering when using Metal on Mac)
   SDL_RenderClear(sdl_renderer);
+#endif
 
   // copy backbuffer texture to render target buffer
   if (video.screen_rendering_mode != SPECIAL_RENDERING_TARGET)
