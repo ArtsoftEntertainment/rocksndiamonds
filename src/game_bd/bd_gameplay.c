@@ -229,8 +229,8 @@ GdGame *gd_game_new(const int cave, const int level)
   game->cave_num = cave;
   game->level_num = level;
 
-  game->player_lives = gd_caveset_data->initial_lives;
-  game->player_score = 0;
+  game->player_lives = game_bd.global_lives;
+  game->player_score = game_bd.global_score;
 
   game->player_move = GD_MV_STILL;
   game->player_move_stick = FALSE;
