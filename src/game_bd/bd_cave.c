@@ -548,11 +548,11 @@ void gd_cave_free(GdCave *cave)
   gd_cave_map_free(cave->hammered_reappear);
 
   // free objects
-  list_foreach(cave->objects, (list_fn) free, NULL);
+  list_foreach_fn_1(cave->objects, (list_fn_1) free);
   list_free(cave->objects);
 
   // free replays
-  list_foreach(cave->replays, (list_fn) gd_replay_free, NULL);
+  list_foreach_fn_1(cave->replays, (list_fn_1) gd_replay_free);
   list_free(cave->replays);
 
   // freeing main pointer

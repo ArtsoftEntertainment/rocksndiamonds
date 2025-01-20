@@ -1557,7 +1557,7 @@ static void cave_properties_remove(GdPtrArray *out, const char *prefix)
 }
 
 // output properties of a structure to a file.
-// list_foreach func, so "out" is the last parameter!
+// list_foreach_fn_2 func, so "out" is the last parameter!
 static void caveset_save_cave_func(GdCave *cave, GdPtrArray *out)
 {
   GdCave *default_cave;
@@ -1790,7 +1790,7 @@ GdPtrArray *gd_caveset_save_to_bdcff(void)
   gd_caveset_data_free(default_caveset);
   gd_ptr_array_add(out, getStringCopy("Levels=5"));
 
-  list_foreach(gd_caveset, (list_fn)caveset_save_cave_func, out);
+  list_foreach_fn_2(gd_caveset, (list_fn_2) caveset_save_cave_func, out);
 
   gd_ptr_array_add(out, getStringCopy("[/game]"));
   gd_ptr_array_add(out, getStringCopy("[/BDCFF]"));

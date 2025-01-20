@@ -1668,6 +1668,6 @@ void gd_flatten_cave(GdCave *cave, const int level)
   gd_cave_free(rendered);
 
   // forget objects
-  list_foreach(cave->objects, (list_fn) free, NULL);
+  list_foreach_fn_1(cave->objects, (list_fn_1) free);
   cave->objects = NULL;
 }

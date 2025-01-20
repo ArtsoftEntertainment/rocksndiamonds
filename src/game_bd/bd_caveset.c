@@ -170,7 +170,7 @@ void gd_caveset_clear(void)
 {
   if (gd_caveset)
   {
-    list_foreach(gd_caveset, (list_fn) gd_cave_free, NULL);
+    list_foreach_fn_1(gd_caveset, (list_fn_1) gd_cave_free);
     list_free(gd_caveset);
     gd_caveset = NULL;
   }

@@ -44,7 +44,8 @@ struct _List
 };
 
 
-typedef void (*list_fn) (void *data, void *userdata);
+typedef void (*list_fn_1) (void *data);
+typedef void (*list_fn_2) (void *data, void *userdata);
 typedef void *(*list_copy_fn) (const void *data, void *userdata);
 
 /* Doubly linked lists */
@@ -69,7 +70,8 @@ int   list_index(List *list, const void *data);
 List *list_last(List *list);
 List *list_first(List *list);
 unsigned int list_length(List *list);
-void  list_foreach(List *list, list_fn func, void *user_data);
+void  list_foreach_fn_1(List *list, list_fn_1 func);
+void  list_foreach_fn_2(List *list, list_fn_2 func, void *user_data);
 void *list_nth_data(List *list, unsigned int n);
 
 #define list_previous(list)	((list) ? (((List *)(list))->prev) : NULL)

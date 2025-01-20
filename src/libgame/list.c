@@ -744,7 +744,35 @@ list_length (List *list)
 }
 
 /**
- * list_foreach:
+ * list_foreach_fn_1:
+ * @list: a #List, this must point to the top of the list
+ * @func: (scope call): the function to call with each element's data
+ *
+ * Calls a function for each element of a #List.
+ *
+ * It is safe for @func to remove the element from @list, but it must
+ * not modify any part of the list after that element.
+ */
+/**
+ * list_fn_1:
+ * @data: the element's data
+ *
+ * Specifies the type of functions passed to list_foreach_fn_1().
+ */
+void
+list_foreach_fn_1 (List *list, list_fn_1 func)
+{
+  while (list)
+  {
+    List *next = list->next;
+
+    (*func) (list->data);
+    list = next;
+  }
+}
+
+/**
+ * list_foreach_fn_2:
  * @list: a #List, this must point to the top of the list
  * @func: (scope call): the function to call with each element's data
  * @user_data: user data to pass to the function
@@ -755,15 +783,14 @@ list_length (List *list)
  * not modify any part of the list after that element.
  */
 /**
- * list_fn:
+ * list_fn_2:
  * @data: the element's data
- * @user_data: user data passed to list_foreach() or slist_foreach()
+ * @user_data: user data passed to list_foreach_fn_2()
  *
- * Specifies the type of functions passed to list_foreach() and
- * slist_foreach().
+ * Specifies the type of functions passed to list_foreach_fn_2().
  */
 void
-list_foreach (List *list, list_fn func, void *user_data)
+list_foreach_fn_2 (List *list, list_fn_2 func, void *user_data)
 {
   while (list)
   {
