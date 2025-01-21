@@ -5055,9 +5055,7 @@ static void LevelSolved_SetFinalGameValues(void)
 		       MM_HEALTH(game_mm.laser_overload_value) :
 		       game.health);
 
-  game.LevelSolved_CountingTime = game.time_final;
-  game.LevelSolved_CountingScore = game.score_final;
-  game.LevelSolved_CountingHealth = game.health_final;
+  LevelSolved_UpdateFinalGameValues(game.time_final, game.score_final, game.health_final);
 }
 
 static void LevelSolved_DisplayFinalGameValues(int time, int score, int health)
