@@ -5027,6 +5027,17 @@ void InitAmoebaNr(int x, int y)
   AmoebaCnt2[group_nr]++;
 }
 
+static void LevelSolved_UpdateFinalGameValues(int time, int score, int health)
+{
+  game.LevelSolved_CountingTime = time;
+  game.LevelSolved_CountingScore = score;
+  game.LevelSolved_CountingHealth = health;
+
+  game_panel_controls[GAME_PANEL_TIME].value = time;
+  game_panel_controls[GAME_PANEL_SCORE].value = score;
+  game_panel_controls[GAME_PANEL_HEALTH].value = health;
+}
+
 static void LevelSolved_SetFinalGameValues(void)
 {
   game.time_final = (level.game_engine_type == GAME_ENGINE_TYPE_BD ? game_bd.time_left :
@@ -5051,13 +5062,7 @@ static void LevelSolved_SetFinalGameValues(void)
 
 static void LevelSolved_DisplayFinalGameValues(int time, int score, int health)
 {
-  game.LevelSolved_CountingTime = time;
-  game.LevelSolved_CountingScore = score;
-  game.LevelSolved_CountingHealth = health;
-
-  game_panel_controls[GAME_PANEL_TIME].value = time;
-  game_panel_controls[GAME_PANEL_SCORE].value = score;
-  game_panel_controls[GAME_PANEL_HEALTH].value = health;
+  LevelSolved_UpdateFinalGameValues(time, score, health);
 
   DisplayGameControlValues();
 }
