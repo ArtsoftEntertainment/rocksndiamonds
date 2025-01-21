@@ -5029,6 +5029,10 @@ void InitAmoebaNr(int x, int y)
 
 static void LevelSolved_UpdateFinalGameValues(int time, int score, int health)
 {
+  // correct game panel score value when playing BD games with multiple lives
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD && setup.bd_multiple_lives)
+    score = game_bd.global_score;
+
   game.LevelSolved_CountingTime = time;
   game.LevelSolved_CountingScore = score;
   game.LevelSolved_CountingHealth = health;
@@ -5204,9 +5208,6 @@ static boolean GameWon(void)
     {
       time = time_final;
       score = score_final;
-
-      if (level.game_engine_type == GAME_ENGINE_TYPE_BD && setup.bd_multiple_lives)
-        score = game_bd.global_score;
 
       LevelSolved_DisplayFinalGameValues(time, score, health);
     }
