@@ -294,7 +294,7 @@ static void UpdateGameDoorValues_BD(void)
 
   game_bd.time_left = time_left;
   game_bd.gems_still_needed = gems_still_needed;
-  game_bd.score = game_bd.game->player_score;			// use cave score here
+  game_bd.score = game_bd.game->cave_score;			// use cave score here
 
   if (game.no_level_time_limit)
     game_bd.time_left = getTimePlayed_BD();
