@@ -11453,6 +11453,8 @@ struct ConfigInfo image_config[] =
   { "viewport.window.max_height",			"-1"				},
   { "viewport.window.TITLE.width",			ARG_DEFAULT			},
   { "viewport.window.TITLE.height",			ARG_DEFAULT			},
+  { "viewport.window.EDITOR.width",			ARG_DEFAULT			},
+  { "viewport.window.EDITOR.height",			ARG_DEFAULT			},
 
   { "viewport.playfield.x",				"6"				},
   { "viewport.playfield.y",				"6"				},
