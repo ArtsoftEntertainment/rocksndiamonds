@@ -2154,6 +2154,7 @@ void HandleKey(Key key, int key_status)
     { &ski.drop,  NULL,            DEFAULT_KEY_DROP,  JOY_BUTTON_DROP }
   };
   boolean game_key_pressed = FALSE;
+  boolean game_button_key_pressed = FALSE;
   int joy = 0;
   int i;
 
@@ -2303,6 +2304,10 @@ void HandleKey(Key key, int key_status)
       // for any keyboard event, enable playfield mouse cursor
       if (key_action && key_status == KEY_PRESSED)
 	SetPlayfieldMouseCursorEnabled(TRUE);
+
+      // check if any game button key was pressed (snap or drop key)
+      if (key_action & JOY_BUTTON)
+        game_button_key_pressed = TRUE;
     }
   }
   else
@@ -2401,7 +2406,7 @@ void HandleKey(Key key, int key_status)
   }
 
   if (game_status == GAME_MODE_PLAYING && game.all_players_gone &&
-      (key == KSYM_Return || key == setup.shortcut.toggle_pause))
+      (key == KSYM_Return || key == setup.shortcut.toggle_pause || game_button_key_pressed))
   {
     GameEnd();
 
