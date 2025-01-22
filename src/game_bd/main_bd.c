@@ -415,20 +415,20 @@ void GameActions_BD(byte action[MAX_PLAYERS])
 		     player_x,
 		     player_y);
 
+  play_game_func(game_bd.game, action[0]);
+
   if (setup.bd_skip_hatching && !game_bd.game->cave->hatched &&
       game_bd.game->state_counter == GAME_INT_CAVE_RUNNING)
   {
     // fast-forward game engine until player hatched
     while (!game_bd.game->cave->hatched)
     {
-      play_game_func(game_bd.game, 0);
-
       // also record or replay tape action during fast-forward
       action = TapeCorrectAction_BD(action);
+
+      play_game_func(game_bd.game, 0);
     }
   }
-
-  play_game_func(game_bd.game, action[0]);
 
   // scroll without iterating engine if player out of sight (mainly due to wrap-around)
   // (this is needed to prevent broken tapes in case of viewport or tile size changes)
