@@ -1413,6 +1413,10 @@ static boolean checkTextInputKey(Key key)
   if (game_status == GAME_MODE_PLAYING)
     return FALSE;
 
+  // if Ctrl or Meta key is pressed, handle raw key events
+  if ((GetKeyModState() & (KMOD_Control | KMOD_Meta)) != KMOD_None)
+    return FALSE;
+
   // if Shift or right Alt key is pressed, handle key as text input
   if ((GetKeyModState() & KMOD_TextInput) != KMOD_None)
     return TRUE;
