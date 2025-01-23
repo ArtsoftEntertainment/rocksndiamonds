@@ -1417,8 +1417,8 @@ static boolean checkTextInputKey(Key key)
   if ((GetKeyModState() & (KMOD_Control | KMOD_Meta)) != KMOD_None)
     return FALSE;
 
-  // if Shift or right Alt key is pressed, handle key as text input
-  if ((GetKeyModState() & KMOD_TextInput) != KMOD_None)
+  // if Shift or right Alt key is pressed, handle printable keys as text input
+  if ((GetKeyModState() & KMOD_TextInput) != KMOD_None && KSYM_PRINTABLE(key))
     return TRUE;
 
   // ignore raw keys as text input when not in text input mode
