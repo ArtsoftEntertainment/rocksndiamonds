@@ -9969,11 +9969,33 @@ static void PrepareLevelEditorGadgets(void)
   else
   {
     // color and engine settings required -- set position for "engine" tabulator button
-    tbi->x = ED_ENGINE_TABS_XPOS(0);
-    tbi->y = ED_ENGINE_TABS_YPOS(0);
-    tbi->gadget_id_align = GADGET_ID_NONE;
+    struct GraphicInfo *gd = &graphic_info[IMG_EDITOR_TABBUTTON];
+    int gadget_distance = ED_GADGET_SMALL_DISTANCE;
+    int border_xsize = gd->border_size + gd->draw_xoffset;
+    int tab_width = tbi->size * getFontWidth(FONT_INPUT_2) + 2 * border_xsize;
+    int tabs_count = ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE - ED_TEXTBUTTON_ID_LEVELCONFIG_LEVEL + 1;
+    int tabs_width = tabs_count * tab_width + (tabs_count - 1) * gadget_distance;
+    int xpos_right = ED_SETTINGS_X(0) + tabs_width;
 
-    use_2nd_tab_row = TRUE;
+    // check if playfield viewport is wide enough for another tab button
+    if (xpos_right < SXSIZE)
+    {
+      tbi->x = -1;
+      tbi->y = -1;
+      tbi->gadget_id_align = GADGET_ID_LEVELCONFIG_COLORS;
+
+      // place "engine" tab to the right of the "colors" tab
+      use_2nd_tab_row = FALSE;
+    }
+    else
+    {
+      tbi->x = ED_ENGINE_TABS_XPOS(0);
+      tbi->y = ED_ENGINE_TABS_YPOS(0);
+      tbi->gadget_id_align = GADGET_ID_NONE;
+
+      // place "engine" tab in a new, second row of tabs
+      use_2nd_tab_row = TRUE;
+    }
   }
 }
 
@@ -11994,6 +12016,15 @@ static void DrawDrawingWindow(void)
 
 static int getTabulatorBarWidth(void)
 {
+  if (edit_mode == ED_MODE_LEVELCONFIG)
+  {
+    struct GadgetInfo *gd_gi1 = level_editor_gadget[GADGET_ID_LEVELCONFIG_LEVEL];
+    struct GadgetInfo *gd_gi4 = level_editor_gadget[GADGET_ID_LEVELCONFIG_COLORS];
+    struct GadgetInfo *gd_gi5 = level_editor_gadget[GADGET_ID_LEVELCONFIG_ENGINE];
+
+    return MAX(gd_gi4->x, gd_gi5->x) - gd_gi1->x + gd_gi4->width;
+  }
+
   struct GadgetInfo *gd_gi1 = level_editor_gadget[GADGET_ID_PROPERTIES_INFO];
   struct GadgetInfo *gd_gi4 = level_editor_gadget[GADGET_ID_PROPERTIES_CHANGE];
 
@@ -12044,8 +12075,8 @@ static void DrawLevelConfigTabulatorGadgets(void)
     ModifyGadget(gi, GDI_ACTIVE, active, GDI_END);
     MapTextbuttonGadget(i);
 
-    if (i == ED_TEXTBUTTON_ID_LEVELCONFIG_LEVEL ||
-        i == ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE)
+    if ((i == ED_TEXTBUTTON_ID_LEVELCONFIG_LEVEL) ||
+        (i == ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE && use_2nd_tab_row))
     {
       // draw little border line below tabulator buttons
       if (tab_color != BLACK_PIXEL)		// black => transparent
