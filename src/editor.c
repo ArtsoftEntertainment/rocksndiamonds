@@ -209,7 +209,9 @@
 
 #define ED_LEVEL_SETTINGS_X(n)		(ED_LEVEL_SETTINGS_XSTART +	\
 					 (n) * ED_SETTINGS_XOFFSET)
-#define ED_LEVEL_SETTINGS_Y(n)		(ED_LEVEL_SETTINGS_YSTART +	\
+#define ED_LEVEL_SETTINGS_Y(n)		((use_2nd_tab_row ?		\
+					  ED_ENGINE_SETTINGS_YSTART :	\
+					  ED_LEVEL_SETTINGS_YSTART) +	\
 					 (n) * ED_SETTINGS_YOFFSET)
 
 #define ED_ENGINE_TABS_X(n)		(ED_ENGINE_TABS_XSTART +	\
@@ -408,9 +410,9 @@
 #define COLORPICKER_X_REDEFINED (COLORPICKER_X != -1)
 #define COLORPICKER_Y_REDEFINED (COLORPICKER_Y != -1)
 #define COLORPICKER_XPOS	SX + (COLORPICKER_X_REDEFINED ? COLORPICKER_X : \
-				      ED_ENGINE_SETTINGS_XSTART)
+				      ED_LEVEL_SETTINGS_X(0))
 #define COLORPICKER_YPOS	SY + (COLORPICKER_Y_REDEFINED ? COLORPICKER_Y : \
-				      ED_ENGINE_SETTINGS_YSTART_0 + ED_GADGET_TEXT_DISTANCE)
+				      ED_LEVEL_SETTINGS_Y(0) + ED_GADGET_TEXT_DISTANCE)
 #define COLORPICKER_C64_VALUES	16
 #define COLORPICKER_MAX_VALUES	256
 
@@ -777,9 +779,8 @@ enum
   GADGET_ID_LEVELCONFIG_LEVEL,
   GADGET_ID_LEVELCONFIG_LEVELSET,
   GADGET_ID_LEVELCONFIG_EDITOR,
+  GADGET_ID_LEVELCONFIG_COLORS,
   GADGET_ID_LEVELCONFIG_ENGINE,
-  GADGET_ID_ENGINECONFIG_CONFIG,
-  GADGET_ID_ENGINECONFIG_COLORS,
   GADGET_ID_PROPERTIES_INFO,
   GADGET_ID_PROPERTIES_CONFIG,
   GADGET_ID_PROPERTIES_CONFIG_1,
@@ -1213,9 +1214,8 @@ enum
   ED_TEXTBUTTON_ID_LEVELCONFIG_LEVEL,
   ED_TEXTBUTTON_ID_LEVELCONFIG_LEVELSET,
   ED_TEXTBUTTON_ID_LEVELCONFIG_EDITOR,
+  ED_TEXTBUTTON_ID_LEVELCONFIG_COLORS,
   ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE,
-  ED_TEXTBUTTON_ID_ENGINECONFIG_CONFIG,
-  ED_TEXTBUTTON_ID_ENGINECONFIG_COLORS,
   ED_TEXTBUTTON_ID_PROPERTIES_INFO,
   ED_TEXTBUTTON_ID_PROPERTIES_CONFIG,
   ED_TEXTBUTTON_ID_PROPERTIES_CONFIG_1,
@@ -1233,9 +1233,6 @@ enum
 
 #define ED_TAB_BUTTON_ID_LEVELCONFIG_FIRST ED_TEXTBUTTON_ID_LEVELCONFIG_LEVEL
 #define ED_TAB_BUTTON_ID_LEVELCONFIG_LAST  ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE
-
-#define ED_TAB_BUTTON_ID_ENGINECONFIG_FIRST ED_TEXTBUTTON_ID_ENGINECONFIG_CONFIG
-#define ED_TAB_BUTTON_ID_ENGINECONFIG_LAST  ED_TEXTBUTTON_ID_ENGINECONFIG_COLORS
 
 #define ED_TAB_BUTTON_ID_PROPERTIES_FIRST ED_TEXTBUTTON_ID_PROPERTIES_INFO
 #define ED_TAB_BUTTON_ID_PROPERTIES_LAST  ED_TEXTBUTTON_ID_PROPERTIES_CHANGE
@@ -1565,11 +1562,8 @@ enum
 #define ED_MODE_LEVELCONFIG_LEVEL	ED_TEXTBUTTON_ID_LEVELCONFIG_LEVEL
 #define ED_MODE_LEVELCONFIG_LEVELSET	ED_TEXTBUTTON_ID_LEVELCONFIG_LEVELSET
 #define ED_MODE_LEVELCONFIG_EDITOR	ED_TEXTBUTTON_ID_LEVELCONFIG_EDITOR
+#define ED_MODE_LEVELCONFIG_COLORS	ED_TEXTBUTTON_ID_LEVELCONFIG_COLORS
 #define ED_MODE_LEVELCONFIG_ENGINE	ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE
-
-// sub-screens in the engine settings section
-#define ED_MODE_ENGINECONFIG_CONFIG	ED_TEXTBUTTON_ID_ENGINECONFIG_CONFIG
-#define ED_MODE_ENGINECONFIG_COLORS	ED_TEXTBUTTON_ID_ENGINECONFIG_COLORS
 
 // sub-screens in the element properties section
 #define ED_MODE_PROPERTIES_INFO		ED_TEXTBUTTON_ID_PROPERTIES_INFO
@@ -1943,7 +1937,7 @@ static struct
   },
   {
     ED_COUNTER_ID_BD_CYCLE_DELAY_MS,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(3),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(3),
     50,						500,
     GADGET_ID_BD_CYCLE_DELAY_MS_DOWN,		GADGET_ID_BD_CYCLE_DELAY_MS_UP,
     GADGET_ID_BD_CYCLE_DELAY_MS_TEXT,		GADGET_ID_NONE,
@@ -1952,7 +1946,7 @@ static struct
   },
   {
     ED_COUNTER_ID_BD_CYCLE_DELAY_C64,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(3),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(3),
     0,						32,
     GADGET_ID_BD_CYCLE_DELAY_C64_DOWN,		GADGET_ID_BD_CYCLE_DELAY_C64_UP,
     GADGET_ID_BD_CYCLE_DELAY_C64_TEXT,		GADGET_ID_NONE,
@@ -1961,7 +1955,7 @@ static struct
   },
   {
     ED_COUNTER_ID_BD_HATCHING_DELAY_CYCLES,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(4),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(4),
     1,						40,
     GADGET_ID_BD_HATCHING_DELAY_CYCLES_DOWN,	GADGET_ID_BD_HATCHING_DELAY_CYCLES_UP,
     GADGET_ID_BD_HATCHING_DELAY_CYCLES_TEXT,	GADGET_ID_NONE,
@@ -1970,7 +1964,7 @@ static struct
   },
   {
     ED_COUNTER_ID_BD_HATCHING_DELAY_SECONDS,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(4),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(4),
     1,						40,
     GADGET_ID_BD_HATCHING_DELAY_SECONDS_DOWN,	GADGET_ID_BD_HATCHING_DELAY_SECONDS_UP,
     GADGET_ID_BD_HATCHING_DELAY_SECONDS_TEXT,	GADGET_ID_NONE,
@@ -2318,11 +2312,11 @@ static struct
     "Author:", NULL, NULL,			"Enter author for this or new level set"
   },
 
-  // ---------- engine settings: colors (single) ------------------------------
+  // ---------- color settings: single ----------------------------------------
 
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_0,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(3),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(3),
     GADGET_ID_BD_COLOR_TEXT_0,
     MAX_BD_COLOR_TEXT_LEN,
     bd_color_text[0],
@@ -2330,7 +2324,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_1,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(4),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(4),
     GADGET_ID_BD_COLOR_TEXT_1,
     MAX_BD_COLOR_TEXT_LEN,
     bd_color_text[1],
@@ -2338,7 +2332,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_2,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(5),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(5),
     GADGET_ID_BD_COLOR_TEXT_2,
     MAX_BD_COLOR_TEXT_LEN,
     bd_color_text[2],
@@ -2346,7 +2340,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_3,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(6),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(6),
     GADGET_ID_BD_COLOR_TEXT_3,
     MAX_BD_COLOR_TEXT_LEN,
     bd_color_text[3],
@@ -2354,7 +2348,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_4,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(7),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(7),
     GADGET_ID_BD_COLOR_TEXT_4,
     MAX_BD_COLOR_TEXT_LEN,
     bd_color_text[4],
@@ -2362,7 +2356,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_5,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(8),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(8),
     GADGET_ID_BD_COLOR_TEXT_5,
     MAX_BD_COLOR_TEXT_LEN,
     bd_color_text[5],
@@ -2370,7 +2364,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_6,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(9),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(9),
     GADGET_ID_BD_COLOR_TEXT_6,
     MAX_BD_COLOR_TEXT_LEN,
     bd_color_text[6],
@@ -2378,18 +2372,18 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_COLOR_TEXT_7,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(10),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(10),
     GADGET_ID_BD_COLOR_TEXT_7,
     MAX_BD_COLOR_TEXT_LEN,
     bd_color_text[7],
     NULL, "Extra color 2:     ", NULL,		"Enter extra color 2 (C64 graphics)"
   },
 
-  // ---------- engine settings: colors (gradients) ---------------------------
+  // ---------- color settings: gradients -------------------------------------
 
   {
     ED_TEXTINPUT_ID_BD_LO_COLOR_TEXT_0,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(1),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(1),
     GADGET_ID_BD_LO_COLOR_TEXT_0,
     MAX_BD_RGB_COLOR_TEXT_LEN,
     bd_base_color_text[0],
@@ -2397,7 +2391,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_LO_COLOR_TEXT_1,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(2),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(2),
     GADGET_ID_BD_LO_COLOR_TEXT_1,
     MAX_BD_RGB_COLOR_TEXT_LEN,
     bd_base_color_text[1],
@@ -2405,7 +2399,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_LO_COLOR_TEXT_2,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(3),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(3),
     GADGET_ID_BD_LO_COLOR_TEXT_2,
     MAX_BD_RGB_COLOR_TEXT_LEN,
     bd_base_color_text[2],
@@ -2413,7 +2407,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_LO_COLOR_TEXT_3,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(4),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(4),
     GADGET_ID_BD_LO_COLOR_TEXT_3,
     MAX_BD_RGB_COLOR_TEXT_LEN,
     bd_base_color_text[3],
@@ -2421,7 +2415,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_LO_COLOR_TEXT_4,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(5),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(5),
     GADGET_ID_BD_LO_COLOR_TEXT_4,
     MAX_BD_RGB_COLOR_TEXT_LEN,
     bd_base_color_text[4],
@@ -2429,7 +2423,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_LO_COLOR_TEXT_5,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(6),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(6),
     GADGET_ID_BD_LO_COLOR_TEXT_5,
     MAX_BD_RGB_COLOR_TEXT_LEN,
     bd_base_color_text[5],
@@ -2437,7 +2431,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_LO_COLOR_TEXT_6,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(7),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(7),
     GADGET_ID_BD_LO_COLOR_TEXT_6,
     MAX_BD_RGB_COLOR_TEXT_LEN,
     bd_base_color_text[6],
@@ -2445,7 +2439,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_LO_COLOR_TEXT_7,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(8),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(8),
     GADGET_ID_BD_LO_COLOR_TEXT_7,
     MAX_BD_RGB_COLOR_TEXT_LEN,
     bd_base_color_text[7],
@@ -2453,7 +2447,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_HI_COLOR_TEXT_0,
-    ED_ENGINE_SETTINGS_XPOS(12),		ED_ENGINE_SETTINGS_YPOS(1),
+    ED_LEVEL_SETTINGS_XPOS(12),			ED_LEVEL_SETTINGS_YPOS(1),
     GADGET_ID_BD_HI_COLOR_TEXT_0,
     MAX_BD_RGB_COLOR_TEXT_LEN,
     bd_color_text[0],
@@ -2461,7 +2455,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_HI_COLOR_TEXT_1,
-    ED_ENGINE_SETTINGS_XPOS(12),		ED_ENGINE_SETTINGS_YPOS(2),
+    ED_LEVEL_SETTINGS_XPOS(12),			ED_LEVEL_SETTINGS_YPOS(2),
     GADGET_ID_BD_HI_COLOR_TEXT_1,
     MAX_BD_RGB_COLOR_TEXT_LEN,
     bd_color_text[1],
@@ -2469,7 +2463,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_HI_COLOR_TEXT_2,
-    ED_ENGINE_SETTINGS_XPOS(12),		ED_ENGINE_SETTINGS_YPOS(3),
+    ED_LEVEL_SETTINGS_XPOS(12),			ED_LEVEL_SETTINGS_YPOS(3),
     GADGET_ID_BD_HI_COLOR_TEXT_2,
     MAX_BD_RGB_COLOR_TEXT_LEN,
     bd_color_text[2],
@@ -2477,7 +2471,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_HI_COLOR_TEXT_3,
-    ED_ENGINE_SETTINGS_XPOS(12),		ED_ENGINE_SETTINGS_YPOS(4),
+    ED_LEVEL_SETTINGS_XPOS(12),			ED_LEVEL_SETTINGS_YPOS(4),
     GADGET_ID_BD_HI_COLOR_TEXT_3,
     MAX_BD_RGB_COLOR_TEXT_LEN,
     bd_color_text[3],
@@ -2485,7 +2479,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_HI_COLOR_TEXT_4,
-    ED_ENGINE_SETTINGS_XPOS(12),		ED_ENGINE_SETTINGS_YPOS(5),
+    ED_LEVEL_SETTINGS_XPOS(12),			ED_LEVEL_SETTINGS_YPOS(5),
     GADGET_ID_BD_HI_COLOR_TEXT_4,
     MAX_BD_RGB_COLOR_TEXT_LEN,
     bd_color_text[4],
@@ -2493,7 +2487,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_HI_COLOR_TEXT_5,
-    ED_ENGINE_SETTINGS_XPOS(12),		ED_ENGINE_SETTINGS_YPOS(6),
+    ED_LEVEL_SETTINGS_XPOS(12),			ED_LEVEL_SETTINGS_YPOS(6),
     GADGET_ID_BD_HI_COLOR_TEXT_5,
     MAX_BD_RGB_COLOR_TEXT_LEN,
     bd_color_text[5],
@@ -2501,7 +2495,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_HI_COLOR_TEXT_6,
-    ED_ENGINE_SETTINGS_XPOS(12),		ED_ENGINE_SETTINGS_YPOS(7),
+    ED_LEVEL_SETTINGS_XPOS(12),			ED_LEVEL_SETTINGS_YPOS(7),
     GADGET_ID_BD_HI_COLOR_TEXT_6,
     MAX_BD_RGB_COLOR_TEXT_LEN,
     bd_color_text[6],
@@ -2509,7 +2503,7 @@ static struct
   },
   {
     ED_TEXTINPUT_ID_BD_HI_COLOR_TEXT_7,
-    ED_ENGINE_SETTINGS_XPOS(12),		ED_ENGINE_SETTINGS_YPOS(8),
+    ED_LEVEL_SETTINGS_XPOS(12),			ED_LEVEL_SETTINGS_YPOS(8),
     GADGET_ID_BD_HI_COLOR_TEXT_7,
     MAX_BD_RGB_COLOR_TEXT_LEN,
     bd_color_text[7],
@@ -3400,11 +3394,11 @@ static struct
     "Action:", NULL, NULL,			"Select action when saving level set"
   },
 
-  // ---------- engine settings: config ---------------------------------------
+  // ---------- engine settings -----------------------------------------------
 
   {
     ED_SELECTBOX_ID_BD_SCHEDULING_TYPE,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(1),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(1),
     GADGET_ID_BD_SCHEDULING_TYPE,		GADGET_ID_NONE,
     -1,
     options_bd_scheduling_type,
@@ -3412,11 +3406,11 @@ static struct
     NULL, "Scheduling type:", NULL,		"Select level timing"
   },
 
-  // ---------- engine settings: colors ---------------------------------------
+  // ---------- color settings ------------------------------------------------
 
   {
     ED_SELECTBOX_ID_BD_COLORING_TYPE,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(0),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(0),
     GADGET_ID_BD_COLORING_TYPE,			GADGET_ID_NONE,
     -1,
     options_bd_coloring_type,
@@ -3426,7 +3420,7 @@ static struct
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_TYPE,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(2),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(2),
     GADGET_ID_BD_COLOR_TYPE,			GADGET_ID_NONE,
     -1,
     options_bd_color_type,
@@ -3436,7 +3430,7 @@ static struct
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_0,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(3),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(3),
     GADGET_ID_BD_COLOR_C64_0,			GADGET_ID_NONE,
     -1,
     options_bd_color_c64_name,
@@ -3445,7 +3439,7 @@ static struct
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_1,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(4),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(4),
     GADGET_ID_BD_COLOR_C64_1,			GADGET_ID_NONE,
     -1,
     options_bd_color_c64_name,
@@ -3454,7 +3448,7 @@ static struct
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_2,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(5),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(5),
     GADGET_ID_BD_COLOR_C64_2,			GADGET_ID_NONE,
     -1,
     options_bd_color_c64_name,
@@ -3463,7 +3457,7 @@ static struct
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_3,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(6),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(6),
     GADGET_ID_BD_COLOR_C64_3,			GADGET_ID_NONE,
     -1,
     options_bd_color_c64_name,
@@ -3472,7 +3466,7 @@ static struct
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_4,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(7),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(7),
     GADGET_ID_BD_COLOR_C64_4,			GADGET_ID_NONE,
     -1,
     options_bd_color_c64_name,
@@ -3481,7 +3475,7 @@ static struct
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_5,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(8),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(8),
     GADGET_ID_BD_COLOR_C64_5,			GADGET_ID_NONE,
     -1,
     options_bd_color_c64_name,
@@ -3490,7 +3484,7 @@ static struct
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_6,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(9),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(9),
     GADGET_ID_BD_COLOR_C64_6,			GADGET_ID_NONE,
     -1,
     options_bd_color_c64_name,
@@ -3499,7 +3493,7 @@ static struct
   },
   {
     ED_SELECTBOX_ID_BD_COLOR_C64_7,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(10),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(10),
     GADGET_ID_BD_COLOR_C64_7,			GADGET_ID_NONE,
     -1,
     options_bd_color_c64_name,
@@ -3787,7 +3781,7 @@ static struct
   },
 };
 
-static struct
+static struct TextbuttonInfo
 {
   int gadget_type_id;
   int x, y;
@@ -3822,28 +3816,18 @@ static struct
     NULL, NULL, NULL,				"Configure editor settings"
   },
   {
+    ED_TEXTBUTTON_ID_LEVELCONFIG_COLORS,
+    -1,						-1,
+    GADGET_ID_LEVELCONFIG_COLORS,		GADGET_ID_LEVELCONFIG_EDITOR,
+    8,						"Colors",
+    NULL, NULL, NULL,				"Configure level colors"
+  },
+  {
     ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE,
     -1,						-1,
     GADGET_ID_LEVELCONFIG_ENGINE,		GADGET_ID_LEVELCONFIG_EDITOR,
     8,						"Engine",
     NULL, NULL, NULL,				"Configure game engine settings"
-  },
-
-  // ---------- engine settings (tabs) ----------------------------------------
-
-  {
-    ED_TEXTBUTTON_ID_ENGINECONFIG_CONFIG,
-    ED_ENGINE_TABS_XPOS(0),			ED_ENGINE_TABS_YPOS(0),
-    GADGET_ID_ENGINECONFIG_CONFIG,		GADGET_ID_NONE,
-    8,						"Config",
-    NULL, NULL, NULL,				"Configure game engine settings"
-  },
-  {
-    ED_TEXTBUTTON_ID_ENGINECONFIG_COLORS,
-    -1,						-1,
-    GADGET_ID_ENGINECONFIG_COLORS,		GADGET_ID_ENGINECONFIG_CONFIG,
-    8,						"Colors",
-    NULL, NULL, NULL,				"Configure level colors"
   },
 
   // ---------- element settings (tabs) ---------------------------------------
@@ -3927,11 +3911,11 @@ static struct
     NULL, NULL, NULL,				"Delete current change page"
   },
 
-  // ---------- engine settings (buttons) -------------------------------------
+  // ---------- color settings (buttons) -------------------------------------
 
   {
     ED_TEXTBUTTON_ID_BD_SET_RANDOM_COLORS,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(9),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(9),
     GADGET_ID_BD_SET_RANDOM_COLORS,		GADGET_ID_NONE,
     -1,						"Set random colors",
     NULL, NULL, NULL,				"Create and set random level colors"
@@ -3979,176 +3963,176 @@ static struct
     NULL, NULL,					"Paste settings to this change page"
   },
 
-  // ---------- engine settings: colors (single) ------------------------------
+  // ---------- color settings: single ----------------------------------------
 
   {
     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_0,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(3),
+    -1,						ED_LEVEL_SETTINGS_YPOS(3),
     GADGET_ID_BD_COLOR_PICK_0,			GADGET_ID_BD_COLOR_TEXT_0,
     NULL, NULL,					"Pick background color (C64 graphics)"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_1,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(4),
+    -1,						ED_LEVEL_SETTINGS_YPOS(4),
     GADGET_ID_BD_COLOR_PICK_1,			GADGET_ID_BD_COLOR_TEXT_1,
     NULL, NULL,					"Pick sand color (C64 graphics)"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_2,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(5),
+    -1,						ED_LEVEL_SETTINGS_YPOS(5),
     GADGET_ID_BD_COLOR_PICK_2,			GADGET_ID_BD_COLOR_TEXT_2,
     NULL, NULL,					"Pick steel wall color (C64 graphics)"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_3,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(6),
+    -1,						ED_LEVEL_SETTINGS_YPOS(6),
     GADGET_ID_BD_COLOR_PICK_3,			GADGET_ID_BD_COLOR_TEXT_3,
     NULL, NULL,					"Pick wall color (C64 graphics)"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_4,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(7),
+    -1,						ED_LEVEL_SETTINGS_YPOS(7),
     GADGET_ID_BD_COLOR_PICK_4,			GADGET_ID_BD_COLOR_TEXT_4,
     NULL, NULL,					"Pick amoeba color (C64 graphics)"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_5,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(8),
+    -1,						ED_LEVEL_SETTINGS_YPOS(8),
     GADGET_ID_BD_COLOR_PICK_5,			GADGET_ID_BD_COLOR_TEXT_5,
     NULL, NULL,					"Pick slime color (C64 graphics)"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_6,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(9),
+    -1,						ED_LEVEL_SETTINGS_YPOS(9),
     GADGET_ID_BD_COLOR_PICK_6,			GADGET_ID_BD_COLOR_TEXT_6,
     NULL, NULL,					"Pick extra color 1 (C64 graphics)"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_COLOR_PICK_7,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(10),
+    -1,						ED_LEVEL_SETTINGS_YPOS(10),
     GADGET_ID_BD_COLOR_PICK_7,			GADGET_ID_BD_COLOR_TEXT_7,
     NULL, NULL,					"Pick extra color 2 (C64 graphics)"
   },
 
-  // ---------- engine settings: colors (gradients) ---------------------------
+  // ---------- color settings: gradients -------------------------------------
 
   {
     ED_GRAPHICBUTTON_ID_BD_LO_COLOR_PICK_0,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(1),
+    -1,						ED_LEVEL_SETTINGS_YPOS(1),
     GADGET_ID_BD_LO_COLOR_PICK_0,		GADGET_ID_BD_LO_COLOR_TEXT_0,
     NULL, NULL,					"Pick start color 0"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_LO_COLOR_PICK_1,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(2),
+    -1,						ED_LEVEL_SETTINGS_YPOS(2),
     GADGET_ID_BD_LO_COLOR_PICK_1,		GADGET_ID_BD_LO_COLOR_TEXT_1,
     NULL, NULL,					"Pick start color 1"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_LO_COLOR_PICK_2,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(3),
+    -1,						ED_LEVEL_SETTINGS_YPOS(3),
     GADGET_ID_BD_LO_COLOR_PICK_2,		GADGET_ID_BD_LO_COLOR_TEXT_2,
     NULL, NULL,					"Pick start color 2"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_LO_COLOR_PICK_3,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(4),
+    -1,						ED_LEVEL_SETTINGS_YPOS(4),
     GADGET_ID_BD_LO_COLOR_PICK_3,		GADGET_ID_BD_LO_COLOR_TEXT_3,
     NULL, NULL,					"Pick start color 3"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_LO_COLOR_PICK_4,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(5),
+    -1,						ED_LEVEL_SETTINGS_YPOS(5),
     GADGET_ID_BD_LO_COLOR_PICK_4,		GADGET_ID_BD_LO_COLOR_TEXT_4,
     NULL, NULL,					"Pick start color 4"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_LO_COLOR_PICK_5,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(6),
+    -1,						ED_LEVEL_SETTINGS_YPOS(6),
     GADGET_ID_BD_LO_COLOR_PICK_5,		GADGET_ID_BD_LO_COLOR_TEXT_5,
     NULL, NULL,					"Pick start color 5"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_LO_COLOR_PICK_6,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(7),
+    -1,						ED_LEVEL_SETTINGS_YPOS(7),
     GADGET_ID_BD_LO_COLOR_PICK_6,		GADGET_ID_BD_LO_COLOR_TEXT_6,
     NULL, NULL,					"Pick start color 6"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_LO_COLOR_PICK_7,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(8),
+    -1,						ED_LEVEL_SETTINGS_YPOS(8),
     GADGET_ID_BD_LO_COLOR_PICK_7,		GADGET_ID_BD_LO_COLOR_TEXT_7,
     NULL, NULL,					"Pick start color 7"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_HI_COLOR_PICK_0,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(1),
+    -1,						ED_LEVEL_SETTINGS_YPOS(1),
     GADGET_ID_BD_HI_COLOR_PICK_0,		GADGET_ID_BD_HI_COLOR_TEXT_0,
     NULL, NULL,					"Pick end color 0"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_HI_COLOR_PICK_1,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(2),
+    -1,						ED_LEVEL_SETTINGS_YPOS(2),
     GADGET_ID_BD_HI_COLOR_PICK_1,		GADGET_ID_BD_HI_COLOR_TEXT_1,
     NULL, NULL,					"Pick end color 1"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_HI_COLOR_PICK_2,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(3),
+    -1,						ED_LEVEL_SETTINGS_YPOS(3),
     GADGET_ID_BD_HI_COLOR_PICK_2,		GADGET_ID_BD_HI_COLOR_TEXT_2,
     NULL, NULL,					"Pick end color 2"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_HI_COLOR_PICK_3,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(4),
+    -1,						ED_LEVEL_SETTINGS_YPOS(4),
     GADGET_ID_BD_HI_COLOR_PICK_3,		GADGET_ID_BD_HI_COLOR_TEXT_3,
     NULL, NULL,					"Pick end color 3"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_HI_COLOR_PICK_4,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(5),
+    -1,						ED_LEVEL_SETTINGS_YPOS(5),
     GADGET_ID_BD_HI_COLOR_PICK_4,		GADGET_ID_BD_HI_COLOR_TEXT_4,
     NULL, NULL,					"Pick end color 4"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_HI_COLOR_PICK_5,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(6),
+    -1,						ED_LEVEL_SETTINGS_YPOS(6),
     GADGET_ID_BD_HI_COLOR_PICK_5,		GADGET_ID_BD_HI_COLOR_TEXT_5,
     NULL, NULL,					"Pick end color 5"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_HI_COLOR_PICK_6,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(7),
+    -1,						ED_LEVEL_SETTINGS_YPOS(7),
     GADGET_ID_BD_HI_COLOR_PICK_6,		GADGET_ID_BD_HI_COLOR_TEXT_6,
     NULL, NULL,					"Pick end color 6"
   },
   {
     ED_GRAPHICBUTTON_ID_BD_HI_COLOR_PICK_7,
     IMG_GFX_EDITOR_BUTTON_PICK_ELEMENT,
-    -1,						ED_ENGINE_SETTINGS_YPOS(8),
+    -1,						ED_LEVEL_SETTINGS_YPOS(8),
     GADGET_ID_BD_HI_COLOR_PICK_7,		GADGET_ID_BD_HI_COLOR_TEXT_7,
     NULL, NULL,					"Pick end color 7"
   },
@@ -4346,7 +4330,7 @@ static struct
   },
   {
     ED_CHECKBUTTON_ID_BD_INTERMISSION,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(0),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(0),
     GADGET_ID_BD_INTERMISSION,			GADGET_ID_NONE,
     &level.bd_intermission,
     "Boulder Dash game engine settings:", NULL,
@@ -4354,7 +4338,7 @@ static struct
   },
   {
     ED_CHECKBUTTON_ID_BD_INTERMISSION_CLIPPED,
-    -1,						ED_ENGINE_SETTINGS_YPOS(0),
+    -1,						ED_LEVEL_SETTINGS_YPOS(0),
     GADGET_ID_BD_INTERMISSION_CLIPPED,		GADGET_ID_BD_INTERMISSION,
     &level.bd_intermission_clipped,
     NULL, " ",
@@ -4362,7 +4346,7 @@ static struct
   },
   {
     ED_CHECKBUTTON_ID_BD_PAL_TIMING,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(2),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(2),
     GADGET_ID_BD_PAL_TIMING,			GADGET_ID_NONE,
     &level.bd_pal_timing,
     NULL, NULL,
@@ -4370,7 +4354,7 @@ static struct
   },
   {
     ED_CHECKBUTTON_ID_BD_LINE_SHIFTING_BORDERS,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(6),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(6),
     GADGET_ID_BD_LINE_SHIFTING_BORDERS,		GADGET_ID_NONE,
     &level.bd_line_shifting_borders,
     "Compatibility settings:", NULL,
@@ -4378,7 +4362,7 @@ static struct
   },
   {
     ED_CHECKBUTTON_ID_BD_SCAN_FIRST_AND_LAST_ROW,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(7),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(7),
     GADGET_ID_BD_SCAN_FIRST_AND_LAST_ROW,	GADGET_ID_NONE,
     &level.bd_scan_first_and_last_row,
     NULL, NULL,
@@ -4386,7 +4370,7 @@ static struct
   },
   {
     ED_CHECKBUTTON_ID_BD_SHORT_EXPLOSIONS,
-    ED_ENGINE_SETTINGS_XPOS(0),			ED_ENGINE_SETTINGS_YPOS(8),
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(8),
     GADGET_ID_BD_SHORT_EXPLOSIONS,		GADGET_ID_NONE,
     &level.bd_short_explosions,
     NULL, NULL,
@@ -5938,7 +5922,8 @@ static void DrawLevelConfigWindow(void);
 static void DrawPropertiesWindow(void);
 static void DrawPaletteWindow(void);
 static void UpdateCustomElementGraphicGadgets(void);
-static boolean checkLevelEngineConfig(void);
+static boolean checkLevelConfigColors(void);
+static boolean checkLevelConfigEngine(void);
 static boolean checkPropertiesConfig(int);
 static void SetAutomaticNumberOfGemsNeeded(void);
 static void ClearEditorGadgetInfoText(void);
@@ -5982,8 +5967,9 @@ static int redo_buffer_steps = 0;
 
 static int edit_mode;
 static int edit_mode_levelconfig;
-static int edit_mode_engineconfig;
 static int edit_mode_properties;
+
+static boolean use_2nd_tab_row = FALSE;
 
 static int element_shift = 0;
 
@@ -9534,7 +9520,6 @@ static void CreateTextbuttonGadgets(void)
     int type_id = textbutton_info[i].gadget_type_id;
     int is_tab_button =
       ((id >= GADGET_ID_LEVELCONFIG_LEVEL && id <= GADGET_ID_LEVELCONFIG_ENGINE) ||
-       (id >= GADGET_ID_ENGINECONFIG_CONFIG && id <= GADGET_ID_ENGINECONFIG_COLORS) ||
        (id >= GADGET_ID_PROPERTIES_INFO && id <= GADGET_ID_PROPERTIES_CHANGE));
     int graphic =
       (is_tab_button ? IMG_EDITOR_TABBUTTON : IMG_EDITOR_TEXTBUTTON);
@@ -9962,6 +9947,36 @@ static void CreateColorPickerGadgets(void)
   }
 }
 
+static void PrepareLevelEditorGadgets(void)
+{
+  struct TextbuttonInfo *tbi = &textbutton_info[ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE];
+
+  // adjust position of "engine" tabulator button according to colors / engine settings
+  if (!checkLevelConfigEngine())
+  {
+    // no engine settings required -- position for "engine" tabulator button does matter
+    use_2nd_tab_row = FALSE;
+  }
+  else if (!checkLevelConfigColors())
+  {
+    // no color settings required -- set default position for "engine" tabulator button
+    tbi->x = -1;
+    tbi->y = -1;
+    tbi->gadget_id_align = GADGET_ID_LEVELCONFIG_EDITOR;
+
+    use_2nd_tab_row = FALSE;
+  }
+  else
+  {
+    // color and engine settings required -- set position for "engine" tabulator button
+    tbi->x = ED_ENGINE_TABS_XPOS(0);
+    tbi->y = ED_ENGINE_TABS_YPOS(0);
+    tbi->gadget_id_align = GADGET_ID_NONE;
+
+    use_2nd_tab_row = TRUE;
+  }
+}
+
 void CreateLevelEditorGadgets(void)
 {
   // force EDITOR font inside level editor
@@ -9987,6 +10002,8 @@ void CreateLevelEditorGadgets(void)
   editor_el_empty_ptr = editor_el_empty;
 
   use_permanent_palette = !editor.palette.show_as_separate_screen;
+
+  PrepareLevelEditorGadgets();
 
   InitGadgetScreenBorders(-1, INFOTEXT_YPOS);
 
@@ -11567,6 +11584,24 @@ static void DrawEditorDoorContent(void)
   BlitBitmap(drawto, bitmap_db_door_1, DX, DY, DXSIZE, DYSIZE, 0, 0);
 }
 
+static void RedrawLevelEd(boolean redraw_doors)
+{
+  FreeLevelEditorGadgets();
+  CreateLevelEditorGadgets();
+
+  ReinitializeElementList();		// update dynamic level element list
+  ReinitializeElementListButtons();	// custom element may look different
+
+  InitElementPropertiesGfxElement();
+
+  UnmapAllGadgets();
+
+  DrawEditModeWindow_PlayfieldOnly();
+
+  if (redraw_doors)
+    DrawEditorDoorContent();
+}
+
 void DrawLevelEd(void)
 {
   int fade_mask = REDRAW_FIELD;
@@ -11580,8 +11615,6 @@ void DrawLevelEd(void)
 
   // needed if different viewport properties defined for editor
   ChangeViewportPropertiesIfNeeded();
-
-  ClearField();
 
   InitZoomLevelSettings(-1);
   InitDrawingElements();
@@ -11602,7 +11635,6 @@ void DrawLevelEd(void)
   {
     edit_mode = ED_MODE_DRAWING;
     edit_mode_levelconfig = ED_MODE_LEVELCONFIG_LEVEL;
-    edit_mode_engineconfig = ED_MODE_ENGINECONFIG_CONFIG;
     edit_mode_properties = ED_MODE_PROPERTIES_INFO;
 
     ResetUndoBuffer();
@@ -11613,17 +11645,7 @@ void DrawLevelEd(void)
 
   // redraw_mask |= REDRAW_ALL;
 
-  FreeLevelEditorGadgets();
-  CreateLevelEditorGadgets();
-
-  ReinitializeElementList();		// update dynamic level element list
-  ReinitializeElementListButtons();	// custom element may look different
-
-  InitElementPropertiesGfxElement();
-
-  UnmapAllGadgets();
-
-  DrawEditModeWindow_PlayfieldOnly();
+  RedrawLevelEd(FALSE);
 
   DrawMaskedBorder(fade_mask);
 
@@ -11993,56 +12015,23 @@ static Pixel getTabulatorBarColor(void)
   return GetPixel(gd->bitmap, gd_x, gd_y);
 }
 
-static void DrawEngineConfigTabulatorGadgets(void)
-{
-  struct GadgetInfo *gd_gi1 = level_editor_gadget[GADGET_ID_ENGINECONFIG_CONFIG];
-  Pixel tab_color = getTabulatorBarColor();
-  int id_first = ED_TEXTBUTTON_ID_ENGINECONFIG_CONFIG;
-  int id_last  = ED_TEXTBUTTON_ID_ENGINECONFIG_COLORS;
-  int i;
-
-  for (i = id_first; i <= id_last; i++)
-  {
-    int gadget_id = textbutton_info[i].gadget_id;
-    struct GadgetInfo *gi = level_editor_gadget[gadget_id];
-    boolean active = (i != edit_mode_engineconfig);
-
-    // draw background line below tabulator button
-    ClearRectangleOnBackground(drawto, gi->x, gi->y + gi->height, gi->width, 1);
-
-    // draw solid line below inactive tabulator buttons
-    if (!active && tab_color != BLACK_PIXEL)	// black => transparent
-      FillRectangle(drawto, gi->x, gi->y + gi->height, gi->width,
-		    ED_GADGET_TINY_DISTANCE, tab_color);
-
-    ModifyGadget(gi, GDI_ACTIVE, active, GDI_END);
-    MapTextbuttonGadget(i);
-  }
-
-  // draw little border line below tabulator buttons
-  if (tab_color != BLACK_PIXEL)			// black => transparent
-    FillRectangle(drawto, gd_gi1->x, gd_gi1->y + gd_gi1->height +
-		  ED_GADGET_TINY_DISTANCE,
-		  getTabulatorBarWidth(), getTabulatorBarHeight(), tab_color);
-}
-
 static void DrawLevelConfigTabulatorGadgets(void)
 {
-  struct GadgetInfo *gd_gi1 = level_editor_gadget[GADGET_ID_LEVELCONFIG_LEVEL];
-  Pixel tab_color = getTabulatorBarColor();
   int id_first = ED_TEXTBUTTON_ID_LEVELCONFIG_LEVEL;
-  int id_last  = ED_TEXTBUTTON_ID_LEVELCONFIG_EDITOR;
+  int id_last  = ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE;
   int i;
-
-  // draw additional "engine" tabulator when using native BD engine or color template
-  if (checkLevelEngineConfig())
-    id_last = ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE;
 
   for (i = id_first; i <= id_last; i++)
   {
+    // skip tabulator if not required for this level
+    if ((i == ED_TEXTBUTTON_ID_LEVELCONFIG_COLORS && !checkLevelConfigColors()) ||
+        (i == ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE && !checkLevelConfigEngine()))
+      continue;
+
     int gadget_id = textbutton_info[i].gadget_id;
     struct GadgetInfo *gi = level_editor_gadget[gadget_id];
     boolean active = (i != edit_mode_levelconfig);
+    Pixel tab_color = getTabulatorBarColor();
 
     // draw background line below tabulator button
     ClearRectangleOnBackground(drawto, gi->x, gi->y + gi->height, gi->width, 1);
@@ -12054,17 +12043,16 @@ static void DrawLevelConfigTabulatorGadgets(void)
 
     ModifyGadget(gi, GDI_ACTIVE, active, GDI_END);
     MapTextbuttonGadget(i);
+
+    if (i == ED_TEXTBUTTON_ID_LEVELCONFIG_LEVEL ||
+        i == ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE)
+    {
+      // draw little border line below tabulator buttons
+      if (tab_color != BLACK_PIXEL)		// black => transparent
+        FillRectangle(drawto, gi->x, gi->y + gi->height + ED_GADGET_TINY_DISTANCE,
+                      getTabulatorBarWidth(), getTabulatorBarHeight(), tab_color);
+    }
   }
-
-  // draw little border line below tabulator buttons
-  if (tab_color != BLACK_PIXEL)			// black => transparent
-    FillRectangle(drawto, gd_gi1->x, gd_gi1->y + gd_gi1->height +
-		  ED_GADGET_TINY_DISTANCE,
-		  getTabulatorBarWidth(), getTabulatorBarHeight(), tab_color);
-
-  // draw second row of engine related tabulators when using native BD engine
-  if (edit_mode_levelconfig == ED_MODE_LEVELCONFIG_ENGINE)
-    DrawEngineConfigTabulatorGadgets();
 }
 
 static void DrawPropertiesTabulatorGadgets(void)
@@ -12247,7 +12235,7 @@ static void DrawLevelConfigEditor(void)
   MapTextbuttonGadget(ED_TEXTBUTTON_ID_SAVE_AS_TEMPLATE_2);
 }
 
-static void DrawEngineConfigConfig(void)
+static void DrawLevelConfigEngine(void)
 {
   int i;
 
@@ -12256,8 +12244,8 @@ static void DrawEngineConfigConfig(void)
     int font_nr = FONT_TEXT_1;
     int font_height = getFontHeight(font_nr);
     int yoffset_above = font_height + ED_GADGET_LINE_DISTANCE;
-    int xpos = ED_ENGINE_SETTINGS_X(0);
-    int ypos = ED_ENGINE_SETTINGS_Y(0);
+    int xpos = ED_LEVEL_SETTINGS_X(0);
+    int ypos = ED_LEVEL_SETTINGS_Y(0);
 
     PrintInfoText("No engine specific config available.", font_nr, xpos, ypos - yoffset_above);
     PrintInfoText("(Only available for Boulder Dash.)", font_nr, xpos, ypos);
@@ -12373,7 +12361,7 @@ static void DrawColorBox_BD(int type_id)
   FillRectangle(drawto, x2, y2, xsize2, ysize2, color);
 }
 
-static void DrawEngineConfigColors(void)
+static void DrawLevelConfigColors(void)
 {
   int i;
 
@@ -12382,8 +12370,8 @@ static void DrawEngineConfigColors(void)
     int font_nr = FONT_TEXT_1;
     int font_height = getFontHeight(font_nr);
     int yoffset_above = font_height + ED_GADGET_LINE_DISTANCE;
-    int xpos = ED_ENGINE_SETTINGS_X(0);
-    int ypos = ED_ENGINE_SETTINGS_Y(0);
+    int xpos = ED_LEVEL_SETTINGS_X(0);
+    int ypos = ED_LEVEL_SETTINGS_Y(0);
 
     PrintInfoText("No level specific colors available.", font_nr, xpos, ypos - yoffset_above);
     PrintInfoText("(Not supported by graphics set.)", font_nr, xpos, ypos);
@@ -12466,21 +12454,38 @@ static void DrawEngineConfigColors(void)
   struct GadgetInfo *gi = level_editor_gadget[GADGET_ID_BD_SET_RANDOM_COLORS];
   int ypos = (level.bd_coloring_type == GD_COLORING_TYPE_GRADIENTS ? 9 : 11) - skip;
 
-  ModifyGadget(gi, GDI_Y, SY + ED_SETTINGS_Y(ED_ENGINE_SETTINGS_YPOS(ypos)), GDI_END);
+  ModifyGadget(gi, GDI_Y, SY + ED_SETTINGS_Y(ED_LEVEL_SETTINGS_YPOS(ypos)), GDI_END);
 
   MapTextbuttonGadget(ED_TEXTBUTTON_ID_BD_SET_RANDOM_COLORS);
 }
 
-static void DrawLevelConfigEngine(void)
+static boolean checkRedrawLevelEd(void)
 {
-  if (edit_mode_engineconfig == ED_MODE_ENGINECONFIG_CONFIG)
-    DrawEngineConfigConfig();
-  else if (edit_mode_engineconfig == ED_MODE_ENGINECONFIG_COLORS)
-    DrawEngineConfigColors();
+  static boolean use_colors_tab = FALSE;
+  static boolean use_engine_tab = FALSE;
+
+  if (use_colors_tab != checkLevelConfigColors() ||
+      use_engine_tab != checkLevelConfigEngine())
+  {
+    use_colors_tab = checkLevelConfigColors();
+    use_engine_tab = checkLevelConfigEngine();
+
+    return TRUE;
+  }
+
+  return FALSE;
 }
 
 static void DrawLevelConfigWindow(void)
 {
+  if (checkRedrawLevelEd())
+  {
+    // re-create all config window gadgets (and redraw level editor window)
+    RedrawLevelEd(TRUE);
+
+    return;
+  }
+
   char *text = "Global Settings";
   int font_nr = FONT_TITLE_1;
   struct MenuPosInfo *pos = &editor.settings.headline;
@@ -12490,7 +12495,8 @@ static void DrawLevelConfigWindow(void)
   stick_element_properties_window = FALSE;
 
   // make sure that previous level config edit mode exists for this level
-  if (edit_mode_levelconfig == ED_MODE_LEVELCONFIG_ENGINE && !checkLevelEngineConfig())
+  if ((edit_mode_levelconfig == ED_MODE_LEVELCONFIG_COLORS && !checkLevelConfigColors()) ||
+      (edit_mode_levelconfig == ED_MODE_LEVELCONFIG_ENGINE && !checkLevelConfigEngine()))
     edit_mode_levelconfig = ED_MODE_LEVELCONFIG_LEVEL;
 
   SetAutomaticNumberOfGemsNeeded();
@@ -12510,6 +12516,8 @@ static void DrawLevelConfigWindow(void)
     DrawLevelConfigLevelSet();
   else if (edit_mode_levelconfig == ED_MODE_LEVELCONFIG_EDITOR)
     DrawLevelConfigEditor();
+  else if (edit_mode_levelconfig == ED_MODE_LEVELCONFIG_COLORS)
+    DrawLevelConfigColors();
   else if (edit_mode_levelconfig == ED_MODE_LEVELCONFIG_ENGINE)
     DrawLevelConfigEngine();
 }
@@ -13183,14 +13191,19 @@ static struct
   { -1,				NULL,					NULL			}
 };
 
-static boolean checkLevelEngineConfig(void)
+static boolean checkLevelConfigColors(void)
+{
+  // always show color settings if level graphics use color template
+  if (anyImagehasColorTemplate())
+    return TRUE;
+
+  return FALSE;
+}
+
+static boolean checkLevelConfigEngine(void)
 {
   // always show engine settings if level uses native BD engine
   if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
-    return TRUE;
-
-  // always show engine settings if level graphics use color template
-  if (anyImagehasColorTemplate())
     return TRUE;
 
   return FALSE;
@@ -17459,13 +17472,6 @@ static void HandleTextbuttonGadgets(struct GadgetInfo *gi)
       type_id <= ED_TAB_BUTTON_ID_LEVELCONFIG_LAST)
   {
     edit_mode_levelconfig = gi->custom_type_id;
-
-    DrawLevelConfigWindow();
-  }
-  else if (type_id >= ED_TAB_BUTTON_ID_ENGINECONFIG_FIRST &&
-	   type_id <= ED_TAB_BUTTON_ID_ENGINECONFIG_LAST)
-  {
-    edit_mode_engineconfig = gi->custom_type_id;
 
     DrawLevelConfigWindow();
   }
