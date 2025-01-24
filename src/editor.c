@@ -12239,20 +12239,6 @@ static void DrawLevelConfigEngine(void)
 {
   int i;
 
-  if (level.game_engine_type != GAME_ENGINE_TYPE_BD)
-  {
-    int font_nr = FONT_TEXT_1;
-    int font_height = getFontHeight(font_nr);
-    int yoffset_above = font_height + ED_GADGET_LINE_DISTANCE;
-    int xpos = ED_LEVEL_SETTINGS_X(0);
-    int ypos = ED_LEVEL_SETTINGS_Y(0);
-
-    PrintInfoText("No engine specific config available.", font_nr, xpos, ypos - yoffset_above);
-    PrintInfoText("(Only available for Boulder Dash.)", font_nr, xpos, ypos);
-
-    return;
-  }
-
   // draw counter gadgets
   if (level.bd_scheduling_type == GD_SCHEDULING_MILLISECONDS)
   {
@@ -12364,20 +12350,6 @@ static void DrawColorBox_BD(int type_id)
 static void DrawLevelConfigColors(void)
 {
   int i;
-
-  if (!anyImagehasColorTemplate())
-  {
-    int font_nr = FONT_TEXT_1;
-    int font_height = getFontHeight(font_nr);
-    int yoffset_above = font_height + ED_GADGET_LINE_DISTANCE;
-    int xpos = ED_LEVEL_SETTINGS_X(0);
-    int ypos = ED_LEVEL_SETTINGS_Y(0);
-
-    PrintInfoText("No level specific colors available.", font_nr, xpos, ypos - yoffset_above);
-    PrintInfoText("(Not supported by graphics set.)", font_nr, xpos, ypos);
-
-    return;
-  }
 
   // when using native BD engine with "classic" template colors, skip the two extra colors
   int skip = (level.game_engine_type == GAME_ENGINE_TYPE_BD &&
