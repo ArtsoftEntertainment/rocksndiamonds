@@ -1397,6 +1397,13 @@ static void save_properties(GdPtrArray *out, void *str, void *str_def,
     if (prop_desc[i].flags & GD_DONT_SAVE)
       continue;
 
+    // when using classic set of colors, skip saving extra colors
+    if (gfx.has_reduced_color_template &&
+        prop_desc[i].type == GD_TYPE_COLOR &&
+        (prop_desc[i].offset == STRUCT_OFFSET(GdCave, color[6]) ||
+         prop_desc[i].offset == STRUCT_OFFSET(GdCave, color[7])))
+      continue;
+
     // string data
     // write together with identifier, as one string per line.
     if (prop_desc[i].type == GD_TYPE_STRING)
