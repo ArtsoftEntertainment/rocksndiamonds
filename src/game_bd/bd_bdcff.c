@@ -512,6 +512,19 @@ static boolean cave_process_tags_func(const char *attrib, const char *param, GdC
       cave->color[6] = gd_c64_color(12);                       // extra color 1 - gray
       cave->color[7] = gd_c64_color(1);                        // extra color 2 - white
     }
+    else if (paramcount == 9)
+    {
+      // bg, color 0,1,2,3, amoeba, slime, two extra colors
+      cave->color_b  = gd_color_get_from_string(params[0]);
+      cave->color[0] = gd_color_get_from_string(params[1]);
+      cave->color[1] = gd_color_get_from_string(params[2]);
+      cave->color[2] = gd_color_get_from_string(params[3]);
+      cave->color[3] = gd_color_get_from_string(params[4]);
+      cave->color[4] = gd_color_get_from_string(params[5]);    // amoeba
+      cave->color[5] = gd_color_get_from_string(params[6]);    // slime
+      cave->color[6] = gd_color_get_from_string(params[7]);    // extra color 1
+      cave->color[7] = gd_color_get_from_string(params[8]);    // extra color 2
+    }
     else
     {
       Warn("invalid number of color strings: %s", param);
