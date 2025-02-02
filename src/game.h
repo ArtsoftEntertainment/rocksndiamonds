@@ -22,6 +22,8 @@
 #define STD_NUM_KEYS			4
 #define MAX_NUM_KEYS			8
 
+#define NUM_BDX_KEYS			3
+
 #define NUM_BELTS			4
 #define NUM_BELT_PARTS			3
 
@@ -105,6 +107,31 @@ struct GamePanelInfo
   struct TextPosInfo element_count[NUM_PANEL_ELEMENTS];
   struct TextPosInfo ce_score[NUM_PANEL_CE_SCORE];
   struct TextPosInfo ce_score_element[NUM_PANEL_CE_SCORE];
+  struct TextPosInfo bdx_lives;
+  struct TextPosInfo bdx_key[NUM_BDX_KEYS];
+  struct TextPosInfo bdx_key_count[NUM_BDX_KEYS];
+  struct TextPosInfo bdx_diamond_key;
+  struct TextPosInfo bdx_gravity;
+  struct TextPosInfo bdx_gravity_next;
+  struct TextPosInfo bdx_gravity_time;
+  struct TextPosInfo bdx_gravity_state;
+  struct TextPosInfo bdx_skeleton;
+  struct TextPosInfo bdx_skeleton_count;
+  struct TextPosInfo bdx_sweet;
+  struct TextPosInfo bdx_pneumatic_hammer;
+  struct TextPosInfo bdx_rocket_count;
+  struct TextPosInfo bdx_rocket_state;
+  struct TextPosInfo bdx_magic_wall;
+  struct TextPosInfo bdx_magic_wall_time;
+  struct TextPosInfo bdx_creature_switch;
+  struct TextPosInfo bdx_expandable_wall_switch;
+  struct TextPosInfo bdx_biter_switch_time;
+  struct TextPosInfo bdx_replicator;
+  struct TextPosInfo bdx_replicator_switch;
+  struct TextPosInfo bdx_conveyor_left;
+  struct TextPosInfo bdx_conveyor_right;
+  struct TextPosInfo bdx_conveyor_switch;
+  struct TextPosInfo bdx_conveyor_dir_switch;
   struct TextPosInfo player_name;
   struct TextPosInfo levelset_name;
   struct TextPosInfo level_name;

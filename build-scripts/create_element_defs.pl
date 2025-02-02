@@ -2533,6 +2533,7 @@ sub print_config_vars
 	    if ($var =~ /^titlescreen.*(\d)/ ||
 		$var =~ /^titlemessage.*(\d)/ ||
 		$var =~ /^game.panel.key_(\d)/ ||
+		$var =~ /^game.panel.bdx_key_(\d)\./ ||
 		$var =~ /^game.panel.inventory_first_(\d)/ ||
 		$var =~ /^game.panel.inventory_last_(\d)/ ||
 		$var =~ /^game.panel.conveyor_belt_(\d)\./ ||
@@ -2544,7 +2545,8 @@ sub print_config_vars
 		my $array_pos = int($number) - 1;
 		$var =~ s/_$number/\[$array_pos\]/;
 	    }
-	    elsif ($var =~ /^game.panel.conveyor_belt_(\d)(_switch)/ ||
+	    elsif ($var =~ /^game.panel.bdx_key_(\d)(_count)/ ||
+		   $var =~ /^game.panel.conveyor_belt_(\d)(_switch)/ ||
 		   $var =~ /^game.panel.element_(\d)(_count)/ ||
 		   $var =~ /^game.panel.ce_score_(\d)(_element)/)
 	    {
