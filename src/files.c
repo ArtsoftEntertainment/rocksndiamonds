@@ -13378,6 +13378,45 @@ static int get_anim_action_parameter_value(char *token)
   return result;
 }
 
+static int get_class_parameter_value(char *value)
+{
+  int result = (strEqual(value, ARG_UNDEFINED) ? ARG_UNDEFINED_VALUE :
+                get_hash_from_string(value));
+
+  return result;
+}
+
+static int get_style_parameter_value(char *value)
+{
+  int result = STYLE_DEFAULT;
+
+  if (string_has_parameter(value, "accurate_borders"))
+    result |= STYLE_ACCURATE_BORDERS;
+
+  if (string_has_parameter(value, "inner_corners"))
+    result |= STYLE_INNER_CORNERS;
+
+  if (string_has_parameter(value, "reverse"))
+    result |= STYLE_REVERSE;
+
+  if (string_has_parameter(value, "leftmost_position"))
+    result |= STYLE_LEFTMOST_POSITION;
+
+  if (string_has_parameter(value, "block_clicks"))
+    result |= STYLE_BLOCK;
+
+  if (string_has_parameter(value, "passthrough_clicks"))
+    result |= STYLE_PASSTHROUGH;
+
+  if (string_has_parameter(value, "multiple_actions"))
+    result |= STYLE_MULTIPLE_ACTIONS;
+
+  if (string_has_parameter(value, "consume_ce_event"))
+    result |= STYLE_CONSUME_CE_EVENT;
+
+  return result;
+}
+
 int get_parameter_value(char *value_raw, char *suffix, int type)
 {
   char *value = getStringToLower(value_raw);
@@ -13465,36 +13504,11 @@ int get_parameter_value(char *value_raw, char *suffix, int type)
   }
   else if (strEqual(suffix, ".class"))
   {
-    result = (strEqual(value, ARG_UNDEFINED) ? ARG_UNDEFINED_VALUE :
-	      get_hash_from_string(value));
+    result = get_class_parameter_value(value);
   }
   else if (strEqual(suffix, ".style"))
   {
-    result = STYLE_DEFAULT;
-
-    if (string_has_parameter(value, "accurate_borders"))
-      result |= STYLE_ACCURATE_BORDERS;
-
-    if (string_has_parameter(value, "inner_corners"))
-      result |= STYLE_INNER_CORNERS;
-
-    if (string_has_parameter(value, "reverse"))
-      result |= STYLE_REVERSE;
-
-    if (string_has_parameter(value, "leftmost_position"))
-      result |= STYLE_LEFTMOST_POSITION;
-
-    if (string_has_parameter(value, "block_clicks"))
-      result |= STYLE_BLOCK;
-
-    if (string_has_parameter(value, "passthrough_clicks"))
-      result |= STYLE_PASSTHROUGH;
-
-    if (string_has_parameter(value, "multiple_actions"))
-      result |= STYLE_MULTIPLE_ACTIONS;
-
-    if (string_has_parameter(value, "consume_ce_event"))
-      result |= STYLE_CONSUME_CE_EVENT;
+    result = get_style_parameter_value(value);
   }
   else if (strEqual(suffix, ".fade_mode"))
   {
