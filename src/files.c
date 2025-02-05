@@ -11040,7 +11040,7 @@ static struct TokenInfo global_setup_tokens[] =
   },
   {
     TYPE_SWITCH,
-    &setup.prefer_extra_panel_items,		"prefer_extra_panel_items"
+    &setup.show_extra_panel_items,		"show_extra_panel_items"
   },
   {
     TYPE_SWITCH,
@@ -11974,7 +11974,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->input_on_focus = FALSE;
   si->prefer_aga_graphics = TRUE;
   si->prefer_lowpass_sounds = FALSE;
-  si->prefer_extra_panel_items = TRUE;
+  si->show_extra_panel_items = FALSE;
   si->game_speed_extended = FALSE;
   si->game_frame_delay = GAME_FRAME_DELAY;
   si->default_game_engine_type	= GAME_ENGINE_TYPE_RND;

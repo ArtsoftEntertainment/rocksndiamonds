@@ -1592,7 +1592,7 @@ struct SetupInfo
   boolean input_on_focus;
   boolean prefer_aga_graphics;
   boolean prefer_lowpass_sounds;
-  boolean prefer_extra_panel_items;
+  boolean show_extra_panel_items;
   boolean game_speed_extended;
   int game_frame_delay;
   int default_game_engine_type;
