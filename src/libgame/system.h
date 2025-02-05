@@ -429,6 +429,19 @@
 // values for special global animation delay actions
 #define ANIM_DELAY_ACTION_NONE		-1
 
+// values for special drawing classes
+#define CLASS_NONE			0
+
+// values used for game panel graphics
+#define CLASS_MM_ENGINE_ONLY		(1 << 0)
+#define CLASS_EXTRA_PANEL_ITEMS		(1 << 1)
+#define CLASS_BD_PRE_HATCHING		(1 << 2)
+#define CLASS_BD_POST_HATCHING		(1 << 3)
+
+#define CLASS_MAX			((1 << 4) - 1)
+
+#define CLASS_DEFAULT			CLASS_NONE
+
 // values for special drawing styles and event handling
 #define STYLE_NONE			0
 

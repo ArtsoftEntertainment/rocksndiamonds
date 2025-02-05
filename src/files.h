@@ -127,5 +127,6 @@ int GetGlobalAnimEventValueCount(int);
 int get_parameter_value(char *, char *, int);
 
 boolean isClass(int, char *);
+boolean hasClass(int, int);
 
 #endif	// FILES_H

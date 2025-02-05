@@ -13380,8 +13380,25 @@ static int get_anim_action_parameter_value(char *token)
 
 static int get_class_parameter_value(char *value)
 {
-  int result = (strEqual(value, ARG_UNDEFINED) ? ARG_UNDEFINED_VALUE :
-                get_hash_from_string(value));
+  int result = CLASS_DEFAULT;
+
+  if (strEqual(value, ARG_UNDEFINED))
+    return ARG_UNDEFINED_VALUE;
+
+  if (string_has_parameter(value, "mm_engine_only"))
+    result |= CLASS_MM_ENGINE_ONLY;
+
+  if (string_has_parameter(value, "extra_panel_items"))
+    result |= CLASS_EXTRA_PANEL_ITEMS;
+
+  if (string_has_parameter(value, "bd_pre_hatching"))
+    result |= CLASS_BD_PRE_HATCHING;
+
+  if (string_has_parameter(value, "bd_post_hatching"))
+    result |= CLASS_BD_POST_HATCHING;
+
+  if (result == CLASS_DEFAULT)
+    result = get_hash_from_string(value);
 
   return result;
 }
@@ -13565,6 +13582,15 @@ static int get_token_parameter_value(char *token, char *value_raw)
 boolean isClass(int class, char *value)
 {
   return (class == get_hash_from_string(value));
+}
+
+boolean hasClass(int class, int value)
+{
+  if (class < CLASS_NONE ||
+      class > CLASS_MAX)
+    return FALSE;
+
+  return ((class & value) != 0);
 }
 
 void InitMenuDesignSettings_FromHash(SetupFileHash *setup_file_hash,
