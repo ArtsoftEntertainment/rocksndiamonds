@@ -3051,15 +3051,15 @@ static void DisplayGameControlValues(void)
     if (PANEL_DEACTIVATED(pos))
       continue;
 
-    if (pos->class == get_hash_from_string("extra_panel_items") &&
+    if (isClass(pos->class, "extra_panel_items") &&
 	!setup.prefer_extra_panel_items)
       continue;
 
-    if (pos->class == get_hash_from_string("bd_pre_hatching") &&
+    if (isClass(pos->class, "bd_pre_hatching") &&
         (level.game_engine_type != GAME_ENGINE_TYPE_BD || game_bd.game->cave->hatched))
       continue;
 
-    if (pos->class == get_hash_from_string("bd_post_hatching") &&
+    if (isClass(pos->class, "bd_post_hatching") &&
         (level.game_engine_type == GAME_ENGINE_TYPE_BD && !game_bd.game->cave->hatched))
       continue;
 
@@ -3151,7 +3151,7 @@ static void DisplayGameControlValues(void)
       int width, height;
       int dst_x = PANEL_XPOS(pos);
       int dst_y = PANEL_YPOS(pos);
-      boolean skip = (pos->class == get_hash_from_string("mm_engine_only") &&
+      boolean skip = (isClass(pos->class, "mm_engine_only") &&
 		      level.game_engine_type != GAME_ENGINE_TYPE_MM);
 
       if (graphic != IMG_UNDEFINED && !skip)

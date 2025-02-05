@@ -599,7 +599,7 @@ static void InitGlobalAnimControls(void)
 	}
 
 	// apply special settings to pointer-style animations
-	if (part->control_info.class == get_hash_from_string("pointer"))
+	if (isClass(part->control_info.class, "pointer"))
 	{
 	  // force pointer-style animations to be checked for clicks first
 	  part->control_info.draw_order = 1000000;
@@ -984,7 +984,7 @@ static boolean SetGlobalAnimPart_Viewport(struct GlobalAnimPartControlInfo *part
   boolean changed = FALSE;
 
   if (part->last_anim_status == global.anim_status &&
-      part->control_info.class != get_hash_from_string("pointer"))
+      !isClass(part->control_info.class, "pointer"))
     return FALSE;
 
   part->last_anim_status = global.anim_status;
@@ -993,8 +993,8 @@ static boolean SetGlobalAnimPart_Viewport(struct GlobalAnimPartControlInfo *part
 
   part->class_playfield_or_door = FALSE;
 
-  if (part->control_info.class == get_hash_from_string("window") ||
-      part->control_info.class == get_hash_from_string("border"))
+  if (isClass(part->control_info.class, "window") ||
+      isClass(part->control_info.class, "border"))
   {
     viewport_x = 0;
     viewport_y = 0;
@@ -1003,7 +1003,7 @@ static boolean SetGlobalAnimPart_Viewport(struct GlobalAnimPartControlInfo *part
 
     part->drawing_stage = DRAW_GLOBAL_ANIM_STAGE_2;
   }
-  else if (part->control_info.class == get_hash_from_string("pointer"))
+  else if (isClass(part->control_info.class, "pointer"))
   {
     int mx = MIN(MAX(0, gfx.mouse_x), WIN_XSIZE - 1);
     int my = MIN(MAX(0, gfx.mouse_y), WIN_YSIZE - 1);
@@ -1024,7 +1024,7 @@ static boolean SetGlobalAnimPart_Viewport(struct GlobalAnimPartControlInfo *part
     if (global.anim_status != GAME_MODE_LOADING)
       gfx.cursor_mode_override = CURSOR_NONE;
   }
-  else if (part->control_info.class == get_hash_from_string("door_1"))
+  else if (isClass(part->control_info.class, "door_1"))
   {
     viewport_x = DX;
     viewport_y = DY;
@@ -1033,7 +1033,7 @@ static boolean SetGlobalAnimPart_Viewport(struct GlobalAnimPartControlInfo *part
 
     part->class_playfield_or_door = TRUE;
   }
-  else if (part->control_info.class == get_hash_from_string("door_2"))
+  else if (isClass(part->control_info.class, "door_2"))
   {
     if (part->mode_nr == GAME_MODE_EDITOR)
     {
@@ -1072,7 +1072,7 @@ static boolean SetGlobalAnimPart_Viewport(struct GlobalAnimPartControlInfo *part
     part->viewport_width  = viewport_width;
     part->viewport_height = viewport_height;
 
-    if (part->control_info.class != get_hash_from_string("pointer"))
+    if (!isClass(part->control_info.class, "pointer"))
       changed = TRUE;
   }
 
@@ -1610,7 +1610,7 @@ static int HandleGlobalAnim_Part(struct GlobalAnimPartControlInfo *part,
       part->step_yoffset = 0;
     }
 
-    if (part->control_info.class != get_hash_from_string("pointer"))
+    if (!isClass(part->control_info.class, "pointer"))
     {
       if (c->x != ARG_UNDEFINED_VALUE)
 	part->x = c->x;
@@ -2073,7 +2073,7 @@ static boolean InitGlobalAnim_Clicked(int mx, int my, int clicked_event)
 
     // if request dialog is active, only handle pointer-style animations
     if (game.request_active &&
-	part->control_info.class != get_hash_from_string("pointer"))
+	!isClass(part->control_info.class, "pointer"))
       continue;
 
     if (clicked_event == ANIM_CLICKED_RESET)

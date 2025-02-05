@@ -13562,6 +13562,11 @@ static int get_token_parameter_value(char *token, char *value_raw)
   return get_parameter_value(value_raw, suffix, TYPE_INTEGER);
 }
 
+boolean isClass(int class, char *value)
+{
+  return (class == get_hash_from_string(value));
+}
+
 void InitMenuDesignSettings_FromHash(SetupFileHash *setup_file_hash,
 				     boolean ignore_defaults)
 {
