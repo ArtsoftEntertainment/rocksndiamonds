@@ -83,8 +83,10 @@
 
 #define PANEL_OFF()		(game.panel.active == FALSE)
 #define	PANEL_DEACTIVATED(p)	((p)->x < 0 || (p)->y < 0 || PANEL_OFF())
-#define PANEL_XPOS(p)		(DX + ALIGNED_TEXT_XPOS(p))
-#define PANEL_YPOS(p)		(DY + ALIGNED_TEXT_YPOS(p))
+#define PANEL_XOFFSET(p)	(setup.prefer_extra_panel_items ? (p)->xoffset2 : 0)
+#define PANEL_YOFFSET(p)	(setup.prefer_extra_panel_items ? (p)->yoffset2 : 0)
+#define PANEL_XPOS(p)		(DX + ALIGNED_TEXT_XPOS(p) + PANEL_XOFFSET(p))
+#define PANEL_YPOS(p)		(DY + ALIGNED_TEXT_YPOS(p) + PANEL_YOFFSET(p))
 
 // game panel display and control definitions
 #define GAME_PANEL_LEVEL_NUMBER			0
