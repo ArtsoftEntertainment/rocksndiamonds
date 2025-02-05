@@ -139,6 +139,9 @@ struct GamePanelInfo
 
   // value to determine if panel will be updated or not
   boolean active;
+
+  // value for dynamically showing extra panel items
+  boolean show_extra_items;
 };
 
 struct GameButtonInfo
@@ -460,6 +463,7 @@ int getPlayerInventorySize(int);
 
 void UpdateGameDoorValues(void);
 void DrawGameDoorValues(void);
+void DrawGameDoorValues_ForceRedraw(void);
 
 void UpdateAndDisplayGameControlValues(void);
 

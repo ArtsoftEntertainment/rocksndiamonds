@@ -2313,6 +2313,14 @@ void HandleKey(Key key, int key_status)
       if (key_action & JOY_BUTTON)
         game_button_key_pressed = TRUE;
     }
+
+    // check if key to toggle extra game panel items was pressed or released
+    if (key == KSYM_Shift_L)
+    {
+      game.panel.show_extra_items = (key_status == KEY_PRESSED);
+
+      DrawGameDoorValues_ForceRedraw();
+    }
   }
   else
   {

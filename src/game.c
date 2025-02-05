@@ -83,10 +83,16 @@
 
 #define PANEL_OFF()		(game.panel.active == FALSE)
 #define	PANEL_DEACTIVATED(p)	((p)->x < 0 || (p)->y < 0 || PANEL_OFF())
-#define PANEL_XOFFSET(p)	(setup.show_extra_panel_items ? (p)->xoffset2 : 0)
-#define PANEL_YOFFSET(p)	(setup.show_extra_panel_items ? (p)->yoffset2 : 0)
-#define PANEL_XPOS(p)		(DX + ALIGNED_TEXT_XPOS(p) + PANEL_XOFFSET(p))
-#define PANEL_YPOS(p)		(DY + ALIGNED_TEXT_YPOS(p) + PANEL_YOFFSET(p))
+#define PANEL_SHOW_EXTRA()	(setup.show_extra_panel_items)
+#define PANEL_TOGGLE_EXTRA()	(game.panel.show_extra_items && !setup.show_extra_panel_items)
+#define PANEL_XOFFSET_2ND(p)	(PANEL_SHOW_EXTRA() ? (p)->xoffset2 : 0)
+#define PANEL_YOFFSET_2ND(p)	(PANEL_SHOW_EXTRA() ? (p)->yoffset2 : 0)
+#define PANEL_XOFFSET_TOGGLE(p)	(PANEL_TOGGLE_EXTRA() ? (p)->xoffset : 0)
+#define PANEL_YOFFSET_TOGGLE(p)	(PANEL_TOGGLE_EXTRA() ? (p)->yoffset : 0)
+#define PANEL_XOFFSETS(p)	(PANEL_XOFFSET_2ND(p) + PANEL_XOFFSET_TOGGLE(p))
+#define PANEL_YOFFSETS(p)	(PANEL_YOFFSET_2ND(p) + PANEL_YOFFSET_TOGGLE(p))
+#define PANEL_XPOS(p)		(DX + ALIGNED_TEXT_XPOS(p) + PANEL_XOFFSETS(p))
+#define PANEL_YPOS(p)		(DY + ALIGNED_TEXT_YPOS(p) + PANEL_YOFFSETS(p))
 
 // game panel display and control definitions
 #define GAME_PANEL_LEVEL_NUMBER			0
@@ -3006,9 +3012,9 @@ static void UpdateGameControlValues(void)
   }
 }
 
-static void DisplayGameControlValues(void)
+static void DisplayGameControlValuesExt(boolean force_redraw)
 {
-  boolean redraw_panel = FALSE;
+  boolean redraw_panel = force_redraw;
   int i;
 
   for (i = 0; game_panel_controls[i].nr != -1; i++)
@@ -3057,7 +3063,8 @@ static void DisplayGameControlValues(void)
       continue;
 
     if (hasClass(pos->class, CLASS_EXTRA_PANEL_ITEMS) &&
-	!setup.show_extra_panel_items)
+	!setup.show_extra_panel_items &&
+        !game.panel.show_extra_items)
       continue;
 
     if (hasClass(pos->class, CLASS_BD_PRE_HATCHING) &&
@@ -3302,6 +3309,16 @@ static void DisplayGameControlValues(void)
   SetGameStatus(GAME_MODE_PLAYING);
 }
 
+static void DisplayGameControlValues(void)
+{
+  DisplayGameControlValuesExt(FALSE);
+}
+
+static void DisplayGameControlValues_ForceRedraw(void)
+{
+  DisplayGameControlValuesExt(TRUE);
+}
+
 void UpdateAndDisplayGameControlValues(void)
 {
   if (tape.deactivate_display)
@@ -3319,6 +3336,11 @@ void UpdateGameDoorValues(void)
 void DrawGameDoorValues(void)
 {
   DisplayGameControlValues();
+}
+
+void DrawGameDoorValues_ForceRedraw(void)
+{
+  DisplayGameControlValues_ForceRedraw();
 }
 
 
@@ -4371,6 +4393,7 @@ void InitGame(void)
   game.RestartGameRequested = FALSE;
 
   game.panel.active = TRUE;
+  game.panel.show_extra_items = FALSE;
 
   game.no_level_time_limit = (level.time == 0);
   game.time_limit = (leveldir_current->time_limit && setup.time_limit);
