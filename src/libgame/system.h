@@ -1932,9 +1932,10 @@ struct DoorPartPosInfo
 struct TextPosInfo
 {
   int x, y;
-  int xoffset;			// special case for tape date and time
-  int xoffset2;			// special case for tape date
-  int yoffset;			// special case for list of preview players
+  int xoffset;			// special case for various offsets for drawing
+  int xoffset2;			// special case for various offsets for drawing
+  int yoffset;			// special case for various offsets for drawing
+  int yoffset2;			// special case for various offsets for drawing
   int width, height;
   int align, valign;
   int size;			// also used for suffix ".digits"

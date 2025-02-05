@@ -2564,6 +2564,8 @@ sub print_config_vars
 	    $var =~ s/^(game\.panel\..*)\.tile_size$/$1.size/;
 	    $var =~ s/^(menu\.request\.button\..*)\.tile_size$/$1.size/;
 	    $var =~ s/\.digits$/.size/;
+	    $var =~ s/\.pressed_xoffset$/.xoffset/;
+	    $var =~ s/\.pressed_yoffset$/.yoffset/;
 	    $var =~ s/\.2nd_offset$/.offset2/;
 	    $var =~ s/\.2nd_xoffset$/.xoffset2/;
 	    $var =~ s/\.2nd_yoffset$/.yoffset2/;
