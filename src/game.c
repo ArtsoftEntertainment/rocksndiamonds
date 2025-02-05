@@ -2822,98 +2822,101 @@ static void UpdateGameControlValues(void)
        element_info[game.panel.ce_score_element[i].id].collect_score :
        EL_UNDEFINED);
 
-  game_panel_controls[GAME_PANEL_BDX_LIVES].value = game_bd.global_lives;
-
-  for (i = 0; i < NUM_BDX_KEYS; i++)
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
   {
-    int key_value = (i == 0 ? game_bd.game->cave->key1 :
-                     i == 1 ? game_bd.game->cave->key2 :
-                     i == 2 ? game_bd.game->cave->key3 : 0);
-    game_panel_controls[GAME_PANEL_BDX_KEY_1 + i].value =
-      (key_value > 0 ? EL_BDX_KEY_1 + i : EL_BDX_EMPTY);
-    game_panel_controls[GAME_PANEL_BDX_KEY_1_COUNT + i].value = key_value;
+    game_panel_controls[GAME_PANEL_BDX_LIVES].value = game_bd.global_lives;
+
+    for (i = 0; i < NUM_BDX_KEYS; i++)
+    {
+      int key_value = (i == 0 ? game_bd.game->cave->key1 :
+                       i == 1 ? game_bd.game->cave->key2 :
+                       i == 2 ? game_bd.game->cave->key3 : 0);
+      game_panel_controls[GAME_PANEL_BDX_KEY_1 + i].value =
+        (key_value > 0 ? EL_BDX_KEY_1 + i : EL_BDX_EMPTY);
+      game_panel_controls[GAME_PANEL_BDX_KEY_1_COUNT + i].value = key_value;
+    }
+
+    game_panel_controls[GAME_PANEL_BDX_DIAMOND_KEY].value =
+      (game_bd.game->cave->diamond_key_collected ? EL_BDX_DIAMOND_KEY : EL_BDX_EMPTY);
+
+    game_panel_controls[GAME_PANEL_BDX_GRAVITY].value =
+      (game_bd.game->cave->gravity == GD_MV_LEFT  ? EL_ARROW_LEFT  :
+       game_bd.game->cave->gravity == GD_MV_RIGHT ? EL_ARROW_RIGHT :
+       game_bd.game->cave->gravity == GD_MV_UP    ? EL_ARROW_UP    :
+       game_bd.game->cave->gravity == GD_MV_DOWN  ? EL_ARROW_DOWN  :
+       EL_BDX_EMPTY);
+
+    game_panel_controls[GAME_PANEL_BDX_GRAVITY_NEXT].value =
+      (game_bd.game->cave->gravity_next_direction == GD_MV_LEFT  ? EL_ARROW_LEFT  :
+       game_bd.game->cave->gravity_next_direction == GD_MV_RIGHT ? EL_ARROW_RIGHT :
+       game_bd.game->cave->gravity_next_direction == GD_MV_UP    ? EL_ARROW_UP    :
+       game_bd.game->cave->gravity_next_direction == GD_MV_DOWN  ? EL_ARROW_DOWN  :
+       game_panel_controls[GAME_PANEL_BDX_GRAVITY].value);
+
+    game_panel_controls[GAME_PANEL_BDX_GRAVITY_TIME].value =
+      (game_bd.game->cave->gravity_will_change + 999) / 1000;
+    game_panel_controls[GAME_PANEL_BDX_GRAVITY_STATE].value =
+      !game_bd.game->cave->gravity_disabled;
+
+    game_panel_controls[GAME_PANEL_BDX_SKELETON].value =
+      (game_bd.game->cave->skeletons_collected ? EL_BDX_SKELETON : EL_BDX_EMPTY);
+    game_panel_controls[GAME_PANEL_BDX_SKELETON_COUNT].value =
+      game_bd.game->cave->skeletons_collected;
+
+    game_panel_controls[GAME_PANEL_BDX_SWEET].value =
+      (game_bd.game->cave->sweet_eaten ? EL_BDX_SWEET : EL_BDX_EMPTY);
+
+    game_panel_controls[GAME_PANEL_BDX_PNEUMATIC_HAMMER].value =
+      (game_bd.game->cave->got_pneumatic_hammer ?  : EL_BDX_EMPTY);
+
+    game_panel_controls[GAME_PANEL_BDX_ROCKET_COUNT].value =
+      game_bd.game->cave->rockets_collected;
+    game_panel_controls[GAME_PANEL_BDX_ROCKET_STATE].value =
+      game_bd.game->cave->infinite_rockets;
+
+    game_panel_controls[GAME_PANEL_BDX_MAGIC_WALL].value =
+      (game_bd.game->cave->magic_wall_state == GD_MW_ACTIVE ?
+       EL_BDX_MAGIC_WALL_ACTIVE : EL_BDX_MAGIC_WALL);
+    game_panel_controls[GAME_PANEL_BDX_MAGIC_WALL_TIME].value =
+      game_bd.game->cave->magic_wall_time;
+
+    game_panel_controls[GAME_PANEL_BDX_CREATURE_SWITCH].value =
+      (game_bd.game->cave->creatures_backwards ?
+       EL_BDX_CREATURE_SWITCH_ACTIVE : EL_BDX_CREATURE_SWITCH);
+
+    game_panel_controls[GAME_PANEL_BDX_EXPANDABLE_WALL_SWITCH].value =
+      (game_bd.game->cave->expanding_wall_changed ?
+       EL_BDX_EXPANDABLE_WALL_SWITCH_ACTIVE : EL_BDX_EXPANDABLE_WALL_SWITCH);
+
+    game_panel_controls[GAME_PANEL_BDX_BITER_SWITCH_TIME].value =
+      game_bd.game->cave->biter_delay_frame;
+
+    game_panel_controls[GAME_PANEL_BDX_REPLICATOR].value =
+      (game_bd.game->cave->replicators_active ?
+       EL_BDX_REPLICATOR_ACTIVE : EL_BDX_REPLICATOR);
+    game_panel_controls[GAME_PANEL_BDX_REPLICATOR_SWITCH].value =
+      (game_bd.game->cave->replicators_active ?
+       EL_BDX_REPLICATOR_SWITCH_ACTIVE : EL_BDX_REPLICATOR_SWITCH);
+
+    game_panel_controls[GAME_PANEL_BDX_CONVEYOR_LEFT].value =
+      (game_bd.game->cave->conveyor_belts_active ?
+       (game_bd.game->cave->conveyor_belts_direction_changed ?
+        EL_BDX_CONVEYOR_RIGHT_ACTIVE : EL_BDX_CONVEYOR_LEFT_ACTIVE) :
+       (game_bd.game->cave->conveyor_belts_direction_changed ?
+        EL_BDX_CONVEYOR_RIGHT : EL_BDX_CONVEYOR_LEFT));
+    game_panel_controls[GAME_PANEL_BDX_CONVEYOR_RIGHT].value =
+      (game_bd.game->cave->conveyor_belts_active ?
+       (game_bd.game->cave->conveyor_belts_direction_changed ?
+        EL_BDX_CONVEYOR_LEFT_ACTIVE : EL_BDX_CONVEYOR_RIGHT_ACTIVE) :
+       (game_bd.game->cave->conveyor_belts_direction_changed ?
+        EL_BDX_CONVEYOR_LEFT : EL_BDX_CONVEYOR_RIGHT));
+    game_panel_controls[GAME_PANEL_BDX_CONVEYOR_SWITCH].value =
+      (game_bd.game->cave->conveyor_belts_active ?
+       EL_BDX_CONVEYOR_SWITCH_ACTIVE : EL_BDX_CONVEYOR_SWITCH);
+    game_panel_controls[GAME_PANEL_BDX_CONVEYOR_DIR_SWITCH].value =
+      (game_bd.game->cave->conveyor_belts_direction_changed ?
+       EL_BDX_CONVEYOR_DIR_SWITCH_ACTIVE : EL_BDX_CONVEYOR_DIR_SWITCH);
   }
-
-  game_panel_controls[GAME_PANEL_BDX_DIAMOND_KEY].value =
-    (game_bd.game->cave->diamond_key_collected ? EL_BDX_DIAMOND_KEY : EL_BDX_EMPTY);
-
-  game_panel_controls[GAME_PANEL_BDX_GRAVITY].value =
-    (game_bd.game->cave->gravity == GD_MV_LEFT  ? EL_ARROW_LEFT  :
-     game_bd.game->cave->gravity == GD_MV_RIGHT ? EL_ARROW_RIGHT :
-     game_bd.game->cave->gravity == GD_MV_UP    ? EL_ARROW_UP    :
-     game_bd.game->cave->gravity == GD_MV_DOWN  ? EL_ARROW_DOWN  :
-     EL_BDX_EMPTY);
-
-  game_panel_controls[GAME_PANEL_BDX_GRAVITY_NEXT].value =
-    (game_bd.game->cave->gravity_next_direction == GD_MV_LEFT  ? EL_ARROW_LEFT  :
-     game_bd.game->cave->gravity_next_direction == GD_MV_RIGHT ? EL_ARROW_RIGHT :
-     game_bd.game->cave->gravity_next_direction == GD_MV_UP    ? EL_ARROW_UP    :
-     game_bd.game->cave->gravity_next_direction == GD_MV_DOWN  ? EL_ARROW_DOWN  :
-     game_panel_controls[GAME_PANEL_BDX_GRAVITY].value);
-
-  game_panel_controls[GAME_PANEL_BDX_GRAVITY_TIME].value =
-    (game_bd.game->cave->gravity_will_change + 999) / 1000;
-  game_panel_controls[GAME_PANEL_BDX_GRAVITY_STATE].value =
-    !game_bd.game->cave->gravity_disabled;
-
-  game_panel_controls[GAME_PANEL_BDX_SKELETON].value =
-    (game_bd.game->cave->skeletons_collected ? EL_BDX_SKELETON : EL_BDX_EMPTY);
-  game_panel_controls[GAME_PANEL_BDX_SKELETON_COUNT].value =
-    game_bd.game->cave->skeletons_collected;
-
-  game_panel_controls[GAME_PANEL_BDX_SWEET].value =
-    (game_bd.game->cave->sweet_eaten ? EL_BDX_SWEET : EL_BDX_EMPTY);
-
-  game_panel_controls[GAME_PANEL_BDX_PNEUMATIC_HAMMER].value =
-    (game_bd.game->cave->got_pneumatic_hammer ?  : EL_BDX_EMPTY);
-
-  game_panel_controls[GAME_PANEL_BDX_ROCKET_COUNT].value =
-    game_bd.game->cave->rockets_collected;
-  game_panel_controls[GAME_PANEL_BDX_ROCKET_STATE].value =
-    game_bd.game->cave->infinite_rockets;
-
-  game_panel_controls[GAME_PANEL_BDX_MAGIC_WALL].value =
-    (game_bd.game->cave->magic_wall_state == GD_MW_ACTIVE ?
-     EL_BDX_MAGIC_WALL_ACTIVE : EL_BDX_MAGIC_WALL);
-  game_panel_controls[GAME_PANEL_BDX_MAGIC_WALL_TIME].value =
-    game_bd.game->cave->magic_wall_time;
-
-  game_panel_controls[GAME_PANEL_BDX_CREATURE_SWITCH].value =
-    (game_bd.game->cave->creatures_backwards ?
-     EL_BDX_CREATURE_SWITCH_ACTIVE : EL_BDX_CREATURE_SWITCH);
-
-  game_panel_controls[GAME_PANEL_BDX_EXPANDABLE_WALL_SWITCH].value =
-    (game_bd.game->cave->expanding_wall_changed ?
-     EL_BDX_EXPANDABLE_WALL_SWITCH_ACTIVE : EL_BDX_EXPANDABLE_WALL_SWITCH);
-
-  game_panel_controls[GAME_PANEL_BDX_BITER_SWITCH_TIME].value =
-    game_bd.game->cave->biter_delay_frame;
-
-  game_panel_controls[GAME_PANEL_BDX_REPLICATOR].value =
-    (game_bd.game->cave->replicators_active ?
-     EL_BDX_REPLICATOR_ACTIVE : EL_BDX_REPLICATOR);
-  game_panel_controls[GAME_PANEL_BDX_REPLICATOR_SWITCH].value =
-    (game_bd.game->cave->replicators_active ?
-     EL_BDX_REPLICATOR_SWITCH_ACTIVE : EL_BDX_REPLICATOR_SWITCH);
-
-  game_panel_controls[GAME_PANEL_BDX_CONVEYOR_LEFT].value =
-    (game_bd.game->cave->conveyor_belts_active ?
-     (game_bd.game->cave->conveyor_belts_direction_changed ?
-      EL_BDX_CONVEYOR_RIGHT_ACTIVE : EL_BDX_CONVEYOR_LEFT_ACTIVE) :
-     (game_bd.game->cave->conveyor_belts_direction_changed ?
-      EL_BDX_CONVEYOR_RIGHT : EL_BDX_CONVEYOR_LEFT));
-  game_panel_controls[GAME_PANEL_BDX_CONVEYOR_RIGHT].value =
-    (game_bd.game->cave->conveyor_belts_active ?
-     (game_bd.game->cave->conveyor_belts_direction_changed ?
-      EL_BDX_CONVEYOR_LEFT_ACTIVE : EL_BDX_CONVEYOR_RIGHT_ACTIVE) :
-     (game_bd.game->cave->conveyor_belts_direction_changed ?
-      EL_BDX_CONVEYOR_LEFT : EL_BDX_CONVEYOR_RIGHT));
-  game_panel_controls[GAME_PANEL_BDX_CONVEYOR_SWITCH].value =
-    (game_bd.game->cave->conveyor_belts_active ?
-     EL_BDX_CONVEYOR_SWITCH_ACTIVE : EL_BDX_CONVEYOR_SWITCH);
-  game_panel_controls[GAME_PANEL_BDX_CONVEYOR_DIR_SWITCH].value =
-    (game_bd.game->cave->conveyor_belts_direction_changed ?
-     EL_BDX_CONVEYOR_DIR_SWITCH_ACTIVE : EL_BDX_CONVEYOR_DIR_SWITCH);
 
   game_panel_controls[GAME_PANEL_PLAYER_NAME].value = 0;
   game_panel_controls[GAME_PANEL_LEVELSET_NAME].value = 0;
