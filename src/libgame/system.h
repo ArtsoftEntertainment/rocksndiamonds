@@ -200,6 +200,7 @@
 #define DEFAULT_KEY_SPEED_FAST		KSYM_f
 #define DEFAULT_KEY_SPEED_SLOW		KSYM_s
 #define DEFAULT_KEY_SUICIDE		KSYM_F12
+#define DEFAULT_KEY_TOGGLE_PANEL	KSYM_Shift_L
 
 // default debug setup keys and values
 #define DEFAULT_FRAME_DELAY_0		20		// 100 % speed
@@ -1459,6 +1460,7 @@ struct SetupShortcutInfo
   Key speed_slow;
 
   Key suicide;
+  Key toggle_panel;
 };
 
 struct SetupSystemInfo

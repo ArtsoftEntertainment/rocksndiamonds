@@ -11514,6 +11514,10 @@ static struct TokenInfo shortcut_setup_tokens[] =
     TYPE_KEY_X11,
     &setup.shortcut.suicide,			"shortcut.suicide"
   },
+  {
+    TYPE_KEY_X11,
+    &setup.shortcut.toggle_panel,		"shortcut.toggle_panel"
+  },
 };
 
 static struct SetupInputInfo setup_input;
@@ -12139,6 +12143,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->shortcut.speed_slow	= DEFAULT_KEY_SPEED_SLOW;
 
   si->shortcut.suicide		= DEFAULT_KEY_SUICIDE;
+  si->shortcut.toggle_panel	= DEFAULT_KEY_TOGGLE_PANEL;
 
   for (i = 0; i < MAX_PLAYERS; i++)
   {

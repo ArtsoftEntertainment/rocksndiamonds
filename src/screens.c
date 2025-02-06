@@ -8934,6 +8934,8 @@ static struct TokenInfo setup_info_shortcuts_7[] =
 {
   { TYPE_KEYTEXT,	NULL,				"Boulder Dash Suicide Key:"	},
   { TYPE_KEY,		&setup.shortcut.suicide,	""				},
+  { TYPE_KEYTEXT,	NULL,				"Toggle Extra Panel Items:"	},
+  { TYPE_KEY,		&setup.shortcut.toggle_panel,	""				},
   { TYPE_EMPTY,		NULL,				""				},
   { TYPE_LEAVE_MENU,	execSetupShortcuts,		"Back"				},
 

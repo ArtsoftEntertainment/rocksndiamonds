@@ -2315,7 +2315,7 @@ void HandleKey(Key key, int key_status)
     }
 
     // check if key to toggle extra game panel items was pressed or released
-    if (key == KSYM_Shift_L)
+    if (key == setup.shortcut.toggle_panel)
     {
       game.panel.show_extra_items = (key_status == KEY_PRESSED);
 
