@@ -739,7 +739,7 @@ void gd_drawcave_game(const GdCave *cave,
 		      boolean bonus_life_flash, int animcycle, boolean hate_invisible_outbox);
 
 // function to copy a GdString
-static inline char *gd_strcpy(GdString dest, const GdString src)
+static inline char *gd_strcpy(GdString dest, const char *src)
 {
     return strncpy(dest, src, sizeof(GdString));
 }
