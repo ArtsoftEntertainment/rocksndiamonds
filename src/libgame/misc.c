@@ -993,7 +993,7 @@ char *getDefaultUserName(int nr)
 char *getTimestampFromEpoch(time_t epoch_seconds)
 {
   struct tm *now = localtime(&epoch_seconds);
-  static char timestamp[20];
+  static char timestamp[100];
 
   sprintf(timestamp, "%04d%02d%02d-%02d%02d%02d",
 	  now->tm_year + 1900, now->tm_mon + 1, now->tm_mday,
