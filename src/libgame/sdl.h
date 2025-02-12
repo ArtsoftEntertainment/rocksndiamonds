@@ -422,6 +422,7 @@ void SDLSetScreenRenderingMode(char *);
 void SDLSetScreenVsyncMode(char *);
 void SDLRedrawWindow(void);
 void SDLSetWindowTitle(void);
+void SDLSetWindowResized(void);
 
 void SDLLimitScreenUpdates(boolean);
 void SDLInitVideoDisplay(void);

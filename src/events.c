@@ -667,6 +667,7 @@ void HandleWindowEvent(WindowEvent *event)
 	UpdateMousePosition();
 
 	SetWindowTitle();
+	SetWindowResized();
 
         // required if executed from outside setup menu
         SaveSetupIfNeeded();

@@ -140,6 +140,11 @@ void SetWindowTitle(void)
   SDLSetWindowTitle();
 }
 
+void SetWindowResized(void)
+{
+  SDLSetWindowResized();
+}
+
 void InitWindowTitleFunction(char *(*window_title_function)(void))
 {
   program.window_title_function = window_title_function;

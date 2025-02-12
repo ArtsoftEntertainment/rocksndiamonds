@@ -31,6 +31,7 @@ static SDL_Renderer *sdl_renderer = NULL;
 static SDL_Texture *sdl_texture_stream = NULL;
 static SDL_Texture *sdl_texture_target = NULL;
 static boolean fullscreen_enabled = FALSE;
+static boolean window_resized = FALSE;
 static boolean limit_screen_updates = FALSE;
 
 
@@ -205,9 +206,11 @@ static void UpdateScreenExt(SDL_Rect *rect, boolean with_frame_delay)
   }
 #endif
 
+  boolean clear_complete_render_target = (fullscreen_enabled || window_resized);
+
   // clear render target (complete screen in fullscreen mode to clear visible off-screen areas)
   // (this is especially important for touch buttons on Android and for different window sizes)
-  if (fullscreen_enabled)
+  if (clear_complete_render_target)
     SDL_RenderClear(sdl_renderer);
 
   // set renderer to use target texture for rendering
@@ -216,7 +219,7 @@ static void UpdateScreenExt(SDL_Rect *rect, boolean with_frame_delay)
     SDL_SetRenderTarget(sdl_renderer, sdl_texture_target);
 
   // clear render target (target texture only to fix black flickering with Metal window on Mac)
-  if (!fullscreen_enabled)
+  if (!clear_complete_render_target)
     SDL_RenderClear(sdl_renderer);
 
   // copy backbuffer texture to render target buffer
@@ -250,6 +253,8 @@ static void UpdateScreenExt(SDL_Rect *rect, boolean with_frame_delay)
 
   // show render target buffer on screen
   SDL_RenderPresent(sdl_renderer);
+
+  window_resized = FALSE;
 }
 
 static void UpdateScreen_WithFrameDelay(SDL_Rect *rect)
@@ -882,6 +887,11 @@ void SDLSetWindowTitle(void)
   SDL_SetWindowTitle(sdl_window, program.window_title);
 }
 
+void SDLSetWindowResized(void)
+{
+  window_resized = TRUE;
+}
+
 void SDLSetWindowScaling(int window_scaling_percent)
 {
   if (sdl_window == NULL)
@@ -898,6 +908,7 @@ void SDLSetWindowScaling(int window_scaling_percent)
   video.window_height = new_window_height;
 
   SetWindowTitle();
+  SetWindowResized();
 }
 
 void SDLSetWindowScalingQuality(char *window_scaling_quality)

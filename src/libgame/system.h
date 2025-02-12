@@ -2045,6 +2045,7 @@ void InitNetworkInfo(boolean, boolean, boolean, char *, int);
 void InitRuntimeInfo(void);
 
 void SetWindowTitle(void);
+void SetWindowResized(void);
 
 void InitWindowTitleFunction(char *(*window_title_function)(void));
 void InitExitMessageFunction(void (*exit_message_function)(char *, va_list));
