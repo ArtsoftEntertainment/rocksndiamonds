@@ -479,7 +479,7 @@ prng_get_double (void)
 {
   for (;;)
     {
-      double dbl = prng_get_ulong () / (ULONG_MAX + 1.0);
+      double dbl = prng_get_ulong () / ((double)ULONG_MAX + 1.0);
       if (dbl >= 0.0 && dbl < 1.0)
         return dbl;
     }
