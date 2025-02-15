@@ -7242,6 +7242,56 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Light rock"
   },
   {
+    "bdx_unused_1",
+    "bdx_unused",
+    "-"
+  },
+  {
+    "bdx_unused_2",
+    "bdx_unused",
+    "-"
+  },
+  {
+    "bdx_unused_3",
+    "bdx_unused",
+    "-"
+  },
+  {
+    "bdx_unused_4",
+    "bdx_unused",
+    "-"
+  },
+  {
+    "bdx_unused_5",
+    "bdx_unused",
+    "-"
+  },
+  {
+    "bdx_unused_6",
+    "bdx_unused",
+    "-"
+  },
+  {
+    "bdx_unused_7",
+    "bdx_unused",
+    "-"
+  },
+  {
+    "bdx_unused_8",
+    "bdx_unused",
+    "-"
+  },
+  {
+    "bdx_unused_9",
+    "bdx_unused",
+    "-"
+  },
+  {
+    "bdx_unused_10",
+    "bdx_unused",
+    "-"
+  },
+  {
     "bdx_grass_ball.falling",
     "bdx_grass_ball",
     "Grass ball (falling)"
