@@ -10368,11 +10368,11 @@ static void MapCheckbuttonGadget(int id)
   int yoffset_above = font_height + ED_GADGET_LINE_DISTANCE;
   int yoffset = (gi->height - font_height) / 2;
   int y_above = gi->y - yoffset_above;
-  int x = gi->x;
   int x_left, x_right, y;	// set after gadget position was modified
 
   // set position for gadgets with dynamically determined position
-  if (checkbutton_info[id].x != -1)	// do not change dynamic positions
+  if (checkbutton_info[id].x != -1 &&
+      checkbutton_info[id].text_left == NULL)	// do not change dynamic positions or if left text
     ModifyGadget(gi, GDI_X, SX + ED_SETTINGS_X(checkbutton_info[id].x), GDI_END);
   ModifyGadget(gi, GDI_Y, SY + ED_SETTINGS_Y(checkbutton_info[id].y), GDI_END);
 
@@ -10381,7 +10381,7 @@ static void MapCheckbuttonGadget(int id)
   y = gi->y + yoffset;
 
   if (checkbutton_info[id].text_above)
-    DrawText(x, y_above, checkbutton_info[id].text_above, font_nr);
+    DrawText(x_left, y_above, checkbutton_info[id].text_above, font_nr);
 
   if (checkbutton_info[id].text_left)
     DrawText(x_left, y, checkbutton_info[id].text_left, font_nr);
