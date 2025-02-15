@@ -875,6 +875,18 @@ struct ConfigInfo image_config[] =
   { "bdx_exit_open.EDITOR.xpos",			"3"				},
   { "bdx_exit_open.EDITOR.ypos",			"0"				},
 
+  { "bdx_steel_exit_closed",				UNDEFINED_FILENAME		},
+  { "bdx_steel_exit_closed.clone_from",			"bdx_exit_closed"		},
+  { "bdx_steel_exit_closed.EDITOR",			"RocksBD2.png"			},
+  { "bdx_steel_exit_closed.EDITOR.xpos",		"3"				},
+  { "bdx_steel_exit_closed.EDITOR.ypos",		"6"				},
+
+  { "bdx_steel_exit_open",				UNDEFINED_FILENAME		},
+  { "bdx_steel_exit_open.clone_from",			"bdx_exit_open"			},
+  { "bdx_steel_exit_open.EDITOR",			"RocksBD2.png"			},
+  { "bdx_steel_exit_open.EDITOR.xpos",			"1"				},
+  { "bdx_steel_exit_open.EDITOR.ypos",			"6"				},
+
   { "bdx_invisible_exit_closed",			UNDEFINED_FILENAME		},
   { "bdx_invisible_exit_closed.clone_from",		"bdx_steelwall"			},
   { "bdx_invisible_exit_closed.EDITOR",			"RocksBD2.png"			},
@@ -886,6 +898,18 @@ struct ConfigInfo image_config[] =
   { "bdx_invisible_exit_open.EDITOR",			"RocksBD2.png"			},
   { "bdx_invisible_exit_open.EDITOR.xpos",		"2"				},
   { "bdx_invisible_exit_open.EDITOR.ypos",		"0"				},
+
+  { "bdx_invisible_steel_exit_closed",			UNDEFINED_FILENAME		},
+  { "bdx_invisible_steel_exit_closed.clone_from",	"bdx_steelwall"			},
+  { "bdx_invisible_steel_exit_closed.EDITOR",		"RocksBD2.png"			},
+  { "bdx_invisible_steel_exit_closed.EDITOR.xpos",	"2"				},
+  { "bdx_invisible_steel_exit_closed.EDITOR.ypos",	"6"				},
+
+  { "bdx_invisible_steel_exit_open",			UNDEFINED_FILENAME		},
+  { "bdx_invisible_steel_exit_open.clone_from",		"bdx_steelwall"			},
+  { "bdx_invisible_steel_exit_open.EDITOR",		"RocksBD2.png"			},
+  { "bdx_invisible_steel_exit_open.EDITOR.xpos",	"0"				},
+  { "bdx_invisible_steel_exit_open.EDITOR.ypos",	"6"				},
 
   { "bdx_flying_rock",					"RocksBD.png"			},
   { "bdx_flying_rock.xpos",				"1"				},

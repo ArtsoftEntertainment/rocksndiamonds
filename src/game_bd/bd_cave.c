@@ -1038,6 +1038,8 @@ void gd_cave_auto_shrink(GdCave *cave)
 
 	  case O_PRE_OUTBOX:
 	  case O_PRE_INVIS_OUTBOX:
+	  case O_PRE_STEEL_OUTBOX:
+	  case O_PRE_INVIS_STEEL_OUTBOX:
 	  case O_INBOX:
 	    if (empty == STEEL_OR_OTHER)
 	      empty = NO_SHRINK;
@@ -1077,6 +1079,8 @@ void gd_cave_auto_shrink(GdCave *cave)
 
 	  case O_PRE_OUTBOX:
 	  case O_PRE_INVIS_OUTBOX:
+	  case O_PRE_STEEL_OUTBOX:
+	  case O_PRE_INVIS_STEEL_OUTBOX:
 	  case O_INBOX:
 	    // shrink only lines, which have only ONE player or outbox.
 	    // this is for bd4 intermission 2, for example.
@@ -1114,6 +1118,8 @@ void gd_cave_auto_shrink(GdCave *cave)
 
 	  case O_PRE_OUTBOX:
 	  case O_PRE_INVIS_OUTBOX:
+	  case O_PRE_STEEL_OUTBOX:
+	  case O_PRE_INVIS_STEEL_OUTBOX:
 	  case O_INBOX:
 	    if (empty == STEEL_OR_OTHER)
 	      empty = NO_SHRINK;
@@ -1151,6 +1157,8 @@ void gd_cave_auto_shrink(GdCave *cave)
 
 	  case O_PRE_OUTBOX:
 	  case O_PRE_INVIS_OUTBOX:
+	  case O_PRE_STEEL_OUTBOX:
+	  case O_PRE_INVIS_STEEL_OUTBOX:
 	  case O_INBOX:
 	    if (empty == STEEL_OR_OTHER)
 	      empty = NO_SHRINK;
@@ -1646,6 +1654,13 @@ void gd_drawcave_game(const GdCave *cave,
                                                 O_OUTBOX_OPEN :
                                                 O_OUTBOX_CLOSED].image_game;
 
+  elemmapping[O_STEEL_OUTBOX] = (cave->inbox_flash_toggle ?
+                                 O_STEEL_OUTBOX_OPEN :
+                                 O_STEEL_OUTBOX_CLOSED);
+  elemdrawing[O_STEEL_OUTBOX] = gd_element_properties[cave->inbox_flash_toggle ?
+                                                      O_STEEL_OUTBOX_OPEN :
+                                                      O_STEEL_OUTBOX_CLOSED].image_game;
+
   // hack, cannot do this with gd_element_properties
   elemmapping[O_BITER_SWITCH] = (O_BITER_SWITCH_1 + cave->biter_delay_frame);
   elemdrawing[O_BITER_SWITCH] = (gd_element_properties[O_BITER_SWITCH].image_game +
@@ -1673,6 +1688,12 @@ void gd_drawcave_game(const GdCave *cave,
 
     elemdrawing[O_PRE_INVIS_OUTBOX] = elemdrawing[O_PRE_OUTBOX];
     elemdrawing[O_INVIS_OUTBOX] = elemdrawing[O_OUTBOX];
+
+    elemmapping[O_PRE_INVIS_STEEL_OUTBOX] = elemmapping[O_PRE_STEEL_OUTBOX];
+    elemmapping[O_INVIS_STEEL_OUTBOX] = elemmapping[O_STEEL_OUTBOX];
+
+    elemdrawing[O_PRE_INVIS_STEEL_OUTBOX] = elemdrawing[O_PRE_STEEL_OUTBOX];
+    elemdrawing[O_INVIS_STEEL_OUTBOX] = elemdrawing[O_STEEL_OUTBOX];
   }
 
   for (y = cave->y1; y <= cave->y2; y++)

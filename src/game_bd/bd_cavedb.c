@@ -70,14 +70,18 @@ enum _generated_cells_indexes
   i_dragonfly_4,
   i_cow_enclosed,
   i_pre_outbox_nonblink,
+  i_pre_steel_outbox_nonblink,
   i_invis_outbox,
+  i_invis_steel_outbox,
   i_brick_non_sloped,
   i_outbox,
+  i_steel_outbox,
   i_stone_f,
   i_flying_stone_f,
   i_diamond_f,
   i_flying_diamond_f,
   i_pre_invis_outbox,
+  i_pre_invis_steel_outbox,
   i_unknown,
   i_waiting_stone,
   i_pre_outbox_frame_1,    // this will have 8 frames.
@@ -88,6 +92,14 @@ enum _generated_cells_indexes
   i_pre_outbox_frame_6,
   i_pre_outbox_frame_7,
   i_pre_outbox_frame_8,
+  i_pre_steel_outbox_frame_1,    // this will have 8 frames.
+  i_pre_steel_outbox_frame_2,
+  i_pre_steel_outbox_frame_3,
+  i_pre_steel_outbox_frame_4,
+  i_pre_steel_outbox_frame_5,
+  i_pre_steel_outbox_frame_6,
+  i_pre_steel_outbox_frame_7,
+  i_pre_steel_outbox_frame_8,
   i_nitro_pack_f,
   i_alt_butter_1,
   i_alt_butter_2,
@@ -358,6 +370,26 @@ GdElementProperty gd_element_properties[] =
     O_INVIS_OUTBOX, O_INVIS_OUTBOX, N_("Invisible outbox (open)"),
     0,
     "HIDDENOUTBOXopen", 0, i_invis_outbox, i_invis_outbox, 22
+  },
+  {
+    O_PRE_STEEL_OUTBOX, O_PRE_STEEL_OUTBOX, N_("Steel outbox"),
+    P_NON_EXPLODABLE,
+    "STEELOUTBOX", 0, i_pre_steel_outbox_nonblink, -i_pre_steel_outbox_frame_1, 22
+  },
+  {
+    O_STEEL_OUTBOX, O_STEEL_OUTBOX, N_("Steel outbox (open)"),
+    P_NON_EXPLODABLE,
+    "STEELOUTBOXopen", 0, i_steel_outbox, i_steel_outbox, 22
+  },
+  {
+    O_PRE_INVIS_STEEL_OUTBOX, O_PRE_INVIS_STEEL_OUTBOX, N_("Invisible steel outbox"),
+    P_NON_EXPLODABLE,
+    "HIDDENSTEELOUTBOX", 0, i_pre_invis_steel_outbox, i_pre_invis_steel_outbox, 22
+  },
+  {
+    O_INVIS_STEEL_OUTBOX, O_INVIS_STEEL_OUTBOX, N_("Invisible steel outbox (open)"),
+    P_NON_EXPLODABLE,
+    "HIDDENSTEELOUTBOXopen", 0, i_invis_steel_outbox, i_invis_steel_outbox, 22
   },
   {
     O_STEEL, O_STEEL, N_("Steel wall"),
@@ -1916,6 +1948,16 @@ GdElementProperty gd_element_properties[] =
   },
   {
     O_OUTBOX_OPEN, O_OUTBOX_OPEN, NULL,
+    0,
+    NULL, 0, 23, 23, 23
+  },
+  {
+    O_STEEL_OUTBOX_CLOSED, O_STEEL_OUTBOX_CLOSED, NULL,
+    0,
+    NULL, 0, 22, 22, 22
+  },
+  {
+    O_STEEL_OUTBOX_OPEN, O_STEEL_OUTBOX_OPEN, NULL,
     0,
     NULL, 0, 23, 23, 23
   },

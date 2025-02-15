@@ -2246,16 +2246,16 @@
 #define EL_BDX_DIAMOND				1406
 #define EL_BDX_MAGIC_WALL			1407
 #define EL_BDX_LIGHT_ROCK			1408
-#define EL_BDX_UNUSED_1				1409
-#define EL_BDX_UNUSED_2				1410
-#define EL_BDX_UNUSED_3				1411
-#define EL_BDX_UNUSED_4				1412
-#define EL_BDX_UNUSED_5				1413
-#define EL_BDX_UNUSED_6				1414
-#define EL_BDX_UNUSED_7				1415
-#define EL_BDX_UNUSED_8				1416
-#define EL_BDX_UNUSED_9				1417
-#define EL_BDX_UNUSED_10			1418
+#define EL_BDX_STEEL_EXIT_CLOSED		1409
+#define EL_BDX_STEEL_EXIT_OPEN			1410
+#define EL_BDX_INVISIBLE_STEEL_EXIT_CLOSED	1411
+#define EL_BDX_INVISIBLE_STEEL_EXIT_OPEN	1412
+#define EL_BDX_UNUSED_1				1413
+#define EL_BDX_UNUSED_2				1414
+#define EL_BDX_UNUSED_3				1415
+#define EL_BDX_UNUSED_4				1416
+#define EL_BDX_UNUSED_5				1417
+#define EL_BDX_UNUSED_6				1418
 
 // BD style elements (effects/scanned; runtime elements, but can also be stored in level file)
 #define EL_BDX_RUNTIME_START			1419

@@ -1250,6 +1250,8 @@ static GdElement player_eat_element(GdCave *cave, const GdElement element, int x
 
     case O_OUTBOX:
     case O_INVIS_OUTBOX:
+    case O_STEEL_OUTBOX:
+    case O_INVIS_STEEL_OUTBOX:
       cave->player_state = GD_PL_EXITED;    // player now exits the cave!
       return O_SPACE;
 
@@ -3933,6 +3935,16 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	case O_PRE_INVIS_OUTBOX:
 	  if (cave->gate_open) // if no more diamonds needed
 	    store(cave, x, y, O_INVIS_OUTBOX);   // open outbox. invisible one :P
+	  break;
+
+	case O_PRE_STEEL_OUTBOX:
+	  if (cave->gate_open) // if no more diamonds needed
+	    store(cave, x, y, O_STEEL_OUTBOX);   // open steel outbox
+	  break;
+
+	case O_PRE_INVIS_STEEL_OUTBOX:
+	  if (cave->gate_open) // if no more diamonds needed
+	    store(cave, x, y, O_INVIS_STEEL_OUTBOX);   // open steel outbox. invisible one :P
 	  break;
 
 	case O_INBOX:

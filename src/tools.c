@@ -6183,6 +6183,10 @@ bd_object_mapping_list[] =
     O_PRE_OUTBOX,				TRUE,
     EL_EXIT_CLOSED,				-1, -1
   },
+  {
+    O_PRE_STEEL_OUTBOX,				TRUE,
+    EL_STEEL_EXIT_CLOSED,			-1, -1
+  },
 
   // BD style elements with their corresponding RND style elements
 
@@ -6369,6 +6373,22 @@ bd_object_mapping_list[] =
   {
     O_INVIS_OUTBOX,				TRUE,
     EL_BDX_INVISIBLE_EXIT_OPEN,			-1, -1
+  },
+  {
+    O_PRE_STEEL_OUTBOX,				TRUE,
+    EL_BDX_STEEL_EXIT_CLOSED,			-1, -1
+  },
+  {
+    O_STEEL_OUTBOX,				TRUE,
+    EL_BDX_STEEL_EXIT_OPEN,			-1, -1
+  },
+  {
+    O_PRE_INVIS_STEEL_OUTBOX,			TRUE,
+    EL_BDX_INVISIBLE_STEEL_EXIT_CLOSED,		-1, -1
+  },
+  {
+    O_INVIS_STEEL_OUTBOX,			TRUE,
+    EL_BDX_INVISIBLE_STEEL_EXIT_OPEN,		-1, -1
   },
   {
     O_STEEL,					TRUE,
@@ -7983,6 +8003,14 @@ bd_object_mapping_list[] =
   {
     O_OUTBOX_OPEN,				FALSE,
     EL_BDX_EXIT_OPEN,				-1, -1
+  },
+  {
+    O_STEEL_OUTBOX_CLOSED,			FALSE,
+    EL_BDX_STEEL_EXIT_CLOSED,			-1, -1
+  },
+  {
+    O_STEEL_OUTBOX_OPEN,			FALSE,
+    EL_BDX_STEEL_EXIT_OPEN,			-1, -1
   },
   {
     O_COVERED,					FALSE,
@@ -11376,6 +11404,7 @@ void InitGraphicInfo_BD(void)
 			BD_GFX_RANGE(O_AMOEBA_2_EXPL_1, 4, e) ? BD_GFX_FRAME(O_AMOEBA_2_EXPL_1, e):
 			e == O_INBOX_OPEN                   ||
 			e == O_OUTBOX_OPEN                  ||
+			e == O_STEEL_OUTBOX_OPEN            ||
 			e == O_DIRT_DIGGING_LEFT            ||
 			e == O_DIRT_DIGGING_RIGHT           ||
 			e == O_DIRT_DIGGING_UP              ||

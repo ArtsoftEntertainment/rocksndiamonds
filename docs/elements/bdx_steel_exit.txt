@@ -1,0 +1,3 @@
+After collecting the required number of diamonds, look for a flashing out box
+to exit the cave. Closed steel out box looks like normal steel wall, and cannot
+accidentally be destroyed (unlike the normal out box).
