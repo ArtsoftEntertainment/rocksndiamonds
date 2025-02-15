@@ -383,6 +383,8 @@ typedef struct _gd_cave
                                         // false for plck
   boolean wraparound_objects;           // if this is true, object drawing (cave rendering)
                                         // will wraparound as well.
+  boolean open_borders_horizontal;      // cave is open for crossing borders horizontally
+  boolean open_borders_vertical;        // cave is open for crossing borders vertically
   boolean infinite_scrolling;           // use scrolling instead of wrapping at playfield borders
 
   GdElement initial_fill;

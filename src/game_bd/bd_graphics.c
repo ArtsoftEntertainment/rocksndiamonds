@@ -253,6 +253,8 @@ boolean gd_scroll(GdGame *game, boolean exact_scroll, boolean immediate)
   static int scroll_speed_last = -1;
   int player_x, player_y, visible_x, visible_y;
   boolean infinite_scrolling = game->cave->infinite_scrolling;
+  boolean infinite_scrolling_x = (infinite_scrolling && game->cave->open_borders_horizontal);
+  boolean infinite_scrolling_y = (infinite_scrolling && game->cave->open_borders_vertical);
   boolean changed;
 
   // max scrolling speed depends on the speed of the cave.
@@ -293,11 +295,11 @@ boolean gd_scroll(GdGame *game, boolean exact_scroll, boolean immediate)
   changed = FALSE;
 
   if (cave_scroll(visible_x, play_area_w, player_x * cell_size + cell_size / 2 - play_area_w / 2,
-		  exact_scroll, &scroll_x, &scroll_desired_x, scroll_speed, infinite_scrolling))
+		  exact_scroll, &scroll_x, &scroll_desired_x, scroll_speed, infinite_scrolling_x))
     changed = TRUE;
 
   if (cave_scroll(visible_y, play_area_h, player_y * cell_size + cell_size / 2 - play_area_h / 2,
-		  exact_scroll, &scroll_y, &scroll_desired_y, scroll_speed, infinite_scrolling))
+		  exact_scroll, &scroll_y, &scroll_desired_y, scroll_speed, infinite_scrolling_y))
     changed = TRUE;
 
   // if scrolling, we should update entire screen.
@@ -687,6 +689,22 @@ static int get_screen_y(GdGame *game, int y)
   return get_screen_pos(y, game->cave->y2 - game->cave->y1 + 1, SYSIZE, scroll_y);
 }
 
+static int getx(const GdCave *cave, const int x)
+{
+  if (!cave->open_borders_horizontal)
+    return MIN(MAX(0, x), cave->w - 1);
+
+  return (x + cave->w) % cave->w;
+}
+
+static int gety(const GdCave *cave, const int y)
+{
+  if (!cave->open_borders_vertical)
+    return MIN(MAX(0, y), cave->h - 1);
+
+  return (y + cave->h) % cave->h;
+}
+
 static void gd_drawcave_crumbled(Bitmap *dest, GdGame *game, int x, int y, boolean draw_masked)
 {
   void (*blit_bitmap)(Bitmap *, Bitmap *, int, int, int, int, int, int) =
@@ -723,8 +741,8 @@ static void gd_drawcave_crumbled(Bitmap *dest, GdGame *game, int x, int y, boole
     int dir = dirs[i];
     int dx = gd_dx[dir];
     int dy = gd_dy[dir];
-    int xx = (x + dx + cave->w) % cave->w;
-    int yy = (y + dy + cave->h) % cave->h;
+    int xx = getx(cave, x + dx);
+    int yy = gety(cave, y + dy);
     int xoffset = (dx > 0 ? cell_size - border_size : 0);
     int yoffset = (dy > 0 ? cell_size - border_size : 0);
     int xsize = (dx == 0 ? cell_size : border_size);

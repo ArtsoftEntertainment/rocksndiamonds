@@ -329,6 +329,16 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
   },
   {
     -1,					-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(27),
+    &li.bd_open_borders_horizontal,	TRUE
+  },
+  {
+    -1,					-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(28),
+    &li.bd_open_borders_vertical,	TRUE
+  },
+  {
+    -1,					-1,
     TYPE_INTEGER,			CONF_VALUE_32_BIT(4),
     &li.bd_color[0],			GD_C64_COLOR_BLACK
   },
@@ -4421,6 +4431,8 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->short_explosions		= level->bd_short_explosions;
 
   // scrolling settings
+  cave->open_borders_horizontal		= level->bd_open_borders_horizontal;
+  cave->open_borders_vertical		= level->bd_open_borders_vertical;
   cave->infinite_scrolling		= level->bd_infinite_scrolling;
 
   // player properties
@@ -4610,6 +4622,8 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_short_explosions		= cave->short_explosions;
 
   // scrolling settings
+  level->bd_open_borders_horizontal	= cave->open_borders_horizontal;
+  level->bd_open_borders_vertical	= cave->open_borders_vertical;
   level->bd_infinite_scrolling		= cave->infinite_scrolling;
 
   // player properties

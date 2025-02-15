@@ -366,22 +366,38 @@ static inline int gety(const GdCave *cave, const int x, const int y)
 // perfect (non-lineshifting) GET x/y functions; returns range corrected x/y position
 static inline int getx_perfect(const GdCave *cave, const int x, const int y)
 {
+  // dirty workaround: if closed border, force previous position instead of wrapping around
+  if (!cave->open_borders_horizontal)
+    return MIN(MAX(0, x), cave->w - 1);
+
   return (x + cave->w) % cave->w;
 }
 
 static inline int gety_perfect(const GdCave *cave, const int x, const int y)
 {
+  // dirty workaround: if closed border, force previous position instead of wrapping around
+  if (!cave->open_borders_vertical)
+    return MIN(MAX(0, y), cave->h - 1);
+
   return (y + cave->h) % cave->h;
 }
 
 // line shifting GET x/y function; returns range corrected x/y position
 static inline int getx_shift(const GdCave *cave, int x, int y)
 {
+  // dirty workaround: if closed border, force previous position instead of wrapping around
+  if (!cave->open_borders_horizontal)
+    return MIN(MAX(0, x), cave->w - 1);
+
   return (x + cave->w) % cave->w;
 }
 
 static inline int gety_shift(const GdCave *cave, int x, int y)
 {
+  // dirty workaround: if closed border, force previous position instead of wrapping around
+  if (!cave->open_borders_vertical)
+    return MIN(MAX(0, y), cave->h - 1);
+
   return ((x < 0 ? y - 1 : x >= cave->w ? y + 1 : y) + cave->h) % cave->h;
 }
 
@@ -394,6 +410,15 @@ static inline GdElement *getp(const GdCave *cave, const int x, const int y)
 // returns a pointer to a selected cave element by its coordinates.
 static inline GdElement *getp_perfect(const GdCave *cave, const int x, const int y)
 {
+  // if closed border, return steel wall element instead of wrapped around playfield element
+  if (((x < 0 || x >= cave->w) && !cave->open_borders_horizontal) ||
+      ((y < 0 || y >= cave->h) && !cave->open_borders_vertical))
+  {
+    static GdElement steel = O_STEEL;	// return code must be pointer to element
+
+    return &steel;
+  }
+
   // (x + n) mod n: this works also for x >= n and -n + 1 < x < 0
   return &(cave->map[(y + cave->h) % cave->h][(x + cave->w) % cave->w]);
 }
@@ -403,6 +428,15 @@ static inline GdElement *getp_perfect(const GdCave *cave, const int x, const int
 // the player entering one side will appear one row above or below on the other.
 static inline GdElement *getp_shift(const GdCave *cave, int x, int y)
 {
+  // if closed border, return steel wall element instead of wrapped around playfield element
+  if (((x < 0 || x >= cave->w) && !cave->open_borders_horizontal) ||
+      ((y < 0 || y >= cave->h) && !cave->open_borders_vertical))
+  {
+    static GdElement steel = O_STEEL;	// return code must be pointer to element
+
+    return &steel;
+  }
+
   if (x >= cave->w)
   {
     y++;
