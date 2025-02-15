@@ -91,7 +91,7 @@ void gd_init_play_area(void)
   slightly larger than the screen, in that case no scrolling is desirable
 */
 static boolean cave_scroll(int logical_size, int physical_size, int center, boolean exact,
-			   int *current, int *desired, int speed)
+			   int *current, int *desired, int speed, boolean infinite_scrolling)
 {
   int max = MAX(0, logical_size - physical_size);
   int edge_distance = SCROLL_EDGE_DISTANCE;
@@ -143,7 +143,22 @@ static boolean cave_scroll(int logical_size, int physical_size, int center, bool
     }
   }
 
-  *desired = MIN(MAX(0, *desired), max);
+  if (!infinite_scrolling)
+  {
+    // when not using infinite scrolling, always force visible area to be fully inside playfield
+    *desired = MIN(MAX(0, *desired), max);
+  }
+  else if (*desired < 0 || *desired > max)
+  {
+    int current_wrapped = *current - SIGN(*current) * logical_size;
+
+    // when using infinite scrolling, allow scrolling over playfield borders, but wrap if needed
+    if (ABS(*current - *desired) > ABS(current_wrapped - *desired))
+    {
+      *current = current_wrapped;
+      *desired = *current;
+    }
+  }
 
   if (*current < *desired)
   {
@@ -196,6 +211,10 @@ static boolean player_out_of_window(GdGame *game, int player_x, int player_y)
   if (game->cave->player_state == GD_PL_NOT_YET)
     return FALSE;
 
+  // when using infinite scrolling, always treat player as being inside visible window
+  if (game->cave->infinite_scrolling)
+    return FALSE;
+
   // check if active player is outside drawing area. if yes, we should wait for scrolling
   if ((player_x * cell_size) < scroll_x ||
       (player_x * cell_size + cell_size - 1) > scroll_x + play_area_w)
@@ -233,6 +252,7 @@ boolean gd_scroll(GdGame *game, boolean exact_scroll, boolean immediate)
   static int scroll_desired_x = 0, scroll_desired_y = 0;
   static int scroll_speed_last = -1;
   int player_x, player_y, visible_x, visible_y;
+  boolean infinite_scrolling = game->cave->infinite_scrolling;
   boolean changed;
 
   // max scrolling speed depends on the speed of the cave.
@@ -273,11 +293,11 @@ boolean gd_scroll(GdGame *game, boolean exact_scroll, boolean immediate)
   changed = FALSE;
 
   if (cave_scroll(visible_x, play_area_w, player_x * cell_size + cell_size / 2 - play_area_w / 2,
-		  exact_scroll, &scroll_x, &scroll_desired_x, scroll_speed))
+		  exact_scroll, &scroll_x, &scroll_desired_x, scroll_speed, infinite_scrolling))
     changed = TRUE;
 
   if (cave_scroll(visible_y, play_area_h, player_y * cell_size + cell_size / 2 - play_area_h / 2,
-		  exact_scroll, &scroll_y, &scroll_desired_y, scroll_speed))
+		  exact_scroll, &scroll_y, &scroll_desired_y, scroll_speed, infinite_scrolling))
     changed = TRUE;
 
   // if scrolling, we should update entire screen.
@@ -644,13 +664,36 @@ static int get_dirt_element(int element, int dir, boolean crumbled)
   return element;
 }
 
+static int get_screen_pos(int tile_pos, int playfield_tiles, int screen_size, int scroll_pos)
+{
+  int playfield_size = playfield_tiles * cell_size;
+  int screen_pos = tile_pos * cell_size - scroll_pos;
+
+  if (screen_pos <= -cell_size)
+    screen_pos += playfield_size;
+  else if (screen_pos >= screen_size)
+    screen_pos -= playfield_size;
+
+  return screen_pos;
+}
+
+static int get_screen_x(GdGame *game, int x)
+{
+  return get_screen_pos(x, game->cave->x2 - game->cave->x1 + 1, SXSIZE, scroll_x);
+}
+
+static int get_screen_y(GdGame *game, int y)
+{
+  return get_screen_pos(y, game->cave->y2 - game->cave->y1 + 1, SYSIZE, scroll_y);
+}
+
 static void gd_drawcave_crumbled(Bitmap *dest, GdGame *game, int x, int y, boolean draw_masked)
 {
   void (*blit_bitmap)(Bitmap *, Bitmap *, int, int, int, int, int, int) =
     (draw_masked ? BlitBitmapMasked : BlitBitmap);
   GdCave *cave = game->cave;
-  int sx = x * cell_size - scroll_x;
-  int sy = y * cell_size - scroll_y;
+  int sx = get_screen_x(game, x);
+  int sy = get_screen_y(game, y);
   int border_size = cell_size / 8;
   int draw = game->drawing_buffer[y][x];
   int draw_last = game->last_drawing_buffer[y][x];
@@ -722,8 +765,8 @@ static void gd_drawcave_tile(Bitmap *dest, GdGame *game, int x, int y, boolean d
   void (*blit_bitmap)(Bitmap *, Bitmap *, int, int, int, int, int, int) =
     (draw_masked ? BlitBitmapMasked : BlitBitmap);
   GdCave *cave = game->cave;
-  int sx = x * cell_size - scroll_x;
-  int sy = y * cell_size - scroll_y;
+  int sx = get_screen_x(game, x);
+  int sy = get_screen_y(game, y);
   int dir_from = game->dir_buffer_from[y][x];
   int dir_to = game->dir_buffer_to[y][x];
   int tile = game->element_buffer[y][x];

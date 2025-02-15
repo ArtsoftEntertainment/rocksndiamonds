@@ -3267,6 +3267,11 @@ const GdStructDescriptor gd_cave_properties[] =
     N_("Elements move on first and last row, too. Usually those rows are the border. The games created by the original editor were not allowed to put anything but steel wall there, so it was not apparent that the borders were not processed by the engine. Some old caves need this for compatibility; it is not recommended to change this setting for newly designed caves, though.")
   },
   {
+    "BorderProperties.infinitescrolling", GD_TYPE_BOOLEAN, 0,
+    N_("Infinite scrolling"), CAVE_OFFSET(infinite_scrolling), 1,
+    N_("If this is set to true, use scrolling instead of wrapping at playfield borders.")
+  },
+  {
     "", GD_LABEL, 0,
     N_("Other")
   },
@@ -3520,6 +3525,7 @@ GdPropertyDefault gd_cave_defaults_gdash[] =
   { CAVE_OFFSET(border_scan_first_and_last),			TRUE				},
   { CAVE_OFFSET(lineshift),					FALSE				},
   { CAVE_OFFSET(wraparound_objects),				FALSE				},
+  { CAVE_OFFSET(infinite_scrolling),				FALSE				},
   { CAVE_OFFSET(short_explosions),				TRUE				},
   { CAVE_OFFSET(skeletons_worth_diamonds),			0				},
   { CAVE_OFFSET(gravity_affects_all),				TRUE				},

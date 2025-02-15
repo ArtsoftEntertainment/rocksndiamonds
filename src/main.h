@@ -3847,6 +3847,7 @@ struct LevelInfo
   boolean bd_short_explosions;		// BD engine uses four game cycles for explosions
   boolean bd_intermission;		// BD level is intermission
   boolean bd_intermission_clipped;	// BD intermission should be clipped to standard size
+  boolean bd_infinite_scrolling;	// BD scrolling instead of wrapping at playfield borders
   boolean bd_diagonal_movements;	// BD style diagonal movements
   boolean bd_topmost_player_active;	// BD engine uses first player found on playfield
   int bd_snap_element;			// BD element that is created when player is snapping
