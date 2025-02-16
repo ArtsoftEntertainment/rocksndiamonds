@@ -3913,6 +3913,10 @@ struct LevelInfo
   int bd_slime_converts_to_element_2;	// BD slime can convert eaten element to this game element
   int bd_slime_eats_element_3;		// BD slime can eat and convert this game element
   int bd_slime_converts_to_element_3;	// BD slime can convert eaten element to this game element
+  int bd_slime_eats_element_4;		// BD slime can eat and convert this game element
+  int bd_slime_converts_to_element_4;	// BD slime can convert eaten element to this game element
+  int bd_slime_eats_element_5;		// BD slime can eat and convert this game element
+  int bd_slime_converts_to_element_5;	// BD slime can convert eaten element to this game element
   int bd_cave_random_seed_c64;		// BD cave random number seed for predictable slime
   int bd_acid_eats_element;		// BD acid eats this game element when spreading
   int bd_acid_spread_rate;		// BD acid probability of spreading (in percent)

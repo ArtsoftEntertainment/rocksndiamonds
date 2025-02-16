@@ -2870,6 +2870,26 @@ const GdStructDescriptor gd_cave_properties[] =
     N_("  ... and converts to"), CAVE_OFFSET(slime_converts_3), 1,
     N_("Slime can let other elements than stone and diamond go through. It always lets a waiting or a chasing stone pass, though. Also, flying diamonds and stones, as well as bladders are always passed.")
   },
+  {
+    "SlimeProperties", GD_TYPE_ELEMENT, 0,
+    N_("Eats this..."), CAVE_OFFSET(slime_eats_4), 1,
+    N_("Slime can let other elements than stone and diamond go through. It always lets a waiting or a chasing stone pass, though. Also, flying diamonds and stones, as well as bladders are always passed.")
+  },
+  {
+    "SlimeProperties", GD_TYPE_ELEMENT, 0,
+    N_("  ... and converts to"), CAVE_OFFSET(slime_converts_4), 1,
+    N_("Slime can let other elements than stone and diamond go through. It always lets a waiting or a chasing stone pass, though. Also, flying diamonds and stones, as well as bladders are always passed.")
+  },
+  {
+    "SlimeProperties", GD_TYPE_ELEMENT, 0,
+    N_("Eats this..."), CAVE_OFFSET(slime_eats_5), 1,
+    N_("Slime can let other elements than stone and diamond go through. It always lets a waiting or a chasing stone pass, though. Also, flying diamonds and stones, as well as bladders are always passed.")
+  },
+  {
+    "SlimeProperties", GD_TYPE_ELEMENT, 0,
+    N_("  ... and converts to"), CAVE_OFFSET(slime_converts_5), 1,
+    N_("Slime can let other elements than stone and diamond go through. It always lets a waiting or a chasing stone pass, though. Also, flying diamonds and stones, as well as bladders are always passed.")
+  },
 
   // ACTIVE 2
   {
@@ -3502,6 +3522,10 @@ GdPropertyDefault gd_cave_defaults_gdash[] =
   { CAVE_OFFSET(slime_converts_2),				O_STONE_F			},
   { CAVE_OFFSET(slime_eats_3),					O_NUT				},
   { CAVE_OFFSET(slime_converts_3),				O_NUT_F				},
+  { CAVE_OFFSET(slime_eats_4),					O_SPACE				},
+  { CAVE_OFFSET(slime_converts_4),				O_SPACE				},
+  { CAVE_OFFSET(slime_eats_5),					O_SPACE				},
+  { CAVE_OFFSET(slime_converts_5),				O_SPACE				},
 
   // acid
   { CAVE_OFFSET(acid_eats_this),				O_DIRT				},

@@ -468,6 +468,8 @@ typedef struct _gd_cave
                                             // for example diamond -> falling diamond
   GdElement slime_eats_2, slime_converts_2; // this is usually stone -> stone_f
   GdElement slime_eats_3, slime_converts_3; // this is usually nut -> nut_f
+  GdElement slime_eats_4, slime_converts_4; // this is usually empty (not defined)
+  GdElement slime_eats_5, slime_converts_5; // this is usually empty (not defined)
   boolean slime_sound;                  // slime has sound
 
   boolean lava_sound;                   // elements sinking in lava have sound

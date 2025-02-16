@@ -1963,6 +1963,10 @@ void gd_unscan_cave(GdCave *cave)
   cave->slime_converts_2		= non_scanned_pair(cave->slime_converts_2);
   cave->slime_eats_3			= non_scanned_pair(cave->slime_eats_3);
   cave->slime_converts_3		= non_scanned_pair(cave->slime_converts_3);
+  cave->slime_eats_4			= non_scanned_pair(cave->slime_eats_4);
+  cave->slime_converts_4		= non_scanned_pair(cave->slime_converts_4);
+  cave->slime_eats_5			= non_scanned_pair(cave->slime_eats_5);
+  cave->slime_converts_5		= non_scanned_pair(cave->slime_converts_5);
   cave->acid_eats_this			= non_scanned_pair(cave->acid_eats_this);
   cave->acid_turns_to			= non_scanned_pair(cave->acid_turns_to);
   cave->biter_eat			= non_scanned_pair(cave->biter_eat);

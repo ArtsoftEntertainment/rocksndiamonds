@@ -987,6 +987,26 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     TYPE_ELEMENT,			CONF_VALUE_16_BIT(6),
     &li.bd_slime_converts_to_element_3,	EL_BDX_NUT_FALLING
   },
+  {
+    EL_BDX_SLIME,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(7),
+    &li.bd_slime_eats_element_4,	EL_EMPTY
+  },
+  {
+    EL_BDX_SLIME,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(8),
+    &li.bd_slime_converts_to_element_4,	EL_EMPTY
+  },
+  {
+    EL_BDX_SLIME,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(9),
+    &li.bd_slime_eats_element_5,	EL_EMPTY
+  },
+  {
+    EL_BDX_SLIME,			-1,
+    TYPE_ELEMENT,			CONF_VALUE_16_BIT(10),
+    &li.bd_slime_converts_to_element_5,	EL_EMPTY
+  },
 
   {
     EL_BDX_ACID,			-1,
@@ -4496,6 +4516,10 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->slime_converts_2		= LEVEL_TO_CAVE(level->bd_slime_converts_to_element_2);
   cave->slime_eats_3			= LEVEL_TO_CAVE(level->bd_slime_eats_element_3);
   cave->slime_converts_3		= LEVEL_TO_CAVE(level->bd_slime_converts_to_element_3);
+  cave->slime_eats_4			= LEVEL_TO_CAVE(level->bd_slime_eats_element_4);
+  cave->slime_converts_4		= LEVEL_TO_CAVE(level->bd_slime_converts_to_element_4);
+  cave->slime_eats_5			= LEVEL_TO_CAVE(level->bd_slime_eats_element_5);
+  cave->slime_converts_5		= LEVEL_TO_CAVE(level->bd_slime_converts_to_element_5);
 
   cave->acid_eats_this			= LEVEL_TO_CAVE(level->bd_acid_eats_element);
   cave->acid_spread_ratio		= level->bd_acid_spread_rate * 10000;
@@ -4687,6 +4711,10 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_slime_converts_to_element_2	= CAVE_TO_LEVEL(cave->slime_converts_2);
   level->bd_slime_eats_element_3	= CAVE_TO_LEVEL(cave->slime_eats_3);
   level->bd_slime_converts_to_element_3	= CAVE_TO_LEVEL(cave->slime_converts_3);
+  level->bd_slime_eats_element_4	= CAVE_TO_LEVEL(cave->slime_eats_4);
+  level->bd_slime_converts_to_element_4	= CAVE_TO_LEVEL(cave->slime_converts_4);
+  level->bd_slime_eats_element_5	= CAVE_TO_LEVEL(cave->slime_eats_5);
+  level->bd_slime_converts_to_element_5	= CAVE_TO_LEVEL(cave->slime_converts_5);
 
   level->bd_acid_eats_element		= CAVE_TO_LEVEL(cave->acid_eats_this);
   level->bd_acid_spread_rate		= cave->acid_spread_ratio / 10000;

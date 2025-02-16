@@ -3643,6 +3643,18 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 		store_dir(cave, x, y, oppos, O_SPACE);
 		play_sound_of_element(cave, O_SLIME, x, y);
 	      }
+	      else if (get_dir(cave, x, y, oppos) == cave->slime_eats_4)
+	      {
+		store_dir(cave, what_x, what_y, twice[grav], cave->slime_converts_4);
+		store_dir(cave, x, y, oppos, O_SPACE);
+		play_sound_of_element(cave, O_SLIME, x, y);
+	      }
+	      else if (get_dir(cave, x, y, oppos) == cave->slime_eats_5)
+	      {
+		store_dir(cave, what_x, what_y, twice[grav], cave->slime_converts_5);
+		store_dir(cave, x, y, oppos, O_SPACE);
+		play_sound_of_element(cave, O_SLIME, x, y);
+	      }
 	      else if (get_dir(cave, x, y, oppos) == O_WAITING_STONE)
 	      {
 		// waiting stones pass without awakening

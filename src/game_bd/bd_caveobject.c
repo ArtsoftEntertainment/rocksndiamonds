@@ -1601,6 +1601,8 @@ GdCave *gd_cave_new_rendered(const GdCave *data, const int level, const unsigned
     &cave->slime_converts_1,
     &cave->slime_converts_2,
     &cave->slime_converts_3,
+    &cave->slime_converts_4,
+    &cave->slime_converts_5,
     &cave->explosion_effect,
     &cave->explosion_3_effect,
     &cave->diamond_birth_effect,
