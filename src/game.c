@@ -4046,6 +4046,8 @@ void InitGame(void)
   boolean restarting = (game_status == GAME_MODE_PLAYING);
   boolean restarting_same_level = (restarting && level_nr == last_level_nr);
   boolean level_story = (game_status == GAME_MODE_STORY);
+  boolean level_story_after_main = (level_story && game_status_last_screen == GAME_MODE_MAIN);
+  boolean starting_from_main = (game_status == GAME_MODE_MAIN || level_story_after_main);
   boolean last_game_engine_type_was_bd = (last_game_engine_type == GAME_ENGINE_TYPE_BD);
   boolean emulate_bd = TRUE;	// unless non-BOULDERDASH elements found
   boolean emulate_sp = TRUE;	// unless non-SUPAPLEX    elements found
@@ -4086,7 +4088,7 @@ void InitGame(void)
       if (level.bd_intermission)
         game_bd.global_lives--;
     }
-    else if (restarting_same_level || game_status == GAME_MODE_MAIN)
+    else if (restarting_same_level || starting_from_main)
     {
       // newly started BD game with multiple lives (or restarted BD game, but no remaining lives),
       // so set initial number of lives and reset global score
