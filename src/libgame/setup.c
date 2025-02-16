@@ -2949,6 +2949,9 @@ static struct TokenInfo levelinfo_tokens[] =
   { TYPE_BOOLEAN,	&ldi.use_emc_tiles,		"use_emc_tiles"			},
   { TYPE_BOOLEAN,	&ldi.info_screens_from_main,	"info_screens_from_main"	},
   { TYPE_BOOLEAN,	&ldi.replay_with_old_engine,	"replay_with_old_engine"	},
+  { TYPE_INTEGER,	&ldi.bd_initial_lives,		"bd_initial_lives"		},
+  { TYPE_INTEGER,	&ldi.bd_maximum_lives,		"bd_maximum_lives"		},
+  { TYPE_INTEGER,	&ldi.bd_bonus_life_score,	"bd_bonus_life_score"		},
 };
 
 static struct TokenInfo artworkinfo_tokens[] =
@@ -3058,6 +3061,10 @@ static void setTreeInfoToDefaults(TreeInfo *ti, int type)
     ti->use_emc_tiles = FALSE;
     ti->info_screens_from_main = FALSE;
     ti->replay_with_old_engine = FALSE;
+
+    ti->bd_initial_lives = DEFAULT_BD_INITIAL_LIVES;
+    ti->bd_maximum_lives = DEFAULT_BD_MAXIMUM_LIVES;
+    ti->bd_bonus_life_score = DEFAULT_BD_BONUS_LIFE_SCORE;
   }
 }
 
@@ -3147,6 +3154,10 @@ static void setTreeInfoToDefaultsFromParent(TreeInfo *ti, TreeInfo *parent)
     ti->use_emc_tiles = parent->use_emc_tiles;
     ti->info_screens_from_main = parent->info_screens_from_main;
     ti->replay_with_old_engine = parent->replay_with_old_engine;
+
+    ti->bd_initial_lives = parent->bd_initial_lives;
+    ti->bd_maximum_lives = parent->bd_maximum_lives;
+    ti->bd_bonus_life_score = parent->bd_bonus_life_score;
   }
 }
 
@@ -3223,6 +3234,10 @@ static TreeInfo *getTreeInfoCopy(TreeInfo *ti)
   ti_copy->use_emc_tiles	= ti->use_emc_tiles;
   ti_copy->info_screens_from_main = ti->info_screens_from_main;
   ti_copy->replay_with_old_engine = ti->replay_with_old_engine;
+
+  ti_copy->bd_initial_lives	= ti->bd_initial_lives;
+  ti_copy->bd_maximum_lives	= ti->bd_maximum_lives;
+  ti_copy->bd_bonus_life_score	= ti->bd_bonus_life_score;
 
   ti_copy->color		= ti->color;
   ti_copy->class_desc		= getStringCopy(ti->class_desc);

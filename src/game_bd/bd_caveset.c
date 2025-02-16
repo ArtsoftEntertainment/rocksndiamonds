@@ -142,7 +142,13 @@ GdCavesetData *gd_caveset_data_new(void)
   gd_struct_set_defaults_from_array(data, gd_caveset_properties, caveset_defaults);
 
   if (leveldir_current != NULL)
+  {
+    data->initial_lives = leveldir_current->bd_initial_lives;
+    data->maximum_lives = leveldir_current->bd_maximum_lives;
+    data->bonus_life_score = leveldir_current->bd_bonus_life_score;
+
     data->levelset_subdir = getStringCopy(leveldir_current->subdir);
+  }
 
   return data;
 }

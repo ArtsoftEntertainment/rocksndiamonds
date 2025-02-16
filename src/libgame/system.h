@@ -591,6 +591,11 @@
 // maximum number of level specific colors in color template
 #define MAX_LEVEL_COLORS		8
 
+// default values for BD engine cave sets
+#define DEFAULT_BD_INITIAL_LIVES	3
+#define DEFAULT_BD_MAXIMUM_LIVES	9
+#define DEFAULT_BD_BONUS_LIFE_SCORE	500
+
 // minimum/maximum/default x/y grid size for virtual buttons
 #define MIN_GRID_XSIZE			3
 #define MIN_GRID_YSIZE			3
@@ -1753,6 +1758,10 @@ struct TreeInfo
   boolean use_emc_tiles;	// use (swapped) V5/V6 EMC tiles when set to "true"
   boolean info_screens_from_main; // can invoke info screens from main menu
   boolean replay_with_old_engine; // use the old BD engine for playing BDCFF replays
+
+  int bd_initial_lives;		// initial number of lives for BD games with multiple lives
+  int bd_maximum_lives;		// maximum number of lives for BD games with multiple lives
+  int bd_bonus_life_score;	// required score to add life for BD games with multiple lives
 
   int color;			// color to use on selection screen for this level
   char *class_desc;		// description of level series class
