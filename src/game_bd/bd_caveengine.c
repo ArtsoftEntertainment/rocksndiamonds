@@ -3619,7 +3619,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    GdDirection oppos = opposite[cave->gravity];
 
 	    // space under the slime? elements may pass from top to bottom then.
-	    if (is_like_space(cave, x, y, grav))
+	    if (is_like_space(cave, x, y, grav) && get_dir(cave, x, y, oppos) != O_SPACE)
 	    {
 	      int what_x = getx(cave, x + gd_dx[oppos], y + gd_dy[oppos]);
 	      int what_y = gety(cave, x + gd_dx[oppos], y + gd_dy[oppos]);
@@ -3673,7 +3673,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    else
 	    {
 	      // or space over the slime? elements may pass from bottom to up then.
-	      if (is_like_space(cave, x, y, oppos))
+              if (is_like_space(cave, x, y, oppos) && get_dir(cave, x, y, grav) != O_SPACE)
 	      {
 		int what_x = getx(cave, x + gd_dx[grav], y + gd_dy[grav]);
 		int what_y = gety(cave, x + gd_dx[grav], y + gd_dy[grav]);
