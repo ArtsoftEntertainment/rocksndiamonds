@@ -2030,9 +2030,12 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
     for (x = 0; x < cave->w; x++)
     {
       // if we find a scanned element, change it to the normal one, and that's all.
-      // this is required, for example for chasing stones, which have moved, always passing slime!
       if (is_scanned(cave, x, y))
       {
+        // but do not pass element through slime that has just been placed above it same frame
+        if (get_dir(cave, x, y, cave->gravity) == O_SLIME)
+          continue;
+
         unscan(cave, x, y);
 
 	continue;
