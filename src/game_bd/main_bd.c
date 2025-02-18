@@ -348,6 +348,10 @@ void InitGameEngine_BD(void)
   game_bd.player_moving = FALSE;
   game_bd.player_snapping = FALSE;
 
+  // only needed for replays with random values
+  if (native_bd_level.replay != NULL)
+    native_bd_level.replay->current_playing_pos = 0;
+
   // default: start with completely covered playfield
   int next_state = GAME_INT_START_UNCOVER + 1;
 

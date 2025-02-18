@@ -353,6 +353,21 @@ void gd_cave_set_seconds_sound(GdCave *cave)
   }
 }
 
+// check for random values from replay
+static boolean has_replay_randoms(void)
+{
+  return (native_bd_level.replay->randoms->len > 0);
+}
+
+// get random value from replay
+static int get_next_replay_random(void)
+{
+  if (native_bd_level.replay->current_playing_pos < native_bd_level.replay->randoms->len)
+    return native_bd_level.replay->randoms->data[native_bd_level.replay->current_playing_pos++];
+
+  return 0;
+}
+
 static inline int getx(const GdCave *cave, const int x, const int y)
 {
   return cave->getx(cave, x, y);
@@ -3330,52 +3345,107 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      // if alive, check in which dir to grow (or not)
 	      if (cave->amoeba_state == GD_AM_AWAKE)
 	      {
-		if (gd_rand_int_range(cave->random, 0, 1000000) < cave->amoeba_growth_prob)
-		{
-		  switch (gd_rand_int_range(cave->random, 0, 4))
-		  {
-		    // decided to grow, choose a random direction.
+                if (TapeIsPlaying_ReplayBD() && has_replay_randoms())
+                {
+                  // special case: playing Krissz engine replay
 
-		    case 0:
-                      // let this be up. numbers indifferent.
-		      if (amoeba_eats(cave, x, y, GD_MV_UP))
-                      {
-			store_dir(cave, x, y, GD_MV_UP, O_AMOEBA);
-                        gd_sound_play(cave, GD_S_AMOEBA_GROWING, O_AMOEBA, -1, -1);
-                      }
-		      break;
+                  if (amoeba_eats(cave, x, y, GD_MV_UP) ||
+                      amoeba_eats(cave, x, y, GD_MV_DOWN) ||
+                      amoeba_eats(cave, x, y, GD_MV_LEFT) ||
+                      amoeba_eats(cave, x, y, GD_MV_RIGHT))
+                  {
+                    switch (get_next_replay_random())
+                    {
+                      // not yet decided to grow, but first choose a random direction.
 
-		    case 1:
-                      // down
-		      if (amoeba_eats(cave, x, y, GD_MV_DOWN))
-                      {
-			store_dir(cave, x, y, GD_MV_DOWN, O_AMOEBA);
-                        gd_sound_play(cave, GD_S_AMOEBA_GROWING, O_AMOEBA, -1, -1);
-                      }
-		      break;
+                      case 1:
+                        // let this be up. numbers indifferent.
+                        if (amoeba_eats(cave, x, y, GD_MV_UP) && get_next_replay_random() == 1)
+                        {
+                          store_dir(cave, x, y, GD_MV_UP, O_AMOEBA);
+                          gd_sound_play(cave, GD_S_AMOEBA_GROWING, O_AMOEBA, -1, -1);
+                        }
+                        break;
 
-		    case 2:
-                      // left
-		      if (amoeba_eats(cave, x, y, GD_MV_LEFT))
-                      {
-			store_dir(cave, x, y, GD_MV_LEFT, O_AMOEBA);
-                        gd_sound_play(cave, GD_S_AMOEBA_GROWING, O_AMOEBA, -1, -1);
-                      }
-		      break;
+                      case 2:
+                        // down
+                        if (amoeba_eats(cave, x, y, GD_MV_DOWN) && get_next_replay_random() == 1)
+                        {
+                          store_dir(cave, x, y, GD_MV_DOWN, O_AMOEBA);
+                          gd_sound_play(cave, GD_S_AMOEBA_GROWING, O_AMOEBA, -1, -1);
+                        }
+                        break;
 
-		    case 3:
-                      // right
-		      if (amoeba_eats(cave, x, y, GD_MV_RIGHT))
-                      {
-			store_dir(cave, x, y, GD_MV_RIGHT, O_AMOEBA);
-                        gd_sound_play(cave, GD_S_AMOEBA_GROWING, O_AMOEBA, -1, -1);
-                      }
-		      break;
-		  }
-		}
+                      case 3:
+                        // left
+                        if (amoeba_eats(cave, x, y, GD_MV_LEFT) && get_next_replay_random() == 1)
+                        {
+                          store_dir(cave, x, y, GD_MV_LEFT, O_AMOEBA);
+                          gd_sound_play(cave, GD_S_AMOEBA_GROWING, O_AMOEBA, -1, -1);
+                        }
+                        break;
+
+                      case 4:
+                        // right
+                        if (amoeba_eats(cave, x, y, GD_MV_RIGHT) && get_next_replay_random() == 1)
+                        {
+                          store_dir(cave, x, y, GD_MV_RIGHT, O_AMOEBA);
+                          gd_sound_play(cave, GD_S_AMOEBA_GROWING, O_AMOEBA, -1, -1);
+                        }
+                        break;
+                    }
+                  }
+                }
+                else
+                {
+                  // normal case: playing game or replay
+
+                  if (gd_rand_int_range(cave->random, 0, 1000000) < cave->amoeba_growth_prob)
+                  {
+                    switch (gd_rand_int_range(cave->random, 0, 4))
+                    {
+                      // decided to grow, choose a random direction.
+
+                      case 0:
+                        // let this be up. numbers indifferent.
+                        if (amoeba_eats(cave, x, y, GD_MV_UP))
+                        {
+                          store_dir(cave, x, y, GD_MV_UP, O_AMOEBA);
+                          gd_sound_play(cave, GD_S_AMOEBA_GROWING, O_AMOEBA, -1, -1);
+                        }
+                        break;
+
+                      case 1:
+                        // down
+                        if (amoeba_eats(cave, x, y, GD_MV_DOWN))
+                        {
+                          store_dir(cave, x, y, GD_MV_DOWN, O_AMOEBA);
+                          gd_sound_play(cave, GD_S_AMOEBA_GROWING, O_AMOEBA, -1, -1);
+                        }
+                        break;
+
+                      case 2:
+                        // left
+                        if (amoeba_eats(cave, x, y, GD_MV_LEFT))
+                        {
+                          store_dir(cave, x, y, GD_MV_LEFT, O_AMOEBA);
+                          gd_sound_play(cave, GD_S_AMOEBA_GROWING, O_AMOEBA, -1, -1);
+                        }
+                        break;
+
+                      case 3:
+                        // right
+                        if (amoeba_eats(cave, x, y, GD_MV_RIGHT))
+                        {
+                          store_dir(cave, x, y, GD_MV_RIGHT, O_AMOEBA);
+                          gd_sound_play(cave, GD_S_AMOEBA_GROWING, O_AMOEBA, -1, -1);
+                        }
+                        break;
+                    }
+                  }
+                }
 	      }
 	      break;
-
 	  }
 	  break;
 
