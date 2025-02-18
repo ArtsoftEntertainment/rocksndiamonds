@@ -1801,6 +1801,7 @@ GdReplay *gd_replay_new(void)
 
   rep = checked_calloc(sizeof(GdReplay));
   rep->movements = checked_calloc(sizeof(GdReplayMovements));
+  rep->randoms = checked_calloc(sizeof(GdReplayRandoms));
 
   return rep;
 }
@@ -1814,6 +1815,7 @@ GdReplay *gd_replay_new_from_replay(GdReplay *orig)
   // replicate dynamic data
   rep->comment = getStringCopy(orig->comment);
   rep->movements = get_memcpy(orig->movements, sizeof(GdReplayMovements));
+  rep->randoms = get_memcpy(orig->randoms, sizeof(GdReplayRandoms));
 
   return rep;
 }
@@ -1840,7 +1842,23 @@ void gd_replay_store_movement(GdReplay *replay, GdDirection player_move,
     replay->movements->data[replay->movements->len++] = data[0];
 
     if (replay->movements->len == MAX_REPLAY_LEN)
-      Warn("BD replay truncated: size exceeds maximum replay size %d", MAX_REPLAY_LEN);
+      Warn("BD replay truncated: movements size exceeds maximum replay size %d", MAX_REPLAY_LEN);
+  }
+}
+
+// store random in a replay
+void gd_replay_store_random(GdReplay *replay, int random)
+{
+  int data[1];
+
+  data[0] = random;
+
+  if (replay->randoms->len < MAX_REPLAY_LEN)
+  {
+    replay->randoms->data[replay->randoms->len++] = data[0];
+
+    if (replay->randoms->len == MAX_REPLAY_LEN)
+      Warn("BD replay truncated: randoms size exceeds maximum replay size %d", MAX_REPLAY_LEN);
   }
 }
 

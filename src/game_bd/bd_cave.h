@@ -287,6 +287,12 @@ typedef struct _replay_movements
   unsigned int len;
 } GdReplayMovements;
 
+typedef struct _replay_randoms
+{
+  unsigned int data[MAX_REPLAY_LEN];
+  unsigned int len;
+} GdReplayRandoms;
+
 // maximum seed value for the cave random generator. should be smaller than a signed int.
 #define GD_CAVE_SEED_MAX	(1 << 30)
 
@@ -308,6 +314,7 @@ typedef struct _gd_cave_replay
 
   boolean wrong_checksum;
   GdReplayMovements *movements;
+  GdReplayRandoms *randoms;
   int current_playing_pos;
 } GdReplay;
 
@@ -755,6 +762,7 @@ GdReplay *gd_replay_new(void);
 GdReplay *gd_replay_new_from_replay(GdReplay *orig);
 void gd_replay_free(GdReplay *replay);
 void gd_replay_store_movement(GdReplay *replay, GdDirection player_move, boolean player_fire, boolean suicide);
+void gd_replay_store_random(GdReplay *replay, int random);
 
 unsigned int gd_cave_adler_checksum(GdCave *cave);
 void gd_cave_adler_checksum_more(GdCave *cave, unsigned int *a, unsigned int *b);

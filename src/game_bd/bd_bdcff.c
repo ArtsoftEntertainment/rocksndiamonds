@@ -99,6 +99,15 @@ static boolean replay_store_split_movements_from_bdcff(GdReplay *replay, const c
   return TRUE;
 }
 
+static boolean replay_store_split_randoms_from_bdcff(GdReplay *replay, const char *str)
+{
+  int random = atoi(str);
+
+  gd_replay_store_random(replay, random);
+
+  return TRUE;
+}
+
 static boolean attrib_is_valid_for_cave(const char *attrib)
 {
   int i;
@@ -358,6 +367,22 @@ static boolean replay_store_movements_from_bdcff(GdReplay *replay, const char *p
   return result;
 }
 
+static boolean replay_store_randoms_from_bdcff(GdReplay *replay, const char *param)
+{
+  char **split;
+  int i;
+  boolean result = TRUE;
+
+  split = getSplitStringArray(param, ",", -1);
+
+  for (i = 0; split[i] != 0; i++)
+    result = result && replay_store_split_randoms_from_bdcff(replay, split[i]);
+
+  freeStringArray(split);
+
+  return result;
+}
+
 // report all remaining tags; called after the above function.
 static void replay_report_unknown_tags_func(const char *attrib, const char *param, void *data)
 {
@@ -376,6 +401,11 @@ static boolean replay_process_tags_func(const char *attrib, const char *param, G
   {
     identifier_found = TRUE;
     replay_store_movements_from_bdcff(replay, param);
+  }
+  else if (strcasecmp(attrib, "Randoms") == 0)
+  {
+    identifier_found = TRUE;
+    replay_store_randoms_from_bdcff(replay, param);
   }
   else
   {
