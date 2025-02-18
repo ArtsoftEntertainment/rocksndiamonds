@@ -24,7 +24,7 @@
 // these are used for bdcff loading, storing the sizes of caves
 static int cavesize[6], intermissionsize[6];
 
-static boolean replay_store_from_bdcff(GdReplay *replay, const char *str)
+static boolean replay_store_split_movements_from_bdcff(GdReplay *replay, const char *str)
 {
   GdDirection dir;
   boolean up, down, left, right;
@@ -342,7 +342,7 @@ static boolean struct_set_property(void *str, const GdStructDescriptor *prop_des
 // BDCFF LOADING
 // ============================================================================
 
-static boolean replay_store_more_from_bdcff(GdReplay *replay, const char *param)
+static boolean replay_store_movements_from_bdcff(GdReplay *replay, const char *param)
 {
   char **split;
   int i;
@@ -351,7 +351,7 @@ static boolean replay_store_more_from_bdcff(GdReplay *replay, const char *param)
   split = getSplitStringArray(param, " ", -1);
 
   for (i = 0; split[i] != 0; i++)
-    result = result && replay_store_from_bdcff(replay, split[i]);
+    result = result && replay_store_split_movements_from_bdcff(replay, split[i]);
 
   freeStringArray(split);
 
@@ -375,7 +375,7 @@ static boolean replay_process_tags_func(const char *attrib, const char *param, G
   if (strcasecmp(attrib, "Movements") == 0)
   {
     identifier_found = TRUE;
-    replay_store_more_from_bdcff(replay, param);
+    replay_store_movements_from_bdcff(replay, param);
   }
   else
   {
@@ -998,7 +998,7 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
       iter = list_last(cave->replays);
 
       replay = (GdReplay *)iter->data;
-      replay_store_more_from_bdcff(replay, line);
+      replay_store_movements_from_bdcff(replay, line);
 
       continue;
     }
