@@ -1331,6 +1331,21 @@ static boolean do_teleporter(GdCave *cave, int px, int py, GdDirection player_mo
   return FALSE;
 }
 
+// check if attempt to push an element was successful
+static boolean do_push_successful(GdCave *cave, int prob)
+{
+  if (TapeIsPlaying_ReplayBD() && has_replay_randoms())
+  {
+    // special case: playing Krissz engine replay
+    return (get_next_replay_random() == 1);
+  }
+  else
+  {
+    // normal case: playing game or replay
+    return (gd_rand_int_range(cave->random, 0, 1000000) < prob);
+  }
+}
+
 // Try to push an element.
 // Also does move the specified _element_, if possible.
 // Up to the caller to move the _player_itself_, as the movement might be a snap,
@@ -1410,7 +1425,7 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 	// only push game element if not already moving
 	if (is_like_space(cave, x, y, twice[player_move]) &&
 	    game_bd.game->dir_buffer_to[what_y][what_x] == GD_MV_STILL &&
-	    gd_rand_int_range(cave->random, 0, 1000000) < prob)
+	    do_push_successful(cave, prob))
 	{
 	  // if decided that he will be able to push,
 	  play_sound_of_element_pushing(cave, what,
