@@ -15978,9 +15978,42 @@ void InitPlayLevelSound(void)
   loop_sound_volume = checked_calloc(num_sounds * sizeof(int));
 }
 
+static int get_corrected_sound_position_x(int x)
+{
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+  {
+    // sound position correction for BD style wrap-around movement with infinite scrolling
+
+    if (scroll_x < 0 && x > lev_fieldx + scroll_x)
+      return (x - lev_fieldx);
+
+    if (scroll_x > lev_fieldx - SCR_FIELDX && x < scroll_x + SCR_FIELDX - lev_fieldx)
+      return (x + lev_fieldx);
+  }
+
+  return x;
+}
+
+static int get_corrected_sound_position_y(int y)
+{
+  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+  {
+    // sound position correction for BD style wrap-around movement with infinite scrolling
+
+    if (scroll_y < 0 && y > lev_fieldy + scroll_y)
+      return (y - lev_fieldy);
+
+    if (scroll_y > lev_fieldy - SCR_FIELDY && y < scroll_y + SCR_FIELDY - lev_fieldy)
+      return (y + lev_fieldy);
+  }
+
+  return y;
+}
+
 static void PlayLevelSoundExt(int x, int y, int nr, boolean is_loop_sound)
 {
-  int sx = SCREENX(x), sy = SCREENY(y);
+  int sx = SCREENX(get_corrected_sound_position_x(x));
+  int sy = SCREENY(get_corrected_sound_position_y(y));
   int volume, stereo_position;
   int max_distance = 8;
   int type = (is_loop_sound ? SND_CTRL_PLAY_LOOP : SND_CTRL_PLAY_SOUND);
