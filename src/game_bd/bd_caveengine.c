@@ -4330,6 +4330,21 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
   if (cave->amoeba_state == GD_AM_AWAKE)
   {
+    if (TapeIsPlaying_ReplayBD() && has_replay_randoms())
+    {
+      // special case: playing Krissz engine replay
+
+      // count amoeba after every cave scan (instead of during next cave scan)
+      // (this results in turning the amoeba to boulders one frame earlier)
+
+      amoeba_count = 0;
+
+      for (y = ymin; y <= ymax; y++)
+        for (x = 0; x < cave->w; x++)
+          if (get(cave, x, y) == O_AMOEBA)
+            amoeba_count++;
+    }
+
     // check flags after evaluating.
     if (amoeba_count >= cave->amoeba_max_count)
       cave->amoeba_state = GD_AM_TOO_BIG;
