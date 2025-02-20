@@ -373,7 +373,7 @@ static boolean replay_store_randoms_from_bdcff(GdReplay *replay, const char *par
   int i;
   boolean result = TRUE;
 
-  split = getSplitStringArray(param, ",", -1);
+  split = getSplitStringArray(param, " ", -1);
 
   for (i = 0; split[i] != 0; i++)
     result = result && replay_store_split_randoms_from_bdcff(replay, split[i]);
