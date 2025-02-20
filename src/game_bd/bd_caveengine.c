@@ -353,12 +353,6 @@ void gd_cave_set_seconds_sound(GdCave *cave)
   }
 }
 
-// check for random values from replay
-static boolean has_replay_randoms(void)
-{
-  return (native_bd_level.replay->randoms->len > 0);
-}
-
 // get random value from replay
 static int get_next_replay_random(void)
 {
@@ -1334,7 +1328,7 @@ static boolean do_teleporter(GdCave *cave, int px, int py, GdDirection player_mo
 // check if attempt to push an element was successful
 static boolean do_push_successful(GdCave *cave, int prob)
 {
-  if (TapeIsPlaying_ReplayBD() && has_replay_randoms())
+  if (game_bd.game->use_krissz_engine)
   {
     // special case: playing Krissz engine replay
     return (get_next_replay_random() == 1);
@@ -3363,7 +3357,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      // if alive, check in which dir to grow (or not)
 	      if (cave->amoeba_state == GD_AM_AWAKE)
 	      {
-                if (TapeIsPlaying_ReplayBD() && has_replay_randoms())
+                if (game_bd.game->use_krissz_engine)
                 {
                   // special case: playing Krissz engine replay
 
@@ -4330,7 +4324,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
   if (cave->amoeba_state == GD_AM_AWAKE)
   {
-    if (TapeIsPlaying_ReplayBD() && has_replay_randoms())
+    if (game_bd.game->use_krissz_engine)
     {
       // special case: playing Krissz engine replay
 

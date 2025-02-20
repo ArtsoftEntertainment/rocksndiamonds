@@ -344,6 +344,7 @@ void InitGameEngine_BD(void)
   game_bd.game->itermax_last = game_bd.game->itermax;
 
   game_bd.game->use_old_engine = useOldEngine_BD();
+  game_bd.game->use_krissz_engine = useKrisszEngine_BD();
 
   game_bd.player_moving = FALSE;
   game_bd.player_snapping = FALSE;

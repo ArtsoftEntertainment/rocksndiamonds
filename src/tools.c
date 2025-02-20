@@ -10939,6 +10939,11 @@ boolean useOldEngine_BD(void)
   return FALSE;
 }
 
+boolean useKrisszEngine_BD(void)
+{
+  return (TapeIsPlaying_ReplayBD() && level.native_bd_level->replay->randoms->len > 0);
+}
+
 boolean getTimePlayed_BD(void)
 {
   return TimePlayed;

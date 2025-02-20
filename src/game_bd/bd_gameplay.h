@@ -97,6 +97,7 @@ typedef struct _gd_game
   boolean show_story;           // to remember that story for a particular cave was already shown.
 
   boolean use_old_engine;	// for game engine compatibility with old replays
+  boolean use_krissz_engine;	// for game engine compatibility with Krissz engine
 } GdGame;
 
 typedef enum _gd_game_state
