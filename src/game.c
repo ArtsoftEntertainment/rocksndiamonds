@@ -17577,31 +17577,66 @@ static void UnmapGameButtonsAtSamePosition(int id)
       UnmapGadget(game_gadget[i]);
 }
 
+static void UnmapGameButtonsAtSamePositionIfMapped(int id)
+{
+  if (isMappedGadget(game_gadget[id]))
+    UnmapGameButtonsAtSamePosition(id);
+}
+
+static void UnmapGameButtonsAtSamePositionIfMapped_LoadSaveGroup(void)
+{
+  UnmapGameButtonsAtSamePositionIfMapped(GAME_CTRL_ID_SAVE);
+  UnmapGameButtonsAtSamePositionIfMapped(GAME_CTRL_ID_PAUSE2);
+  UnmapGameButtonsAtSamePositionIfMapped(GAME_CTRL_ID_LOAD);
+}
+
+static void UnmapGameButtonsAtSamePositionIfMapped_UndoRedoGroup(void)
+{
+  UnmapGameButtonsAtSamePositionIfMapped(GAME_CTRL_ID_UNDO);
+  UnmapGameButtonsAtSamePositionIfMapped(GAME_CTRL_ID_PAUSE2);
+  UnmapGameButtonsAtSamePositionIfMapped(GAME_CTRL_ID_REDO);
+}
+
+static void UnmapGameButtonsAtSamePositionIfMapped_StopPlayGroup(void)
+{
+  UnmapGameButtonsAtSamePositionIfMapped(GAME_CTRL_ID_STOP);
+  UnmapGameButtonsAtSamePositionIfMapped(GAME_CTRL_ID_PAUSE);
+  UnmapGameButtonsAtSamePositionIfMapped(GAME_CTRL_ID_PLAY);
+  UnmapGameButtonsAtSamePositionIfMapped(GAME_CTRL_ID_RESTART);
+
+  UnmapGameButtonsAtSamePositionIfMapped(GAME_CTRL_ID_PANEL_STOP);
+  UnmapGameButtonsAtSamePositionIfMapped(GAME_CTRL_ID_PANEL_PAUSE);
+  UnmapGameButtonsAtSamePositionIfMapped(GAME_CTRL_ID_PANEL_PLAY);
+  UnmapGameButtonsAtSamePositionIfMapped(GAME_CTRL_ID_PANEL_RESTART);
+}
+
 static void UnmapGameButtonsAtSamePosition_All(void)
 {
+  // make sure that only one button is mapped for multiple buttons at the same position
+
   if (setup.show_load_save_buttons)
   {
-    UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_SAVE);
-    UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_PAUSE2);
-    UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_LOAD);
+    UnmapGameButtonsAtSamePositionIfMapped_LoadSaveGroup();
+
+    // if above buttons have redefined position, do the same for the remaining buttons
+    if (setup.show_undo_redo_buttons)
+      UnmapGameButtonsAtSamePositionIfMapped_UndoRedoGroup();
+    else
+      UnmapGameButtonsAtSamePositionIfMapped_StopPlayGroup();
   }
   else if (setup.show_undo_redo_buttons)
   {
-    UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_UNDO);
-    UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_PAUSE2);
-    UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_REDO);
+    UnmapGameButtonsAtSamePositionIfMapped_UndoRedoGroup();
+
+    // if above buttons have redefined position, do the same for the remaining buttons
+    if (setup.show_load_save_buttons)
+      UnmapGameButtonsAtSamePositionIfMapped_LoadSaveGroup();
+    else
+      UnmapGameButtonsAtSamePositionIfMapped_StopPlayGroup();
   }
   else
   {
-    UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_STOP);
-    UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_PAUSE);
-    UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_PLAY);
-    UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_RESTART);
-
-    UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_PANEL_STOP);
-    UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_PANEL_PAUSE);
-    UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_PANEL_PLAY);
-    UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_PANEL_RESTART);
+    UnmapGameButtonsAtSamePositionIfMapped_StopPlayGroup();
   }
 }
 
