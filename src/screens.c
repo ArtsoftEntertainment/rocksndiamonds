@@ -2526,6 +2526,8 @@ static void HandleMainMenu_ToggleTeamMode(void)
   DrawCursorAndText_Main(MAIN_CONTROL_NAME, TRUE, FALSE);
 
   DrawPreviewPlayers();
+
+  SaveSetupIfNeeded();
 }
 
 static void HandleMainMenu_SelectLevel(int step, int direction,
@@ -9891,6 +9893,8 @@ void CustomizeKeyboard(int player_nr)
       BackToFront();
 
     ClearEventQueue();
+
+    SaveSetupIfNeeded();
   }
 
   DrawSetupScreen_Input();
@@ -10325,6 +10329,9 @@ void ConfigureJoystick(int player_nr)
       BackToFront();
 
     ClearEventQueue();
+
+    if (success)
+      SaveSetupIfNeeded();
   }
 
   DrawSetupScreen_Input();
