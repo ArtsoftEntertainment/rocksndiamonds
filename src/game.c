@@ -17596,10 +17596,12 @@ static void UnmapGameButtonsAtSamePosition_All(void)
     UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_STOP);
     UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_PAUSE);
     UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_PLAY);
+    UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_RESTART);
 
     UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_PANEL_STOP);
     UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_PANEL_PAUSE);
     UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_PANEL_PLAY);
+    UnmapGameButtonsAtSamePosition(GAME_CTRL_ID_PANEL_RESTART);
   }
 }
 
