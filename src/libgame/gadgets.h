@@ -332,6 +332,7 @@ void FreeGadget(struct GadgetInfo *);
 void ModifyGadget(struct GadgetInfo *, int, ...);
 void RedrawGadget(struct GadgetInfo *);
 
+boolean isMappedGadget(struct GadgetInfo *);
 void MapGadget(struct GadgetInfo *);
 void UnmapGadget(struct GadgetInfo *);
 void UnmapAllGadgets(void);

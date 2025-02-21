@@ -2211,6 +2211,11 @@ static void CheckRangeOfNumericInputGadget(struct GadgetInfo *gi)
 // global pointer to gadget actually in use (when mouse button pressed)
 static struct GadgetInfo *last_gi = NULL;
 
+boolean isMappedGadget(struct GadgetInfo *gi)
+{
+  return (gi != NULL && gi->mapped);
+}
+
 static void MapGadgetExt(struct GadgetInfo *gi, boolean redraw)
 {
   if (gi == NULL || gi->deactivated || gi->mapped)
