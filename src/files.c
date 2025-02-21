@@ -13739,8 +13739,10 @@ static void InitMenuDesignSettings_SpecialPostProcessing(void)
     { &game.button.save,	&game.button.stop	},
     { &game.button.pause2,	&game.button.pause	},
     { &game.button.load,	&game.button.play	},
+    { &game.button.load,	&game.button.restart	},
     { &game.button.undo,	&game.button.stop	},
     { &game.button.redo,	&game.button.play	},
+    { &game.button.redo,	&game.button.restart	},
 
     { NULL,			NULL			}
   };
