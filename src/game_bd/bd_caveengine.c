@@ -1183,6 +1183,8 @@ static GdElement player_eat_element(GdCave *cave, const GdElement element, int x
       cave->score += cave->diamond_value;
       cave->diamonds_collected++;
 
+      game.snapshot.collected_item = TRUE;
+
       if (cave->diamonds_needed == cave->diamonds_collected)
       {
 	cave->gate_open = TRUE;
