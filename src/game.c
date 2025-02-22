@@ -3075,6 +3075,9 @@ static void DisplayGameControlValuesExt(boolean force_redraw)
         (level.game_engine_type == GAME_ENGINE_TYPE_BD && !game_bd.game->cave->hatched))
       continue;
 
+    if (nr == GAME_PANEL_TIME && level.bd_no_time)
+      continue;
+
     gpc->last_value = value;
     gpc->last_frame = frame;
 
@@ -4397,7 +4400,7 @@ void InitGame(void)
   game.panel.active = TRUE;
   game.panel.show_extra_items = FALSE;
 
-  game.no_level_time_limit = (level.time == 0);
+  game.no_level_time_limit = (level.time == 0 || level.bd_no_time);
   game.time_limit = (leveldir_current->time_limit && setup.time_limit);
 
   game.yamyam_content_nr = 0;

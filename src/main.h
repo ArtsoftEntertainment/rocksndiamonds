@@ -3857,6 +3857,7 @@ struct LevelInfo
   boolean bd_short_explosions;		// BD engine uses four game cycles for explosions
   boolean bd_intermission;		// BD level is intermission
   boolean bd_intermission_clipped;	// BD intermission should be clipped to standard size
+  boolean bd_no_time;			// BD cave uses neither normal nor reverse time
   boolean bd_open_borders_horizontal;	// BD cave is open for crossing borders horizontally
   boolean bd_open_borders_vertical;	// BD cave is open for crossing borders vertically
   boolean bd_infinite_scrolling;	// BD scrolling instead of wrapping at playfield borders

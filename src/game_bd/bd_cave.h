@@ -382,6 +382,7 @@ typedef struct _gd_cave
 
   GdScheduling scheduling;              // scheduling type; see above
   boolean pal_timing;                   // use faster seconds
+  boolean no_time;                      // use no time at all for this level
 
   boolean active_is_first_found;        // active player is the uppermost.
   boolean lineshift;                    // true is line shifting emulation,

@@ -2423,6 +2423,11 @@ const GdStructDescriptor gd_cave_properties[] =
     N_("On the PAL version of the C64 computer, the timer was actually slower than normal seconds. This flag is used to compensate for this. If enabled, one game second will last 1.2 real seconds. Most original games were authored for the PAL version. This is a compatibility setting for imported caves; it is not recommended to enable it for newly authored ones.")
   },
   {
+    "NoTime", GD_TYPE_BOOLEAN, 0,
+    N_("No time"), CAVE_OFFSET(no_time), 1,
+    N_("Use neither normal nor reverse time for this cave.")
+  },
+  {
     "FrameTime", GD_TYPE_INT, GD_ALWAYS_SAVE,
     N_("   Speed (ms)"), CAVE_OFFSET(level_speed[0]), 5,
     N_("Number of milliseconds between game frames. Used when milliseconds-based timing is active, ie. C64 scheduling is off."), 50, 500
@@ -3415,6 +3420,7 @@ GdPropertyDefault gd_cave_defaults_gdash[] =
   { CAVE_OFFSET(level_time[0]),					999				},
   { CAVE_OFFSET(max_time),					999				},
   { CAVE_OFFSET(pal_timing),					FALSE				},
+  { CAVE_OFFSET(no_time),					FALSE				},
   { CAVE_OFFSET(level_timevalue[0]),				1				},
   { CAVE_OFFSET(scheduling),					GD_SCHEDULING_MILLISECONDS	},
   { CAVE_OFFSET(level_ckdelay[0]),				0				},

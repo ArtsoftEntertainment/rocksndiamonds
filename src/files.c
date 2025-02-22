@@ -339,6 +339,11 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
   },
   {
     -1,					-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(29),
+    &li.bd_no_time,			FALSE
+  },
+  {
+    -1,					-1,
     TYPE_INTEGER,			CONF_VALUE_32_BIT(4),
     &li.bd_color[0],			GD_C64_COLOR_BLACK
   },
@@ -4435,6 +4440,7 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   // game timing
   cave->scheduling			= level->bd_scheduling_type;
   cave->pal_timing			= level->bd_pal_timing;
+  cave->no_time				= level->bd_no_time;
   cave->level_speed[0]			= level->bd_cycle_delay_ms;
   cave->level_ckdelay[0]		= level->bd_cycle_delay_c64;
   cave->level_hatching_delay_frame[0]	= level->bd_hatching_delay_cycles;
@@ -4630,6 +4636,7 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   // game timing
   level->bd_scheduling_type		= cave->scheduling;
   level->bd_pal_timing			= cave->pal_timing;
+  level->bd_no_time			= cave->no_time;
   level->bd_cycle_delay_ms		= cave->level_speed[bd_level_nr];
   level->bd_cycle_delay_c64		= cave->level_ckdelay[bd_level_nr];
   level->bd_hatching_delay_cycles	= cave->level_hatching_delay_frame[bd_level_nr];

@@ -79,6 +79,10 @@ static void increment_score(GdGame *game, int increment)
 
   if (game->state_counter == GAME_INT_CHECK_BONUS_TIME && game_has_no_time_limit())
   {
+    // if not using time at all, do not change player score after playing
+    if (game->cave->no_time)
+      return;
+
     // reverse time -- decrement player score by score for remaining time
 
     game_bd.global_score = MAX(0, game_bd.global_score - increment);
@@ -307,12 +311,17 @@ static void iterate_cave(GdGame *game, GdDirection player_move, boolean fire, bo
       add_bonus_life(game, FALSE);
     }
 
+    // if not using time, set cave time to ten seconds for end jingle
+    if (game->cave->no_time)
+      game->cave->time = 10 * game->cave->timing_factor;
+
     // start adding points for remaining time
     game->state_counter = GAME_INT_CHECK_BONUS_TIME;
     gd_cave_clear_sounds(game->cave);
 
     // play cave finished sound
-    gd_sound_play(game->cave, GD_S_FINISHED, O_NONE, -1, -1);
+    if (!game->cave->no_time)
+      gd_sound_play(game->cave, GD_S_FINISHED, O_NONE, -1, -1);
     gd_sound_play_cave(game->cave);
   }
 
@@ -554,7 +563,7 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
 	counter_next = GAME_INT_WAIT_BEFORE_COVER;
       }
 
-      if (game->cave->time / game->cave->timing_factor > 8)
+      if (game->cave->time / game->cave->timing_factor > 8 && !game->cave->no_time)
 	gd_sound_play(game->cave, GD_S_FINISHED, O_NONE, -1, -1); // play cave finished sound
 
       // play bonus sound
