@@ -1149,6 +1149,10 @@ void SDLBlitTexture(Bitmap *bitmap,
   SDL_Rect src_rect;
   SDL_Rect dst_rect;
 
+  // check renderer used to create textures
+  if (bitmap->renderer != sdl_renderer)
+    Warn("trying to blit textures with invalid renderer!");
+
   texture =
     (mask_mode == BLIT_MASKED ? bitmap->texture_masked : bitmap->texture);
 
