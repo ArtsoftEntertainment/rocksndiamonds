@@ -498,12 +498,16 @@ static int get_wrapped_position_y(GdCave *cave, int y)
 
 static int get_middle_screen_level_position_x(GdCave *cave)
 {
-  return (cave->w < get_play_area_w() ? cave->w / 2 : get_play_area_w() / 2 + get_scroll_x());
+  int x = (cave->w < get_play_area_w() ? cave->w / 2 : get_play_area_w() / 2 + get_scroll_x());
+
+  return get_wrapped_position_x(cave, x);
 }
 
 static int get_middle_screen_level_position_y(GdCave *cave)
 {
-  return (cave->h < get_play_area_h() ? cave->h / 2 : get_play_area_h() / 2 + get_scroll_y());
+  int y = (cave->h < get_play_area_h() ? cave->h / 2 : get_play_area_h() / 2 + get_scroll_y());
+
+  return get_wrapped_position_y(cave, y);
 }
 
 // plays sound in a cave
