@@ -486,6 +486,16 @@ static void gd_sound_info_to_play(int channel, int x, int y, int element, int so
   si->sound = sound;
 }
 
+static int get_wrapped_position_x(GdCave *cave, int x)
+{
+  return (x + cave->w) % cave->w;
+}
+
+static int get_wrapped_position_y(GdCave *cave, int y)
+{
+  return (y + cave->h) % cave->h;
+}
+
 static int get_middle_screen_level_position_x(GdCave *cave)
 {
   return (cave->w < get_play_area_w() ? cave->w / 2 : get_play_area_w() / 2 + get_scroll_x());
@@ -502,8 +512,8 @@ void gd_sound_play(GdCave *cave, GdSound sound, GdElement element, int x, int y)
   if (x != -1 || y != -1)
   {
     // fix wrap-around cave positions
-    x = (x + cave->w) % cave->w;
-    y = (y + cave->h) % cave->h;
+    x = get_wrapped_position_x(cave, x);
+    y = get_wrapped_position_y(cave, y);
   }
 
   if (sound == GD_S_NONE)
