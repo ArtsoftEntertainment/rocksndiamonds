@@ -3131,6 +3131,11 @@ void DrawEnvelopeRequestToScreen(int drawing_target)
   }
 }
 
+void FreeEnvelopeRequestTextures(void)
+{
+  SDLFreeBitmapTextures(menu.request.bitmap);
+}
+
 static void setRequestBasePosition(int *x, int *y)
 {
   int sx_base, sy_base;

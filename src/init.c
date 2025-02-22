@@ -456,6 +456,7 @@ void FreeAllTextures(void)
 {
   FreeAllImageTextures();
   FreeTileCursorTextures();
+  FreeEnvelopeRequestTextures();
 }
 
 static int getFontSpecialSuffix(void)
