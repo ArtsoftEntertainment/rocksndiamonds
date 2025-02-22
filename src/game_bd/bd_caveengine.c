@@ -4378,9 +4378,20 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
   {
     int secondsbefore = cave->time / cave->timing_factor;
 
-    cave->time -= cave->speed;
-    if (cave->time <= 0)
-      cave->time = 0;
+    if (game.no_level_time_limit)
+    {
+      // reverse time
+      cave->time += cave->speed;
+      if (cave->time > cave->max_time * cave->timing_factor)
+	cave->time -= cave->max_time * cave->timing_factor;
+    }
+    else
+    {
+      // normal time
+      cave->time -= cave->speed;
+      if (cave->time <= 0)
+        cave->time = 0;
+    }
 
     int secondsafter = cave->time / cave->timing_factor;
 

@@ -65,11 +65,28 @@ static void add_bonus_life(GdGame *game, boolean inform_user)
   }
 }
 
+// this function is only needed to prevent variable name clash (should be fixed)
+static boolean game_has_no_time_limit(void)
+{
+  return game.no_level_time_limit;
+}
+
 // increment score of player.
 // flash screen if bonus life
 static void increment_score(GdGame *game, int increment)
 {
   int i;
+
+  if (game->state_counter == GAME_INT_CHECK_BONUS_TIME && game_has_no_time_limit())
+  {
+    // reverse time -- decrement player score by score for remaining time
+
+    game_bd.global_score = MAX(0, game_bd.global_score - increment);
+    game->player_score = MAX(0, game->player_score - increment);
+    game->cave_score = MAX(0, game->cave_score - increment);
+
+    return;
+  }
 
   i = game->player_score / gd_caveset_data->bonus_life_score;
   game_bd.global_score += increment;

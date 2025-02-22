@@ -10944,11 +10944,6 @@ boolean useKrisszEngine_BD(void)
   return (TapeIsPlaying_ReplayBD() && level.native_bd_level->replay->randoms->len > 0);
 }
 
-boolean getTimePlayed_BD(void)
-{
-  return TimePlayed;
-}
-
 boolean swapTiles_EM(boolean is_pre_emc_cave)
 {
   return is_pre_emc_cave && leveldir_current->use_emc_tiles;
