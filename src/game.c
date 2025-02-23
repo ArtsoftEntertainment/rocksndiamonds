@@ -17924,6 +17924,8 @@ static void HandleGameButtonsExt(int id, int button)
 
       RedrawSoundButtonGadget(id);
 
+      SaveSetupIfNeeded();
+
       break;
 
     case SOUND_CTRL_ID_LOOPS:
@@ -17947,6 +17949,8 @@ static void HandleGameButtonsExt(int id, int button)
 
       RedrawSoundButtonGadget(id);
 
+      SaveSetupIfNeeded();
+
       break;
 
     case SOUND_CTRL_ID_SIMPLE:
@@ -17969,6 +17973,8 @@ static void HandleGameButtonsExt(int id, int button)
       }
 
       RedrawSoundButtonGadget(id);
+
+      SaveSetupIfNeeded();
 
       break;
 
