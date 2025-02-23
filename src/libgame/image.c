@@ -416,6 +416,10 @@ void ResetColorTemplateImage(int pos)
     // image color template not yet defined -- copy from original bitmap
     Bitmap *orig_bitmap = img_info->bitmaps[IMG_BITMAP_PTR_ORIGINAL];
 
+    // this may happen due to configuration problems in "graphicsinfo.conf" (to be checked)
+    if (orig_bitmap == NULL)
+      Fail("undefined bitmap for file '%s' -- should not happen", img_info->source_filename);
+
     img_info->template = ZoomBitmap(orig_bitmap, orig_bitmap->width, orig_bitmap->height);
   }
 
