@@ -92,13 +92,16 @@ static void increment_score(GdGame *game, int increment)
     return;
   }
 
-  i = game->player_score / gd_caveset_data->bonus_life_score;
+  if (gd_caveset_data->bonus_life_score > 0)
+    i = game->player_score / gd_caveset_data->bonus_life_score;
+
   game_bd.global_score += increment;
   game->player_score += increment;
   game->cave_score += increment;
 
   // if score crossed bonus_life_score point boundary, player won a bonus life
-  if (game->player_score / gd_caveset_data->bonus_life_score > i)
+  if (gd_caveset_data->bonus_life_score > 0 &&
+      game->player_score / gd_caveset_data->bonus_life_score > i)
     add_bonus_life(game, TRUE);
 }
 
