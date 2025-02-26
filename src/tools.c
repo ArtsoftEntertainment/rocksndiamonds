@@ -11940,7 +11940,7 @@ boolean CheckSingleStepMode_BD(boolean frame_max,
                                boolean player_moving,
                                boolean player_snapping)
 {
-  if (tape.single_step && tape.recording && !tape.pausing)
+  if (tape.single_step && (tape.recording || tape.playing) && !tape.pausing)
     if (frame_max && FrameCounter > 6)
       TapeTogglePause(TAPE_TOGGLE_AUTOMATIC);
 
@@ -11954,7 +11954,7 @@ boolean CheckSingleStepMode_EM(int frame,
 			       boolean any_player_snapping,
 			       boolean any_player_dropping)
 {
-  if (tape.single_step && tape.recording && !tape.pausing)
+  if (tape.single_step && (tape.recording || tape.playing) && !tape.pausing)
     if (frame == 7 && !any_player_dropping && FrameCounter > 6)
       TapeTogglePause(TAPE_TOGGLE_AUTOMATIC);
 
@@ -11974,9 +11974,30 @@ void CheckSingleStepMode_SP(boolean murphy_is_waiting,
     if (stored_player[i].force_dropping)
       murphy_starts_dropping = TRUE;
 
-  if (tape.single_step && tape.recording && !tape.pausing)
+  if (tape.single_step && (tape.recording || tape.playing) && !tape.pausing)
+  {
+    static int count = 0;
+
     if (murphy_is_waiting && !murphy_starts_dropping)
-      TapeTogglePause(TAPE_TOGGLE_AUTOMATIC);
+    {
+      boolean enter_single_step_mode = TRUE;
+
+      if (tape.playing)
+      {
+        if (count != 0)
+          enter_single_step_mode = FALSE;
+
+        count = (count + 1) % 8;
+      }
+
+      if (enter_single_step_mode)
+        TapeTogglePause(TAPE_TOGGLE_AUTOMATIC);
+    }
+    else
+    {
+      count = 0;
+    }
+  }
 
   CheckSaveEngineSnapshot_SP(murphy_is_waiting, murphy_is_dropping);
 }
@@ -11984,9 +12005,33 @@ void CheckSingleStepMode_SP(boolean murphy_is_waiting,
 void CheckSingleStepMode_MM(boolean element_clicked,
 			    boolean button_released)
 {
-  if (tape.single_step && tape.recording && !tape.pausing)
-    if (button_released)
+  if (tape.single_step && (tape.recording || tape.playing) && !tape.pausing)
+  {
+    static int count = 0;
+    static boolean button_released_last = FALSE;
+    boolean enter_single_step_mode = FALSE;
+
+    if (button_released != button_released_last)
+      count = 0;
+
+    if (tape.recording)
+    {
+      if (button_released)
+        enter_single_step_mode = TRUE;
+    }
+    else if (tape.playing)
+    {
+      if (count == 0)
+        enter_single_step_mode = TRUE;
+
+      count = (count + 1) % 8;
+    }
+
+    if (enter_single_step_mode)
       TapeTogglePause(TAPE_TOGGLE_AUTOMATIC);
+
+    button_released_last = button_released;
+  }
 
   CheckSaveEngineSnapshot_MM(element_clicked, button_released);
 }

@@ -2680,7 +2680,16 @@ static void HandleTapeButtonsExt(int id)
     case TAPE_CTRL_ID_EXTRA:
       if (tape.playing)
       {
-	tape.pause_before_end = !tape.pause_before_end;
+	if (tape.pausing)
+	{
+	  TapeTogglePause(TAPE_TOGGLE_MANUAL | TAPE_TOGGLE_PLAY_PAUSE);
+
+	  tape.single_step = TRUE;
+	}
+	else
+	{
+	  tape.pause_before_end = !tape.pause_before_end;
+	}
 
 	DrawVideoDisplayCurrentState();
       }

@@ -12125,8 +12125,10 @@ static void CheckSaveEngineSnapshot(struct PlayerInfo *player)
 
 static void CheckSingleStepMode(struct PlayerInfo *player)
 {
-  if (tape.single_step && tape.recording && !tape.pausing)
+  if (tape.single_step && (tape.recording || tape.playing) && !tape.pausing)
   {
+    static int count = 0;
+
     // as it is called "single step mode", just return to pause mode when the
     // player stopped moving after one tile (or never starts moving at all)
     // (reverse logic needed here in case single step mode used in team mode)
@@ -12134,7 +12136,18 @@ static void CheckSingleStepMode(struct PlayerInfo *player)
 	player->is_pushing ||
 	player->is_dropping_pressed ||
 	player->effective_mouse_action.button)
+    {
       game.enter_single_step_mode = FALSE;
+
+      count = 0;
+    }
+    else if (tape.playing)
+    {
+      if (count != 7)
+        game.enter_single_step_mode = FALSE;
+
+      count = (count + 1) % 8;
+    }
   }
 
   CheckSaveEngineSnapshot(player);
@@ -12990,7 +13003,7 @@ void GameActions_RND(void)
 
   // check single step mode (set flag and clear again if any player is active)
   game.enter_single_step_mode =
-    (tape.single_step && tape.recording && !tape.pausing);
+    (tape.single_step && (tape.recording || tape.playing) && !tape.pausing);
 
   for (i = 0; i < MAX_PLAYERS; i++)
   {
@@ -14101,7 +14114,7 @@ void ScrollPlayer(struct PlayerInfo *player, int mode)
     if (level.use_step_counter)
       CheckLevelTime_StepCounter();
 
-    if (tape.single_step && tape.recording && !tape.pausing &&
+    if (tape.single_step && (tape.recording || tape.playing) && !tape.pausing &&
 	!player->programmed_action)
       TapeTogglePause(TAPE_TOGGLE_AUTOMATIC);
 
