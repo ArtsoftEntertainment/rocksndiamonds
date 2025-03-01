@@ -1758,6 +1758,7 @@ struct TreeInfo
   boolean use_emc_tiles;	// use (swapped) V5/V6 EMC tiles when set to "true"
   boolean info_screens_from_main; // can invoke info screens from main menu
   boolean replay_with_old_engine; // use the old BD engine for playing BDCFF replays
+  boolean bd_use_krissz_engine;	// for game engine compatibility with Krissz engine
 
   int bd_initial_lives;		// initial number of lives for BD games with multiple lives
   int bd_maximum_lives;		// maximum number of lives for BD games with multiple lives

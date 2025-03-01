@@ -98,6 +98,11 @@ const GdStructDescriptor gd_caveset_properties[] =
     N_("Number of points to collect for a bonus life."), 100, 5000
   },
   {
+    "KrisszEngine", GD_TYPE_BOOLEAN, 0,
+    N_("Use Krissz game engine"), CAVESET_OFFSET(use_krissz_engine), 1,
+    N_("Enable compatibility with the Krissz game engine.")
+  },
+  {
     "Story", GD_TYPE_LONGSTRING, 0,
     N_("Story"), CAVESET_OFFSET(story), 1,
     N_("Long description of the game.")
@@ -130,6 +135,8 @@ static GdPropertyDefault caveset_defaults[] =
   { CAVESET_OFFSET(maximum_lives),	9	},
   { CAVESET_OFFSET(bonus_life_score),	500	},
 
+  { CAVESET_OFFSET(use_krissz_engine),	FALSE	},
+
   { -1 },
 };
 
@@ -146,6 +153,8 @@ GdCavesetData *gd_caveset_data_new(void)
     data->initial_lives = leveldir_current->bd_initial_lives;
     data->maximum_lives = leveldir_current->bd_maximum_lives;
     data->bonus_life_score = leveldir_current->bd_bonus_life_score;
+
+    data->use_krissz_engine = leveldir_current->bd_use_krissz_engine;
 
     data->levelset_subdir = getStringCopy(leveldir_current->subdir);
   }

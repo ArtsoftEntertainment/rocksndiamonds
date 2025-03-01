@@ -41,6 +41,8 @@ typedef struct _gd_caveset_data
   int maximum_lives;            // maximum lives
   int bonus_life_score;         // bonus life / number of points
 
+  boolean use_krissz_engine;	// for game engine compatibility with Krissz engine
+
   // and this one the highscores
   GdHighScore highscore[GD_HIGHSCORE_NUM];
 

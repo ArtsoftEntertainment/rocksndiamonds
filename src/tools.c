@@ -10941,7 +10941,19 @@ boolean useOldEngine_BD(void)
 
 boolean useKrisszEngine_BD(void)
 {
-  return (TapeIsPlaying_ReplayBD() && level.native_bd_level->replay->randoms->len > 0);
+  // use Krissz style BD game engine if playing specifically tagged level sets
+  if (leveldir_current->bd_use_krissz_engine)
+    return TRUE;
+
+  // use Krissz style BD game engine if playing specifically tagged cave sets
+  if (level.native_bd_level->caveset->use_krissz_engine)
+    return TRUE;
+
+  // use Krissz style BD game engine if playing native BD replays with random numbers
+  if (TapeIsPlaying_ReplayBD() && level.native_bd_level->replay->randoms->len > 0)
+    return TRUE;
+
+  return FALSE;
 }
 
 boolean swapTiles_EM(boolean is_pre_emc_cave)
