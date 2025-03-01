@@ -1331,6 +1331,10 @@ static boolean do_push_successful(GdCave *cave, int prob)
   if (game_bd.game->use_krissz_engine)
   {
     // special case: playing Krissz engine replay
+
+    if (prob == 1000000)	// p = 1, always push
+      return TRUE;
+
     return (get_next_replay_random() == 1);
   }
   else
