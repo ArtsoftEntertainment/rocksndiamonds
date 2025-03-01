@@ -11713,7 +11713,7 @@ void DrawLevelEd(void)
 {
   int fade_mask = REDRAW_FIELD;
 
-  FadeSoundsAndMusic();
+  FadeMenuSoundsAndMusic();
 
   if (CheckFadeAll())
     fade_mask = REDRAW_ALL;
@@ -11753,6 +11753,8 @@ void DrawLevelEd(void)
   // redraw_mask |= REDRAW_ALL;
 
   RedrawLevelEd(FALSE);
+
+  PlayMenuSoundsAndMusic();
 
   DrawMaskedBorder(fade_mask);
 
