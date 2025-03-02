@@ -1436,6 +1436,10 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
           else
             store_dir(cave, what_x, what_y, player_move, what);
 
+          // special case: light stone pushed beyond right playfield border does not fall down
+          if (what == O_LIGHT_STONE && player_move == GD_MV_RIGHT && what_x == cave->w - 1)
+            game_bd.game->scanned_next[what_y][0] = TRUE;
+
 	  result = TRUE;
 	}
       }
