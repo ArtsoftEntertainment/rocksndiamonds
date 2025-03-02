@@ -18,7 +18,7 @@
 
 
 // !!! (can be removed later) !!!
-#define DO_GFX_SANITY_CHECK	TRUE
+#define DO_GFX_SANITY_CHECK	FALSE
 
 // distance to screen edge in cells when scrolling the screen
 #define SCROLL_EDGE_DISTANCE	4
