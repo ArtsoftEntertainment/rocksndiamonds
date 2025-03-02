@@ -86,6 +86,7 @@ typedef struct _gd_game
   int **gfx_buffer;             // contains the indexes to the cells;
                                 // created by *start_level, deleted by *stop_game
   int **covered_buffer;
+  int **scanned_next;
   int itercycle;
   int itermax;
   int itermax_last;

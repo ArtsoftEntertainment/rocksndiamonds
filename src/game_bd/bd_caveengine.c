@@ -2022,6 +2022,18 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
     ymax = cave->h - 2;
   }
 
+  // set scanned state for this scan, if needed
+  for (y = ymin; y <= ymax; y++)
+  {
+    for (x = 0; x < cave->w; x++)
+    {
+      if (game_bd.game->scanned_next[y][x])
+        cave->map[y][x] = scanned_pair(cave->map[y][x]);
+
+      game_bd.game->scanned_next[y][x] = FALSE;
+    }
+  }
+
   // the cave scan routine
   for (y = ymin; y <= ymax; y++)
   {
