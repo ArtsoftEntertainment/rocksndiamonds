@@ -53,8 +53,8 @@
 
 #define MAX_BUF_XSIZE			(SCR_FIELDX + 2)
 #define MAX_BUF_YSIZE			(SCR_FIELDY + 2)
-#define MIN_LEV_FIELDX			3
-#define MIN_LEV_FIELDY			3
+#define MIN_LEV_FIELDX			1
+#define MIN_LEV_FIELDY			1
 #define STD_LEV_FIELDX			64
 #define STD_LEV_FIELDY			32
 #define MAX_LEV_FIELDX			MAX_PLAYFIELD_WIDTH
