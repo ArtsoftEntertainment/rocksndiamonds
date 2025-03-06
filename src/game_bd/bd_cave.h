@@ -89,7 +89,7 @@ void gd_struct_set_defaults_from_array(void *str, const GdStructDescriptor *prop
 #define GD_NUM_OF_CELLS		(GD_NUM_OF_CELLS_X * GD_NUM_OF_CELLS_Y + 80)
 
 // maximum replay size (maximum seconds x game cycles per second)
-#define MAX_REPLAY_LEN		(10000 * FRAMES_PER_SECOND / 8)
+#define MAX_REPLAY_LEN		(20000 * FRAMES_PER_SECOND / 8)
 
 extern const GdColor gd_flash_color;
 extern const GdColor gd_select_color;
