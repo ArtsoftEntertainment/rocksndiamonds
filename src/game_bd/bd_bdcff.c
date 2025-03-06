@@ -816,6 +816,16 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
 
 	// ... to be able to create a copy for a new cave.
 	cave = gd_cave_new_from_cave(default_cave);
+
+	// free replays copied from default cave (if previously defined outside cave section)
+	if (default_cave->replays != NULL)
+	{
+	  list_foreach_fn_1(default_cave->replays, (list_fn_1) gd_replay_free);
+	  list_free(default_cave->replays);
+
+	  default_cave->replays = NULL;
+	}
+
 	gd_caveset = list_append (gd_caveset, cave);
       }
       else if (strcasecmp(line, "[/cave]") == 0)
