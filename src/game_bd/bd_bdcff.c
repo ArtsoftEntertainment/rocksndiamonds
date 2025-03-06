@@ -916,6 +916,15 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
 	replay->saved = TRUE;
 	replay_process_tags(replay, replay_tags);
 
+	// check for invalid BDCFF cave level definition
+	if (replay->level < 0 || replay->level > 5)
+	{
+	  Warn("[replay] has invalid Level=%d defined", replay->level);
+
+	  // force internal BDCFF levels to be inside valid range
+	  replay->level = MIN(MAX(0, replay->level), 5);
+	}
+
 #if 1
 	// BDCFF numbers levels from 1 to 5, but internally we number levels from 0 to 4
 	if (replay->level > 0)
