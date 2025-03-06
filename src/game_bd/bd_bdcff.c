@@ -904,6 +904,9 @@ boolean gd_caveset_load_from_bdcff(const char *contents)
       else if (strcasecmp(line, "[replay]") == 0)
       {
 	reading_replay = TRUE;
+
+	if (cave == default_cave)
+	  Warn("[replay] section must be in [cave] section!");
       }
       else if (strcasecmp(line, "[/replay]") == 0)
       {
