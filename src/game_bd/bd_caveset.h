@@ -18,7 +18,7 @@
 #define BD_CAVESET_H
 
 
-#define GD_CAVESET_MAX_FILESIZE		1048576
+#define GD_CAVESET_MAX_FILESIZE		10485760
 
 typedef struct _gd_caveset_data
 {
