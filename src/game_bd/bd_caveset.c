@@ -627,9 +627,9 @@ boolean gd_caveset_load_from_file(char *filename)
     return FALSE;
   }
 
-  if (filesize > 1048576)
+  if (filesize > GD_CAVESET_MAX_FILESIZE)
   {
-    Warn("cannot load file '%s' (bigger than 1 MB)", filename);
+    Warn("cannot load file '%s' (bigger than %d bytes)", filename, GD_CAVESET_MAX_FILESIZE);
 
     return FALSE;
   }

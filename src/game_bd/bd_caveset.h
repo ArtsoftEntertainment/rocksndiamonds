@@ -18,6 +18,8 @@
 #define BD_CAVESET_H
 
 
+#define GD_CAVESET_MAX_FILESIZE		1048576
+
 typedef struct _gd_caveset_data
 {
   GdString name;                // Name of caveset
