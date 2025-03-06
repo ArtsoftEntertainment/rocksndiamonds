@@ -2050,6 +2050,7 @@ extern int			FrameCounter;
 
 // function definitions
 
+void InitProgramLogs(void);
 void InitProgramInfo(char *, char *, char *, char *, char *, char *, char *,
 		     char *, VersionType);
 void InitNetworkInfo(boolean, boolean, boolean, char *, int);

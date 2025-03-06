@@ -70,6 +70,12 @@ int			FrameCounter = 0;
 // init/close functions
 // ============================================================================
 
+void InitProgramLogs(void)
+{
+  // always start with reliable default values
+  program.log_file = program.log_file_default = stdout;
+}
+
 void InitProgramInfo(char *command_filename,
 		     char *config_filename, char *userdata_subdir,
 		     char *program_basename, char *program_title,
@@ -101,7 +107,6 @@ void InitProgramInfo(char *command_filename,
   program.version_string = program_version_string;
 
   program.log_filename = getLogFilename(getLogBasename(program_basename));
-  program.log_file = program.log_file_default = stdout;
 
   program.api_thread_count = 0;
 

@@ -9689,6 +9689,7 @@ static void InitProgramConfig(char *command_filename)
 
 int main(int argc, char *argv[])
 {
+  InitProgramLogs();
   InitProgramConfig(argv[0]);
 
   InitWindowTitleFunction(getWindowTitleString);
