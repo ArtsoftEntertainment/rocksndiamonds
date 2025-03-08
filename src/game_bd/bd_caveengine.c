@@ -2048,8 +2048,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
       // if we find a scanned element, change it to the normal one, and that's all.
       if (is_scanned(cave, x, y))
       {
-        // but do not pass element through slime that has just been placed above it same frame
-        if (get_dir(cave, x, y, cave->gravity) == O_SLIME)
+        // Krissz engine: do not pass element through slime that has just been placed above it
+        if (game_bd.game->use_krissz_engine && get_dir(cave, x, y, cave->gravity) == O_SLIME)
           continue;
 
         unscan(cave, x, y);
