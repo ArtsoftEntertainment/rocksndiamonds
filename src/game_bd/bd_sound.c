@@ -77,13 +77,37 @@ static SoundProperty sound_flags[] =
   // CHANNEL 1 SOUNDS ARE ALWAYS RESTARTED, so no need for GD_SP_FORCE flag.
   { GD_S_STONE_PUSHING,			1, 10					},
   { GD_S_STONE_FALLING,			1, 10					},
-  { GD_S_STONE_IMPACT,			1, 10					},
+  { GD_S_STONE_IMPACT_RANDOM,		1, 10					},
+  { GD_S_STONE_IMPACT_1,		1, 10					},
+  { GD_S_STONE_IMPACT_2,		1, 10					},
+  { GD_S_STONE_IMPACT_3,		1, 10					},
+  { GD_S_STONE_IMPACT_4,		1, 10					},
+  { GD_S_STONE_IMPACT_5,		1, 10					},
+  { GD_S_STONE_IMPACT_6,		1, 10					},
+  { GD_S_STONE_IMPACT_7,		1, 10					},
+  { GD_S_STONE_IMPACT_8,		1, 10					},
   { GD_S_MEGA_STONE_PUSHING,		1, 10					},
   { GD_S_MEGA_STONE_FALLING,		1, 10					},
-  { GD_S_MEGA_STONE_IMPACT,		1, 10					},
+  { GD_S_MEGA_STONE_IMPACT_RANDOM,	1, 10					},
+  { GD_S_MEGA_STONE_IMPACT_1,		1, 10					},
+  { GD_S_MEGA_STONE_IMPACT_2,		1, 10					},
+  { GD_S_MEGA_STONE_IMPACT_3,		1, 10					},
+  { GD_S_MEGA_STONE_IMPACT_4,		1, 10					},
+  { GD_S_MEGA_STONE_IMPACT_5,		1, 10					},
+  { GD_S_MEGA_STONE_IMPACT_6,		1, 10					},
+  { GD_S_MEGA_STONE_IMPACT_7,		1, 10					},
+  { GD_S_MEGA_STONE_IMPACT_8,		1, 10					},
   { GD_S_LIGHT_STONE_PUSHING,		1, 10					},
   { GD_S_LIGHT_STONE_FALLING,		1, 10					},
-  { GD_S_LIGHT_STONE_IMPACT,		1, 10					},
+  { GD_S_LIGHT_STONE_IMPACT_RANDOM,	1, 10					},
+  { GD_S_LIGHT_STONE_IMPACT_1,		1, 10					},
+  { GD_S_LIGHT_STONE_IMPACT_2,		1, 10					},
+  { GD_S_LIGHT_STONE_IMPACT_3,		1, 10					},
+  { GD_S_LIGHT_STONE_IMPACT_4,		1, 10					},
+  { GD_S_LIGHT_STONE_IMPACT_5,		1, 10					},
+  { GD_S_LIGHT_STONE_IMPACT_6,		1, 10					},
+  { GD_S_LIGHT_STONE_IMPACT_7,		1, 10					},
+  { GD_S_LIGHT_STONE_IMPACT_8,		1, 10					},
   { GD_S_FLYING_STONE_PUSHING,		1, 10					},
   { GD_S_FLYING_STONE_FALLING,		1, 10					},
   { GD_S_FLYING_STONE_IMPACT,		1, 10					},
@@ -173,8 +197,24 @@ static SoundProperty sound_flags[] =
 
   // channel2 sounds.
   { GD_S_DOOR_OPENING,			2, 10					},
-  { GD_S_DIRT_WALKING,			2, 10					},
-  { GD_S_EMPTY_WALKING,			2, 10					},
+  { GD_S_DIRT_WALKING_RANDOM,		2, 10					},
+  { GD_S_DIRT_WALKING_1,		2, 10					},
+  { GD_S_DIRT_WALKING_2,		2, 10					},
+  { GD_S_DIRT_WALKING_3,		2, 10					},
+  { GD_S_DIRT_WALKING_4,		2, 10					},
+  { GD_S_DIRT_WALKING_5,		2, 10					},
+  { GD_S_DIRT_WALKING_6,		2, 10					},
+  { GD_S_DIRT_WALKING_7,		2, 10					},
+  { GD_S_DIRT_WALKING_8,		2, 10					},
+  { GD_S_EMPTY_WALKING_RANDOM,		2, 10					},
+  { GD_S_EMPTY_WALKING_1,		2, 10					},
+  { GD_S_EMPTY_WALKING_2,		2, 10					},
+  { GD_S_EMPTY_WALKING_3,		2, 10					},
+  { GD_S_EMPTY_WALKING_4,		2, 10					},
+  { GD_S_EMPTY_WALKING_5,		2, 10					},
+  { GD_S_EMPTY_WALKING_6,		2, 10					},
+  { GD_S_EMPTY_WALKING_7,		2, 10					},
+  { GD_S_EMPTY_WALKING_8,		2, 10					},
   { GD_S_STIRRING,			2, 10					},
   { GD_S_BOX_PUSHING,			2, 10					},
   { GD_S_TELEPORTER,			2, 10					},
@@ -305,6 +345,39 @@ static void play_sound(int channel, GdSound sound)
 {
   // channel 1 and channel 4 are used alternating
   // channel 2 and channel 5 are used alternating
+  static const GdSound stone_impact_sounds[] =
+  {
+    GD_S_STONE_IMPACT_1,
+    GD_S_STONE_IMPACT_2,
+    GD_S_STONE_IMPACT_3,
+    GD_S_STONE_IMPACT_4,
+    GD_S_STONE_IMPACT_5,
+    GD_S_STONE_IMPACT_6,
+    GD_S_STONE_IMPACT_7,
+    GD_S_STONE_IMPACT_8,
+  };
+  static const GdSound mega_stone_impact_sounds[] =
+  {
+    GD_S_MEGA_STONE_IMPACT_1,
+    GD_S_MEGA_STONE_IMPACT_2,
+    GD_S_MEGA_STONE_IMPACT_3,
+    GD_S_MEGA_STONE_IMPACT_4,
+    GD_S_MEGA_STONE_IMPACT_5,
+    GD_S_MEGA_STONE_IMPACT_6,
+    GD_S_MEGA_STONE_IMPACT_7,
+    GD_S_MEGA_STONE_IMPACT_8,
+  };
+  static const GdSound light_stone_impact_sounds[] =
+  {
+    GD_S_LIGHT_STONE_IMPACT_1,
+    GD_S_LIGHT_STONE_IMPACT_2,
+    GD_S_LIGHT_STONE_IMPACT_3,
+    GD_S_LIGHT_STONE_IMPACT_4,
+    GD_S_LIGHT_STONE_IMPACT_5,
+    GD_S_LIGHT_STONE_IMPACT_6,
+    GD_S_LIGHT_STONE_IMPACT_7,
+    GD_S_LIGHT_STONE_IMPACT_8,
+  };
   static const GdSound diamond_falling_sounds[] =
   {
     GD_S_DIAMOND_FALLING_1,
@@ -349,12 +422,40 @@ static void play_sound(int channel, GdSound sound)
     GD_S_FLYING_DIAMOND_IMPACT_7,
     GD_S_FLYING_DIAMOND_IMPACT_8,
   };
+  static const GdSound dirt_walking_sounds[] =
+  {
+    GD_S_DIRT_WALKING_1,
+    GD_S_DIRT_WALKING_2,
+    GD_S_DIRT_WALKING_3,
+    GD_S_DIRT_WALKING_4,
+    GD_S_DIRT_WALKING_5,
+    GD_S_DIRT_WALKING_6,
+    GD_S_DIRT_WALKING_7,
+    GD_S_DIRT_WALKING_8,
+  };
+  static const GdSound empty_walking_sounds[] =
+  {
+    GD_S_EMPTY_WALKING_1,
+    GD_S_EMPTY_WALKING_2,
+    GD_S_EMPTY_WALKING_3,
+    GD_S_EMPTY_WALKING_4,
+    GD_S_EMPTY_WALKING_5,
+    GD_S_EMPTY_WALKING_6,
+    GD_S_EMPTY_WALKING_7,
+    GD_S_EMPTY_WALKING_8,
+  };
 
   if (sound == GD_S_NONE)
     return;
 
-  // change diamond falling random to a selected diamond falling sound.
-  if (sound == GD_S_DIAMOND_FALLING_RANDOM)
+  // change diamond falling random to a selected diamond falling sound. (same with other sounds)
+  if (sound == GD_S_STONE_IMPACT_RANDOM)
+    sound = stone_impact_sounds[gd_random_int_range(0, 8)];
+  else if (sound == GD_S_MEGA_STONE_IMPACT_RANDOM)
+    sound = mega_stone_impact_sounds[gd_random_int_range(0, 8)];
+  else if (sound == GD_S_LIGHT_STONE_IMPACT_RANDOM)
+    sound = light_stone_impact_sounds[gd_random_int_range(0, 8)];
+  else if (sound == GD_S_DIAMOND_FALLING_RANDOM)
     sound = diamond_falling_sounds[gd_random_int_range(0, 8)];
   else if (sound == GD_S_DIAMOND_IMPACT_RANDOM)
     sound = diamond_impact_sounds[gd_random_int_range(0, 8)];
@@ -362,6 +463,10 @@ static void play_sound(int channel, GdSound sound)
     sound = flying_diamond_falling_sounds[gd_random_int_range(0, 8)];
   else if (sound == GD_S_FLYING_DIAMOND_IMPACT_RANDOM)
     sound = flying_diamond_impact_sounds[gd_random_int_range(0, 8)];
+  else if (sound == GD_S_DIRT_WALKING_RANDOM)
+    sound = dirt_walking_sounds[gd_random_int_range(0, 8)];
+  else if (sound == GD_S_EMPTY_WALKING_RANDOM)
+    sound = empty_walking_sounds[gd_random_int_range(0, 8)];
 
   // channel 1 may have been changed to channel 4 above.
 

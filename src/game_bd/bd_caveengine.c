@@ -151,7 +151,7 @@ static void play_sound_of_element(GdCave *cave, GdElement element, int x, int y)
       break;
 
     case O_STONE_F:
-      gd_sound_play(cave, GD_S_STONE_IMPACT, element, x, y);
+      gd_sound_play(cave, GD_S_STONE_IMPACT_RANDOM, element, x, y);
       break;
 
     case O_FLYING_STONE:
@@ -167,7 +167,7 @@ static void play_sound_of_element(GdCave *cave, GdElement element, int x, int y)
       break;
 
     case O_MEGA_STONE_F:
-      gd_sound_play(cave, GD_S_MEGA_STONE_IMPACT, element, x, y);
+      gd_sound_play(cave, GD_S_MEGA_STONE_IMPACT_RANDOM, element, x, y);
       break;
 
     case O_LIGHT_STONE:
@@ -175,7 +175,7 @@ static void play_sound_of_element(GdCave *cave, GdElement element, int x, int y)
       break;
 
     case O_LIGHT_STONE_F:
-      gd_sound_play(cave, GD_S_LIGHT_STONE_IMPACT, element, x, y);
+      gd_sound_play(cave, GD_S_LIGHT_STONE_IMPACT_RANDOM, element, x, y);
       break;
 
     case O_NITRO_PACK:
@@ -1215,12 +1215,12 @@ static GdElement player_eat_element(GdCave *cave, const GdElement element, int x
     case O_DIRT_LOOSE:
     case O_STEEL_EATABLE:
     case O_BRICK_EATABLE:
-      gd_sound_play(cave, GD_S_DIRT_WALKING, element, x, y);
+      gd_sound_play(cave, GD_S_DIRT_WALKING_RANDOM, element, x, y);
       return O_SPACE;
 
     case O_SPACE:
     case O_LAVA:    // player goes into lava, as if it was space
-      gd_sound_play(cave, GD_S_EMPTY_WALKING, element, x, y);
+      gd_sound_play(cave, GD_S_EMPTY_WALKING_RANDOM, element, x, y);
       return O_SPACE;
 
     case O_SWEET:
