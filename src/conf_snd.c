@@ -517,6 +517,7 @@ struct ConfigInfo sound_config[] =
   // keyword to start parser: "CONFIG_VARS_START" <-- do not change!
 
   { "game.use_native_bd_sound_engine",		"false"				},
+  { "game.use_native_bd_bonus_jingle",		"false"				},
 
   { NULL,					NULL				}
 };

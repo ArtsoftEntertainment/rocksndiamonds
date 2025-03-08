@@ -212,6 +212,7 @@ struct GameInfo
 
   // values for sound engine customization
   boolean use_native_bd_sound_engine;
+  boolean use_native_bd_bonus_jingle;
 
   // constant within running game
   VersionType engine_version;
