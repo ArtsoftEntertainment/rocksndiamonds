@@ -26,5 +26,6 @@ void gd_sound_off(void);
 void gd_sound_play_cave(GdCave *cave);
 void gd_sound_play_bonus_life(GdCave *cave);
 void gd_sound_play(GdCave *cave, GdSound sound, GdElement element, int x, int y);
+void gd_sound_stop(GdCave *cave, GdSound sound, GdElement element);
 
 #endif	// BD_SOUND_H

@@ -668,3 +668,10 @@ void gd_sound_play(GdCave *cave, GdSound sound, GdElement element, int x, int y)
     gd_sound_info_to_play(channel, x, y, element, sound);
   }
 }
+
+// stops sound in a cave
+void gd_sound_stop(GdCave *cave, GdSound sound, GdElement element)
+{
+  if (isSoundPlaying_BD(element, sound))
+    StopSound_BD(element, sound);
+}
