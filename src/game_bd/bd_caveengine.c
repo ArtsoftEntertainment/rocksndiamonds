@@ -353,13 +353,40 @@ void gd_cave_set_seconds_sound(GdCave *cave)
   }
 }
 
-// get random value from replay
-static int get_next_replay_random(void)
+// Krissz engine: get new random value from random number generator (for playing)
+static int get_krissz_new_random(GdCave *cave, int max_value)
+{
+  return gd_rand_int_range(cave->random, 0, max_value) + 1;
+}
+
+// Krissz engine: get next random value from list of stored random numbers (for replaying)
+static int get_krissz_next_replay_random(void)
 {
   if (native_bd_level.replay->current_playing_pos < native_bd_level.replay->randoms->len)
     return native_bd_level.replay->randoms->data[native_bd_level.replay->current_playing_pos++];
 
   return 0;
+}
+
+// Krissz engine: get random number
+static int get_krissz_random(GdCave *cave, int max_value)
+{
+  // get random value either from random number list or from random number generator
+  if (game_bd.game->use_krissz_engine && TapeIsPlaying_ReplayBD() &&
+      native_bd_level.replay != NULL && native_bd_level.replay->randoms->len > 0)
+  {
+    return get_krissz_next_replay_random();
+  }
+  else
+  {
+    return get_krissz_new_random(cave, max_value);
+  }
+}
+
+// Krissz engine: check if amoeba is growing
+static boolean krissz_amoeba_grows(GdCave *cave)
+{
+  return (get_krissz_random(cave, 1000000 / cave->amoeba_growth_prob) == 1);
 }
 
 static inline int getx(const GdCave *cave, const int x, const int y)
@@ -1330,12 +1357,10 @@ static boolean do_push_successful(GdCave *cave, int prob)
 {
   if (game_bd.game->use_krissz_engine)
   {
-    // special case: playing Krissz engine replay
-
     if (prob == 1000000)	// p = 1, always push
       return TRUE;
 
-    return (get_next_replay_random() == 1);
+    return (get_krissz_random(cave, 1000000 / prob) == 1);
   }
   else
   {
@@ -3381,20 +3406,20 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	      {
                 if (game_bd.game->use_krissz_engine)
                 {
-                  // special case: playing Krissz engine replay
+                  // Krissz engine: special amoeba handling
 
                   if (amoeba_eats(cave, x, y, GD_MV_UP) ||
                       amoeba_eats(cave, x, y, GD_MV_DOWN) ||
                       amoeba_eats(cave, x, y, GD_MV_LEFT) ||
                       amoeba_eats(cave, x, y, GD_MV_RIGHT))
                   {
-                    switch (get_next_replay_random())
+                    switch (get_krissz_random(cave, 4))
                     {
                       // not yet decided to grow, but first choose a random direction.
 
                       case 1:
                         // let this be up. numbers indifferent.
-                        if (amoeba_eats(cave, x, y, GD_MV_UP) && get_next_replay_random() == 1)
+                        if (amoeba_eats(cave, x, y, GD_MV_UP) && krissz_amoeba_grows(cave))
                         {
                           store_dir(cave, x, y, GD_MV_UP, O_AMOEBA);
                           gd_sound_play(cave, GD_S_AMOEBA_GROWING, O_AMOEBA, -1, -1);
@@ -3403,7 +3428,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
                       case 2:
                         // down
-                        if (amoeba_eats(cave, x, y, GD_MV_DOWN) && get_next_replay_random() == 1)
+                        if (amoeba_eats(cave, x, y, GD_MV_DOWN) && krissz_amoeba_grows(cave))
                         {
                           store_dir(cave, x, y, GD_MV_DOWN, O_AMOEBA);
                           gd_sound_play(cave, GD_S_AMOEBA_GROWING, O_AMOEBA, -1, -1);
@@ -3412,7 +3437,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
                       case 3:
                         // left
-                        if (amoeba_eats(cave, x, y, GD_MV_LEFT) && get_next_replay_random() == 1)
+                        if (amoeba_eats(cave, x, y, GD_MV_LEFT) && krissz_amoeba_grows(cave))
                         {
                           store_dir(cave, x, y, GD_MV_LEFT, O_AMOEBA);
                           gd_sound_play(cave, GD_S_AMOEBA_GROWING, O_AMOEBA, -1, -1);
@@ -3421,7 +3446,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
                       case 4:
                         // right
-                        if (amoeba_eats(cave, x, y, GD_MV_RIGHT) && get_next_replay_random() == 1)
+                        if (amoeba_eats(cave, x, y, GD_MV_RIGHT) && krissz_amoeba_grows(cave))
                         {
                           store_dir(cave, x, y, GD_MV_RIGHT, O_AMOEBA);
                           gd_sound_play(cave, GD_S_AMOEBA_GROWING, O_AMOEBA, -1, -1);
@@ -3432,7 +3457,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
                 }
                 else
                 {
-                  // normal case: playing game or replay
+                  // normal BD engine amoeba handling
 
                   if (gd_rand_int_range(cave->random, 0, 1000000) < cave->amoeba_growth_prob)
                   {
