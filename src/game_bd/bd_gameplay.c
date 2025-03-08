@@ -73,6 +73,12 @@ static boolean game_has_no_time_limit(void)
   return game.no_level_time_limit;
 }
 
+// this function is only needed to prevent variable name clash (should be fixed)
+static boolean game_has_native_sound_engine(void)
+{
+  return game.use_native_bd_sound_engine;
+}
+
 // increment score of player.
 // flash screen if bonus life
 static void increment_score(GdGame *game, int increment)
@@ -580,7 +586,11 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
 	counter_next = GAME_INT_WAIT_BEFORE_COVER;
       }
 
-      if (game->cave->time / game->cave->timing_factor > 8 && !game->cave->no_time)
+      // play "finished" sound loop when counting bonus time, but do not play it
+      // - for the last 9 seconds (while playing timeout sounds) unless using non-native sound
+      // - when not using cave time at all
+      if ((game->cave->time / game->cave->timing_factor > 8 || !game_has_native_sound_engine()) &&
+          !game->cave->no_time)
 	gd_sound_play(game->cave, GD_S_FINISHED, O_NONE, -1, -1); // play cave finished sound
 
       // play bonus sound
