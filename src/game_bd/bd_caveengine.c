@@ -322,13 +322,16 @@ static void play_sound_of_element_pushing(GdCave *cave, GdElement element, int x
 // sets timeout sound.
 void gd_cave_set_seconds_sound(GdCave *cave)
 {
+  if (game_bd.game == NULL)
+    return;
+
   // when not counting bonus time, timeout sounds will be played by main game engine;
   // also skip timeout sounds when not using native sound engine
-  if (game_bd.game == NULL || game_bd.game->state_counter != GAME_INT_CHECK_BONUS_TIME ||
+  if (game_bd.game->state_counter != GAME_INT_CHECK_BONUS_TIME ||
       !game.use_native_bd_sound_engine)
   {
     // needed to play sound during last seconds of counting bonus time with non-native sounds
-    if (game_bd.game != NULL && game_bd.game->state_counter == GAME_INT_CHECK_BONUS_TIME &&
+    if (game_bd.game->state_counter == GAME_INT_CHECK_BONUS_TIME &&
         !game.use_native_bd_sound_engine)
       gd_sound_play(cave, GD_S_FINISHED, O_NONE, -1, -1);
 
