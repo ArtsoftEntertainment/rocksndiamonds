@@ -1393,13 +1393,27 @@ static void CreateScaledBitmaps(Bitmap **bitmaps, int zoom_factor,
     bitmaps[IMG_BITMAP_2x2]   = tmp_bitmap_16;
     bitmaps[IMG_BITMAP_1x1]   = tmp_bitmap_32;
 
-    if (width_0 != width_1)
+    // store the "game" bitmap (with game tile sized graphics), if not already stored
+
+    int tmp_bitmap_0_nr = -1;
+
+    for (i = 0; i < NUM_IMG_BITMAPS; i++)
+      if (bitmaps[i] == tmp_bitmap_0)
+	tmp_bitmap_0_nr = i;
+
+    if (tmp_bitmap_0_nr == -1)	// game tile size bitmap not stored
+    {
+      // store pointer of game tile size bitmap (not used for any other size)
       bitmaps[IMG_BITMAP_CUSTOM] = tmp_bitmap_0;
 
-    if (bitmaps[IMG_BITMAP_CUSTOM])
+      // set game bitmap pointer to game tile size bitmap of other size
       bitmaps[IMG_BITMAP_PTR_GAME] = bitmaps[IMG_BITMAP_CUSTOM];
+    }
     else
-      bitmaps[IMG_BITMAP_PTR_GAME] = bitmaps[IMG_BITMAP_STANDARD];
+    {
+      // set game bitmap pointer to corresponding sized bitmap
+      bitmaps[IMG_BITMAP_PTR_GAME] = bitmaps[tmp_bitmap_0_nr];
+    }
 
     // store the "final" (up-scaled) original bitmap, if not already stored
 
