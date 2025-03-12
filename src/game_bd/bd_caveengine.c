@@ -579,6 +579,10 @@ static inline boolean sloped_for_bladder(const GdCave *cave, const int x, const 
 static inline boolean blows_up_flies(const GdCave *cave, const int x, const int y,
                                      const GdDirection dir)
 {
+  // Krissz engine: newly created (scanned) amoeba blows up flies, too
+  if (game_bd.game->use_krissz_engine && get_dir(cave, x, y, dir) == O_AMOEBA_scanned)
+    return TRUE;
+
   return has_property(get_dir(cave, x, y, dir), P_BLOWS_UP_FLIES);
 }
 
