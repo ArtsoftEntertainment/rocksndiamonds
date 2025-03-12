@@ -3449,6 +3449,9 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
                         {
                           store_dir(cave, x, y, GD_MV_DOWN, O_AMOEBA);
                           gd_sound_play(cave, GD_S_AMOEBA_GROWING, O_AMOEBA, -1, -1);
+
+                          if (y == cave->h - 1)
+                            game_bd.game->scanned_next[0][x] = TRUE;
                         }
                         break;
 
@@ -3467,6 +3470,9 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
                         {
                           store_dir(cave, x, y, GD_MV_RIGHT, O_AMOEBA);
                           gd_sound_play(cave, GD_S_AMOEBA_GROWING, O_AMOEBA, -1, -1);
+
+                          if (x == cave->w - 1)
+                            game_bd.game->scanned_next[y][0] = TRUE;
                         }
                         break;
                     }
