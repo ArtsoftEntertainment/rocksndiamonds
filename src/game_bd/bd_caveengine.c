@@ -831,7 +831,7 @@ static inline void move(GdCave *cave, const int x, const int y,
       (y + gd_dy[dir] == cave->h && dir == GD_MV_DOWN))
   {
     // cave width/height out of bounds, but due to wrap-around it's the first column/row again
-    if (el_can_smash_player(get(cave, x, y)))
+    if (el_can_smash_player(get(cave, x, y)) && is_player_dir(cave, x, y, twice[dir]))
     {
       store(cave, x, y, element); // change to falling element ...
 
