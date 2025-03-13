@@ -831,12 +831,14 @@ static inline void move(GdCave *cave, const int x, const int y,
       (y + gd_dy[dir] == cave->h && dir == GD_MV_DOWN))
   {
     // cave width/height out of bounds, but due to wrap-around it's the first column/row again
-    if (el_can_smash_player(get(cave, x, y)) && is_player_dir(cave, x, y, twice[dir]))
-    {
-      store(cave, x, y, element); // change to falling element ...
+    int new_x = getx(cave, x + gd_dx[dir], y + gd_dy[dir]);
+    int new_y = gety(cave, x + gd_dx[dir], y + gd_dy[dir]);
+    int curr_element = get_dir(cave, x, y, dir);
+    int last_element = game_bd.game->element_buffer[new_y][new_x];
 
-      return;                     // ... but do not move element
-    }
+    // do not move certain elements to positions that just have changed in same cave scan
+    if (el_can_smash_player(get(cave, x, y)) && curr_element != last_element)
+      return;
   }
 
   store_dir(cave, x, y, dir, element);
