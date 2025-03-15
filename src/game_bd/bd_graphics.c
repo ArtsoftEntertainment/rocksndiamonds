@@ -280,6 +280,10 @@ boolean gd_scroll(GdGame *game, boolean exact_scroll, boolean immediate)
   if (player_out_of_window(game, player_x, player_y))
     scroll_speed *= 4;
 
+  // Kriss engine: scroll faster to start position when starting new game
+  if (game->cave->player_state == GD_PL_NOT_YET && game_bd.game->use_krissz_engine)
+    scroll_speed *= 4;
+
   // if scrolling started with player outside visible playfield area, keep faster scrolling
   if (scroll_speed_last > scroll_speed)
     scroll_speed = scroll_speed_last;
