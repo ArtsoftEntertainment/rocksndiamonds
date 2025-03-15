@@ -4362,14 +4362,6 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
       gd_sound_play(cave, GD_S_MAGIC_WALL, O_MAGIC_WALL, -1, -1);
   }
 
-  if (cave->hatched)
-  {
-    if (amoeba_count > 0 && cave->amoeba_state == GD_AM_AWAKE)
-      play_sound_of_element(cave, O_AMOEBA, -1, -1);
-    else if (amoeba_2_count > 0 && cave->amoeba_2_state == GD_AM_AWAKE)
-      play_sound_of_element(cave, O_AMOEBA_2, -1, -1);
-  }
-
 
   // ============================================================================
   // CAVE VARIABLES
