@@ -4335,13 +4335,16 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
   if (found_water)
     gd_sound_play(cave, GD_S_WATER, O_WATER, -1, -1);
 
+  boolean play_amoeba_sound = ((cave->hatched || !game.use_native_bd_sound_engine) &&
+                               cave->amoeba_sound);
+
   magic_sound = (cave->magic_wall_state == GD_MW_ACTIVE &&
 		 cave->magic_wall_sound);
 
-  amoeba_1_sound = (cave->hatched && cave->amoeba_sound &&
+  amoeba_1_sound = (play_amoeba_sound &&
                     amoeba_count > 0 && cave->amoeba_state == GD_AM_AWAKE);
 
-  amoeba_2_sound = (cave->hatched && cave->amoeba_sound &&
+  amoeba_2_sound = (play_amoeba_sound &&
                     amoeba_2_count > 0 && cave->amoeba_2_state == GD_AM_AWAKE);
 
   if (amoeba_1_sound && magic_sound)
