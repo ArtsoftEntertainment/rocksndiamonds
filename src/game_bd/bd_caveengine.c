@@ -518,6 +518,10 @@ static inline GdElement get_dir(const GdCave *cave, const int x, const int y,
 static inline boolean explodes_by_hit(const GdCave *cave, const int x,
                                       const int y, GdDirection dir)
 {
+  // Krissz engine: scanned elements explode if hit by falling element
+  if (game_bd.game->use_krissz_engine)
+    return has_property(non_scanned_pair(get_dir(cave, x, y, dir)), P_EXPLODES_BY_HIT);
+
   return has_property(get_dir(cave, x, y, dir), P_EXPLODES_BY_HIT);
 }
 
@@ -998,6 +1002,10 @@ static void bomb_explode(GdCave *cave, const int x, const int y)
 static void explode(GdCave *cave, int x, int y)
 {
   GdElement e = get(cave, x, y);
+
+  // Krissz engine: scanned elements explode if hit by falling element
+  if (game_bd.game->use_krissz_engine)
+    e = non_scanned_pair(e);
 
   switch (e)
   {
