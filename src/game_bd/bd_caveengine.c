@@ -4122,11 +4122,16 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	  break;
 
 	case O_INBOX:
+	{
+	  // Krissz engine: allow hatching player from inbox even if considered "closed"
+	  boolean inbox_is_open = (!inbox_toggle || game_bd.game->use_krissz_engine);
+
 	  cave->player_seen_ago = 0;
-	  if (cave->hatched && !inbox_toggle)    // if it is time of birth
+	  if (cave->hatched && inbox_is_open)    // if it is time of birth
 	    store(cave, x, y, O_PRE_PL_1);
 	  inbox_toggle = !inbox_toggle;
 	  break;
+	}
 
 	case O_PRE_PL_1:
 	  cave->player_seen_ago = 0;
