@@ -116,8 +116,8 @@ static inline boolean el_can_fall(const int element)
   return has_property(element, P_CAN_FALL);
 }
 
-// returns true if the element can smash the player
-static inline boolean el_can_smash_player(const int element)
+// returns true if the element can fall or roll
+static inline boolean el_can_fall_or_roll(const int element)
 {
   return (el_can_fall(element));
 }
@@ -781,7 +781,7 @@ static inline boolean is_like_space(const GdCave *cave, const int x, const int y
     int last_element = game_bd.game->element_buffer[new_y][new_x];
 
     // do not move certain elements to positions that just have changed in same cave scan
-    if (el_can_smash_player(get(cave, x, y)) && curr_element != last_element)
+    if (el_can_fall_or_roll(get(cave, x, y)) && curr_element != last_element)
       return FALSE;
   }
 
