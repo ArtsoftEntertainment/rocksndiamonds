@@ -776,6 +776,21 @@ static inline boolean is_like_space(const GdCave *cave, const int x, const int y
 {
   GdElement e = get_dir(cave, x, y, dir);
 
+  // falling/flying game elements at wrap-around cave position should not kill player instantly
+  if ((x + gd_dx[dir] == cave->w && dir == GD_MV_RIGHT) ||
+      (y + gd_dy[dir] == cave->h && dir == GD_MV_DOWN))
+  {
+    // cave width/height out of bounds, but due to wrap-around it's the first column/row again
+    int new_x = getx(cave, x + gd_dx[dir], y + gd_dy[dir]);
+    int new_y = gety(cave, x + gd_dx[dir], y + gd_dy[dir]);
+    int curr_element = get_dir(cave, x, y, dir);
+    int last_element = game_bd.game->element_buffer[new_y][new_x];
+
+    // do not move certain elements to positions that just have changed in same cave scan
+    if (el_can_smash_player(get(cave, x, y)) && curr_element != last_element)
+      return FALSE;
+  }
+
   return (e == O_SPACE || e == O_LAVA);
 }
 
@@ -830,21 +845,6 @@ static inline void store_dir(GdCave *cave, const int x, const int y,
 static inline void move(GdCave *cave, const int x, const int y,
 			const GdDirection dir, const GdElement element)
 {
-  // falling/flying game elements at wrap-around cave position should not kill player instantly
-  if ((x + gd_dx[dir] == cave->w && dir == GD_MV_RIGHT) ||
-      (y + gd_dy[dir] == cave->h && dir == GD_MV_DOWN))
-  {
-    // cave width/height out of bounds, but due to wrap-around it's the first column/row again
-    int new_x = getx(cave, x + gd_dx[dir], y + gd_dy[dir]);
-    int new_y = gety(cave, x + gd_dx[dir], y + gd_dy[dir]);
-    int curr_element = get_dir(cave, x, y, dir);
-    int last_element = game_bd.game->element_buffer[new_y][new_x];
-
-    // do not move certain elements to positions that just have changed in same cave scan
-    if (el_can_smash_player(get(cave, x, y)) && curr_element != last_element)
-      return;
-  }
-
   store_dir(cave, x, y, dir, element);
   store(cave, x, y, O_SPACE);
 }
