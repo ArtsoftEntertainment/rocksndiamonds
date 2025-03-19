@@ -116,16 +116,10 @@ static inline boolean el_can_fall(const int element)
   return has_property(element, P_CAN_FALL);
 }
 
-// returns true if the element is diggable
-static inline boolean el_diggable(const int element)
-{
-  return has_property(element, P_DIGGABLE);
-}
-
 // returns true if the element can smash the player
 static inline boolean el_can_smash_player(const int element)
 {
-  return (el_can_fall(element) && !el_diggable(element));
+  return (el_can_fall(element));
 }
 
 // play sound of a given element.
