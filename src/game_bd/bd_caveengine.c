@@ -116,10 +116,16 @@ static inline boolean el_can_fall(const int element)
   return has_property(element, P_CAN_FALL);
 }
 
-// returns true if the element can fall or roll
-static inline boolean el_can_fall_or_roll(const int element)
+// returns true if the element is falling
+static inline boolean el_falling(const int element)
 {
-  return (el_can_fall(element));
+  return has_property(element, P_FALLING);
+}
+
+// returns true if the element can fall or roll
+static inline boolean el_can_fall_or_roll(const int element, const GdDirection dir)
+{
+  return (el_can_fall(element) || (el_falling(element) && dir != GD_MV_DOWN));
 }
 
 // play sound of a given element.
@@ -771,8 +777,8 @@ static inline boolean is_like_space(const GdCave *cave, const int x, const int y
   GdElement e = get_dir(cave, x, y, dir);
 
   // falling/flying game elements at wrap-around cave position should not kill player instantly
-  if ((x + gd_dx[dir] == cave->w && dir == GD_MV_RIGHT) ||
-      (y + gd_dy[dir] == cave->h && dir == GD_MV_DOWN))
+  if ((x + gd_dx[dir] == cave->w && (dir == GD_MV_RIGHT || dir == GD_MV_DOWN_RIGHT)) ||
+      (y + gd_dy[dir] == cave->h && (dir == GD_MV_DOWN  || dir == GD_MV_DOWN_RIGHT)))
   {
     // cave width/height out of bounds, but due to wrap-around it's the first column/row again
     int new_x = getx(cave, x + gd_dx[dir], y + gd_dy[dir]);
@@ -781,7 +787,7 @@ static inline boolean is_like_space(const GdCave *cave, const int x, const int y
     int last_element = game_bd.game->element_buffer[new_y][new_x];
 
     // do not move certain elements to positions that just have changed in same cave scan
-    if (el_can_fall_or_roll(get(cave, x, y)) && curr_element != last_element)
+    if (el_can_fall_or_roll(get(cave, x, y), dir) && curr_element != last_element)
       return FALSE;
   }
 
