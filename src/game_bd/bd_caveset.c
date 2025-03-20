@@ -254,6 +254,10 @@ GdCave *gd_get_prepared_cave_from_caveset(const int cave, const int level)
   // get prepared cave from original cave
   GdCave *prepared_cave = gd_get_prepared_cave(original_cave, level);
 
+  // Krissz engine: set flag to use Krissz engine in cave if set in cave set
+  if (gd_caveset_data->use_krissz_engine)
+    prepared_cave->use_krissz_engine = TRUE;
+
   return prepared_cave;
 }
 

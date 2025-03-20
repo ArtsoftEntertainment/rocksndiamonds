@@ -3358,6 +3358,11 @@ const GdStructDescriptor gd_cave_properties[] =
     N_("In 1stB and newer engines, explosions were longer, they took five cave frames to complete, as opposed to four frames in the original.")
   },
   {
+    "KrisszEngine", GD_TYPE_BOOLEAN, 0,
+    N_("Use Krissz game engine"), CAVE_OFFSET(use_krissz_engine), 1,
+    N_("Enable compatibility with the Krissz game engine.")
+  },
+  {
     "GravityAffectsAll", GD_TYPE_BOOLEAN, 0,
     N_("Gravity change affects everything"), CAVE_OFFSET(gravity_affects_all), 1,
     N_("If this is enabled, changing the gravity will also affect bladders (moving and pushing), bladder spenders, falling walls and waiting stones. Otherwise, those elements behave as gravity was always pointing downwards. This is a compatibility setting which is not recommended to change. It is intended for imported caves.")
@@ -3611,6 +3616,7 @@ GdPropertyDefault gd_cave_defaults_gdash[] =
   { CAVE_OFFSET(open_borders_vertical),				TRUE				},
   { CAVE_OFFSET(infinite_scrolling),				FALSE				},
   { CAVE_OFFSET(short_explosions),				TRUE				},
+  { CAVE_OFFSET(use_krissz_engine),				FALSE				},
   { CAVE_OFFSET(skeletons_worth_diamonds),			0				},
   { CAVE_OFFSET(gravity_affects_all),				TRUE				},
 

@@ -10949,6 +10949,10 @@ boolean useKrisszEngine_BD(void)
   if (level.native_bd_level->caveset->use_krissz_engine)
     return TRUE;
 
+  // use Krissz style BD game engine if playing specifically tagged caves
+  if (level.native_bd_level->cave->use_krissz_engine)
+    return TRUE;
+
   // use Krissz style BD game engine if playing native BD replays with random numbers
   if (TapeIsPlaying_ReplayBD() && level.native_bd_level->replay->randoms->len > 0)
     return TRUE;

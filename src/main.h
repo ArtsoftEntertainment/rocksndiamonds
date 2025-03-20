@@ -3851,6 +3851,7 @@ struct LevelInfo
   int bd_hatching_delay_cycles;		// BD hatching delay (in game cycles)
   int bd_hatching_delay_seconds;	// BD hatching delay (in seconds)
   int bd_scheduling_type;		// BD engine scheduling type
+  boolean bd_use_krissz_engine;		// BD engine uses Krissz engine compatibility
   boolean bd_pal_timing;		// BD engine uses special PAL timing
   boolean bd_line_shifting_borders;	// BD engine uses line-shifting wrap-around
   boolean bd_scan_first_and_last_row;	// BD engine scans top and bottom border rows

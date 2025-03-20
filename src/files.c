@@ -344,6 +344,11 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
   },
   {
     -1,					-1,
+    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(30),
+    &li.bd_use_krissz_engine,		FALSE
+  },
+  {
+    -1,					-1,
     TYPE_INTEGER,			CONF_VALUE_32_BIT(4),
     &li.bd_color[0],			GD_C64_COLOR_BLACK
   },
@@ -4455,6 +4460,7 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->lineshift			= level->bd_line_shifting_borders;
   cave->border_scan_first_and_last	= level->bd_scan_first_and_last_row;
   cave->short_explosions		= level->bd_short_explosions;
+  cave->use_krissz_engine		= level->bd_use_krissz_engine;
 
   // scrolling settings
   cave->open_borders_horizontal		= level->bd_open_borders_horizontal;
@@ -4651,6 +4657,7 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_line_shifting_borders	= cave->lineshift;
   level->bd_scan_first_and_last_row	= cave->border_scan_first_and_last;
   level->bd_short_explosions		= cave->short_explosions;
+  level->bd_use_krissz_engine		= cave->use_krissz_engine;
 
   // scrolling settings
   level->bd_open_borders_horizontal	= cave->open_borders_horizontal;
@@ -8244,6 +8251,10 @@ static void LoadLevel_InitPlayfield(struct LevelInfo *level)
 static void LoadLevel_InitNativeEngines(struct LevelInfo *level)
 {
   struct LevelFileInfo *level_file_info = &level->file_info;
+
+  // set flag for Krissz style BD game engine for specifically tagged level sets
+  if (leveldir_current->bd_use_krissz_engine)
+    level->bd_use_krissz_engine = TRUE;
 
   if (level_file_info->type == LEVEL_FILE_TYPE_RND)
     CopyNativeLevel_RND_to_Native(level);
