@@ -507,11 +507,24 @@ static inline GdElement get(const GdCave *cave, const int x, const int y)
   return *getp(cave, x, y);
 }
 
+// returns the last element at (x, y) (before the current cave scan)
+static inline GdElement get_last(const GdCave *cave, const int x, const int y)
+{
+  return game_bd.game->element_buffer[gety(cave, x, y)][getx(cave, x, y)];
+}
+
 // returns the element at (x, y) + dir
 static inline GdElement get_dir(const GdCave *cave, const int x, const int y,
 				const GdDirection dir)
 {
   return get(cave, x + gd_dx[dir], y + gd_dy[dir]);
+}
+
+// returns the last element at (x, y) + dir (before the current cave scan)
+static inline GdElement get_dir_last(const GdCave *cave, const int x, const int y,
+				     const GdDirection dir)
+{
+  return get_last(cave, x + gd_dx[dir], y + gd_dy[dir]);
 }
 
 // returns true if the element at (x, y) + dir explodes if hit by a stone (for example, a firefly)
@@ -781,9 +794,7 @@ static inline boolean is_like_space(const GdCave *cave, const int x, const int y
       (y + gd_dy[dir] == cave->h && (dir == GD_MV_DOWN  || dir == GD_MV_DOWN_RIGHT)))
   {
     // cave width/height out of bounds, but due to wrap-around it's the first column/row again
-    int new_x = getx(cave, x + gd_dx[dir], y + gd_dy[dir]);
-    int new_y = gety(cave, x + gd_dx[dir], y + gd_dy[dir]);
-    GdElement last_element = game_bd.game->element_buffer[new_y][new_x];
+    GdElement last_element = get_dir_last(cave, x, y, dir);
 
     // do not move certain elements to positions that just have changed in same cave scan
     if (el_can_fall_or_roll(get(cave, x, y), dir) && element != last_element)
