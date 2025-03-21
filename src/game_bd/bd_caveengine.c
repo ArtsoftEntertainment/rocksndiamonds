@@ -110,6 +110,12 @@ static inline boolean has_property(int element, const int property)
   return (gd_element_properties[element].properties & property) != 0;
 }
 
+// returns true if the element can grow
+static inline boolean el_can_grow(const int element)
+{
+  return has_property(element, P_CAN_GROW);
+}
+
 // returns true if the element can fall
 static inline boolean el_can_fall(const int element)
 {
@@ -126,6 +132,12 @@ static inline boolean el_falling(const int element)
 static inline boolean el_can_fall_or_roll(const int element, const GdDirection dir)
 {
   return (el_can_fall(element) || (el_falling(element) && dir != GD_MV_DOWN));
+}
+
+// returns true if the element can fall or roll
+static inline boolean el_can_move_krissz_style(const int element, const GdDirection dir)
+{
+  return (el_can_grow(element) || el_can_fall_or_roll(element, dir));
 }
 
 // play sound of a given element.
@@ -788,16 +800,26 @@ static inline boolean is_like_space(const GdCave *cave, const int x, const int y
                                     const GdDirection dir)
 {
   GdElement element = get_dir(cave, x, y, dir);
+  GdElement last_element = get_dir_last(cave, x, y, dir);
+  GdElement base_element = get(cave, x, y);
+
+  // Krissz engine: use engine-specific special behavior when moving certain game elements
+  if (game_bd.game->use_krissz_engine)
+  {
+    // do not move certain elements to positions that just have changed in same cave scan
+    if ((cave->open_borders_horizontal || cave->open_borders_vertical) &&
+        (dir == GD_MV_RIGHT || dir == GD_MV_DOWN || dir == GD_MV_DOWN_RIGHT) &&
+        el_can_move_krissz_style(base_element, dir) && element != last_element)
+      return FALSE;
+  }
 
   // falling/flying game elements at wrap-around cave position should not kill player instantly
-  if ((x + gd_dx[dir] == cave->w && (dir == GD_MV_RIGHT || dir == GD_MV_DOWN_RIGHT)) ||
-      (y + gd_dy[dir] == cave->h && (dir == GD_MV_DOWN  || dir == GD_MV_DOWN_RIGHT)))
+  if ((x + gd_dx[dir] == cave->w && dir == GD_MV_RIGHT) ||
+      (y + gd_dy[dir] == cave->h && dir == GD_MV_DOWN))
   {
     // cave width/height out of bounds, but due to wrap-around it's the first column/row again
-    GdElement last_element = get_dir_last(cave, x, y, dir);
-
     // do not move certain elements to positions that just have changed in same cave scan
-    if (el_can_fall_or_roll(get(cave, x, y), dir) && element != last_element)
+    if (el_can_fall(base_element) && element != last_element)
       return FALSE;
   }
 
