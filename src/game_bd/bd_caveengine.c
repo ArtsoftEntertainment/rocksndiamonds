@@ -774,7 +774,7 @@ static inline boolean is_like_element(const GdCave *cave, const int x, const int
 static inline boolean is_like_space(const GdCave *cave, const int x, const int y,
                                     const GdDirection dir)
 {
-  GdElement e = get_dir(cave, x, y, dir);
+  GdElement element = get_dir(cave, x, y, dir);
 
   // falling/flying game elements at wrap-around cave position should not kill player instantly
   if ((x + gd_dx[dir] == cave->w && (dir == GD_MV_RIGHT || dir == GD_MV_DOWN_RIGHT)) ||
@@ -791,7 +791,7 @@ static inline boolean is_like_space(const GdCave *cave, const int x, const int y
       return FALSE;
   }
 
-  return (e == O_SPACE || e == O_LAVA);
+  return (element == O_SPACE || element == O_LAVA);
 }
 
 // Returns true if element at (x, y) + dir is like dirt.
