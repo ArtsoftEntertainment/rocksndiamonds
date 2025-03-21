@@ -783,8 +783,8 @@ static inline boolean is_like_space(const GdCave *cave, const int x, const int y
     // cave width/height out of bounds, but due to wrap-around it's the first column/row again
     int new_x = getx(cave, x + gd_dx[dir], y + gd_dy[dir]);
     int new_y = gety(cave, x + gd_dx[dir], y + gd_dy[dir]);
-    int curr_element = get_dir(cave, x, y, dir);
-    int last_element = game_bd.game->element_buffer[new_y][new_x];
+    GdElement curr_element = get_dir(cave, x, y, dir);
+    GdElement last_element = game_bd.game->element_buffer[new_y][new_x];
 
     // do not move certain elements to positions that just have changed in same cave scan
     if (el_can_fall_or_roll(get(cave, x, y), dir) && curr_element != last_element)
