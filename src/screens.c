@@ -8625,6 +8625,7 @@ static struct TokenInfo setup_info_editor[] =
   { TYPE_SWITCH,	&setup.editor.el_boulderdash_native, "Boulder Dash (Native):"	},
   { TYPE_SWITCH,	&setup.editor.el_boulderdash_effects, "Boulder Dash (Effects):"	},
   { TYPE_SWITCH,	&setup.editor.el_boulderdash_scanned, "Boulder Dash (Scanned):"	},
+  { TYPE_SWITCH,	&setup.editor.el_boulderdash_scanned, "Boulder Dash (Krissz):"	},
   { TYPE_SWITCH,	&setup.editor.el_emerald_mine,	"Emerald Mine:"			},
   { TYPE_SWITCH,	&setup.editor.el_emerald_mine_club, "Emerald Mine Club:"	},
   { TYPE_SWITCH,	&setup.editor.el_more,		"Rocks'n'Diamonds:"		},

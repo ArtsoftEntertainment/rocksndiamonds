@@ -1367,6 +1367,7 @@ struct SetupEditorInfo
   boolean el_boulderdash_native;
   boolean el_boulderdash_effects;
   boolean el_boulderdash_scanned;
+  boolean el_boulderdash_krissz;
   boolean el_emerald_mine;
   boolean el_emerald_mine_club;
   boolean el_more;
@@ -1415,6 +1416,7 @@ struct SetupEditorCascadeInfo
   boolean el_bdx;
   boolean el_bdx_effects;
   boolean el_bdx_scanned;
+  boolean el_bdx_krissz;
   boolean el_em;
   boolean el_emc;
   boolean el_rnd;

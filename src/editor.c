@@ -6583,6 +6583,56 @@ static int *editor_el_boulderdash_scanned_ptr = editor_el_boulderdash_scanned;
 static int num_editor_hl_boulderdash_scanned = ARRAY_SIZE(editor_hl_boulderdash_scanned);
 static int num_editor_el_boulderdash_scanned = ARRAY_SIZE(editor_el_boulderdash_scanned);
 
+static int editor_hl_boulderdash_krissz[] =
+{
+  EL_INTERNAL_CASCADE_BDX_KRISSZ_ACTIVE,
+  EL_CHAR('K'),
+  EL_CHAR('R'),
+  EL_CHAR('E'),
+};
+
+static int editor_el_boulderdash_krissz[] =
+{
+  EL_BDX_EMPTY,
+  EL_BDX_SAND,
+  EL_BDX_ROCK,
+  EL_BDX_DIAMOND,
+
+  EL_BDX_INBOX,
+  EL_BDX_STEELWALL,
+  EL_BDX_WALL,
+  EL_BDX_MAGIC_WALL,
+
+  EL_BDX_AMOEBA_1,
+  EL_BDX_BUTTERFLY_1_UP,
+  EL_BDX_FIREFLY_1_UP,
+  EL_BDX_STEEL_EXIT_CLOSED,
+
+  EL_BDX_BUTTERFLY_1_LEFT,
+  EL_BDX_FIREFLY_1_LEFT,
+  EL_BDX_BUTTERFLY_1_RIGHT,
+  EL_BDX_FIREFLY_1_RIGHT,
+
+  EL_BDX_SLIME,
+  EL_BDX_BUTTERFLY_1_DOWN,
+  EL_BDX_FIREFLY_1_DOWN,
+  EL_BDX_INVISIBLE_STEEL_EXIT_CLOSED,
+
+  EL_BDX_EXPANDABLE_WALL_HORIZONTAL,
+  EL_BDX_EXPANDABLE_WALL_VERTICAL,
+  EL_BDX_EXPANDABLE_WALL_ANY,
+  EL_BDX_VOODOO_DOLL,
+
+  EL_BDX_HEAVY_ROCK,
+  EL_BDX_LIGHT_ROCK,
+  EL_BDX_EMPTY,
+  EL_BDX_EMPTY,
+};
+static int *editor_hl_boulderdash_krissz_ptr = editor_hl_boulderdash_krissz;
+static int *editor_el_boulderdash_krissz_ptr = editor_el_boulderdash_krissz;
+static int num_editor_hl_boulderdash_krissz = ARRAY_SIZE(editor_hl_boulderdash_krissz);
+static int num_editor_el_boulderdash_krissz = ARRAY_SIZE(editor_el_boulderdash_krissz);
+
 static int editor_hl_emerald_mine[] =
 {
   EL_INTERNAL_CASCADE_EM_ACTIVE,
@@ -7996,6 +8046,7 @@ static boolean setup_editor_el_boulderdash		= TRUE;
 static boolean setup_editor_el_boulderdash_native	= TRUE;
 static boolean setup_editor_el_boulderdash_effects	= TRUE;
 static boolean setup_editor_el_boulderdash_scanned	= TRUE;
+static boolean setup_editor_el_boulderdash_krissz	= TRUE;
 static boolean setup_editor_el_emerald_mine		= TRUE;
 static boolean setup_editor_el_emerald_mine_club	= TRUE;
 static boolean setup_editor_el_more			= TRUE;
@@ -8059,6 +8110,12 @@ editor_elements_info[] =
     &setup.editor_cascade.el_bdx_scanned,
     &editor_hl_boulderdash_scanned_ptr,	&num_editor_hl_boulderdash_scanned,
     &editor_el_boulderdash_scanned_ptr,	&num_editor_el_boulderdash_scanned
+  },
+  {
+    &setup_editor_el_boulderdash_krissz,
+    &setup.editor_cascade.el_bdx_krissz,
+    &editor_hl_boulderdash_krissz_ptr,	&num_editor_hl_boulderdash_krissz,
+    &editor_el_boulderdash_krissz_ptr,	&num_editor_el_boulderdash_krissz
   },
   {
     &setup_editor_el_emerald_mine,
@@ -8367,6 +8424,7 @@ static void ReinitializeElementList_EnableSections(void)
   setup_editor_el_boulderdash_native	= TRUE;
   setup_editor_el_boulderdash_effects	= TRUE;
   setup_editor_el_boulderdash_scanned	= TRUE;
+  setup_editor_el_boulderdash_krissz	= TRUE;
   setup_editor_el_emerald_mine		= TRUE;
   setup_editor_el_emerald_mine_club	= TRUE;
   setup_editor_el_more			= TRUE;
@@ -8392,6 +8450,7 @@ static void ReinitializeElementList_EnableSections(void)
     setup_editor_el_boulderdash_native	= FALSE;
     setup_editor_el_boulderdash_effects	= FALSE;
     setup_editor_el_boulderdash_scanned	= FALSE;
+    setup_editor_el_boulderdash_krissz	= FALSE;
     setup_editor_el_emerald_mine	= FALSE;
     setup_editor_el_emerald_mine_club	= FALSE;
     setup_editor_el_more		= FALSE;
@@ -8425,6 +8484,7 @@ static void ReinitializeElementList_EnableSections(void)
     setup_editor_el_boulderdash_native	= FALSE;
     setup_editor_el_boulderdash_effects	= FALSE;
     setup_editor_el_boulderdash_scanned	= FALSE;
+    setup_editor_el_boulderdash_krissz	= FALSE;
     setup_editor_el_mirror_magic	= FALSE;
     setup_editor_el_deflektor		= FALSE;
   }
@@ -8452,6 +8512,7 @@ static void ReinitializeElementList_EnableSections(void)
     setup_editor_el_boulderdash_native	= FALSE;
     setup_editor_el_boulderdash_effects	= FALSE;
     setup_editor_el_boulderdash_scanned	= FALSE;
+    setup_editor_el_boulderdash_krissz	= FALSE;
     setup_editor_el_more		= FALSE;
     setup_editor_el_sokoban		= FALSE;
     setup_editor_el_supaplex		= FALSE;
@@ -8470,6 +8531,7 @@ static void ReinitializeElementList_EnableSections(void)
     setup_editor_el_boulderdash_native	= FALSE;
     setup_editor_el_boulderdash_effects	= FALSE;
     setup_editor_el_boulderdash_scanned	= FALSE;
+    setup_editor_el_boulderdash_krissz	= FALSE;
     setup_editor_el_emerald_mine	= FALSE;
     setup_editor_el_emerald_mine_club	= FALSE;
     setup_editor_el_more		= FALSE;
@@ -8490,6 +8552,7 @@ static void ReinitializeElementList_EnableSections(void)
     setup_editor_el_boulderdash_native	= FALSE;
     setup_editor_el_boulderdash_effects	= FALSE;
     setup_editor_el_boulderdash_scanned	= FALSE;
+    setup_editor_el_boulderdash_krissz	= FALSE;
     setup_editor_el_emerald_mine	= FALSE;
     setup_editor_el_emerald_mine_club	= FALSE;
     setup_editor_el_more		= FALSE;
