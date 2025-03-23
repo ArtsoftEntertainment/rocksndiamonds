@@ -364,9 +364,12 @@ void InitGameEngine_BD(void)
   // first iteration loads and prepares the cave (may change colors)
   play_game_func(game_bd.game, 0);
 
-  // Krissz engine: after loading cave, fix magic wall time (by adding one game frame)
+  // Krissz engine: after loading cave, fix some cave timing values
   if (game_bd.game->use_krissz_engine)
-    game_bd.game->cave->magic_wall_time++;
+  {
+    game_bd.game->cave->hatching_delay_frame++;		// add one game cycle
+    game_bd.game->cave->magic_wall_time++;		// add one millisecond
+  }
 
   // fast-forward game engine to selected state (covered or uncovered)
   while (game_bd.game->state_counter < next_state)
