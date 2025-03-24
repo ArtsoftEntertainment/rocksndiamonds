@@ -3456,7 +3456,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
 	case O_AMOEBA:
 	  // emulating buggy BD1 amoeba + magic wall behaviour (also used by Krissz engine)
-	  if (cave->convert_amoeba_this_frame && amoeba_found_enclosed)
+	  if (cave->convert_amoeba_this_frame && (amoeba_found_enclosed ||
+						  game_bd.game->use_krissz_engine))
 	  {
 	    store(cave, x, y, cave->amoeba_enclosed_effect);
 
