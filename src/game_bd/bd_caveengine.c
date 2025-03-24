@@ -577,6 +577,10 @@ static inline boolean sloped(const GdCave *cave, const int x, const int y,
 {
   GdElement element = get_dir(cave, x, y, dir);
 
+  // Krissz engine: allow rolling down from scanned elements if non-scanned counterpart is sloped
+  if (game_bd.game->use_krissz_engine)
+    element = non_scanned_pair(element);
+
   switch (slop)
   {
     case GD_MV_LEFT:
