@@ -4470,13 +4470,9 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
   if (cave->amoeba_state == GD_AM_AWAKE)
   {
+    // Krissz engine: count amoeba after every cave scan (instead of during next cave scan)
     if (game_bd.game->use_krissz_engine)
     {
-      // special case: playing Krissz engine replay
-
-      // count amoeba after every cave scan (instead of during next cave scan)
-      // (this results in turning the amoeba to boulders one frame earlier)
-
       amoeba_count = 0;
 
       for (y = ymin; y <= ymax; y++)
