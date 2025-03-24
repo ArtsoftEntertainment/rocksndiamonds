@@ -575,19 +575,21 @@ static inline boolean amoeba_eats(const GdCave *cave, const int x, const int y,
 static inline boolean sloped(const GdCave *cave, const int x, const int y,
                              const GdDirection dir, const GdDirection slop)
 {
+  GdElement element = get_dir(cave, x, y, dir);
+
   switch (slop)
   {
     case GD_MV_LEFT:
-      return has_property(get_dir(cave, x, y, dir), P_SLOPED_LEFT);
+      return has_property(element, P_SLOPED_LEFT);
 
     case GD_MV_RIGHT:
-      return has_property(get_dir(cave, x, y, dir), P_SLOPED_RIGHT);
+      return has_property(element, P_SLOPED_RIGHT);
 
     case GD_MV_UP:
-      return has_property(get_dir(cave, x, y, dir), P_SLOPED_UP);
+      return has_property(element, P_SLOPED_UP);
 
     case GD_MV_DOWN:
-      return has_property(get_dir(cave, x, y, dir), P_SLOPED_DOWN);
+      return has_property(element, P_SLOPED_DOWN);
 
     default:
       break;
