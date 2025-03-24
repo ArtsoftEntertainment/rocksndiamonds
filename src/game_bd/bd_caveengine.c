@@ -2063,7 +2063,26 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
   inbox_toggle = cave->inbox_flash_toggle;
 
   if (cave->gate_open_flash > 0)
+  {
     cave->gate_open_flash--;
+
+    // Krissz engine: open outbox before next cave scan (instead of during next cave scan)
+    if (game_bd.game->use_krissz_engine && cave->gate_open)
+    {
+      for (y = 0; y < cave->h; y++)
+      {
+        for (x = 0; x < cave->w; x++)
+        {
+          GdElement *element = getp(cave, x, y);
+
+          if (*element == O_PRE_STEEL_OUTBOX)
+            *element = O_STEEL_OUTBOX;
+          else if (*element == O_PRE_INVIS_STEEL_OUTBOX)
+            *element = O_INVIS_STEEL_OUTBOX;
+        }
+      }
+    }
+  }
 
   // score collected this frame
   cave->score = 0;
