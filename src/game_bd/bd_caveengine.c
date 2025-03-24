@@ -4494,6 +4494,10 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
   if (cave->magic_wall_stops_amoeba && cave->magic_wall_state == GD_MW_ACTIVE)
     cave->amoeba_state = GD_AM_ENCLOSED;
 
+  // Krissz engine: amoeba growing too big has priority over amoeba being enclosed
+  if (game_bd.game->use_krissz_engine && amoeba_count >= cave->amoeba_max_count)
+    cave->amoeba_state = GD_AM_TOO_BIG;
+
   // AMOEBA 2
 
   if (cave->amoeba_2_state == GD_AM_AWAKE)
