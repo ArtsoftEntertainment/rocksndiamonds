@@ -1453,6 +1453,10 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 
   boolean result = FALSE;
 
+  // Krissz engine: allow pushing scanned elements if non-scanned counterpart can be pushed
+  if (game_bd.game->use_krissz_engine)
+    what = non_scanned_pair(what);
+
   // do a switch on what element is being pushed to determine probability.
   switch (what)
   {
