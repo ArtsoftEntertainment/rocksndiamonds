@@ -211,14 +211,15 @@ static boolean player_out_of_window(GdGame *game, int player_x, int player_y)
   if (game->cave->player_state == GD_PL_NOT_YET)
     return FALSE;
 
-  // when using infinite scrolling, always treat player as being inside visible window
-  if (game->cave->infinite_scrolling)
-    return FALSE;
-
   // check if active player is outside drawing area. if yes, we should wait for scrolling
   if ((player_x * cell_size) < scroll_x ||
       (player_x * cell_size + cell_size - 1) > scroll_x + play_area_w)
   {
+    // when using infinite scrolling, ignore if player has just crossed playfield boundaries
+    if (game->cave->infinite_scrolling && (game->cave->player_x == game->cave->x1 ||
+                                           game->cave->player_x == game->cave->x2))
+      return FALSE;
+
     // but only do the wait, if the player SHOULD BE visible, ie. he is inside
     // the defined visible area of the cave
     if (game->cave->player_x >= game->cave->x1 &&
@@ -229,6 +230,11 @@ static boolean player_out_of_window(GdGame *game, int player_x, int player_y)
   if ((player_y * cell_size) < scroll_y ||
       (player_y * cell_size + cell_size - 1) > scroll_y + play_area_h)
   {
+    // when using infinite scrolling, ignore if player has just crossed playfield boundaries
+    if (game->cave->infinite_scrolling && (game->cave->player_y == game->cave->y1 ||
+                                           game->cave->player_y == game->cave->y2))
+      return FALSE;
+
     // but only do the wait, if the player SHOULD BE visible, ie. he is inside
     // the defined visible area of the cave
     if (game->cave->player_y >= game->cave->y1 &&
