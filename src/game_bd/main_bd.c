@@ -603,7 +603,8 @@ void SaveEngineSnapshotValues_BD(void)
     }
   }
 
-  engine_snapshot_bd.replay.current_playing_pos = native_bd_level.replay->current_playing_pos;
+  if (native_bd_level.replay != NULL)
+    engine_snapshot_bd.replay.current_playing_pos = native_bd_level.replay->current_playing_pos;
 }
 
 void LoadEngineSnapshotValues_BD(void)
@@ -670,5 +671,6 @@ void LoadEngineSnapshotValues_BD(void)
 
   gd_scroll(game_bd.game, TRUE, TRUE);
 
-  native_bd_level.replay->current_playing_pos = engine_snapshot_bd.replay.current_playing_pos;
+  if (native_bd_level.replay != NULL)
+    native_bd_level.replay->current_playing_pos = engine_snapshot_bd.replay.current_playing_pos;
 }
