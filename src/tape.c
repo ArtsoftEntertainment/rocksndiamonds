@@ -1404,7 +1404,7 @@ static boolean checkRestartGame(char *message)
 
 void TapeRestartGame(void)
 {
-  if (score_info_tape_play)
+  if (tape.playing)
   {
     TapeStartGamePlaying();
 
