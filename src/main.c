@@ -9534,15 +9534,7 @@ static void print_version(void)
   Print("%s", getProgramInitString());
 
   if (!strEqual(getProgramVersionString(), getProgramRealVersionString()))
-  {
-    Print(" (%s %d.%d.%d.%d%s)",
-	  PROGRAM_TITLE_STRING,
-	  PROGRAM_VERSION_SUPER,
-	  PROGRAM_VERSION_MAJOR,
-	  PROGRAM_VERSION_MINOR,
-	  PROGRAM_VERSION_PATCH,
-	  PROGRAM_VERSION_EXTRA);
-  }
+    Print(" (%s %s)", PROGRAM_TITLE_STRING, getVersionString(GAME_VERSION_ACTUAL_FULL));
 
   Print("\n");
 
