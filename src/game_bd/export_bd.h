@@ -104,6 +104,8 @@ struct EngineSnapshotInfo_BD
   // data from pointers in cave structure
   short map[MAX_PLAYFIELD_WIDTH][MAX_PLAYFIELD_HEIGHT];
   short hammered_reappear[MAX_PLAYFIELD_WIDTH][MAX_PLAYFIELD_HEIGHT];
+
+  GdReplay replay;
 };
 
 

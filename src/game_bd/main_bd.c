@@ -602,6 +602,8 @@ void SaveEngineSnapshotValues_BD(void)
         engine_snapshot_bd.hammered_reappear[x][y] = cave->hammered_reappear[y][x];
     }
   }
+
+  engine_snapshot_bd.replay.current_playing_pos = native_bd_level.replay->current_playing_pos;
 }
 
 void LoadEngineSnapshotValues_BD(void)
@@ -667,4 +669,6 @@ void LoadEngineSnapshotValues_BD(void)
   }
 
   gd_scroll(game_bd.game, TRUE, TRUE);
+
+  native_bd_level.replay->current_playing_pos = engine_snapshot_bd.replay.current_playing_pos;
 }
