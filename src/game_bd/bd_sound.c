@@ -643,8 +643,8 @@ void gd_sound_play(GdCave *cave, GdSound sound, GdElement element, int x, int y)
 
   if (!game.use_native_bd_sound_engine)
   {
-    // when playing (non-looping) sound, stop that same sound if already playing
-    if (!gd_sound_is_looped(sound))
+    // Krissz engine: prevent playing the same (non-looping) sound effect more than once
+    if (game_bd.game->use_krissz_engine && !gd_sound_is_looped(sound))
       StopSound_BD(element, sound);
 
     // when not using native sound engine, just play the sound
