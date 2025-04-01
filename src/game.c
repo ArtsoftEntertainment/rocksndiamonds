@@ -16165,6 +16165,16 @@ static void PlayLevelMusic(void)
     PlayMusicLoop(music_nr);
 }
 
+#define IS_BD_RANDOM_SOUND(s)	((s) == GD_S_DIRT_WALKING_RANDOM ||		\
+				 (s) == GD_S_EMPTY_WALKING_RANDOM ||		\
+				 (s) == GD_S_STONE_IMPACT_RANDOM ||		\
+				 (s) == GD_S_MEGA_STONE_IMPACT_RANDOM ||	\
+				 (s) == GD_S_LIGHT_STONE_IMPACT_RANDOM ||	\
+				 (s) == GD_S_DIAMOND_FALLING_RANDOM ||		\
+				 (s) == GD_S_DIAMOND_IMPACT_RANDOM ||		\
+				 (s) == GD_S_FLYING_DIAMOND_FALLING_RANDOM ||	\
+				 (s) == GD_S_FLYING_DIAMOND_IMPACT_RANDOM)
+
 static int getSoundAction_BD(int sample)
 {
   switch (sample)
@@ -16640,8 +16650,25 @@ void StopSound_BD(int element_bd, int sample)
   int element = (element_bd > -1 ? map_element_BD_to_RND_game(element_bd) : 0);
   int sound_effect = getSoundEffect_BD(element, sample);
 
-  if (sound_effect != SND_UNDEFINED)
-    StopSound(sound_effect);
+  if (IS_BD_RANDOM_SOUND(sample))
+  {
+    int sample_1 = sample + 1;	// first non-random sample is always the next sample
+    int i;
+
+    // stop all sounds that can be played by this random sound
+    for (i = 0; i < 8; i++)
+    {
+      sound_effect = getSoundEffect_BD(element, sample_1 + i);
+
+      if (sound_effect != SND_UNDEFINED)
+        StopSound(sound_effect);
+    }
+  }
+  else
+  {
+    if (sound_effect != SND_UNDEFINED)
+      StopSound(sound_effect);
+  }
 }
 
 boolean isSoundPlaying_BD(int element_bd, int sample)
@@ -16649,8 +16676,26 @@ boolean isSoundPlaying_BD(int element_bd, int sample)
   int element = (element_bd > -1 ? map_element_BD_to_RND_game(element_bd) : 0);
   int sound_effect = getSoundEffect_BD(element, sample);
 
-  if (sound_effect != SND_UNDEFINED)
-    return isSoundPlaying(sound_effect);
+  if (IS_BD_RANDOM_SOUND(sample))
+  {
+    int sample_1 = sample + 1;	// first non-random sample is always the next sample
+    int i;
+
+    // check all sounds that can be played by this random sound
+    for (i = 0; i < 8; i++)
+    {
+      sound_effect = getSoundEffect_BD(element, sample_1 + i);
+
+      if (sound_effect != SND_UNDEFINED)
+        if (isSoundPlaying(sound_effect))
+          return TRUE;
+    }
+  }
+  else
+  {
+    if (sound_effect != SND_UNDEFINED)
+      return isSoundPlaying(sound_effect);
+  }
 
   return FALSE;
 }
