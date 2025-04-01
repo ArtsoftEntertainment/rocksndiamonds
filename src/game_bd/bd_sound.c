@@ -634,7 +634,8 @@ void gd_sound_play(GdCave *cave, GdSound sound, GdElement element, int x, int y)
     return;
 
   // when using native sound engine or if no position specified, use middle screen position
-  if (game.use_native_bd_sound_engine || (x == -1 && y == -1))
+  // Krissz engine: also always use middle screen position for playing sound effects
+  if (game.use_native_bd_sound_engine || (x == -1 && y == -1) || game_bd.game->use_krissz_engine)
   {
     x = get_middle_screen_level_position_x(cave);
     y = get_middle_screen_level_position_y(cave);
