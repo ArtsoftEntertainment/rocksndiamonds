@@ -369,6 +369,9 @@ void InitGameEngine_BD(void)
   {
     game_bd.game->cave->hatching_delay_frame++;		// add one game cycle
     game_bd.game->cave->magic_wall_time++;		// add one millisecond
+
+    // remove time for one game cycle from cave time (or add it for caves without time limit)
+    game_bd.game->cave->time += game_bd.game->cave->speed * (game.no_level_time_limit ? +1 : -1);
   }
 
   // fast-forward game engine to selected state (covered or uncovered)
