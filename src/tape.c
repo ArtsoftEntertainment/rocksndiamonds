@@ -404,6 +404,23 @@ static void DrawVideoDisplayCurrentState(void)
   DrawVideoDisplaySymbol(state);
 }
 
+static void DrawVideoDisplayCurrentState_PlayAction(boolean update_draw_label_on)
+{
+  int state = 0;
+
+  if (tape.warp_forward)
+    state |= VIDEO_STATE_WARP(update_draw_label_on);
+  else if (tape.fast_forward)
+    state |= VIDEO_STATE_FFWD(update_draw_label_on);
+
+  if (tape.pause_before_end)
+    state |= VIDEO_STATE_PBEND(update_draw_label_on);
+
+  // draw labels and symbols separately to prevent labels overlapping symbols
+  DrawVideoDisplayLabel(state);
+  DrawVideoDisplaySymbol(state);
+}
+
 void DrawCompleteVideoDisplay(void)
 {
   struct GraphicInfo *g_tape = &graphic_info[IMG_BACKGROUND_TAPE];
@@ -1091,21 +1108,7 @@ byte *TapePlayActionExt(boolean bd_replay)
   }
 
   if (update_video_display && !tape.deactivate_display)
-  {
-    int state = 0;
-
-    if (tape.warp_forward)
-      state |= VIDEO_STATE_WARP(update_draw_label_on);
-    else if (tape.fast_forward)
-      state |= VIDEO_STATE_FFWD(update_draw_label_on);
-
-    if (tape.pause_before_end)
-      state |= VIDEO_STATE_PBEND(update_draw_label_on);
-
-    // draw labels and symbols separately to prevent labels overlapping symbols
-    DrawVideoDisplayLabel(state);
-    DrawVideoDisplaySymbol(state);
-  }
+    DrawVideoDisplayCurrentState_PlayAction(update_draw_label_on);
 
   for (i = 0; i < MAX_TAPE_ACTIONS; i++)
     action[i] = tape.pos[tape.counter].action[i];
