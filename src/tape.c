@@ -1073,7 +1073,13 @@ byte *TapePlayActionExt(boolean bd_replay)
     return NULL;
 
   if (tape.bd_replay && !bd_replay)
+  {
+    // skip tape records without game actions for native BD tapes (but update tape display)
+    if (update_video_display && !tape.deactivate_display)
+      DrawVideoDisplayCurrentState_PlayAction(update_draw_label_on);
+
     return NULL;
+  }
 
   if (tape.pause_before_end)  // stop some seconds before end of tape
   {
