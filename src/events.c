@@ -563,6 +563,25 @@ void HandleMotionEvent(MotionEvent *event)
   HandleButton(event->x, event->y, button_status, button_status);
 }
 
+static void HandleWheelEventButton(int button_nr, int steps)
+{
+#if defined(PLATFORM_WINDOWS) || defined(PLATFORM_MAC)
+  // accelerated mouse wheel available on Mac and Windows
+  wheel_steps = steps;
+#else
+  // no accelerated mouse wheel available on Unix/Linux
+  wheel_steps = DEFAULT_WHEEL_STEPS;
+#endif
+
+  motion_status = FALSE;
+
+  button_status = button_nr;
+  HandleButton(0, 0, button_status, -button_nr);
+
+  button_status = MB_RELEASED;
+  HandleButton(0, 0, button_status, -button_nr);
+}
+
 void HandleWheelEvent(WheelEvent *event)
 {
   int button_nr;
@@ -585,21 +604,7 @@ void HandleWheelEvent(WheelEvent *event)
 	       event->y < 0 ? MB_WHEEL_DOWN :
 	       event->y > 0 ? MB_WHEEL_UP : 0);
 
-#if defined(PLATFORM_WINDOWS) || defined(PLATFORM_MAC)
-  // accelerated mouse wheel available on Mac and Windows
-  wheel_steps = (event->x ? ABS(event->x) : ABS(event->y));
-#else
-  // no accelerated mouse wheel available on Unix/Linux
-  wheel_steps = DEFAULT_WHEEL_STEPS;
-#endif
-
-  motion_status = FALSE;
-
-  button_status = button_nr;
-  HandleButton(0, 0, button_status, -button_nr);
-
-  button_status = MB_RELEASED;
-  HandleButton(0, 0, button_status, -button_nr);
+  HandleWheelEventButton(button_nr, (event->x ? ABS(event->x) : ABS(event->y)));
 }
 
 void HandleWindowEvent(WindowEvent *event)
