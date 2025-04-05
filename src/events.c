@@ -2062,15 +2062,19 @@ static boolean HandleKeysSpeed(Key key, int key_status)
 	key == setup.shortcut.speed_slow)
     {
       int speed_factor = 4;
+      int speed_factor_fast = 1;
+      int speed_factor_slow = 1;
 
-      GameFrameDelay = (key_status != KEY_PRESSED ? setup.game_frame_delay :
-			key == setup.shortcut.speed_fast ? setup.game_frame_delay / speed_factor :
-			key == setup.shortcut.speed_slow ? setup.game_frame_delay * speed_factor :
-			setup.game_frame_delay);
-      FfwdFrameDelay = (key_status != KEY_PRESSED ? FFWD_FRAME_DELAY :
-			key == setup.shortcut.speed_fast ? FFWD_FRAME_DELAY / speed_factor :
-			key == setup.shortcut.speed_slow ? FFWD_FRAME_DELAY * speed_factor :
-			FFWD_FRAME_DELAY);
+      if (key_status == KEY_PRESSED)
+      {
+        if (key == setup.shortcut.speed_fast)
+          speed_factor_fast = speed_factor;
+        else if (key == setup.shortcut.speed_slow)
+          speed_factor_slow = speed_factor;
+      }
+
+      GameFrameDelay = setup.game_frame_delay * speed_factor_slow / speed_factor_fast;
+      FfwdFrameDelay = FFWD_FRAME_DELAY       * speed_factor_slow / speed_factor_fast;
 
       GameFrameDelay = MIN(MAX(1, GameFrameDelay), 1000);
       FfwdFrameDelay = MIN(MAX(1, FfwdFrameDelay), 1000);
