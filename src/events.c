@@ -584,8 +584,6 @@ static void HandleWheelEventButton(int button_nr, int steps)
 
 void HandleWheelEvent(WheelEvent *event)
 {
-  int button_nr;
-
 #if DEBUG_EVENTS_WHEEL
 #if 1
   Debug("event:wheel", "mouse == %d, x/y == %d/%d\n",
@@ -599,12 +597,11 @@ void HandleWheelEvent(WheelEvent *event)
 #endif
 #endif
 
-  button_nr = (event->x < 0 ? MB_WHEEL_LEFT :
-	       event->x > 0 ? MB_WHEEL_RIGHT :
-	       event->y < 0 ? MB_WHEEL_DOWN :
-	       event->y > 0 ? MB_WHEEL_UP : 0);
+  if (event->x != 0)
+    HandleWheelEventButton(event->x < 0 ? MB_WHEEL_LEFT : MB_WHEEL_RIGHT, ABS(event->x));
 
-  HandleWheelEventButton(button_nr, (event->x ? ABS(event->x) : ABS(event->y)));
+  if (event->y != 0)
+    HandleWheelEventButton(event->y < 0 ? MB_WHEEL_DOWN : MB_WHEEL_UP, ABS(event->y));
 }
 
 void HandleWindowEvent(WindowEvent *event)
