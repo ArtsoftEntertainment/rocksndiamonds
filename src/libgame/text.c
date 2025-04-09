@@ -108,6 +108,8 @@ static int getFontCharPosition(int font_nr, char c)
     font_pos = MAP_FONT_ASCII(c) - 32;
   else if (font->num_chars == NUM_CHARS_PER_FONT_EXT)
     font_pos = MAP_FONT_ASCII_EXT(c) - 32;
+  else if (font->num_chars == NUM_CHARS_PER_FONT_BDX)
+    font_pos = MAP_FONT_ASCII_BDX(c) - 32;
 
   // this allows dynamic special characters together with special font
   if (font_pos < 0 || font_pos >= font->num_chars)

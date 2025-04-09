@@ -2378,7 +2378,14 @@ char *getLatin1FromUTF8(char *utf8)
     else if (src[0] >= 192 && src[0] < 224 &&
 	     src[1] >= 128 && src[1] < 192)
     {
-      *dst++ = '?';
+      // detect and substitute selected UTF-8 characters (0xce91 - 0xcea1)
+      if (src[0] == 206 &&
+          src[1] >= 145 &&
+          src[1] <= 161)
+        *dst++ = CHAR_BYTE_BDX_FIRST + src[1] - 145;
+      else
+        *dst++ = '?';
+
       src += 2;
     }
     else if (src[0] >= 224 && src[0] < 240 &&

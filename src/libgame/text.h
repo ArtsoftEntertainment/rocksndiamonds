@@ -44,6 +44,10 @@
 #define CHAR_BYTE_DEGREE	((char)0xb0)
 #define CHAR_BYTE_CURSOR	((char)0xa0)
 
+// special character mapping for BDX fonts
+#define CHAR_BYTE_BDX_FIRST	((char)0xb1)
+#define CHAR_BYTE_BDX_LAST	((char)0xc1)
+
 // special character mapping for default fonts
 #define FONT_ASCII_CURSOR	((char)160)
 #define FONT_ASCII_BUTTON	((char)128)
@@ -84,9 +88,26 @@
 				 (c) == FONT_ASCII_DOWN	     ? 143 :	\
 				 (c))
 
+#define MAP_FONT_ASCII_BDX(c)	((c) == CHAR_BYTE_COPYRIGHT  ? 128 :	\
+				 (c) == CHAR_BYTE_UMLAUT_A   ? 129 :	\
+				 (c) == CHAR_BYTE_UMLAUT_O   ? 130 :	\
+				 (c) == CHAR_BYTE_UMLAUT_U   ? 131 :	\
+				 (c) == CHAR_BYTE_DEGREE     ? 132 :	\
+				 (c) == CHAR_BYTE_REGISTERED ? 133 :	\
+				 (c) == FONT_ASCII_CURSOR    ? 134 :	\
+				 (c) == CHAR_BYTE_UMLAUT_a   ? 135 :	\
+				 (c) == CHAR_BYTE_UMLAUT_o   ? 136 :	\
+				 (c) == CHAR_BYTE_UMLAUT_u   ? 137 :	\
+				 (c) == CHAR_BYTE_SHARP_S    ? 138 :	\
+				 (c) >= CHAR_BYTE_BDX_FIRST &&		\
+				 (c) <= CHAR_BYTE_BDX_LAST   ?		\
+				 (c) -  CHAR_BYTE_BDX_FIRST  + 139 :	\
+				 (c))
+
 // 64 regular ordered ASCII characters, 6 special characters, 1 cursor char.
 #define MIN_NUM_CHARS_PER_FONT			64
 #define NUM_CHARS_PER_FONT_EXT			112
+#define NUM_CHARS_PER_FONT_BDX			128
 #define DEFAULT_NUM_CHARS_PER_FONT		(MIN_NUM_CHARS_PER_FONT + 6 +1)
 #define DEFAULT_NUM_CHARS_PER_LINE		16
 
