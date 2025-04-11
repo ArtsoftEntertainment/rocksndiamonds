@@ -3595,7 +3595,10 @@ static int getMaxTextLength(struct TextPosInfo *pos, int font_nr)
 
 static boolean inGfxField_FontHeight(struct TextPosInfo *pos)
 {
-  if (!IN_GFX_FIELD_FULL(pos->x, pos->y + getFontHeight(pos->font)))
+  if (pos->x == -1 && pos->y == -1)	// marked as outside viewport
+    return FALSE;
+
+  if (!IN_GFX_FIELD_FULL(SX + pos->x, SY + pos->y + getFontHeight(pos->font)))
     return FALSE;
 
   return TRUE;
