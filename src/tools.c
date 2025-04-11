@@ -3593,6 +3593,14 @@ static int getMaxTextLength(struct TextPosInfo *pos, int font_nr)
   return max_text_width / font_width;
 }
 
+static boolean inGfxField_FontHeight(struct TextPosInfo *pos)
+{
+  if (!IN_GFX_FIELD_FULL(pos->x, pos->y + getFontHeight(pos->font)))
+    return FALSE;
+
+  return TRUE;
+}
+
 static void DrawPreviewLevelLabelExt(int mode, struct TextPosInfo *pos)
 {
   char label_text[MAX_OUTPUT_LINESIZE + 1];
@@ -3600,7 +3608,7 @@ static void DrawPreviewLevelLabelExt(int mode, struct TextPosInfo *pos)
   int font_nr = pos->font;
   int i;
 
-  if (!IN_GFX_FIELD_FULL(pos->x, pos->y + getFontHeight(pos->font)))
+  if (!inGfxField_FontHeight(pos))
     return;
 
   if (mode == MICROLABEL_LEVEL_AUTHOR_HEAD ||
@@ -3706,7 +3714,7 @@ static void DrawPreviewLevelExt(boolean restart)
       strncpy(label_text, leveldir_current->name, max_len_label_text);
       label_text[max_len_label_text] = '\0';
 
-      if (IN_GFX_FIELD_FULL(pos->x, pos->y + getFontHeight(pos->font)))
+      if (inGfxField_FontHeight(pos))
 	DrawTextSAligned(pos->x, pos->y, label_text, font_nr, pos->align);
     }
 
