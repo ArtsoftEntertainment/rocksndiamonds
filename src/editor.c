@@ -6587,8 +6587,8 @@ static int editor_hl_boulderdash_krissz[] =
 {
   EL_INTERNAL_CASCADE_BDX_KRISSZ_ACTIVE,
   EL_CHAR('K'),
-  EL_CHAR('R'),
-  EL_CHAR('E'),
+  EL_CHAR('B'),
+  EL_CHAR('D'),
 };
 
 static int editor_el_boulderdash_krissz[] =
