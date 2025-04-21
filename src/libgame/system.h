@@ -1740,6 +1740,7 @@ struct TreeInfo
   boolean latest_engine;	// force level set to use the latest game engine
 
   boolean level_group;		// directory contains more level series directories
+  boolean level_group_empty;	// directory contains only empty level series directories
   boolean parent_link;		// entry links back to parent directory
   boolean is_copy;		// this entry is a copy of another entry in the tree
   boolean in_user_dir;		// user defined levels are stored in home directory

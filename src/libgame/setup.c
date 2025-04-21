@@ -1788,10 +1788,12 @@ static TreeInfo *cloneTreeNode(TreeInfo **node_top, TreeInfo *node_parent,
   if (node == NULL)
     return NULL;
 
-  if (!node->parent_link && !node->level_group &&
-      skip_sets_without_levels && node->levels == 0)
-    return cloneTreeNode(node_top, node_parent, node->next,
-			 skip_sets_without_levels);
+  boolean group_without_levels = (node->level_group && node->level_group_empty);
+  boolean set_without_levels = (!node->parent_link && !node->level_group && node->levels == 0);
+
+  // if requested, skip level groups and level sets without levels (and continue with next node)
+  if (skip_sets_without_levels && (group_without_levels || set_without_levels))
+    return cloneTreeNode(node_top, node_parent, node->next, skip_sets_without_levels);
 
   node_new = getTreeInfoCopy(node);		// copy complete node
 
@@ -2925,6 +2927,7 @@ static struct TokenInfo levelinfo_tokens[] =
   { TYPE_INTEGER,	&ldi.sort_priority,		"sort_priority"			},
   { TYPE_BOOLEAN,	&ldi.latest_engine,		"latest_engine"			},
   { TYPE_BOOLEAN,	&ldi.level_group,		"level_group"			},
+  { TYPE_BOOLEAN,	&ldi.level_group_empty,		"level_group_empty"		},
   { TYPE_BOOLEAN,	&ldi.readonly,			"readonly"			},
   { TYPE_STRING,	&ldi.graphics_set_ecs,		"graphics_set.old"		},
   { TYPE_STRING,	&ldi.graphics_set_aga,		"graphics_set.new"		},
@@ -3045,6 +3048,7 @@ static void setTreeInfoToDefaults(TreeInfo *ti, int type)
     ti->first_level = 0;
     ti->last_level = 0;
     ti->level_group = FALSE;
+    ti->level_group_empty = FALSE;
     ti->handicap_level = 0;
     ti->readonly = TRUE;
     ti->handicap = TRUE;
@@ -3133,6 +3137,7 @@ static void setTreeInfoToDefaultsFromParent(TreeInfo *ti, TreeInfo *parent)
     ti->first_level = parent->first_level;
     ti->last_level = parent->last_level;
     ti->level_group = FALSE;
+    ti->level_group_empty = parent->level_group_empty;
     ti->handicap_level = parent->handicap_level;
     ti->readonly = parent->readonly;
     ti->handicap = parent->handicap;
@@ -3205,6 +3210,7 @@ static TreeInfo *getTreeInfoCopy(TreeInfo *ti)
   ti_copy->latest_engine	= ti->latest_engine;
 
   ti_copy->level_group		= ti->level_group;
+  ti_copy->level_group_empty	= ti->level_group_empty;
   ti_copy->parent_link		= ti->parent_link;
   ti_copy->is_copy		= ti->is_copy;
   ti_copy->in_user_dir		= ti->in_user_dir;
