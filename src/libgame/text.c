@@ -106,7 +106,7 @@ static int getFontCharPosition(int font_nr, char c)
 
   // map to uppercase characters if requested
   if (font->uppercase_only || gfx.uppercase_only)
-    c = MAP_FONT_ASCII(c);
+    c = MAP_FONT_UPPERCASE(c);
 
   // map some special characters to their ascii values in default font
   if (font->num_chars == DEFAULT_NUM_CHARS_PER_FONT)

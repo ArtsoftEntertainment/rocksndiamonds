@@ -56,6 +56,12 @@
 #define FONT_ASCII_LEFT		((char)'<')
 #define FONT_ASCII_RIGHT	((char)'>')
 
+#define MAP_FONT_UPPERCASE(c)	((c) >= 'a' && (c) <= 'z'  ? 'A' + (c) - 'a' :		\
+				 (c) == CHAR_BYTE_UMLAUT_a ? CHAR_BYTE_UMLAUT_A :	\
+				 (c) == CHAR_BYTE_UMLAUT_o ? CHAR_BYTE_UMLAUT_O :	\
+				 (c) == CHAR_BYTE_UMLAUT_u ? CHAR_BYTE_UMLAUT_U :	\
+				 (c))
+
 #define MAP_FONT_ASCII(c)	((c) >= 'a' && (c) <= 'z' ? 'A' + (c) - 'a' : \
 				 (c) == CHAR_BYTE_COPYRIGHT  ?  96 :	\
 				 (c) == CHAR_BYTE_UMLAUT_a   ?  97 :	\
