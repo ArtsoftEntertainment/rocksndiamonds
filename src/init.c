@@ -522,7 +522,7 @@ static void InitFontGraphicInfo(void)
 
   if (graphic_info == NULL)		// still at startup phase
   {
-    InitFontInfo(font_initial, NUM_INITIAL_FONTS,
+    InitFontInfo(font_initial, NUM_INITIAL_FONTS, FALSE,
 		 getFontBitmapID, getFontFromToken, getTokenFromFont);
 
     return;
@@ -750,7 +750,7 @@ static void InitFontGraphicInfo(void)
     }
   }
 
-  InitFontInfo(font_bitmap_info, num_font_bitmaps,
+  InitFontInfo(font_bitmap_info, num_font_bitmaps, global.uppercase_only,
 	       getFontBitmapID, getFontFromToken, getTokenFromFont);
 }
 
@@ -5318,6 +5318,7 @@ static void InitGlobal(void)
   global.anim_status = global.anim_status_next = GAME_MODE_LOADING;
 
   global.use_envelope_request = FALSE;
+  global.uppercase_only = FALSE;
 
   global.user_names = NULL;
 }

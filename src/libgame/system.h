@@ -1282,6 +1282,8 @@ struct GfxInfo
 
   boolean has_reduced_color_template;
   boolean has_extended_color_template;
+
+  boolean uppercase_only;
 };
 
 struct TileCursorInfo

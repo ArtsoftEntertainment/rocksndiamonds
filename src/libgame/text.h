@@ -142,7 +142,7 @@ struct WrappedTextInfo
 void EnableDrawingText(void);
 void DisableDrawingText(void);
 
-void InitFontInfo(struct FontBitmapInfo *, int,
+void InitFontInfo(struct FontBitmapInfo *, int, int,
 		  int (*function1)(int),
                   int (*function2)(char *),
                   char * (*function3)(int));

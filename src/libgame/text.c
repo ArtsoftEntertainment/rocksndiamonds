@@ -37,12 +37,13 @@ void DisableDrawingText(void)
   text_drawing_enabled = FALSE;
 }
 
-void InitFontInfo(struct FontBitmapInfo *font_bitmap_info, int num_fonts,
+void InitFontInfo(struct FontBitmapInfo *font_bitmap_info, int num_fonts, boolean uppercase_only,
 		  int (*select_font_function)(int),
 		  int (*get_font_from_token_function)(char *),
 		  char * (*get_token_from_font_function)(int))
 {
   gfx.num_fonts = num_fonts;
+  gfx.uppercase_only = uppercase_only;
   gfx.font_bitmap_info = font_bitmap_info;
   gfx.select_font_function = select_font_function;
   gfx.get_font_from_token_function = get_font_from_token_function;
@@ -104,7 +105,7 @@ static int getFontCharPosition(int font_nr, char c)
   int font_pos = (unsigned char)c - 32;
 
   // map to uppercase characters if requested
-  if (font->uppercase_only)
+  if (font->uppercase_only || gfx.uppercase_only)
     c = MAP_FONT_ASCII(c);
 
   // map some special characters to their ascii values in default font

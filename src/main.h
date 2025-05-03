@@ -4083,6 +4083,7 @@ struct GlobalInfo
   int anim_status_next;
 
   boolean use_envelope_request;
+  boolean uppercase_only;
 
   char **user_names;
 };

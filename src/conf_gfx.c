@@ -12291,6 +12291,7 @@ struct ConfigInfo image_config[] =
   { "request.draw_order",				"-1"				},
 
   { "global.use_envelope_request",			"false"				},
+  { "global.uppercase_only",				"false"				},
 
   { "game.graphics_engine_version",			"-1"				},
   { "game.forced_scroll_delay_value",			"-1"				},
