@@ -2981,6 +2981,7 @@ enum
   GFX_ARG_STACKED_XOFFSET,
   GFX_ARG_STACKED_YOFFSET,
   GFX_ARG_COLOR_TEMPLATE,
+  GFX_ARG_UPPERCASE_ONLY,
 
   NUM_GFX_ARGS
 };
@@ -4409,6 +4410,7 @@ struct GraphicInfo
   int stacked_yoffset;
 
   boolean color_template;		// optional setting for color template images
+  boolean uppercase_only;		// optional setting for drawing uppercase font chars only
 
   boolean use_image_size;		// use image size as default width and height
 };

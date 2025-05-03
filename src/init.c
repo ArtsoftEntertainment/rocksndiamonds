@@ -744,6 +744,9 @@ static void InitFontGraphicInfo(void)
 	graphic_info[graphic].anim_frames;
       font_bitmap_info[font_bitmap_id].num_chars_per_line =
 	graphic_info[graphic].anim_frames_per_line;
+
+      font_bitmap_info[font_bitmap_id].uppercase_only =
+	graphic_info[graphic].uppercase_only;
     }
   }
 
@@ -1799,6 +1802,9 @@ static void set_graphic_parameters_ext(int graphic, int *parameter,
 
   // this is only used for optional color template images
   g->color_template = parameter[GFX_ARG_COLOR_TEMPLATE];
+
+  // this is only used for optional use of uppercase font chars
+  g->uppercase_only = parameter[GFX_ARG_UPPERCASE_ONLY];
 }
 
 static void set_graphic_parameters(int graphic)

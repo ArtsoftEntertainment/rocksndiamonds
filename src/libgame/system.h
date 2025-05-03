@@ -1206,6 +1206,8 @@ struct FontBitmapInfo
 
   int num_chars;
   int num_chars_per_line;
+
+  boolean uppercase_only;
 };
 
 struct GfxInfo

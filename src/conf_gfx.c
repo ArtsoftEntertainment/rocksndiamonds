@@ -92,6 +92,7 @@ struct ConfigTypeInfo image_config_suffix[] =
   { ".stacked_xoffset",				"0",		TYPE_INTEGER		},
   { ".stacked_yoffset",				"0",		TYPE_INTEGER		},
   { ".color_template",				"false",	TYPE_BOOLEAN		},
+  { ".uppercase_only",				"false",	TYPE_BOOLEAN		},
 
   { NULL,					NULL,		0			}
 };

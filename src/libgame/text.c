@@ -103,6 +103,10 @@ static int getFontCharPosition(int font_nr, char c)
   struct FontBitmapInfo *font = &gfx.font_bitmap_info[font_bitmap_id];
   int font_pos = (unsigned char)c - 32;
 
+  // map to uppercase characters if requested
+  if (font->uppercase_only)
+    c = MAP_FONT_ASCII(c);
+
   // map some special characters to their ascii values in default font
   if (font->num_chars == DEFAULT_NUM_CHARS_PER_FONT)
     font_pos = MAP_FONT_ASCII(c) - 32;
