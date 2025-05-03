@@ -4461,6 +4461,7 @@ static void CopyNativeLevel_RND_to_BD(struct LevelInfo *level)
   cave->border_scan_first_and_last	= level->bd_scan_first_and_last_row;
   cave->short_explosions		= level->bd_short_explosions;
   cave->use_krissz_engine		= level->bd_use_krissz_engine;
+  cave->new_krissz_engine		= level->bd_new_krissz_engine;
 
   // scrolling settings
   cave->open_borders_horizontal		= level->bd_open_borders_horizontal;
@@ -4658,6 +4659,7 @@ static void CopyNativeLevel_BD_to_RND(struct LevelInfo *level)
   level->bd_scan_first_and_last_row	= cave->border_scan_first_and_last;
   level->bd_short_explosions		= cave->short_explosions;
   level->bd_use_krissz_engine		= cave->use_krissz_engine;
+  level->bd_new_krissz_engine		= cave->new_krissz_engine;
 
   // scrolling settings
   level->bd_open_borders_horizontal	= cave->open_borders_horizontal;

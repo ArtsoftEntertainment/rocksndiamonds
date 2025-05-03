@@ -381,6 +381,7 @@ typedef struct _gd_cave
   boolean short_explosions;             // in >= 1stb, diamond/creature explosions were of 5 stages
 
   boolean use_krissz_engine;            // for game engine compatibility with Krissz engine
+  boolean new_krissz_engine;            // for game engine compatibility with Krissz engine (new)
 
   GdScheduling scheduling;              // scheduling type; see above
   boolean pal_timing;                   // use faster seconds
