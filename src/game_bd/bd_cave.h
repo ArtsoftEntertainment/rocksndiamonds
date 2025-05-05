@@ -382,6 +382,7 @@ typedef struct _gd_cave
 
   boolean use_krissz_engine;            // for game engine compatibility with Krissz engine
   boolean new_krissz_engine;            // for game engine compatibility with Krissz engine (new)
+  GdString krissz_engine_cave_code;     // internal cave code for Krissz engine caves
 
   GdScheduling scheduling;              // scheduling type; see above
   boolean pal_timing;                   // use faster seconds
