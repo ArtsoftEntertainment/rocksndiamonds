@@ -3363,7 +3363,7 @@ const GdStructDescriptor gd_cave_properties[] =
     N_("Enable compatibility with the Krissz game engine.")
   },
   {
-    "KrisszEngineNew", GD_TYPE_BOOLEAN, 0,
+    "KrisszEngineNewEngine", GD_TYPE_BOOLEAN, 0,
     N_("Cave expects new Krissz game engine behavior"), CAVE_OFFSET(new_krissz_engine), 1,
     N_("Cave was created for use with the new Krissz game engine.")
   },
