@@ -288,20 +288,27 @@
 #define SC_SCROLLBUTTON_XSIZE			TILEX
 #define SC_SCROLLBUTTON_YSIZE			TILEY
 
+#define SC_BORDER_LEFT				(SX - REAL_SX)
+#define SC_BORDER_RIGHT				(FULL_SXSIZE - SXSIZE - SC_BORDER_LEFT)
+
 #define SC_SCROLLBAR_XPOS			(SXSIZE - SC_SCROLLBUTTON_XSIZE)
+#define SC_SCROLLBAR_FULL_XPOS			(SXSIZE - SC_SCROLLBUTTON_XSIZE + SC_BORDER_RIGHT)
 
 #define SC_SCROLL_VERTICAL_XSIZE		SC_SCROLLBUTTON_XSIZE
 #define SC_SCROLL_VERTICAL_YSIZE		((MAX_MENU_ENTRIES_ON_SCREEN - 2) * \
 						 SC_SCROLLBUTTON_YSIZE)
 
 #define SC_SCROLL_UP_XPOS			SC_SCROLLBAR_XPOS
+#define SC_SCROLL_UP_FULL_XPOS			SC_SCROLLBAR_FULL_XPOS
 #define SC_SCROLL_UP_YPOS			(2 * SC_SCROLLBUTTON_YSIZE)
 
 #define SC_SCROLL_VERTICAL_XPOS			SC_SCROLLBAR_XPOS
+#define SC_SCROLL_VERTICAL_FULL_XPOS		SC_SCROLLBAR_FULL_XPOS
 #define SC_SCROLL_VERTICAL_YPOS			(SC_SCROLL_UP_YPOS + \
 						 SC_SCROLLBUTTON_YSIZE)
 
 #define SC_SCROLL_DOWN_XPOS			SC_SCROLLBAR_XPOS
+#define SC_SCROLL_DOWN_FULL_XPOS		SC_SCROLLBAR_FULL_XPOS
 #define SC_SCROLL_DOWN_YPOS			(SC_SCROLL_VERTICAL_YPOS + \
 						 SC_SCROLL_VERTICAL_YSIZE)
 
@@ -1810,8 +1817,8 @@ static void clearMenuListArea(void)
   int scrollbar_xpos = mSX + SC_SCROLLBAR_XPOS + menu.scrollbar_xoffset;
 
   // correct scrollbar position if placed outside menu (playfield) area
-  if (scrollbar_xpos > SX + SC_SCROLLBAR_XPOS)
-    scrollbar_xpos = SX + SC_SCROLLBAR_XPOS;
+  if (scrollbar_xpos > SX + SC_SCROLLBAR_FULL_XPOS)
+    scrollbar_xpos = SX + SC_SCROLLBAR_FULL_XPOS;
 
   // clear menu list area, but not title or scrollbar
   DrawBackground(mSX, mSY + MENU_SCREEN_START_YPOS * 32,
@@ -11327,8 +11334,8 @@ static void CreateScreenScrollbuttons(void)
     height = SC_SCROLLBUTTON_YSIZE;
 
     // correct scrollbar position if placed outside menu (playfield) area
-    if (x > SX + SC_SCROLL_UP_XPOS)
-      x = SX + SC_SCROLL_UP_XPOS;
+    if (x > SX + SC_SCROLL_UP_FULL_XPOS)
+      x = SX + SC_SCROLL_UP_FULL_XPOS;
 
     if (id == SCREEN_CTRL_ID_SCROLL_DOWN)
       y = mSY + (SC_SCROLL_VERTICAL_YPOS +
@@ -11397,8 +11404,8 @@ static void CreateScreenScrollbars(void)
     height = scrollbar_info[i].height;
 
     // correct scrollbar position if placed outside menu (playfield) area
-    if (x > SX + SC_SCROLL_VERTICAL_XPOS)
-      x = SX + SC_SCROLL_VERTICAL_XPOS;
+    if (x > SX + SC_SCROLL_VERTICAL_FULL_XPOS)
+      x = SX + SC_SCROLL_VERTICAL_FULL_XPOS;
 
     if (id == SCREEN_CTRL_ID_SCROLL_VERTICAL)
       height = (NUM_MENU_ENTRIES_ON_SCREEN - 2) * SC_SCROLLBUTTON_YSIZE;
