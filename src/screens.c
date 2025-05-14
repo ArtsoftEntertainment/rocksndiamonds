@@ -4454,15 +4454,20 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
 
   if (wrapped_text != NULL && wrapped_text->total_height > wrapped_text->max_height)
   {
-    // re-wrap text with text width reduced by scroll bar width
-    tmi->width -= SC_SCROLL_VERTICAL_XSIZE;
-
-    // adjust left border and text width if text should be centered
-    if (wrapped_text->line[0].centered &&
-        MENU_SCREEN_INFO_SPACE_LEFT == MENU_SCREEN_INFO_SPACE_RIGHT)
+    // if scrollbar is inside text area (default), text must be re-wrapped
+    if (menu.scrollbar_xoffset < SC_SCROLL_VERTICAL_XSIZE ||
+        menu.scrollbar_xoffset > SC_BORDER_RIGHT)
     {
-      tmi->x += SC_SCROLL_VERTICAL_XSIZE;
+      // re-wrap text with text width reduced by scroll bar width
       tmi->width -= SC_SCROLL_VERTICAL_XSIZE;
+
+      // adjust left border and text width if text should be centered
+      if (wrapped_text->line[0].centered &&
+          MENU_SCREEN_INFO_SPACE_LEFT == MENU_SCREEN_INFO_SPACE_RIGHT)
+      {
+        tmi->x += SC_SCROLL_VERTICAL_XSIZE;
+        tmi->width -= SC_SCROLL_VERTICAL_XSIZE;
+      }
     }
 
     SetWrappedText_GenericScreen(tmi, screen_nr, use_global_screens);
