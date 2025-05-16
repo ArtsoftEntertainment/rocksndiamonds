@@ -495,11 +495,17 @@ char *int2str(int number, int size)
   if (size > 0)
   {
     sprintf(s, "                    %09d", number);
+
     return &s[strlen(s) - size];
   }
   else
   {
     sprintf(s, "%d", number);
+
+    // when using negative size, numbers are formatted, but not truncated
+    if (size < 0 && strlen(s) < ABS(size))
+      return int2str(number, ABS(size));
+
     return s;
   }
 }
