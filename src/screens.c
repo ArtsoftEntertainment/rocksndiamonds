@@ -9094,31 +9094,16 @@ static void drawSetupValue(int screen_pos, int setup_info_pos_raw)
   if (xpos > MENU_SCREEN_START_XPOS)
     font_nr = getSetupValueFontNarrow(type, font_nr);
 
-  // downward compatibility correction for Juergen Bonhagen's menu settings
-  if (setup_mode != SETUP_MODE_INPUT)
+  // special compatibility handling for "jue0" graphics set
+  if (strPrefix(artwork.gfx_current_identifier, "jue0"))
   {
     int max_menu_text_length_big = (menu_screen_value_xpos -
 				    MENU_SCREEN_START_XPOS);
     int max_menu_text_length_medium = max_menu_text_length_big * 2;
-    int check_font_nr = FONT_OPTION_ON; // known font that needs correction
-    int font1_xoffset = getFontDrawOffsetX(font_nr);
-    int font2_xoffset = getFontDrawOffsetX(check_font_nr);
-    int text_startx = mSX + MENU_SCREEN_START_XPOS * 32;
     int text_font_nr = getMenuTextFont(FONT_MENU_2);
     int text_font_xoffset = getFontDrawOffsetX(text_font_nr);
-    int text_width = max_menu_text_length_medium * getFontWidth(text_font_nr);
-    boolean correct_font_draw_xoffset = FALSE;
+    boolean correct_font_draw_xoffset = TRUE;
 
-    if (xpos == MENU_SCREEN_START_XPOS &&
-	startx + font1_xoffset < text_startx + text_font_xoffset)
-      correct_font_draw_xoffset = TRUE;
-
-    if (xpos == menu_screen_value_xpos &&
-	startx + font2_xoffset < text_startx + text_width + text_font_xoffset)
-      correct_font_draw_xoffset = TRUE;
-
-    // check if setup value would overlap with setup text when printed
-    // (this can happen for extreme/wrong values for font draw offset)
     if (correct_font_draw_xoffset)
     {
       font_draw_xoffset_old = getFontDrawOffsetX(font_nr);
