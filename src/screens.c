@@ -183,7 +183,6 @@
 #define MENU_SCREEN_START_XPOS			1
 #define MENU_SCREEN_START_YPOS			2
 #define MENU_SCREEN_VALUE_XPOS			(SCR_FIELDX - 3)
-#define MENU_SCREEN_TEXT2_XPOS			(SCR_FIELDX - 2)
 #define MENU_SCREEN_MAX_XPOS			(SCR_FIELDX - 1)
 #define MENU_TITLE_YPOS				MENU_TEXT_ALIGNED_YPOS(menu.text.title)
 #define MENU_TITLE1_YPOS			MENU_TEXT_ALIGNED_YPOS(menu.text.title_1)
@@ -1881,8 +1880,9 @@ static int getChooseTreeEditXPos(int pos)
   boolean has_scrollbar = screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL]->mapped;
   int font_nr = getChooseTreeEditFont(FALSE);
   int width = getTextWidth(STR_CHOOSE_TREE_EDIT, font_nr);
-  int xoffset = (has_scrollbar ? -1 : 0);
-  int xpos = MENU_SCREEN_TEXT2_XPOS + xoffset;
+  int xoffset_scrollbar = (has_scrollbar ? -1 : 0);
+  int xoffset_edit_text = width / TILEX;
+  int xpos = SCR_FIELDX - xoffset_edit_text + xoffset_scrollbar;
   int sx = amSX + xpos * TILEX;
 
   return (pos == POS_RIGHT ? sx + width - 1 : sx);
