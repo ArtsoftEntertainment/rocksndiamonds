@@ -9102,19 +9102,15 @@ static void drawSetupValue(int screen_pos, int setup_info_pos_raw)
     int max_menu_text_length_medium = max_menu_text_length_big * 2;
     int text_font_nr = getMenuTextFont(FONT_MENU_2);
     int text_font_xoffset = getFontDrawOffsetX(text_font_nr);
-    boolean correct_font_draw_xoffset = TRUE;
 
-    if (correct_font_draw_xoffset)
-    {
-      font_draw_xoffset_old = getFontDrawOffsetX(font_nr);
-      font_draw_xoffset_modified = TRUE;
+    font_draw_xoffset_old = getFontDrawOffsetX(font_nr);
+    font_draw_xoffset_modified = TRUE;
 
-      if (type & TYPE_KEY)
-	getFontBitmapInfo(font_nr)->draw_xoffset += 2 * getFontWidth(font_nr);
-      else if (!(type & TYPE_STRING))
-	getFontBitmapInfo(font_nr)->draw_xoffset = text_font_xoffset + 20 -
-	  max_menu_text_length_medium * (16 - getFontWidth(text_font_nr));
-    }
+    if (type & TYPE_KEY)
+      getFontBitmapInfo(font_nr)->draw_xoffset += 2 * getFontWidth(font_nr);
+    else if (!(type & TYPE_STRING))
+      getFontBitmapInfo(font_nr)->draw_xoffset = text_font_xoffset + 20 -
+        max_menu_text_length_medium * (16 - getFontWidth(text_font_nr));
   }
 
   DrawBackground(startx, starty, mx_right_border - startx, getFontHeight(font_nr));
