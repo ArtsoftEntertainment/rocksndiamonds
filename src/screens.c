@@ -1879,11 +1879,11 @@ static int getChooseTreeEditFont(boolean active)
 static int getChooseTreeEditXPos(int pos)
 {
   boolean has_scrollbar = screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL]->mapped;
+  int font_nr = getChooseTreeEditFont(FALSE);
+  int width = getTextWidth(STR_CHOOSE_TREE_EDIT, font_nr);
   int xoffset = (has_scrollbar ? -1 : 0);
   int xpos = MENU_SCREEN_TEXT2_XPOS + xoffset;
   int sx = amSX + xpos * TILEX;
-  int font_nr = getChooseTreeEditFont(FALSE);
-  int width = getTextWidth(STR_CHOOSE_TREE_EDIT, font_nr);
 
   return (pos == POS_RIGHT ? sx + width - 1 : sx);
 }
