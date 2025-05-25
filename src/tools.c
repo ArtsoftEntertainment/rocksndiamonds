@@ -3580,15 +3580,16 @@ static void DrawPreviewLevelPlayfield(int from_x, int from_y)
 
 static int getMaxTextLength(struct TextPosInfo *pos, int font_nr)
 {
+  int border_size = (FULL_SXSIZE - SXSIZE) / 2;
   int max_text_width = SXSIZE;
   int font_width = getFontWidth(font_nr);
 
   if (pos->align == ALIGN_CENTER)
-    max_text_width = (pos->x < SXSIZE / 2 ? pos->x * 2 : (SXSIZE - pos->x) * 2);
+    max_text_width = (pos->x < SXSIZE / 2 ? pos->x * 2 : (SXSIZE - pos->x) * 2) + border_size * 2;
   else if (pos->align == ALIGN_RIGHT)
-    max_text_width = pos->x;
+    max_text_width = pos->x + border_size;
   else
-    max_text_width = SXSIZE - pos->x;
+    max_text_width = SXSIZE - pos->x + border_size;
 
   return max_text_width / font_width;
 }
