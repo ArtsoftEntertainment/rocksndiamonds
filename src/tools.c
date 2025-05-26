@@ -3578,7 +3578,7 @@ static void DrawPreviewLevelPlayfield(int from_x, int from_y)
 #define MICROLABEL_IMPORTED_BY_HEAD	6
 #define MICROLABEL_IMPORTED_BY		7
 
-static int getMaxTextLength(struct TextPosInfo *pos, int font_nr)
+static int getMaxPreviewLabelTextLength(struct TextPosInfo *pos, int font_nr)
 {
   int border_size = (FULL_SXSIZE - SXSIZE) / 2;
   int max_text_width = SXSIZE;
@@ -3620,7 +3620,7 @@ static void DrawPreviewLevelLabelExt(int mode, struct TextPosInfo *pos)
       mode == MICROLABEL_IMPORTED_BY_HEAD)
     font_nr = pos->font_alt;
 
-  max_len_label_text = getMaxTextLength(pos, font_nr);
+  max_len_label_text = getMaxPreviewLabelTextLength(pos, font_nr);
 
   if (pos->size != -1)
     max_len_label_text = pos->size;
@@ -3710,7 +3710,7 @@ static void DrawPreviewLevelExt(boolean restart)
       struct TextPosInfo *pos = &menu.main.text.level_info_1;
       char label_text[MAX_OUTPUT_LINESIZE + 1];
       int font_nr = pos->font;
-      int max_len_label_text = getMaxTextLength(pos, font_nr);
+      int max_len_label_text = getMaxPreviewLabelTextLength(pos, font_nr);
 
       if (pos->size != -1)
 	max_len_label_text = pos->size;
