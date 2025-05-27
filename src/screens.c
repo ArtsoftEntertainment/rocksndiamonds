@@ -10659,6 +10659,8 @@ void ConfigureVirtualButtons(void)
       BackToFront();
 
     ClearEventQueue();
+
+    SaveSetupIfNeeded();
   }
 }
 
