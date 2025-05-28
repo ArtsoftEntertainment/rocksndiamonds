@@ -3318,6 +3318,9 @@ static void DrawEnvelopeRequest(char *text, unsigned int req_state)
 				  x, y, x_steps, y_steps,
 				  tile_size, tile_size);
 
+  // set screen background bitmap to "empty" request background during request dialog
+  BlitBitmap(bitmap_db_store_1, gfx.background_bitmap, 0, 0, WIN_XSIZE, WIN_YSIZE, 0, 0);
+
   // write text for request
   DrawEnvelopeRequestText(sx, sy, text);
 
@@ -4900,6 +4903,45 @@ static int RequestHandleEvents(unsigned int req_state, int draw_buffer_game)
   return result;
 }
 
+static void DoRequestEnvelopeBeforeOrAfter(boolean do_before)
+{
+  static int gfx_draw_background_mask_last = REDRAW_NONE;
+  static int gfx_background_bitmap_mask_last = REDRAW_NONE;
+
+  if (do_before)
+  {
+    // store current screen background masks
+    gfx_draw_background_mask_last = gfx.draw_background_mask;
+    gfx_background_bitmap_mask_last = gfx.background_bitmap_mask;
+
+    // set screen background masks to request dialog background
+    gfx.draw_background_mask = REDRAW_REQUEST;
+    gfx.background_bitmap_mask = REDRAW_REQUEST;
+
+    // store current screen background bitmap to temporary bitmap
+    BlitBitmap(gfx.background_bitmap, bitmap_db_store_3, 0, 0, WIN_XSIZE, WIN_YSIZE, 0, 0);
+  }
+  else
+  {
+    // restore last screen background masks
+    gfx.draw_background_mask = gfx_draw_background_mask_last;
+    gfx.background_bitmap_mask = gfx_background_bitmap_mask_last;
+
+    // restore last screen background bitmap from temporary bitmap
+    BlitBitmap(bitmap_db_store_3, gfx.background_bitmap, 0, 0, WIN_XSIZE, WIN_YSIZE, 0, 0);
+  }
+}
+
+static void DoRequestEnvelopeBefore(void)
+{
+  DoRequestEnvelopeBeforeOrAfter(TRUE);
+}
+
+static void DoRequestEnvelopeAfter(void)
+{
+  DoRequestEnvelopeBeforeOrAfter(FALSE);
+}
+
 static void DoRequestBefore(void)
 {
   boolean game_ended = (game_status == GAME_MODE_PLAYING && checkGameEnded());
@@ -5099,6 +5141,8 @@ static int RequestEnvelope(char *text, unsigned int req_state)
   int draw_buffer_last = GetDrawtoField();
   int result;
 
+  DoRequestEnvelopeBefore();
+
   DrawEnvelopeRequest(text, req_state);
   ShowEnvelopeRequest(text, req_state, ACTION_OPENING);
 
@@ -5108,6 +5152,8 @@ static int RequestEnvelope(char *text, unsigned int req_state)
   UnmapToolButtons();
 
   ShowEnvelopeRequest(text, req_state, ACTION_CLOSING);
+
+  DoRequestEnvelopeAfter();
 
   return result;
 }
