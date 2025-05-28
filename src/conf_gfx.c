@@ -7550,6 +7550,15 @@ struct ConfigInfo image_config[] =
   { "menu.button_touch_next2.height",			"60"				},
   { "menu.button_touch_next2.pressed_xoffset",		"-200"				},
 
+  { "menu.scroll_up",					UNDEFINED_FILENAME		},
+  { "menu.scroll_up.clone_from",			"menu.button_up"		},
+  { "menu.scroll_up.active",				UNDEFINED_FILENAME		},
+  { "menu.scroll_up.active.clone_from",			"menu.button_up.active"		},
+  { "menu.scroll_down",					UNDEFINED_FILENAME		},
+  { "menu.scroll_down.clone_from",			"menu.button_down"		},
+  { "menu.scroll_down.active",				UNDEFINED_FILENAME		},
+  { "menu.scroll_down.active.clone_from",		"menu.button_down.active"	},
+
   { "menu.scrollbar",					"RocksDC.png"			},
   { "menu.scrollbar.xpos",				"8"				},
   { "menu.scrollbar.ypos",				"10"				},

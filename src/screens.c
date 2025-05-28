@@ -11049,13 +11049,13 @@ static struct
 } scrollbutton_info[NUM_SCREEN_SCROLLBUTTONS] =
 {
   {
-    IMG_MENU_BUTTON_UP, IMG_MENU_BUTTON_UP_ACTIVE,
+    IMG_MENU_SCROLL_UP, IMG_MENU_SCROLL_UP_ACTIVE,
     -1, -1,	// these values are not constant, but can change at runtime
     SCREEN_CTRL_ID_SCROLL_UP,
     "scroll up"
   },
   {
-    IMG_MENU_BUTTON_DOWN, IMG_MENU_BUTTON_DOWN_ACTIVE,
+    IMG_MENU_SCROLL_DOWN, IMG_MENU_SCROLL_DOWN_ACTIVE,
     -1, -1,	// these values are not constant, but can change at runtime
     SCREEN_CTRL_ID_SCROLL_DOWN,
     "scroll down"
