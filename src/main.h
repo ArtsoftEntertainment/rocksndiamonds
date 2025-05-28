@@ -4491,6 +4491,7 @@ extern Bitmap			       *bitmap_db_door_1;
 extern Bitmap			       *bitmap_db_door_2;
 extern Bitmap			       *bitmap_db_store_1;
 extern Bitmap			       *bitmap_db_store_2;
+extern Bitmap			       *bitmap_db_store_3;
 extern DrawBuffer		       *fieldbuffer;
 extern DrawBuffer		       *drawto_field;
 

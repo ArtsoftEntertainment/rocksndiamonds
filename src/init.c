@@ -5874,6 +5874,7 @@ void InitGfxBuffers(void)
     // used to temporarily store the backbuffer -- only re-create if changed
     ReCreateBitmap(&bitmap_db_store_1, WIN_XSIZE, WIN_YSIZE);
     ReCreateBitmap(&bitmap_db_store_2, WIN_XSIZE, WIN_YSIZE);
+    ReCreateBitmap(&bitmap_db_store_3, WIN_XSIZE, WIN_YSIZE);
 
     win_xsize_last = WIN_XSIZE;
     win_ysize_last = WIN_YSIZE;
