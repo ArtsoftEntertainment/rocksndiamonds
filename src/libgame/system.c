@@ -723,6 +723,9 @@ static boolean CheckDrawingArea(int x, int y, int draw_mask)
   if ((draw_mask & REDRAW_DOOR_3) && IN_GFX_DOOR_3(x, y))
     return TRUE;
 
+  if (draw_mask & REDRAW_REQUEST)
+    return TRUE;
+
   return FALSE;
 }
 

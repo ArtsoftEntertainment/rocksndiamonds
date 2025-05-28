@@ -531,7 +531,8 @@
 #define REDRAW_DOOR_1			(1 << 2)
 #define REDRAW_DOOR_2			(1 << 3)
 #define REDRAW_DOOR_3			(1 << 4)
-#define REDRAW_FPS			(1 << 5)
+#define REDRAW_REQUEST			(1 << 5)
+#define REDRAW_FPS			(1 << 6)
 
 #define REDRAW_DOORS			(REDRAW_DOOR_1 | \
 					 REDRAW_DOOR_2 | \
