@@ -11855,6 +11855,27 @@ boolean DoScreenAction(int image_id)
   return FALSE;
 }
 
+void DrawScreenBeforeAddingSet(int tree_type)
+{
+  int font_nr_1 = FC_GREEN;
+  int font_nr_2 = FC_YELLOW;
+  int ypos_1 = 120;
+  int ypos_2 = 150;
+  char message_1[100];
+  char message_2[100];
+  char *set_type_text = (tree_type == TREE_TYPE_LEVEL_DIR ? "level" : "artwork");
+
+  sprintf(message_1, "Adding new %s set!", set_type_text);
+  sprintf(message_2, "Please wait!");
+
+  ClearField();
+
+  DrawTextSCentered(ypos_1, font_nr_1, message_1);
+  DrawTextSCentered(ypos_2, font_nr_2, message_2);
+
+  BackToFront();
+}
+
 void DrawScreenAfterAddingSet(char *tree_subdir_new, int tree_type)
 {
   // get tree info node of newly added level or artwork set

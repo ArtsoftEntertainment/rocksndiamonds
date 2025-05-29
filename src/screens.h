@@ -23,6 +23,7 @@ void DrawMainMenuExt(int);
 void DrawAndFadeInMainMenu(int);
 void DrawMainMenu(void);
 void DrawHallOfFame(int);
+void DrawScreenBeforeAddingSet(int);
 void DrawScreenAfterAddingSet(char *, int);
 void DrawInfoScreen_FromMainMenu(int);
 void DrawInfoScreen_FromInitGame(int);

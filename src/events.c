@@ -1594,6 +1594,9 @@ static int HandleDropFileEvent(char *filename)
     }
   }
 
+  // show "please wait" message, because extracting zip file may take some time
+  DrawScreenBeforeAddingSet(tree_type);
+
   // extract level or artwork set from zip file to target directory
   char *top_dir = ExtractZipFileIntoDirectory(filename, directory, tree_type);
 
