@@ -5133,6 +5133,9 @@ int Request(char *text, unsigned int req_state)
 
   game.request_active = FALSE;
 
+  // required after resetting "game.request_active" to remove last envelope animation frame
+  BackToFront();
+
   return result;
 }
 
