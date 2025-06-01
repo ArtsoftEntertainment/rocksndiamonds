@@ -2097,6 +2097,10 @@ static void DrawTitleScreen(void)
 {
   KeyboardAutoRepeatOff();
 
+  // when showing title screens from info screen, also show initial title screens
+  if (game_status_last_screen == GAME_MODE_INFO)
+    InitializeTitleControls(TRUE);
+
   HandleTitleScreen(0, 0, 0, 0, MB_MENU_INITIALIZE);
 }
 
