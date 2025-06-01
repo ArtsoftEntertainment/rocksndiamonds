@@ -2104,13 +2104,13 @@ static void DrawTitleScreen(void)
   HandleTitleScreen(0, 0, 0, 0, MB_MENU_INITIALIZE);
 }
 
-static boolean CheckTitleScreen(boolean levelset_has_changed)
+static boolean CheckTitleScreen(boolean levelset_has_changed, boolean gfx_has_changed)
 {
   static boolean show_title_initial = TRUE;
   boolean show_titlescreen = FALSE;
 
   // needed to be able to skip title screen, if no image or message defined
-  InitializeTitleControls(show_title_initial);
+  InitializeTitleControls(show_title_initial || gfx_has_changed);
 
   if (setup.show_titlescreen && (show_title_initial || levelset_has_changed))
     show_titlescreen = TRUE;
@@ -2124,7 +2124,9 @@ static boolean CheckTitleScreen(boolean levelset_has_changed)
 void DrawMainMenu(void)
 {
   static LevelDirTree *leveldir_last_valid = NULL;
+  static char *gfx_last_identifier = NULL;
   boolean levelset_has_changed = FALSE;
+  boolean gfx_has_changed = FALSE;
   int fade_mask = REDRAW_FIELD;
 
   LimitScreenUpdates(FALSE);
@@ -2202,13 +2204,22 @@ void DrawMainMenu(void)
   // needed if last screen (level choice) changed graphics, sounds or music
   ReloadCustomArtwork(0);
 
+  // check if currently used graphics set has changed (used for showing title screens)
+  if (!strEqual(artwork.gfx_current_identifier, gfx_last_identifier))
+  {
+    gfx_has_changed = TRUE;
+
+    // store current graphics set identifier
+    setString(&gfx_last_identifier, artwork.gfx_current_identifier);
+  }
+
   // level may use image color template, so reload custom artwork before loading level
   LoadLevel(level_nr);
   LoadScore(level_nr);
 
   SaveLevelSetup_SeriesInfo();
 
-  if (CheckTitleScreen(levelset_has_changed))
+  if (CheckTitleScreen(levelset_has_changed, gfx_has_changed))
   {
     SetGameStatus(GAME_MODE_TITLE);
 
