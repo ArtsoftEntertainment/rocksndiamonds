@@ -25,28 +25,28 @@
 #include "config.h"
 #include "api.h"
 
-#define ENABLE_UNUSED_CODE	0	// currently unused functions
-#define ENABLE_HISTORIC_CHUNKS	0	// only for historic reference
-#define ENABLE_RESERVED_CODE	0	// reserved for later use
+#define ENABLE_UNUSED_CODE		0	// currently unused functions
+#define ENABLE_HISTORIC_CHUNKS		0	// only for historic reference
+#define ENABLE_RESERVED_CODE		0	// reserved for later use
 
-#define CHUNK_ID_LEN		4	// IFF style chunk id length
-#define CHUNK_SIZE_UNDEFINED	0	// undefined chunk size == 0
-#define CHUNK_SIZE_NONE		-1	// do not write chunk size
+#define CHUNK_ID_LEN			4	// IFF style chunk id length
+#define CHUNK_SIZE_UNDEFINED		0	// undefined chunk size == 0
+#define CHUNK_SIZE_NONE			-1	// do not write chunk size
 
-#define LEVEL_CHUNK_NAME_SIZE	MAX_LEVEL_NAME_LEN
-#define LEVEL_CHUNK_AUTH_SIZE	MAX_LEVEL_AUTHOR_LEN
+#define LEVEL_CHUNK_NAME_SIZE		MAX_LEVEL_NAME_LEN
+#define LEVEL_CHUNK_AUTH_SIZE		MAX_LEVEL_AUTHOR_LEN
 
-#define LEVEL_CHUNK_VERS_SIZE	8	// size of file version chunk
-#define LEVEL_CHUNK_DATE_SIZE	4	// size of file date chunk
-#define LEVEL_CHUNK_HEAD_SIZE	80	// size of level file header
-#define LEVEL_CHUNK_HEAD_UNUSED	0	// unused level header bytes
-#define LEVEL_CHUNK_CNT2_SIZE	160	// size of level CNT2 chunk
-#define LEVEL_CHUNK_CNT2_UNUSED	11	// unused CNT2 chunk bytes
-#define LEVEL_CHUNK_CNT3_HEADER	16	// size of level CNT3 header
-#define LEVEL_CHUNK_CNT3_UNUSED	10	// unused CNT3 chunk bytes
-#define LEVEL_CPART_CUS3_SIZE	134	// size of CUS3 chunk part
-#define LEVEL_CPART_CUS3_UNUSED	15	// unused CUS3 bytes / part
-#define LEVEL_CHUNK_GRP1_SIZE	74	// size of level GRP1 chunk
+#define LEVEL_CHUNK_VERS_SIZE		8	// size of file version chunk
+#define LEVEL_CHUNK_DATE_SIZE		4	// size of file date chunk
+#define LEVEL_CHUNK_HEAD_SIZE		80	// size of level file header
+#define LEVEL_CHUNK_HEAD_UNUSED		0	// unused level header bytes
+#define LEVEL_CHUNK_CNT2_SIZE		160	// size of level CNT2 chunk
+#define LEVEL_CHUNK_CNT2_UNUSED		11	// unused CNT2 chunk bytes
+#define LEVEL_CHUNK_CNT3_HEADER		16	// size of level CNT3 header
+#define LEVEL_CHUNK_CNT3_UNUSED		10	// unused CNT3 chunk bytes
+#define LEVEL_CPART_CUS3_SIZE		134	// size of CUS3 chunk part
+#define LEVEL_CPART_CUS3_UNUSED		15	// unused CUS3 bytes / part
+#define LEVEL_CHUNK_GRP1_SIZE		74	// size of level GRP1 chunk
 
 // (element number, number of change pages, change page number)
 #define LEVEL_CHUNK_CUSX_UNCHANGED	(2 + (1 + 1) + (1 + 1))
@@ -59,12 +59,12 @@
 // (nothing at all if unchanged)
 #define LEVEL_CHUNK_ELEM_UNCHANGED	0
 
-#define TAPE_CHUNK_VERS_SIZE	8	// size of standard tape versions chunk
-#define TAPE_CHUNK_VERX_SIZE	8	// size of extended tape versions chunk
-#define TAPE_CHUNK_HEAD_SIZE	20	// size of tape file header
-#define TAPE_CHUNK_SCRN_SIZE	2	// size of screen size chunk
+#define TAPE_CHUNK_VERS_SIZE		8	// size of standard tape versions chunk
+#define TAPE_CHUNK_VERX_SIZE		8	// size of extended tape versions chunk
+#define TAPE_CHUNK_HEAD_SIZE		20	// size of tape file header
+#define TAPE_CHUNK_SCRN_SIZE		2	// size of screen size chunk
 
-#define SCORE_CHUNK_VERS_SIZE	8	// size of file version chunk
+#define SCORE_CHUNK_VERS_SIZE		8	// size of file version chunk
 
 #define LEVEL_CHUNK_CNT3_SIZE(x)	 (LEVEL_CHUNK_CNT3_HEADER + (x))
 #define LEVEL_CHUNK_CUS3_SIZE(x)	 (2 + (x) * LEVEL_CPART_CUS3_SIZE)
@@ -108,22 +108,18 @@
 #define CONF_CONTENT_NUM_BYTES		(CONF_CONTENT_NUM_ELEMENTS * 2)
 #define CONF_ELEMENT_NUM_BYTES		(2)
 
-#define CONF_ENTITY_NUM_BYTES(t)	((t) == TYPE_ELEMENT ||		\
-					 (t) == TYPE_ELEMENT_LIST ?	\
-					 CONF_ELEMENT_NUM_BYTES :	\
-					 (t) == TYPE_CONTENT ||		\
-					 (t) == TYPE_CONTENT_LIST ?	\
-					 CONF_CONTENT_NUM_BYTES : 1)
+#define CONF_ENTITY_NUM_BYTES(t)	((t) == TYPE_ELEMENT ||					\
+					 (t) == TYPE_ELEMENT_LIST ? CONF_ELEMENT_NUM_BYTES :	\
+					 (t) == TYPE_CONTENT ||					\
+					 (t) == TYPE_CONTENT_LIST ? CONF_CONTENT_NUM_BYTES : 1)
 
 #define CONF_ELEMENT_BYTE_POS(i)	((i) * CONF_ELEMENT_NUM_BYTES)
-#define CONF_ELEMENTS_ELEMENT(b, i)	((b[CONF_ELEMENT_BYTE_POS(i)] << 8) | \
-					(b[CONF_ELEMENT_BYTE_POS(i) + 1]))
+#define CONF_ELEMENTS_ELEMENT(b, i)	((b[CONF_ELEMENT_BYTE_POS(i)] << 8) |			\
+					 (b[CONF_ELEMENT_BYTE_POS(i) + 1]))
 
-#define CONF_CONTENT_ELEMENT_POS(c,x,y)	((c) * CONF_CONTENT_NUM_ELEMENTS +    \
-					 (y) * 3 + (x))
-#define CONF_CONTENT_BYTE_POS(c,x,y)	(CONF_CONTENT_ELEMENT_POS(c,x,y) *    \
-					 CONF_ELEMENT_NUM_BYTES)
-#define CONF_CONTENTS_ELEMENT(b,c,x,y) ((b[CONF_CONTENT_BYTE_POS(c,x,y)]<< 8)|\
+#define CONF_CONTENT_ELEMENT_POS(c,x,y)	((c) * CONF_CONTENT_NUM_ELEMENTS + (y) * 3 + (x))
+#define CONF_CONTENT_BYTE_POS(c,x,y)	(CONF_CONTENT_ELEMENT_POS(c,x,y) * CONF_ELEMENT_NUM_BYTES)
+#define CONF_CONTENTS_ELEMENT(b,c,x,y) ((b[CONF_CONTENT_BYTE_POS(c,x,y)] << 8) |		\
 					(b[CONF_CONTENT_BYTE_POS(c,x,y) + 1]))
 
 // temporary variables used to store pointers to structure members
@@ -163,275 +159,275 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
   // ---------- values not related to single elements -------------------------
 
   {
-    -1,					SAVE_CONF_ALWAYS,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
-    &li.game_engine_type,		GAME_ENGINE_TYPE_RND
+    -1,						SAVE_CONF_ALWAYS,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(1),
+    &li.game_engine_type,			GAME_ENGINE_TYPE_RND
   },
   {
-    -1,					SAVE_CONF_ALWAYS,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.fieldx,				STD_LEV_FIELDX
+    -1,						SAVE_CONF_ALWAYS,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.fieldx,					STD_LEV_FIELDX
   },
   {
-    -1,					SAVE_CONF_ALWAYS,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(2),
-    &li.fieldy,				STD_LEV_FIELDY
+    -1,						SAVE_CONF_ALWAYS,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(2),
+    &li.fieldy,					STD_LEV_FIELDY
   },
   {
-    -1,					SAVE_CONF_ALWAYS,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(3),
-    &li.time,				100
+    -1,						SAVE_CONF_ALWAYS,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(3),
+    &li.time,					100
   },
   {
-    -1,					SAVE_CONF_ALWAYS,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(4),
-    &li.gems_needed,			0
+    -1,						SAVE_CONF_ALWAYS,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(4),
+    &li.gems_needed,				0
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_32_BIT(2),
-    &li.random_seed,			0
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_32_BIT(2),
+    &li.random_seed,				0
   },
   {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
-    &li.use_step_counter,		FALSE
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(2),
+    &li.use_step_counter,			FALSE
   },
   {
-    -1,					-1,
-    TYPE_BITFIELD,			CONF_VALUE_8_BIT(4),
-    &li.wind_direction_initial,		MV_NONE
+    -1,						-1,
+    TYPE_BITFIELD,				CONF_VALUE_8_BIT(4),
+    &li.wind_direction_initial,			MV_NONE
   },
   {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(5),
-    &li.em_slippery_gems,		FALSE
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(5),
+    &li.em_slippery_gems,			FALSE
   },
   {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(6),
-    &li.use_custom_template,		FALSE
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(6),
+    &li.use_custom_template,			FALSE
   },
   {
-    -1,					-1,
-    TYPE_BITFIELD,			CONF_VALUE_32_BIT(1),
-    &li.can_move_into_acid_bits,	~0	// default: everything can
+    -1,						-1,
+    TYPE_BITFIELD,				CONF_VALUE_32_BIT(1),
+    &li.can_move_into_acid_bits,		~0	// default: everything can
   },
   {
-    -1,					-1,
-    TYPE_BITFIELD,			CONF_VALUE_8_BIT(7),
-    &li.dont_collide_with_bits,		~0	// default: always deadly
+    -1,						-1,
+    TYPE_BITFIELD,				CONF_VALUE_8_BIT(7),
+    &li.dont_collide_with_bits,			~0	// default: always deadly
   },
   {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(8),
-    &li.em_explodes_by_fire,		FALSE
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(8),
+    &li.em_explodes_by_fire,			FALSE
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(5),
-    &li.score[SC_TIME_BONUS],		1
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(5),
+    &li.score[SC_TIME_BONUS],			1
   },
   {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(9),
-    &li.auto_exit_sokoban,		FALSE
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(9),
+    &li.auto_exit_sokoban,			FALSE
   },
   {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(10),
-    &li.auto_count_gems,		FALSE
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(10),
+    &li.auto_count_gems,			FALSE
   },
   {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(11),
-    &li.solved_by_one_player,		FALSE
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(11),
+    &li.solved_by_one_player,			FALSE
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(12),
-    &li.time_score_base,		1
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(12),
+    &li.time_score_base,			1
   },
   {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(13),
-    &li.rate_time_over_score,		FALSE
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(13),
+    &li.rate_time_over_score,			FALSE
   },
   {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(14),
-    &li.bd_intermission,		FALSE
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(14),
+    &li.bd_intermission,			FALSE
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(15),
-    &li.bd_scheduling_type,		GD_SCHEDULING_MILLISECONDS
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(15),
+    &li.bd_scheduling_type,			GD_SCHEDULING_MILLISECONDS
   },
   {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(16),
-    &li.bd_pal_timing,			FALSE
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(16),
+    &li.bd_pal_timing,				FALSE
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(6),
-    &li.bd_cycle_delay_ms,		160
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(6),
+    &li.bd_cycle_delay_ms,			160
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(17),
-    &li.bd_cycle_delay_c64,		0
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(17),
+    &li.bd_cycle_delay_c64,			0
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(18),
-    &li.bd_hatching_delay_cycles,	21
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(18),
+    &li.bd_hatching_delay_cycles,		21
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(19),
-    &li.bd_hatching_delay_seconds,	2
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(19),
+    &li.bd_hatching_delay_seconds,		2
   },
   {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(20),
-    &li.bd_line_shifting_borders,	FALSE
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(20),
+    &li.bd_line_shifting_borders,		FALSE
   },
   {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(21),
-    &li.bd_scan_first_and_last_row,	TRUE
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(21),
+    &li.bd_scan_first_and_last_row,		TRUE
   },
   {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(22),
-    &li.bd_short_explosions,		TRUE
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(22),
+    &li.bd_short_explosions,			TRUE
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(23),
-    &li.bd_cave_random_seed_c64,	0
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(23),
+    &li.bd_cave_random_seed_c64,		0
   },
   {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(24),
-    &li.bd_intermission_clipped,	FALSE
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(24),
+    &li.bd_intermission_clipped,		FALSE
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(25),
-    &li.bd_coloring_type,		GD_COLORING_TYPE_GRADIENTS
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(25),
+    &li.bd_coloring_type,			GD_COLORING_TYPE_GRADIENTS
   },
   {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(26),
-    &li.bd_infinite_scrolling,		FALSE
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(26),
+    &li.bd_infinite_scrolling,			FALSE
   },
   {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(27),
-    &li.bd_open_borders_horizontal,	TRUE
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(27),
+    &li.bd_open_borders_horizontal,		TRUE
   },
   {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(28),
-    &li.bd_open_borders_vertical,	TRUE
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(28),
+    &li.bd_open_borders_vertical,		TRUE
   },
   {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(29),
-    &li.bd_no_time,			FALSE
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(29),
+    &li.bd_no_time,				FALSE
   },
   {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(30),
-    &li.bd_use_krissz_engine,		FALSE
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(30),
+    &li.bd_use_krissz_engine,			FALSE
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_32_BIT(4),
-    &li.bd_color[0],			GD_C64_COLOR_BLACK
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_32_BIT(4),
+    &li.bd_color[0],				GD_C64_COLOR_BLACK
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_32_BIT(5),
-    &li.bd_color[1],			GD_C64_COLOR_ORANGE
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_32_BIT(5),
+    &li.bd_color[1],				GD_C64_COLOR_ORANGE
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_32_BIT(6),
-    &li.bd_color[2],			GD_C64_COLOR_GRAY1
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_32_BIT(6),
+    &li.bd_color[2],				GD_C64_COLOR_GRAY1
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_32_BIT(7),
-    &li.bd_color[3],			GD_C64_COLOR_WHITE
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_32_BIT(7),
+    &li.bd_color[3],				GD_C64_COLOR_WHITE
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_32_BIT(8),
-    &li.bd_color[4],			GD_C64_COLOR_GREEN
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_32_BIT(8),
+    &li.bd_color[4],				GD_C64_COLOR_GREEN
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_32_BIT(9),
-    &li.bd_color[5],			GD_C64_COLOR_BLUE
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_32_BIT(9),
+    &li.bd_color[5],				GD_C64_COLOR_BLUE
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_32_BIT(10),
-    &li.bd_color[6],			GD_C64_COLOR_GRAY2
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_32_BIT(10),
+    &li.bd_color[6],				GD_C64_COLOR_GRAY2
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_32_BIT(11),
-    &li.bd_color[7],			GD_C64_COLOR_WHITE
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_32_BIT(11),
+    &li.bd_color[7],				GD_C64_COLOR_WHITE
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_32_BIT(12),
-    &li.bd_base_color[0],		GD_C64_COLOR_BLACK
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_32_BIT(12),
+    &li.bd_base_color[0],			GD_C64_COLOR_BLACK
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_32_BIT(13),
-    &li.bd_base_color[1],		GD_C64_COLOR_BLACK
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_32_BIT(13),
+    &li.bd_base_color[1],			GD_C64_COLOR_BLACK
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_32_BIT(14),
-    &li.bd_base_color[2],		GD_C64_COLOR_BLACK
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_32_BIT(14),
+    &li.bd_base_color[2],			GD_C64_COLOR_BLACK
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_32_BIT(15),
-    &li.bd_base_color[3],		GD_C64_COLOR_BLACK
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_32_BIT(15),
+    &li.bd_base_color[3],			GD_C64_COLOR_BLACK
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_32_BIT(16),
-    &li.bd_base_color[4],		GD_C64_COLOR_BLACK
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_32_BIT(16),
+    &li.bd_base_color[4],			GD_C64_COLOR_BLACK
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_32_BIT(17),
-    &li.bd_base_color[5],		GD_C64_COLOR_BLACK
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_32_BIT(17),
+    &li.bd_base_color[5],			GD_C64_COLOR_BLACK
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_32_BIT(18),
-    &li.bd_base_color[6],		GD_C64_COLOR_BLACK
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_32_BIT(18),
+    &li.bd_base_color[6],			GD_C64_COLOR_BLACK
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_32_BIT(19),
-    &li.bd_base_color[7],		GD_C64_COLOR_BLACK
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_32_BIT(19),
+    &li.bd_base_color[7],			GD_C64_COLOR_BLACK
   },
 
   {
-    -1,					-1,
-    -1,					-1,
-    NULL,				-1
+    -1,						-1,
+    -1,						-1,
+    NULL,					-1
   }
 };
 
@@ -439,1472 +435,1472 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
 {
   // (these values are the same for each player)
   {
-    EL_PLAYER_1,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
-    &li.block_last_field,		FALSE	// default case for EM levels
+    EL_PLAYER_1,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
+    &li.block_last_field,			FALSE	// default case for EM levels
   },
   {
-    EL_PLAYER_1,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
-    &li.sp_block_last_field,		TRUE	// default case for SP levels
+    EL_PLAYER_1,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(2),
+    &li.sp_block_last_field,			TRUE	// default case for SP levels
   },
   {
-    EL_PLAYER_1,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(3),
-    &li.instant_relocation,		FALSE
+    EL_PLAYER_1,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(3),
+    &li.instant_relocation,			FALSE
   },
   {
-    EL_PLAYER_1,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(4),
-    &li.can_pass_to_walkable,		FALSE
+    EL_PLAYER_1,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(4),
+    &li.can_pass_to_walkable,			FALSE
   },
   {
-    EL_PLAYER_1,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(5),
-    &li.block_snap_field,		TRUE
+    EL_PLAYER_1,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(5),
+    &li.block_snap_field,			TRUE
   },
   {
-    EL_PLAYER_1,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(6),
-    &li.continuous_snapping,		TRUE
+    EL_PLAYER_1,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(6),
+    &li.continuous_snapping,			TRUE
   },
   {
-    EL_PLAYER_1,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(12),
-    &li.shifted_relocation,		FALSE
+    EL_PLAYER_1,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(12),
+    &li.shifted_relocation,			FALSE
   },
   {
-    EL_PLAYER_1,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(15),
-    &li.lazy_relocation,		FALSE
+    EL_PLAYER_1,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(15),
+    &li.lazy_relocation,			FALSE
   },
   {
-    EL_PLAYER_1,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(16),
-    &li.finish_dig_collect,		TRUE
+    EL_PLAYER_1,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(16),
+    &li.finish_dig_collect,			TRUE
   },
   {
-    EL_PLAYER_1,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(17),
-    &li.keep_walkable_ce,		FALSE
+    EL_PLAYER_1,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(17),
+    &li.keep_walkable_ce,			FALSE
   },
 
   // (these values are different for each player)
   {
-    EL_PLAYER_1,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(7),
-    &li.initial_player_stepsize[0],	STEPSIZE_NORMAL
+    EL_PLAYER_1,				-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(7),
+    &li.initial_player_stepsize[0],		STEPSIZE_NORMAL
   },
   {
-    EL_PLAYER_1,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(8),
-    &li.initial_player_gravity[0],	FALSE
+    EL_PLAYER_1,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(8),
+    &li.initial_player_gravity[0],		FALSE
   },
   {
-    EL_PLAYER_1,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(9),
-    &li.use_start_element[0],		FALSE
+    EL_PLAYER_1,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(9),
+    &li.use_start_element[0],			FALSE
   },
   {
-    EL_PLAYER_1,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.start_element[0],		EL_PLAYER_1
+    EL_PLAYER_1,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &li.start_element[0],			EL_PLAYER_1
   },
   {
-    EL_PLAYER_1,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(10),
-    &li.use_artwork_element[0],		FALSE
+    EL_PLAYER_1,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(10),
+    &li.use_artwork_element[0],			FALSE
   },
   {
-    EL_PLAYER_1,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(2),
-    &li.artwork_element[0],		EL_PLAYER_1
+    EL_PLAYER_1,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(2),
+    &li.artwork_element[0],			EL_PLAYER_1
   },
   {
-    EL_PLAYER_1,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(11),
-    &li.use_explosion_element[0],	FALSE
+    EL_PLAYER_1,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(11),
+    &li.use_explosion_element[0],		FALSE
   },
   {
-    EL_PLAYER_1,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(3),
-    &li.explosion_element[0],		EL_PLAYER_1
+    EL_PLAYER_1,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(3),
+    &li.explosion_element[0],			EL_PLAYER_1
   },
   {
-    EL_PLAYER_1,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(13),
-    &li.use_initial_inventory[0],	FALSE
+    EL_PLAYER_1,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(13),
+    &li.use_initial_inventory[0],		FALSE
   },
   {
-    EL_PLAYER_1,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(14),
-    &li.initial_inventory_size[0],	1
+    EL_PLAYER_1,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(14),
+    &li.initial_inventory_size[0],		1
   },
   {
-    EL_PLAYER_1,			-1,
-    TYPE_ELEMENT_LIST,			CONF_VALUE_BYTES(1),
-    &li.initial_inventory_content[0][0],EL_EMPTY, NULL,
-    &li.initial_inventory_size[0],	1, MAX_INITIAL_INVENTORY_SIZE
-  },
-
-  {
-    EL_PLAYER_2,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(7),
-    &li.initial_player_stepsize[1],	STEPSIZE_NORMAL
-  },
-  {
-    EL_PLAYER_2,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(8),
-    &li.initial_player_gravity[1],	FALSE
-  },
-  {
-    EL_PLAYER_2,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(9),
-    &li.use_start_element[1],		FALSE
-  },
-  {
-    EL_PLAYER_2,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.start_element[1],		EL_PLAYER_2
-  },
-  {
-    EL_PLAYER_2,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(10),
-    &li.use_artwork_element[1],		FALSE
-  },
-  {
-    EL_PLAYER_2,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(2),
-    &li.artwork_element[1],		EL_PLAYER_2
-  },
-  {
-    EL_PLAYER_2,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(11),
-    &li.use_explosion_element[1],	FALSE
-  },
-  {
-    EL_PLAYER_2,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(3),
-    &li.explosion_element[1],		EL_PLAYER_2
-  },
-  {
-    EL_PLAYER_2,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(13),
-    &li.use_initial_inventory[1],	FALSE
-  },
-  {
-    EL_PLAYER_2,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(14),
-    &li.initial_inventory_size[1],	1
-  },
-  {
-    EL_PLAYER_2,			-1,
-    TYPE_ELEMENT_LIST,			CONF_VALUE_BYTES(1),
-    &li.initial_inventory_content[1][0],EL_EMPTY, NULL,
-    &li.initial_inventory_size[1],	1, MAX_INITIAL_INVENTORY_SIZE
+    EL_PLAYER_1,				-1,
+    TYPE_ELEMENT_LIST,				CONF_VALUE_BYTES(1),
+    &li.initial_inventory_content[0][0],	EL_EMPTY, NULL,
+    &li.initial_inventory_size[0],		1, MAX_INITIAL_INVENTORY_SIZE
   },
 
   {
-    EL_PLAYER_3,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(7),
-    &li.initial_player_stepsize[2],	STEPSIZE_NORMAL
+    EL_PLAYER_2,				-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(7),
+    &li.initial_player_stepsize[1],		STEPSIZE_NORMAL
   },
   {
-    EL_PLAYER_3,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(8),
-    &li.initial_player_gravity[2],	FALSE
+    EL_PLAYER_2,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(8),
+    &li.initial_player_gravity[1],		FALSE
   },
   {
-    EL_PLAYER_3,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(9),
-    &li.use_start_element[2],		FALSE
+    EL_PLAYER_2,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(9),
+    &li.use_start_element[1],			FALSE
   },
   {
-    EL_PLAYER_3,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.start_element[2],		EL_PLAYER_3
+    EL_PLAYER_2,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &li.start_element[1],			EL_PLAYER_2
   },
   {
-    EL_PLAYER_3,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(10),
-    &li.use_artwork_element[2],		FALSE
+    EL_PLAYER_2,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(10),
+    &li.use_artwork_element[1],			FALSE
   },
   {
-    EL_PLAYER_3,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(2),
-    &li.artwork_element[2],		EL_PLAYER_3
+    EL_PLAYER_2,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(2),
+    &li.artwork_element[1],			EL_PLAYER_2
   },
   {
-    EL_PLAYER_3,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(11),
-    &li.use_explosion_element[2],	FALSE
+    EL_PLAYER_2,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(11),
+    &li.use_explosion_element[1],		FALSE
   },
   {
-    EL_PLAYER_3,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(3),
-    &li.explosion_element[2],		EL_PLAYER_3
+    EL_PLAYER_2,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(3),
+    &li.explosion_element[1],			EL_PLAYER_2
   },
   {
-    EL_PLAYER_3,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(13),
-    &li.use_initial_inventory[2],	FALSE
+    EL_PLAYER_2,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(13),
+    &li.use_initial_inventory[1],		FALSE
   },
   {
-    EL_PLAYER_3,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(14),
-    &li.initial_inventory_size[2],	1
+    EL_PLAYER_2,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(14),
+    &li.initial_inventory_size[1],		1
   },
   {
-    EL_PLAYER_3,			-1,
-    TYPE_ELEMENT_LIST,			CONF_VALUE_BYTES(1),
-    &li.initial_inventory_content[2][0],EL_EMPTY, NULL,
-    &li.initial_inventory_size[2],	1, MAX_INITIAL_INVENTORY_SIZE
+    EL_PLAYER_2,				-1,
+    TYPE_ELEMENT_LIST,				CONF_VALUE_BYTES(1),
+    &li.initial_inventory_content[1][0],	EL_EMPTY, NULL,
+    &li.initial_inventory_size[1],		1, MAX_INITIAL_INVENTORY_SIZE
   },
 
   {
-    EL_PLAYER_4,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(7),
-    &li.initial_player_stepsize[3],	STEPSIZE_NORMAL
+    EL_PLAYER_3,				-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(7),
+    &li.initial_player_stepsize[2],		STEPSIZE_NORMAL
   },
   {
-    EL_PLAYER_4,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(8),
-    &li.initial_player_gravity[3],	FALSE
+    EL_PLAYER_3,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(8),
+    &li.initial_player_gravity[2],		FALSE
   },
   {
-    EL_PLAYER_4,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(9),
-    &li.use_start_element[3],		FALSE
+    EL_PLAYER_3,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(9),
+    &li.use_start_element[2],			FALSE
   },
   {
-    EL_PLAYER_4,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.start_element[3],		EL_PLAYER_4
+    EL_PLAYER_3,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &li.start_element[2],			EL_PLAYER_3
   },
   {
-    EL_PLAYER_4,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(10),
-    &li.use_artwork_element[3],		FALSE
+    EL_PLAYER_3,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(10),
+    &li.use_artwork_element[2],			FALSE
   },
   {
-    EL_PLAYER_4,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(2),
-    &li.artwork_element[3],		EL_PLAYER_4
+    EL_PLAYER_3,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(2),
+    &li.artwork_element[2],			EL_PLAYER_3
   },
   {
-    EL_PLAYER_4,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(11),
-    &li.use_explosion_element[3],	FALSE
+    EL_PLAYER_3,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(11),
+    &li.use_explosion_element[2],		FALSE
   },
   {
-    EL_PLAYER_4,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(3),
-    &li.explosion_element[3],		EL_PLAYER_4
+    EL_PLAYER_3,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(3),
+    &li.explosion_element[2],			EL_PLAYER_3
   },
   {
-    EL_PLAYER_4,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(13),
-    &li.use_initial_inventory[3],	FALSE
+    EL_PLAYER_3,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(13),
+    &li.use_initial_inventory[2],		FALSE
   },
   {
-    EL_PLAYER_4,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(14),
-    &li.initial_inventory_size[3],	1
+    EL_PLAYER_3,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(14),
+    &li.initial_inventory_size[2],		1
   },
   {
-    EL_PLAYER_4,			-1,
-    TYPE_ELEMENT_LIST,			CONF_VALUE_BYTES(1),
-    &li.initial_inventory_content[3][0],EL_EMPTY, NULL,
-    &li.initial_inventory_size[3],	1, MAX_INITIAL_INVENTORY_SIZE
+    EL_PLAYER_3,				-1,
+    TYPE_ELEMENT_LIST,				CONF_VALUE_BYTES(1),
+    &li.initial_inventory_content[2][0],	EL_EMPTY, NULL,
+    &li.initial_inventory_size[2],		1, MAX_INITIAL_INVENTORY_SIZE
+  },
+
+  {
+    EL_PLAYER_4,				-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(7),
+    &li.initial_player_stepsize[3],		STEPSIZE_NORMAL
+  },
+  {
+    EL_PLAYER_4,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(8),
+    &li.initial_player_gravity[3],		FALSE
+  },
+  {
+    EL_PLAYER_4,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(9),
+    &li.use_start_element[3],			FALSE
+  },
+  {
+    EL_PLAYER_4,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &li.start_element[3],			EL_PLAYER_4
+  },
+  {
+    EL_PLAYER_4,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(10),
+    &li.use_artwork_element[3],			FALSE
+  },
+  {
+    EL_PLAYER_4,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(2),
+    &li.artwork_element[3],			EL_PLAYER_4
+  },
+  {
+    EL_PLAYER_4,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(11),
+    &li.use_explosion_element[3],		FALSE
+  },
+  {
+    EL_PLAYER_4,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(3),
+    &li.explosion_element[3],			EL_PLAYER_4
+  },
+  {
+    EL_PLAYER_4,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(13),
+    &li.use_initial_inventory[3],		FALSE
+  },
+  {
+    EL_PLAYER_4,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(14),
+    &li.initial_inventory_size[3],		1
+  },
+  {
+    EL_PLAYER_4,				-1,
+    TYPE_ELEMENT_LIST,				CONF_VALUE_BYTES(1),
+    &li.initial_inventory_content[3][0],	EL_EMPTY, NULL,
+    &li.initial_inventory_size[3],		1, MAX_INITIAL_INVENTORY_SIZE
   },
 
   // (these values are only valid for BD style levels)
   // (some values for BD style amoeba following below)
   {
-    EL_BDX_PLAYER,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
-    &li.bd_diagonal_movements,		FALSE
+    EL_BDX_PLAYER,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
+    &li.bd_diagonal_movements,			FALSE
   },
   {
-    EL_BDX_PLAYER,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
-    &li.bd_topmost_player_active,	TRUE
+    EL_BDX_PLAYER,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(2),
+    &li.bd_topmost_player_active,		TRUE
   },
   {
-    EL_BDX_PLAYER,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(3),
-    &li.bd_pushing_prob,		25
+    EL_BDX_PLAYER,				-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(3),
+    &li.bd_pushing_prob,			25
   },
   {
-    EL_BDX_PLAYER,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(4),
-    &li.bd_pushing_prob_with_sweet,	100
+    EL_BDX_PLAYER,				-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(4),
+    &li.bd_pushing_prob_with_sweet,		100
   },
   {
-    EL_BDX_PLAYER,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(5),
-    &li.bd_push_heavy_rock_with_sweet,	FALSE
+    EL_BDX_PLAYER,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(5),
+    &li.bd_push_heavy_rock_with_sweet,		FALSE
   },
   {
-    EL_BDX_PLAYER,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_snap_element,		EL_EMPTY
-  },
-
-  {
-    EL_BDX_SAND,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_sand_looks_like,		EL_BDX_SAND
+    EL_BDX_PLAYER,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &li.bd_snap_element,			EL_EMPTY
   },
 
   {
-    EL_BDX_ROCK,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_rock_turns_to_on_falling,	EL_BDX_ROCK_FALLING
-  },
-  {
-    EL_BDX_ROCK,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(2),
-    &li.bd_rock_turns_to_on_impact,	EL_BDX_ROCK
+    EL_BDX_SAND,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &li.bd_sand_looks_like,			EL_BDX_SAND
   },
 
   {
-    EL_BDX_DIAMOND,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.score[SC_DIAMOND_EXTRA],	20
+    EL_BDX_ROCK,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &li.bd_rock_turns_to_on_falling,		EL_BDX_ROCK_FALLING
   },
   {
-    EL_BDX_DIAMOND,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(2),
-    &li.bd_diamond_turns_to_on_falling,	EL_BDX_DIAMOND_FALLING
-  },
-  {
-    EL_BDX_DIAMOND,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(3),
-    &li.bd_diamond_turns_to_on_impact,	EL_BDX_DIAMOND
+    EL_BDX_ROCK,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(2),
+    &li.bd_rock_turns_to_on_impact,		EL_BDX_ROCK
   },
 
   {
-    EL_BDX_FIREFLY_1,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_firefly_1_explodes_to,	EL_BDX_EXPLODING_1
+    EL_BDX_DIAMOND,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.score[SC_DIAMOND_EXTRA],		20
+  },
+  {
+    EL_BDX_DIAMOND,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(2),
+    &li.bd_diamond_turns_to_on_falling,		EL_BDX_DIAMOND_FALLING
+  },
+  {
+    EL_BDX_DIAMOND,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(3),
+    &li.bd_diamond_turns_to_on_impact,		EL_BDX_DIAMOND
   },
 
   {
-    EL_BDX_FIREFLY_2,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_firefly_2_explodes_to,	EL_BDX_EXPLODING_1
+    EL_BDX_FIREFLY_1,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &li.bd_firefly_1_explodes_to,		EL_BDX_EXPLODING_1
   },
 
   {
-    EL_BDX_BUTTERFLY_1,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_butterfly_1_explodes_to,	EL_BDX_DIAMOND_GROWING_1
+    EL_BDX_FIREFLY_2,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &li.bd_firefly_2_explodes_to,		EL_BDX_EXPLODING_1
   },
 
   {
-    EL_BDX_BUTTERFLY_2,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_butterfly_2_explodes_to,	EL_BDX_DIAMOND_GROWING_1
+    EL_BDX_BUTTERFLY_1,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &li.bd_butterfly_1_explodes_to,		EL_BDX_DIAMOND_GROWING_1
   },
 
   {
-    EL_BDX_STONEFLY,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_stonefly_explodes_to,	EL_BDX_ROCK_GROWING_1
+    EL_BDX_BUTTERFLY_2,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &li.bd_butterfly_2_explodes_to,		EL_BDX_DIAMOND_GROWING_1
   },
 
   {
-    EL_BDX_DRAGONFLY,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_dragonfly_explodes_to,	EL_BDX_EXPLODING_1
+    EL_BDX_STONEFLY,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &li.bd_stonefly_explodes_to,		EL_BDX_ROCK_GROWING_1
   },
 
   {
-    EL_BDX_DIAMOND_GROWING_5,	-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_diamond_birth_turns_to,	EL_BDX_DIAMOND
+    EL_BDX_DRAGONFLY,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &li.bd_dragonfly_explodes_to,		EL_BDX_EXPLODING_1
   },
 
   {
-    EL_BDX_BOMB_EXPLODING_4,		-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_bomb_explosion_turns_to,	EL_BDX_WALL
+    EL_BDX_DIAMOND_GROWING_5,			-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &li.bd_diamond_birth_turns_to,		EL_BDX_DIAMOND
   },
 
   {
-    EL_BDX_NITRO_PACK_EXPLODING_4,	-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_nitro_explosion_turns_to,	EL_EMPTY
+    EL_BDX_BOMB_EXPLODING_4,			-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &li.bd_bomb_explosion_turns_to,		EL_BDX_WALL
   },
 
   {
-    EL_BDX_EXPLODING_3,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_explosion_3_turns_to,	EL_BDX_EXPLODING_4
-  },
-  {
-    EL_BDX_EXPLODING_5,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_explosion_turns_to,		EL_EMPTY
+    EL_BDX_NITRO_PACK_EXPLODING_4,		-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &li.bd_nitro_explosion_turns_to,		EL_EMPTY
   },
 
   {
-    EL_BDX_MAGIC_WALL,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
-    &li.bd_magic_wall_wait_hatching,	FALSE
+    EL_BDX_EXPLODING_3,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &li.bd_explosion_3_turns_to,		EL_BDX_EXPLODING_4
   },
   {
-    EL_BDX_MAGIC_WALL,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
-    &li.bd_magic_wall_stops_amoeba,	TRUE
-  },
-  {
-    EL_BDX_MAGIC_WALL,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(3),
-    &li.bd_magic_wall_zero_infinite,	TRUE
-  },
-  {
-    EL_BDX_MAGIC_WALL,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(4),
-    &li.bd_magic_wall_break_scan,	FALSE
-  },
-  {
-    EL_BDX_MAGIC_WALL,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.bd_magic_wall_time,		999
-  },
-  {
-    EL_BDX_MAGIC_WALL,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(2),
-    &li.bd_magic_wall_diamond_to,	EL_BDX_ROCK_FALLING
-  },
-  {
-    EL_BDX_MAGIC_WALL,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(3),
-    &li.bd_magic_wall_rock_to,		EL_BDX_DIAMOND_FALLING
-  },
-  {
-    EL_BDX_MAGIC_WALL,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(4),
-    &li.bd_magic_wall_heavy_rock_to,	EL_BDX_NITRO_PACK_FALLING
-  },
-  {
-    EL_BDX_MAGIC_WALL,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(5),
-    &li.bd_magic_wall_light_rock_to,	EL_BDX_LIGHT_ROCK_FALLING
-  },
-  {
-    EL_BDX_MAGIC_WALL,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(6),
-    &li.bd_magic_wall_nut_to,		EL_BDX_NUT_FALLING
-  },
-  {
-    EL_BDX_MAGIC_WALL,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(7),
-    &li.bd_magic_wall_nitro_pack_to,	EL_BDX_HEAVY_ROCK_FALLING
-  },
-  {
-    EL_BDX_MAGIC_WALL,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(8),
-    &li.bd_magic_wall_flying_diamond_to, EL_BDX_FLYING_ROCK_FLYING
-  },
-  {
-    EL_BDX_MAGIC_WALL,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(9),
-    &li.bd_magic_wall_flying_rock_to,	EL_BDX_FLYING_DIAMOND_FLYING
+    EL_BDX_EXPLODING_5,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &li.bd_explosion_turns_to,			EL_EMPTY
   },
 
   {
-    EL_BDX_CLOCK,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
-    &li.bd_clock_extra_time,		30
+    EL_BDX_MAGIC_WALL,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
+    &li.bd_magic_wall_wait_hatching,		FALSE
+  },
+  {
+    EL_BDX_MAGIC_WALL,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(2),
+    &li.bd_magic_wall_stops_amoeba,		TRUE
+  },
+  {
+    EL_BDX_MAGIC_WALL,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(3),
+    &li.bd_magic_wall_zero_infinite,		TRUE
+  },
+  {
+    EL_BDX_MAGIC_WALL,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(4),
+    &li.bd_magic_wall_break_scan,		FALSE
+  },
+  {
+    EL_BDX_MAGIC_WALL,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.bd_magic_wall_time,			999
+  },
+  {
+    EL_BDX_MAGIC_WALL,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(2),
+    &li.bd_magic_wall_diamond_to,		EL_BDX_ROCK_FALLING
+  },
+  {
+    EL_BDX_MAGIC_WALL,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(3),
+    &li.bd_magic_wall_rock_to,			EL_BDX_DIAMOND_FALLING
+  },
+  {
+    EL_BDX_MAGIC_WALL,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(4),
+    &li.bd_magic_wall_heavy_rock_to,		EL_BDX_NITRO_PACK_FALLING
+  },
+  {
+    EL_BDX_MAGIC_WALL,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(5),
+    &li.bd_magic_wall_light_rock_to,		EL_BDX_LIGHT_ROCK_FALLING
+  },
+  {
+    EL_BDX_MAGIC_WALL,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(6),
+    &li.bd_magic_wall_nut_to,			EL_BDX_NUT_FALLING
+  },
+  {
+    EL_BDX_MAGIC_WALL,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(7),
+    &li.bd_magic_wall_nitro_pack_to,		EL_BDX_HEAVY_ROCK_FALLING
+  },
+  {
+    EL_BDX_MAGIC_WALL,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(8),
+    &li.bd_magic_wall_flying_diamond_to,	EL_BDX_FLYING_ROCK_FLYING
+  },
+  {
+    EL_BDX_MAGIC_WALL,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(9),
+    &li.bd_magic_wall_flying_rock_to,		EL_BDX_FLYING_DIAMOND_FLYING
   },
 
   {
-    EL_BDX_VOODOO_DOLL,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
-    &li.bd_voodoo_collects_diamonds,	FALSE
-  },
-  {
-    EL_BDX_VOODOO_DOLL,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
-    &li.bd_voodoo_hurt_kills_player,	FALSE
-  },
-  {
-    EL_BDX_VOODOO_DOLL,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(3),
-    &li.bd_voodoo_dies_by_rock,		FALSE
-  },
-  {
-    EL_BDX_VOODOO_DOLL,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(4),
-    &li.bd_voodoo_vanish_by_explosion,	TRUE
-  },
-  {
-    EL_BDX_VOODOO_DOLL,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(5),
-    &li.bd_voodoo_penalty_time,		30
+    EL_BDX_CLOCK,				-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(1),
+    &li.bd_clock_extra_time,			30
   },
 
   {
-    EL_BDX_SLIME,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
-    &li.bd_slime_is_predictable,	TRUE
+    EL_BDX_VOODOO_DOLL,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
+    &li.bd_voodoo_collects_diamonds,		FALSE
   },
   {
-    EL_BDX_SLIME,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(2),
-    &li.bd_slime_permeability_rate,	100
+    EL_BDX_VOODOO_DOLL,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(2),
+    &li.bd_voodoo_hurt_kills_player,		FALSE
   },
   {
-    EL_BDX_SLIME,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(3),
-    &li.bd_slime_permeability_bits_c64,	0
+    EL_BDX_VOODOO_DOLL,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(3),
+    &li.bd_voodoo_dies_by_rock,			FALSE
   },
   {
-    EL_BDX_SLIME,			-1,
-    TYPE_INTEGER,			CONF_VALUE_32_BIT(1),
-    &li.bd_slime_random_seed_c64,	-1
+    EL_BDX_VOODOO_DOLL,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(4),
+    &li.bd_voodoo_vanish_by_explosion,		TRUE
   },
   {
-    EL_BDX_SLIME,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_slime_eats_element_1,	EL_BDX_DIAMOND
-  },
-  {
-    EL_BDX_SLIME,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(2),
-    &li.bd_slime_converts_to_element_1,	EL_BDX_DIAMOND_FALLING
-  },
-  {
-    EL_BDX_SLIME,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(3),
-    &li.bd_slime_eats_element_2,	EL_BDX_ROCK
-  },
-  {
-    EL_BDX_SLIME,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(4),
-    &li.bd_slime_converts_to_element_2,	EL_BDX_ROCK_FALLING
-  },
-  {
-    EL_BDX_SLIME,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(5),
-    &li.bd_slime_eats_element_3,	EL_BDX_NUT
-  },
-  {
-    EL_BDX_SLIME,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(6),
-    &li.bd_slime_converts_to_element_3,	EL_BDX_NUT_FALLING
-  },
-  {
-    EL_BDX_SLIME,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(7),
-    &li.bd_slime_eats_element_4,	EL_EMPTY
-  },
-  {
-    EL_BDX_SLIME,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(8),
-    &li.bd_slime_converts_to_element_4,	EL_EMPTY
-  },
-  {
-    EL_BDX_SLIME,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(9),
-    &li.bd_slime_eats_element_5,	EL_EMPTY
-  },
-  {
-    EL_BDX_SLIME,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(10),
-    &li.bd_slime_converts_to_element_5,	EL_EMPTY
+    EL_BDX_VOODOO_DOLL,				-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(5),
+    &li.bd_voodoo_penalty_time,			30
   },
 
   {
-    EL_BDX_ACID,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_acid_eats_element,		EL_BDX_SAND
+    EL_BDX_SLIME,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
+    &li.bd_slime_is_predictable,		TRUE
   },
   {
-    EL_BDX_ACID,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
-    &li.bd_acid_spread_rate,		3
+    EL_BDX_SLIME,				-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(2),
+    &li.bd_slime_permeability_rate,		100
   },
   {
-    EL_BDX_ACID,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(2),
-    &li.bd_acid_turns_to_element,	EL_BDX_EXPLODING_3
-  },
-
-  {
-    EL_BDX_BITER,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
-    &li.bd_biter_move_delay,		0
+    EL_BDX_SLIME,				-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(3),
+    &li.bd_slime_permeability_bits_c64,		0
   },
   {
-    EL_BDX_BITER,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_biter_eats_element,		EL_BDX_DIAMOND
-  },
-
-  {
-    EL_BDX_BUBBLE,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_bubble_converts_by_element,	EL_BDX_VOODOO_DOLL
-  },
-
-  {
-    EL_BDX_EXPANDABLE_WALL_ANY,		-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
-    &li.bd_change_expanding_wall,	FALSE
+    EL_BDX_SLIME,				-1,
+    TYPE_INTEGER,				CONF_VALUE_32_BIT(1),
+    &li.bd_slime_random_seed_c64,		-1
   },
   {
-    EL_BDX_EXPANDABLE_WALL_ANY,		-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_expanding_wall_looks_like,	EL_BDX_EXPANDABLE_WALL_ANY
-  },
-
-  {
-    EL_BDX_REPLICATOR,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
-    &li.bd_replicators_active,		TRUE
+    EL_BDX_SLIME,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &li.bd_slime_eats_element_1,		EL_BDX_DIAMOND
   },
   {
-    EL_BDX_REPLICATOR,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(2),
-    &li.bd_replicator_create_delay,	4
-  },
-
-  {
-    EL_BDX_CONVEYOR_LEFT,		-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
-    &li.bd_conveyor_belts_active,	TRUE
+    EL_BDX_SLIME,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(2),
+    &li.bd_slime_converts_to_element_1,		EL_BDX_DIAMOND_FALLING
   },
   {
-    EL_BDX_CONVEYOR_LEFT,		-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
-    &li.bd_conveyor_belts_changed,	FALSE
+    EL_BDX_SLIME,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(3),
+    &li.bd_slime_eats_element_2,		EL_BDX_ROCK
   },
   {
-    EL_BDX_CONVEYOR_LEFT,		-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(3),
-    &li.bd_conveyor_belts_buggy,	FALSE
+    EL_BDX_SLIME,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(4),
+    &li.bd_slime_converts_to_element_2,		EL_BDX_ROCK_FALLING
   },
-
   {
-    EL_BDX_WATER,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
-    &li.bd_water_cannot_flow_down,	FALSE
+    EL_BDX_SLIME,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(5),
+    &li.bd_slime_eats_element_3,		EL_BDX_NUT
+  },
+  {
+    EL_BDX_SLIME,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(6),
+    &li.bd_slime_converts_to_element_3,		EL_BDX_NUT_FALLING
+  },
+  {
+    EL_BDX_SLIME,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(7),
+    &li.bd_slime_eats_element_4,		EL_EMPTY
+  },
+  {
+    EL_BDX_SLIME,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(8),
+    &li.bd_slime_converts_to_element_4,		EL_EMPTY
+  },
+  {
+    EL_BDX_SLIME,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(9),
+    &li.bd_slime_eats_element_5,		EL_EMPTY
+  },
+  {
+    EL_BDX_SLIME,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(10),
+    &li.bd_slime_converts_to_element_5,		EL_EMPTY
   },
 
   {
-    EL_BDX_NUT,				-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.bd_nut_content,			EL_BDX_NUT_BREAKING_1
+    EL_BDX_ACID,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &li.bd_acid_eats_element,			EL_BDX_SAND
+  },
+  {
+    EL_BDX_ACID,				-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(1),
+    &li.bd_acid_spread_rate,			3
+  },
+  {
+    EL_BDX_ACID,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(2),
+    &li.bd_acid_turns_to_element,		EL_BDX_EXPLODING_3
   },
 
   {
-    EL_BDX_PNEUMATIC_HAMMER,		-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
-    &li.bd_hammer_walls_break_delay,	5
+    EL_BDX_BITER,				-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(1),
+    &li.bd_biter_move_delay,			0
   },
   {
-    EL_BDX_PNEUMATIC_HAMMER,		-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
-    &li.bd_hammer_walls_reappear,	FALSE
-  },
-  {
-    EL_BDX_PNEUMATIC_HAMMER,		-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(3),
-    &li.bd_hammer_walls_reappear_delay,	100
+    EL_BDX_BITER,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &li.bd_biter_eats_element,			EL_BDX_DIAMOND
   },
 
   {
-    EL_BDX_ROCKET_LAUNCHER,		-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
-    &li.bd_infinite_rockets,		FALSE
+    EL_BDX_BUBBLE,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &li.bd_bubble_converts_by_element,		EL_BDX_VOODOO_DOLL
   },
 
   {
-    EL_BDX_TELEPORTER,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
-    &li.bd_buggy_teleporter,		FALSE
+    EL_BDX_EXPANDABLE_WALL_ANY,			-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
+    &li.bd_change_expanding_wall,		FALSE
+  },
+  {
+    EL_BDX_EXPANDABLE_WALL_ANY,			-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &li.bd_expanding_wall_looks_like,		EL_BDX_EXPANDABLE_WALL_ANY
   },
 
   {
-    EL_BDX_SKELETON,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
-    &li.bd_num_skeletons_needed_for_pot, 5
+    EL_BDX_REPLICATOR,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
+    &li.bd_replicators_active,			TRUE
   },
   {
-    EL_BDX_SKELETON,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(2),
-    &li.bd_skeleton_worth_num_diamonds,	0
-  },
-
-  {
-    EL_BDX_CREATURE_SWITCH,		-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
-    &li.bd_creatures_start_backwards,	FALSE
-  },
-  {
-    EL_BDX_CREATURE_SWITCH,		-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
-    &li.bd_creatures_turn_on_hatching,	FALSE
-  },
-  {
-    EL_BDX_CREATURE_SWITCH,		-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.bd_creatures_auto_turn_delay,	0
+    EL_BDX_REPLICATOR,				-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(2),
+    &li.bd_replicator_create_delay,		4
   },
 
   {
-    EL_BDX_GRAVITY_SWITCH,		-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
-    &li.bd_gravity_direction,		GD_MV_DOWN
+    EL_BDX_CONVEYOR_LEFT,			-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
+    &li.bd_conveyor_belts_active,		TRUE
   },
   {
-    EL_BDX_GRAVITY_SWITCH,		-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
-    &li.bd_gravity_switch_active,	FALSE
+    EL_BDX_CONVEYOR_LEFT,			-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(2),
+    &li.bd_conveyor_belts_changed,		FALSE
   },
   {
-    EL_BDX_GRAVITY_SWITCH,		-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(3),
-    &li.bd_gravity_switch_delay,	10
+    EL_BDX_CONVEYOR_LEFT,			-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(3),
+    &li.bd_conveyor_belts_buggy,		FALSE
+  },
+
+  {
+    EL_BDX_WATER,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
+    &li.bd_water_cannot_flow_down,		FALSE
+  },
+
+  {
+    EL_BDX_NUT,					-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &li.bd_nut_content,				EL_BDX_NUT_BREAKING_1
+  },
+
+  {
+    EL_BDX_PNEUMATIC_HAMMER,			-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(1),
+    &li.bd_hammer_walls_break_delay,		5
   },
   {
-    EL_BDX_GRAVITY_SWITCH,		-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(4),
-    &li.bd_gravity_affects_all,		TRUE
+    EL_BDX_PNEUMATIC_HAMMER,			-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(2),
+    &li.bd_hammer_walls_reappear,		FALSE
+  },
+  {
+    EL_BDX_PNEUMATIC_HAMMER,			-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(3),
+    &li.bd_hammer_walls_reappear_delay,		100
+  },
+
+  {
+    EL_BDX_ROCKET_LAUNCHER,			-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
+    &li.bd_infinite_rockets,			FALSE
+  },
+
+  {
+    EL_BDX_TELEPORTER,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
+    &li.bd_buggy_teleporter,			FALSE
+  },
+
+  {
+    EL_BDX_SKELETON,				-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(1),
+    &li.bd_num_skeletons_needed_for_pot,	5
+  },
+  {
+    EL_BDX_SKELETON,				-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(2),
+    &li.bd_skeleton_worth_num_diamonds,		0
+  },
+
+  {
+    EL_BDX_CREATURE_SWITCH,			-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
+    &li.bd_creatures_start_backwards,		FALSE
+  },
+  {
+    EL_BDX_CREATURE_SWITCH,			-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(2),
+    &li.bd_creatures_turn_on_hatching,		FALSE
+  },
+  {
+    EL_BDX_CREATURE_SWITCH,			-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.bd_creatures_auto_turn_delay,		0
+  },
+
+  {
+    EL_BDX_GRAVITY_SWITCH,			-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(1),
+    &li.bd_gravity_direction,			GD_MV_DOWN
+  },
+  {
+    EL_BDX_GRAVITY_SWITCH,			-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(2),
+    &li.bd_gravity_switch_active,		FALSE
+  },
+  {
+    EL_BDX_GRAVITY_SWITCH,			-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(3),
+    &li.bd_gravity_switch_delay,		10
+  },
+  {
+    EL_BDX_GRAVITY_SWITCH,			-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(4),
+    &li.bd_gravity_affects_all,			TRUE
   },
 
   // (the following values are related to various game elements)
 
   {
-    EL_EMERALD,				-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.score[SC_EMERALD],		10
+    EL_EMERALD,					-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.score[SC_EMERALD],			10
   },
 
   {
-    EL_DIAMOND,				-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.score[SC_DIAMOND],		10
+    EL_DIAMOND,					-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.score[SC_DIAMOND],			10
   },
 
   {
-    EL_BUG,				-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.score[SC_BUG],			10
+    EL_BUG,					-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.score[SC_BUG],				10
   },
 
   {
-    EL_SPACESHIP,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.score[SC_SPACESHIP],		10
+    EL_SPACESHIP,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.score[SC_SPACESHIP],			10
   },
 
   {
-    EL_PACMAN,				-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.score[SC_PACMAN],		10
+    EL_PACMAN,					-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.score[SC_PACMAN],			10
   },
 
   {
-    EL_NUT,				-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.score[SC_NUT],			10
+    EL_NUT,					-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.score[SC_NUT],				10
   },
 
   {
-    EL_DYNAMITE,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.score[SC_DYNAMITE],		10
+    EL_DYNAMITE,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.score[SC_DYNAMITE],			10
   },
 
   {
-    EL_KEY_1,				-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.score[SC_KEY],			10
+    EL_KEY_1,					-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.score[SC_KEY],				10
   },
 
   {
-    EL_PEARL,				-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.score[SC_PEARL],		10
+    EL_PEARL,					-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.score[SC_PEARL],			10
   },
 
   {
-    EL_CRYSTAL,				-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.score[SC_CRYSTAL],		10
+    EL_CRYSTAL,					-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.score[SC_CRYSTAL],			10
   },
 
   {
-    EL_BD_AMOEBA,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.amoeba_content,			EL_DIAMOND
+    EL_BD_AMOEBA,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &li.amoeba_content,				EL_DIAMOND
   },
   {
-    EL_BD_AMOEBA,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(2),
-    &li.amoeba_speed,			10
+    EL_BD_AMOEBA,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(2),
+    &li.amoeba_speed,				10
   },
   {
-    EL_BD_AMOEBA,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
-    &li.grow_into_diggable,		TRUE
-  },
-
-  {
-    EL_BDX_AMOEBA_1,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.bd_amoeba_1_threshold_too_big,	200
-  },
-  {
-    EL_BDX_AMOEBA_1,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(2),
-    &li.bd_amoeba_1_slow_growth_time,	200
-  },
-  {
-    EL_BDX_AMOEBA_1,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(3),
-    &li.bd_amoeba_1_content_too_big,	EL_BDX_ROCK
-  },
-  {
-    EL_BDX_AMOEBA_1,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(4),
-    &li.bd_amoeba_1_content_enclosed,	EL_BDX_DIAMOND
-  },
-  {
-    EL_BDX_AMOEBA_1,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
-    &li.bd_amoeba_1_slow_growth_rate,	3
-  },
-  {
-    EL_BDX_AMOEBA_1,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(2),
-    &li.bd_amoeba_1_fast_growth_rate,	25
-  },
-  {
-    EL_BDX_AMOEBA_1,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(3),
-    &li.bd_amoeba_wait_for_hatching,	FALSE
-  },
-  {
-    EL_BDX_AMOEBA_1,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(4),
-    &li.bd_amoeba_start_immediately,	TRUE
+    EL_BD_AMOEBA,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
+    &li.grow_into_diggable,			TRUE
   },
 
   {
-    EL_BDX_AMOEBA_2,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.bd_amoeba_2_threshold_too_big,	200
+    EL_BDX_AMOEBA_1,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.bd_amoeba_1_threshold_too_big,		200
   },
   {
-    EL_BDX_AMOEBA_2,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(2),
-    &li.bd_amoeba_2_slow_growth_time,	200
+    EL_BDX_AMOEBA_1,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(2),
+    &li.bd_amoeba_1_slow_growth_time,		200
   },
   {
-    EL_BDX_AMOEBA_2,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(3),
-    &li.bd_amoeba_2_content_too_big,	EL_BDX_ROCK
+    EL_BDX_AMOEBA_1,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(3),
+    &li.bd_amoeba_1_content_too_big,		EL_BDX_ROCK
   },
   {
-    EL_BDX_AMOEBA_2,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(4),
-    &li.bd_amoeba_2_content_enclosed,	EL_BDX_DIAMOND
+    EL_BDX_AMOEBA_1,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(4),
+    &li.bd_amoeba_1_content_enclosed,		EL_BDX_DIAMOND
   },
   {
-    EL_BDX_AMOEBA_2,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(5),
-    &li.bd_amoeba_2_content_exploding,	EL_EMPTY
+    EL_BDX_AMOEBA_1,				-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(1),
+    &li.bd_amoeba_1_slow_growth_rate,		3
   },
   {
-    EL_BDX_AMOEBA_2,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(6),
-    &li.bd_amoeba_2_content_looks_like,	EL_BDX_AMOEBA_2
+    EL_BDX_AMOEBA_1,				-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(2),
+    &li.bd_amoeba_1_fast_growth_rate,		25
   },
   {
-    EL_BDX_AMOEBA_2,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
-    &li.bd_amoeba_2_slow_growth_rate,	3
+    EL_BDX_AMOEBA_1,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(3),
+    &li.bd_amoeba_wait_for_hatching,		FALSE
   },
   {
-    EL_BDX_AMOEBA_2,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(2),
-    &li.bd_amoeba_2_fast_growth_rate,	25
-  },
-  {
-    EL_BDX_AMOEBA_2,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(3),
-    &li.bd_amoeba_2_explode_by_amoeba,	TRUE
+    EL_BDX_AMOEBA_1,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(4),
+    &li.bd_amoeba_start_immediately,		TRUE
   },
 
   {
-    EL_YAMYAM,				-1,
-    TYPE_CONTENT_LIST,			CONF_VALUE_BYTES(1),
-    &li.yamyam_content,			EL_ROCK, NULL,
-    &li.num_yamyam_contents,		4, MAX_ELEMENT_CONTENTS
+    EL_BDX_AMOEBA_2,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.bd_amoeba_2_threshold_too_big,		200
   },
   {
-    EL_YAMYAM,				-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.score[SC_YAMYAM],		10
-  },
-
-  {
-    EL_ROBOT,				-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.score[SC_ROBOT],		10
+    EL_BDX_AMOEBA_2,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(2),
+    &li.bd_amoeba_2_slow_growth_time,		200
   },
   {
-    EL_ROBOT,				-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(2),
-    &li.slurp_score,			10
-  },
-
-  {
-    EL_ROBOT_WHEEL,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.time_wheel,			10
-  },
-
-  {
-    EL_MAGIC_WALL,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.time_magic_wall,		10
-  },
-
-  {
-    EL_GAME_OF_LIFE,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
-    &li.game_of_life[0],		2
+    EL_BDX_AMOEBA_2,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(3),
+    &li.bd_amoeba_2_content_too_big,		EL_BDX_ROCK
   },
   {
-    EL_GAME_OF_LIFE,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(2),
-    &li.game_of_life[1],		3
+    EL_BDX_AMOEBA_2,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(4),
+    &li.bd_amoeba_2_content_enclosed,		EL_BDX_DIAMOND
   },
   {
-    EL_GAME_OF_LIFE,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(3),
-    &li.game_of_life[2],		3
+    EL_BDX_AMOEBA_2,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(5),
+    &li.bd_amoeba_2_content_exploding,		EL_EMPTY
   },
   {
-    EL_GAME_OF_LIFE,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(4),
-    &li.game_of_life[3],		3
+    EL_BDX_AMOEBA_2,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(6),
+    &li.bd_amoeba_2_content_looks_like,		EL_BDX_AMOEBA_2
   },
   {
-    EL_GAME_OF_LIFE,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(5),
-    &li.use_life_bugs,			FALSE
+    EL_BDX_AMOEBA_2,				-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(1),
+    &li.bd_amoeba_2_slow_growth_rate,		3
+  },
+  {
+    EL_BDX_AMOEBA_2,				-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(2),
+    &li.bd_amoeba_2_fast_growth_rate,		25
+  },
+  {
+    EL_BDX_AMOEBA_2,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(3),
+    &li.bd_amoeba_2_explode_by_amoeba,		TRUE
   },
 
   {
-    EL_BIOMAZE,				-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
-    &li.biomaze[0],			2
+    EL_YAMYAM,					-1,
+    TYPE_CONTENT_LIST,				CONF_VALUE_BYTES(1),
+    &li.yamyam_content,				EL_ROCK, NULL,
+    &li.num_yamyam_contents,			4, MAX_ELEMENT_CONTENTS
   },
   {
-    EL_BIOMAZE,				-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(2),
-    &li.biomaze[1],			3
-  },
-  {
-    EL_BIOMAZE,				-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(3),
-    &li.biomaze[2],			3
-  },
-  {
-    EL_BIOMAZE,				-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(4),
-    &li.biomaze[3],			3
+    EL_YAMYAM,					-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.score[SC_YAMYAM],			10
   },
 
   {
-    EL_TIMEGATE_SWITCH,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.time_timegate,			10
+    EL_ROBOT,					-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.score[SC_ROBOT],			10
+  },
+  {
+    EL_ROBOT,					-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(2),
+    &li.slurp_score,				10
   },
 
   {
-    EL_LIGHT_SWITCH_ACTIVE,		-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.time_light,			10
+    EL_ROBOT_WHEEL,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.time_wheel,				10
   },
 
   {
-    EL_SHIELD_NORMAL,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.shield_normal_time,		10
-  },
-  {
-    EL_SHIELD_NORMAL,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(2),
-    &li.score[SC_SHIELD],		10
+    EL_MAGIC_WALL,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.time_magic_wall,			10
   },
 
   {
-    EL_SHIELD_DEADLY,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.shield_deadly_time,		10
+    EL_GAME_OF_LIFE,				-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(1),
+    &li.game_of_life[0],			2
   },
   {
-    EL_SHIELD_DEADLY,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(2),
-    &li.score[SC_SHIELD],		10
-  },
-
-  {
-    EL_EXTRA_TIME,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.extra_time,			10
+    EL_GAME_OF_LIFE,				-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(2),
+    &li.game_of_life[1],			3
   },
   {
-    EL_EXTRA_TIME,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(2),
-    &li.extra_time_score,		10
-  },
-
-  {
-    EL_TIME_ORB_FULL,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.time_orb_time,			10
+    EL_GAME_OF_LIFE,				-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(3),
+    &li.game_of_life[2],			3
   },
   {
-    EL_TIME_ORB_FULL,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
-    &li.use_time_orb_bug,		FALSE
+    EL_GAME_OF_LIFE,				-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(4),
+    &li.game_of_life[3],			3
+  },
+  {
+    EL_GAME_OF_LIFE,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(5),
+    &li.use_life_bugs,				FALSE
   },
 
   {
-    EL_SPRING,				-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
-    &li.use_spring_bug,			FALSE
+    EL_BIOMAZE,					-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(1),
+    &li.biomaze[0],				2
+  },
+  {
+    EL_BIOMAZE,					-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(2),
+    &li.biomaze[1],				3
+  },
+  {
+    EL_BIOMAZE,					-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(3),
+    &li.biomaze[2],				3
+  },
+  {
+    EL_BIOMAZE,					-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(4),
+    &li.biomaze[3],				3
   },
 
   {
-    EL_EMC_ANDROID,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.android_move_time,		10
-  },
-  {
-    EL_EMC_ANDROID,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(2),
-    &li.android_clone_time,		10
-  },
-  {
-    EL_EMC_ANDROID,			SAVE_CONF_NEVER,
-    TYPE_ELEMENT_LIST,			CONF_VALUE_BYTES(1),
-    &li.android_clone_element[0],	EL_EMPTY, NULL,
-    &li.num_android_clone_elements,	1, MAX_ANDROID_ELEMENTS_OLD
-  },
-  {
-    EL_EMC_ANDROID,			-1,
-    TYPE_ELEMENT_LIST,			CONF_VALUE_BYTES(2),
-    &li.android_clone_element[0],	EL_EMPTY, NULL,
-    &li.num_android_clone_elements,	1, MAX_ANDROID_ELEMENTS
+    EL_TIMEGATE_SWITCH,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.time_timegate,				10
   },
 
   {
-    EL_EMC_LENSES,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.lenses_score,			10
-  },
-  {
-    EL_EMC_LENSES,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(2),
-    &li.lenses_time,			10
+    EL_LIGHT_SWITCH_ACTIVE,			-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.time_light,				10
   },
 
   {
-    EL_EMC_MAGNIFIER,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.magnify_score,			10
+    EL_SHIELD_NORMAL,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.shield_normal_time,			10
   },
   {
-    EL_EMC_MAGNIFIER,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(2),
-    &li.magnify_time,			10
-  },
-
-  {
-    EL_EMC_MAGIC_BALL,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.ball_time,			10
-  },
-  {
-    EL_EMC_MAGIC_BALL,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
-    &li.ball_random,			FALSE
-  },
-  {
-    EL_EMC_MAGIC_BALL,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
-    &li.ball_active_initial,		FALSE
-  },
-  {
-    EL_EMC_MAGIC_BALL,			-1,
-    TYPE_CONTENT_LIST,			CONF_VALUE_BYTES(1),
-    &li.ball_content,			EL_EMPTY, NULL,
-    &li.num_ball_contents,		4, MAX_ELEMENT_CONTENTS
+    EL_SHIELD_NORMAL,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(2),
+    &li.score[SC_SHIELD],			10
   },
 
   {
-    EL_SOKOBAN_FIELD_EMPTY,		-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
-    &li.sb_fields_needed,		TRUE
+    EL_SHIELD_DEADLY,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.shield_deadly_time,			10
+  },
+  {
+    EL_SHIELD_DEADLY,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(2),
+    &li.score[SC_SHIELD],			10
   },
 
   {
-    EL_SOKOBAN_OBJECT,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
-    &li.sb_objects_needed,		TRUE
+    EL_EXTRA_TIME,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.extra_time,				10
+  },
+  {
+    EL_EXTRA_TIME,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(2),
+    &li.extra_time_score,			10
   },
 
   {
-    EL_MM_MCDUFFIN,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
-    &li.mm_laser_red,			FALSE
+    EL_TIME_ORB_FULL,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.time_orb_time,				10
   },
   {
-    EL_MM_MCDUFFIN,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
-    &li.mm_laser_green,			FALSE
-  },
-  {
-    EL_MM_MCDUFFIN,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(3),
-    &li.mm_laser_blue,			TRUE
+    EL_TIME_ORB_FULL,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
+    &li.use_time_orb_bug,			FALSE
   },
 
   {
-    EL_DF_LASER,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
-    &li.df_laser_red,			TRUE
-  },
-  {
-    EL_DF_LASER,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
-    &li.df_laser_green,			TRUE
-  },
-  {
-    EL_DF_LASER,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(3),
-    &li.df_laser_blue,			FALSE
+    EL_SPRING,					-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
+    &li.use_spring_bug,				FALSE
   },
 
   {
-    EL_MM_FUSE_ACTIVE,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.mm_time_fuse,			25
+    EL_EMC_ANDROID,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.android_move_time,			10
   },
   {
-    EL_MM_BOMB,				-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.mm_time_bomb,			75
-  },
-
-  {
-    EL_MM_GRAY_BALL,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.mm_time_ball,			75
+    EL_EMC_ANDROID,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(2),
+    &li.android_clone_time,			10
   },
   {
-    EL_MM_GRAY_BALL,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
-    &li.mm_ball_choice_mode,		ANIM_RANDOM
+    EL_EMC_ANDROID,				SAVE_CONF_NEVER,
+    TYPE_ELEMENT_LIST,				CONF_VALUE_BYTES(1),
+    &li.android_clone_element[0],		EL_EMPTY, NULL,
+    &li.num_android_clone_elements,		1, MAX_ANDROID_ELEMENTS_OLD
   },
   {
-    EL_MM_GRAY_BALL,			-1,
-    TYPE_ELEMENT_LIST,			CONF_VALUE_BYTES(1),
-    &li.mm_ball_content,		EL_EMPTY, NULL,
-    &li.num_mm_ball_contents,		8, MAX_MM_BALL_CONTENTS
-  },
-  {
-    EL_MM_GRAY_BALL,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(3),
-    &li.rotate_mm_ball_content,		TRUE
-  },
-  {
-    EL_MM_GRAY_BALL,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
-    &li.explode_mm_ball,		FALSE
+    EL_EMC_ANDROID,				-1,
+    TYPE_ELEMENT_LIST,				CONF_VALUE_BYTES(2),
+    &li.android_clone_element[0],		EL_EMPTY, NULL,
+    &li.num_android_clone_elements,		1, MAX_ANDROID_ELEMENTS
   },
 
   {
-    EL_MM_STEEL_BLOCK,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.mm_time_block,			75
+    EL_EMC_LENSES,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.lenses_score,				10
   },
   {
-    EL_MM_LIGHTBALL,			-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(1),
-    &li.score[SC_ELEM_BONUS],		10
+    EL_EMC_LENSES,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(2),
+    &li.lenses_time,				10
   },
 
   {
-    -1,					-1,
-    -1,					-1,
-    NULL,				-1
+    EL_EMC_MAGNIFIER,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.magnify_score,				10
+  },
+  {
+    EL_EMC_MAGNIFIER,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(2),
+    &li.magnify_time,				10
+  },
+
+  {
+    EL_EMC_MAGIC_BALL,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.ball_time,				10
+  },
+  {
+    EL_EMC_MAGIC_BALL,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
+    &li.ball_random,				FALSE
+  },
+  {
+    EL_EMC_MAGIC_BALL,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(2),
+    &li.ball_active_initial,			FALSE
+  },
+  {
+    EL_EMC_MAGIC_BALL,				-1,
+    TYPE_CONTENT_LIST,				CONF_VALUE_BYTES(1),
+    &li.ball_content,				EL_EMPTY, NULL,
+    &li.num_ball_contents,			4, MAX_ELEMENT_CONTENTS
+  },
+
+  {
+    EL_SOKOBAN_FIELD_EMPTY,			-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
+    &li.sb_fields_needed,			TRUE
+  },
+
+  {
+    EL_SOKOBAN_OBJECT,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
+    &li.sb_objects_needed,			TRUE
+  },
+
+  {
+    EL_MM_MCDUFFIN,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
+    &li.mm_laser_red,				FALSE
+  },
+  {
+    EL_MM_MCDUFFIN,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(2),
+    &li.mm_laser_green,				FALSE
+  },
+  {
+    EL_MM_MCDUFFIN,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(3),
+    &li.mm_laser_blue,				TRUE
+  },
+
+  {
+    EL_DF_LASER,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
+    &li.df_laser_red,				TRUE
+  },
+  {
+    EL_DF_LASER,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(2),
+    &li.df_laser_green,				TRUE
+  },
+  {
+    EL_DF_LASER,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(3),
+    &li.df_laser_blue,				FALSE
+  },
+
+  {
+    EL_MM_FUSE_ACTIVE,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.mm_time_fuse,				25
+  },
+  {
+    EL_MM_BOMB,					-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.mm_time_bomb,				75
+  },
+
+  {
+    EL_MM_GRAY_BALL,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.mm_time_ball,				75
+  },
+  {
+    EL_MM_GRAY_BALL,				-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(1),
+    &li.mm_ball_choice_mode,			ANIM_RANDOM
+  },
+  {
+    EL_MM_GRAY_BALL,				-1,
+    TYPE_ELEMENT_LIST,				CONF_VALUE_BYTES(1),
+    &li.mm_ball_content,			EL_EMPTY, NULL,
+    &li.num_mm_ball_contents,			8, MAX_MM_BALL_CONTENTS
+  },
+  {
+    EL_MM_GRAY_BALL,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(3),
+    &li.rotate_mm_ball_content,			TRUE
+  },
+  {
+    EL_MM_GRAY_BALL,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(2),
+    &li.explode_mm_ball,			FALSE
+  },
+
+  {
+    EL_MM_STEEL_BLOCK,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.mm_time_block,				75
+  },
+  {
+    EL_MM_LIGHTBALL,				-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
+    &li.score[SC_ELEM_BONUS],			10
+  },
+
+  {
+    -1,						-1,
+    -1,						-1,
+    NULL,					-1
   }
 };
 
 static struct LevelFileConfigInfo chunk_config_NOTE[] =
 {
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
-    &xx_envelope.xsize,			MAX_ENVELOPE_XSIZE,
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(1),
+    &xx_envelope.xsize,				MAX_ENVELOPE_XSIZE,
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(2),
-    &xx_envelope.ysize,			MAX_ENVELOPE_YSIZE,
-  },
-
-  {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(3),
-    &xx_envelope.autowrap,		FALSE
-  },
-  {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(4),
-    &xx_envelope.centered,		FALSE
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(2),
+    &xx_envelope.ysize,				MAX_ENVELOPE_YSIZE,
   },
 
   {
-    -1,					-1,
-    TYPE_STRING,			CONF_VALUE_BYTES(1),
-    &xx_envelope.text,			-1, NULL,
-    &xx_string_length_unused,		-1, MAX_ENVELOPE_TEXT_LEN,
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(3),
+    &xx_envelope.autowrap,			FALSE
+  },
+  {
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(4),
+    &xx_envelope.centered,			FALSE
+  },
+
+  {
+    -1,						-1,
+    TYPE_STRING,				CONF_VALUE_BYTES(1),
+    &xx_envelope.text,				-1, NULL,
+    &xx_string_length_unused,			-1, MAX_ENVELOPE_TEXT_LEN,
     &xx_default_string_empty[0]
   },
 
   {
-    -1,					-1,
-    -1,					-1,
-    NULL,				-1
+    -1,						-1,
+    -1,						-1,
+    NULL,					-1
   }
 };
 
 static struct LevelFileConfigInfo chunk_config_CUSX_base[] =
 {
   {
-    -1,					-1,
-    TYPE_STRING,			CONF_VALUE_BYTES(1),
-    &xx_ei.description[0],		-1,
+    -1,						-1,
+    TYPE_STRING,				CONF_VALUE_BYTES(1),
+    &xx_ei.description[0],			-1,
     &yy_ei.description[0],
-    &xx_string_length_unused,		-1, MAX_ELEMENT_NAME_LEN,
+    &xx_string_length_unused,			-1, MAX_ELEMENT_NAME_LEN,
     &xx_default_description[0]
   },
 
   {
-    -1,					-1,
-    TYPE_BITFIELD,			CONF_VALUE_32_BIT(1),
-    &xx_ei.properties[EP_BITFIELD_BASE_NR], EP_BITMASK_BASE_DEFAULT,
+    -1,						-1,
+    TYPE_BITFIELD,				CONF_VALUE_32_BIT(1),
+    &xx_ei.properties[EP_BITFIELD_BASE_NR],	EP_BITMASK_BASE_DEFAULT,
     &yy_ei.properties[EP_BITFIELD_BASE_NR]
   },
 #if ENABLE_RESERVED_CODE
   // (reserved for later use)
   {
-    -1,					-1,
-    TYPE_BITFIELD,			CONF_VALUE_32_BIT(2),
-    &xx_ei.properties[EP_BITFIELD_BASE_NR + 1], EP_BITMASK_DEFAULT,
+    -1,						-1,
+    TYPE_BITFIELD,				CONF_VALUE_32_BIT(2),
+    &xx_ei.properties[EP_BITFIELD_BASE_NR + 1],	EP_BITMASK_DEFAULT,
     &yy_ei.properties[EP_BITFIELD_BASE_NR + 1]
   },
 #endif
 
   {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
-    &xx_ei.use_gfx_element,		FALSE,
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
+    &xx_ei.use_gfx_element,			FALSE,
     &yy_ei.use_gfx_element
   },
   {
-    -1,					-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &xx_ei.gfx_element_initial,		EL_EMPTY_SPACE,
+    -1,						-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &xx_ei.gfx_element_initial,			EL_EMPTY_SPACE,
     &yy_ei.gfx_element_initial
   },
 
   {
-    -1,					-1,
-    TYPE_BITFIELD,			CONF_VALUE_8_BIT(2),
-    &xx_ei.access_direction,		MV_ALL_DIRECTIONS,
+    -1,						-1,
+    TYPE_BITFIELD,				CONF_VALUE_8_BIT(2),
+    &xx_ei.access_direction,			MV_ALL_DIRECTIONS,
     &yy_ei.access_direction
   },
 
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(2),
-    &xx_ei.collect_score_initial,	10,
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(2),
+    &xx_ei.collect_score_initial,		10,
     &yy_ei.collect_score_initial
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(3),
-    &xx_ei.collect_count_initial,	1,
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(3),
+    &xx_ei.collect_count_initial,		1,
     &yy_ei.collect_count_initial
   },
 
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(4),
-    &xx_ei.ce_value_fixed_initial,	0,
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(4),
+    &xx_ei.ce_value_fixed_initial,		0,
     &yy_ei.ce_value_fixed_initial
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(5),
-    &xx_ei.ce_value_random_initial,	0,
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(5),
+    &xx_ei.ce_value_random_initial,		0,
     &yy_ei.ce_value_random_initial
   },
   {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(3),
-    &xx_ei.use_last_ce_value,		FALSE,
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(3),
+    &xx_ei.use_last_ce_value,			FALSE,
     &yy_ei.use_last_ce_value
   },
 
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(6),
-    &xx_ei.push_delay_fixed,		8,
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(6),
+    &xx_ei.push_delay_fixed,			8,
     &yy_ei.push_delay_fixed
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(7),
-    &xx_ei.push_delay_random,		8,
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(7),
+    &xx_ei.push_delay_random,			8,
     &yy_ei.push_delay_random
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(8),
-    &xx_ei.drop_delay_fixed,		0,
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(8),
+    &xx_ei.drop_delay_fixed,			0,
     &yy_ei.drop_delay_fixed
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(9),
-    &xx_ei.drop_delay_random,		0,
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(9),
+    &xx_ei.drop_delay_random,			0,
     &yy_ei.drop_delay_random
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(10),
-    &xx_ei.move_delay_fixed,		0,
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(10),
+    &xx_ei.move_delay_fixed,			0,
     &yy_ei.move_delay_fixed
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(11),
-    &xx_ei.move_delay_random,		0,
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(11),
+    &xx_ei.move_delay_random,			0,
     &yy_ei.move_delay_random
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(16),
-    &xx_ei.step_delay_fixed,		0,
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(16),
+    &xx_ei.step_delay_fixed,			0,
     &yy_ei.step_delay_fixed
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(17),
-    &xx_ei.step_delay_random,		0,
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(17),
+    &xx_ei.step_delay_random,			0,
     &yy_ei.step_delay_random
   },
 
   {
-    -1,					-1,
-    TYPE_BITFIELD,			CONF_VALUE_32_BIT(3),
-    &xx_ei.move_pattern,		MV_ALL_DIRECTIONS,
+    -1,						-1,
+    TYPE_BITFIELD,				CONF_VALUE_32_BIT(3),
+    &xx_ei.move_pattern,			MV_ALL_DIRECTIONS,
     &yy_ei.move_pattern
   },
   {
-    -1,					-1,
-    TYPE_BITFIELD,			CONF_VALUE_8_BIT(4),
-    &xx_ei.move_direction_initial,	MV_START_AUTOMATIC,
+    -1,						-1,
+    TYPE_BITFIELD,				CONF_VALUE_8_BIT(4),
+    &xx_ei.move_direction_initial,		MV_START_AUTOMATIC,
     &yy_ei.move_direction_initial
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(5),
-    &xx_ei.move_stepsize,		TILEX / 8,
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(5),
+    &xx_ei.move_stepsize,			TILEX / 8,
     &yy_ei.move_stepsize
   },
 
   {
-    -1,					-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(12),
-    &xx_ei.move_enter_element,		EL_EMPTY_SPACE,
+    -1,						-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(12),
+    &xx_ei.move_enter_element,			EL_EMPTY_SPACE,
     &yy_ei.move_enter_element
   },
   {
-    -1,					-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(13),
-    &xx_ei.move_leave_element,		EL_EMPTY_SPACE,
+    -1,						-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(13),
+    &xx_ei.move_leave_element,			EL_EMPTY_SPACE,
     &yy_ei.move_leave_element
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(6),
-    &xx_ei.move_leave_type,		LEAVE_TYPE_UNLIMITED,
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(6),
+    &xx_ei.move_leave_type,			LEAVE_TYPE_UNLIMITED,
     &yy_ei.move_leave_type
   },
 
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(7),
-    &xx_ei.slippery_type,		SLIPPERY_ANY_RANDOM,
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(7),
+    &xx_ei.slippery_type,			SLIPPERY_ANY_RANDOM,
     &yy_ei.slippery_type
   },
 
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(8),
-    &xx_ei.explosion_type,		EXPLODES_3X3,
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(8),
+    &xx_ei.explosion_type,			EXPLODES_3X3,
     &yy_ei.explosion_type
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(14),
-    &xx_ei.explosion_delay,		16,
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(14),
+    &xx_ei.explosion_delay,			16,
     &yy_ei.explosion_delay
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(15),
-    &xx_ei.ignition_delay,		8,
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(15),
+    &xx_ei.ignition_delay,			8,
     &yy_ei.ignition_delay
   },
 
   {
-    -1,					-1,
-    TYPE_CONTENT_LIST,			CONF_VALUE_BYTES(2),
-    &xx_ei.content,			EL_EMPTY_SPACE,
+    -1,						-1,
+    TYPE_CONTENT_LIST,				CONF_VALUE_BYTES(2),
+    &xx_ei.content,				EL_EMPTY_SPACE,
     &yy_ei.content,
-    &xx_num_contents,			1, 1
+    &xx_num_contents,				1, 1
   },
 
   // ---------- "num_change_pages" must be the last entry ---------------------
 
   {
-    -1,					SAVE_CONF_ALWAYS,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(9),
-    &xx_ei.num_change_pages,		1,
+    -1,						SAVE_CONF_ALWAYS,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(9),
+    &xx_ei.num_change_pages,			1,
     &yy_ei.num_change_pages
   },
 
   {
-    -1,					-1,
-    -1,					-1,
-    NULL,				-1,
+    -1,						-1,
+    -1,						-1,
+    NULL,					-1,
     NULL
   }
 };
@@ -1914,259 +1910,259 @@ static struct LevelFileConfigInfo chunk_config_CUSX_change[] =
   // ---------- "current_change_page" must be the first entry -----------------
 
   {
-    -1,					SAVE_CONF_ALWAYS,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
-    &xx_current_change_page,		-1
+    -1,						SAVE_CONF_ALWAYS,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(1),
+    &xx_current_change_page,			-1
   },
 
   // ---------- (the remaining entries can be in any order) -------------------
 
   {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(2),
-    &xx_change.can_change,		FALSE
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(2),
+    &xx_change.can_change,			FALSE
   },
 
   {
-    -1,					-1,
-    TYPE_BITFIELD,			CONF_VALUE_32_BIT(1),
-    &xx_event_bits[0],			0
+    -1,						-1,
+    TYPE_BITFIELD,				CONF_VALUE_32_BIT(1),
+    &xx_event_bits[0],				0
   },
   {
-    -1,					-1,
-    TYPE_BITFIELD,			CONF_VALUE_32_BIT(2),
-    &xx_event_bits[1],			0
-  },
-
-  {
-    -1,					-1,
-    TYPE_BITFIELD,			CONF_VALUE_8_BIT(3),
-    &xx_change.trigger_player,		CH_PLAYER_ANY
-  },
-  {
-    -1,					-1,
-    TYPE_BITFIELD,			CONF_VALUE_8_BIT(4),
-    &xx_change.trigger_side,		CH_SIDE_ANY
-  },
-  {
-    -1,					-1,
-    TYPE_BITFIELD,			CONF_VALUE_32_BIT(3),
-    &xx_change.trigger_page,		CH_PAGE_ANY
+    -1,						-1,
+    TYPE_BITFIELD,				CONF_VALUE_32_BIT(2),
+    &xx_event_bits[1],				0
   },
 
   {
-    -1,					-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &xx_change.target_element,		EL_EMPTY_SPACE
+    -1,						-1,
+    TYPE_BITFIELD,				CONF_VALUE_8_BIT(3),
+    &xx_change.trigger_player,			CH_PLAYER_ANY
+  },
+  {
+    -1,						-1,
+    TYPE_BITFIELD,				CONF_VALUE_8_BIT(4),
+    &xx_change.trigger_side,			CH_SIDE_ANY
+  },
+  {
+    -1,						-1,
+    TYPE_BITFIELD,				CONF_VALUE_32_BIT(3),
+    &xx_change.trigger_page,			CH_PAGE_ANY
   },
 
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(2),
-    &xx_change.delay_fixed,		0
-  },
-  {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(3),
-    &xx_change.delay_random,		0
-  },
-  {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(4),
-    &xx_change.delay_frames,		FRAMES_PER_SECOND
+    -1,						-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &xx_change.target_element,			EL_EMPTY_SPACE
   },
 
   {
-    -1,					-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(5),
-    &xx_change.initial_trigger_element,	EL_EMPTY_SPACE
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(2),
+    &xx_change.delay_fixed,			0
+  },
+  {
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(3),
+    &xx_change.delay_random,			0
+  },
+  {
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(4),
+    &xx_change.delay_frames,			FRAMES_PER_SECOND
   },
 
   {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(6),
-    &xx_change.explode,			FALSE
-  },
-  {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(7),
-    &xx_change.use_target_content,	FALSE
-  },
-  {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(8),
-    &xx_change.only_if_complete,	FALSE
-  },
-  {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(9),
-    &xx_change.use_random_replace,	FALSE
-  },
-  {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(10),
-    &xx_change.random_percentage,	100
-  },
-  {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(11),
-    &xx_change.replace_when,		CP_WHEN_EMPTY
+    -1,						-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(5),
+    &xx_change.initial_trigger_element,		EL_EMPTY_SPACE
   },
 
   {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(12),
-    &xx_change.has_action,		FALSE
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(6),
+    &xx_change.explode,				FALSE
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(13),
-    &xx_change.action_type,		CA_NO_ACTION
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(7),
+    &xx_change.use_target_content,		FALSE
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(14),
-    &xx_change.action_mode,		CA_MODE_UNDEFINED
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(8),
+    &xx_change.only_if_complete,		FALSE
   },
   {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_16_BIT(6),
-    &xx_change.action_arg,		CA_ARG_UNDEFINED
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(9),
+    &xx_change.use_random_replace,		FALSE
   },
-
   {
-    -1,					-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(7),
-    &xx_change.action_element,		EL_EMPTY_SPACE
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(10),
+    &xx_change.random_percentage,		100
   },
-
   {
-    -1,					-1,
-    TYPE_CONTENT_LIST,			CONF_VALUE_BYTES(1),
-    &xx_change.target_content,		EL_EMPTY_SPACE, NULL,
-    &xx_num_contents,			1, 1
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(11),
+    &xx_change.replace_when,			CP_WHEN_EMPTY
   },
 
   {
-    -1,					-1,
-    -1,					-1,
-    NULL,				-1
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(12),
+    &xx_change.has_action,			FALSE
+  },
+  {
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(13),
+    &xx_change.action_type,			CA_NO_ACTION
+  },
+  {
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(14),
+    &xx_change.action_mode,			CA_MODE_UNDEFINED
+  },
+  {
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_16_BIT(6),
+    &xx_change.action_arg,			CA_ARG_UNDEFINED
+  },
+
+  {
+    -1,						-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(7),
+    &xx_change.action_element,			EL_EMPTY_SPACE
+  },
+
+  {
+    -1,						-1,
+    TYPE_CONTENT_LIST,				CONF_VALUE_BYTES(1),
+    &xx_change.target_content,			EL_EMPTY_SPACE, NULL,
+    &xx_num_contents,				1, 1
+  },
+
+  {
+    -1,						-1,
+    -1,						-1,
+    NULL,					-1
   }
 };
 
 static struct LevelFileConfigInfo chunk_config_GRPX[] =
 {
   {
-    -1,					-1,
-    TYPE_STRING,			CONF_VALUE_BYTES(1),
-    &xx_ei.description[0],		-1, NULL,
-    &xx_string_length_unused,		-1, MAX_ELEMENT_NAME_LEN,
+    -1,						-1,
+    TYPE_STRING,				CONF_VALUE_BYTES(1),
+    &xx_ei.description[0],			-1, NULL,
+    &xx_string_length_unused,			-1, MAX_ELEMENT_NAME_LEN,
     &xx_default_description[0]
   },
 
   {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
-    &xx_ei.use_gfx_element,		FALSE
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
+    &xx_ei.use_gfx_element,			FALSE
   },
   {
-    -1,					-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &xx_ei.gfx_element_initial,		EL_EMPTY_SPACE
-  },
-
-  {
-    -1,					-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(2),
-    &xx_group.choice_mode,		ANIM_RANDOM
+    -1,						-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &xx_ei.gfx_element_initial,			EL_EMPTY_SPACE
   },
 
   {
-    -1,					-1,
-    TYPE_ELEMENT_LIST,			CONF_VALUE_BYTES(2),
-    &xx_group.element[0],		EL_EMPTY_SPACE, NULL,
-    &xx_group.num_elements,		1, MAX_ELEMENTS_IN_GROUP
+    -1,						-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(2),
+    &xx_group.choice_mode,			ANIM_RANDOM
   },
 
   {
-    -1,					-1,
-    -1,					-1,
-    NULL,				-1
+    -1,						-1,
+    TYPE_ELEMENT_LIST,				CONF_VALUE_BYTES(2),
+    &xx_group.element[0],			EL_EMPTY_SPACE, NULL,
+    &xx_group.num_elements,			1, MAX_ELEMENTS_IN_GROUP
+  },
+
+  {
+    -1,						-1,
+    -1,						-1,
+    NULL,					-1
   }
 };
 
 static struct LevelFileConfigInfo chunk_config_EMPX[] =
 {
   {
-    -1,					-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(1),
-    &xx_ei.use_gfx_element,		FALSE
+    -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
+    &xx_ei.use_gfx_element,			FALSE
   },
   {
-    -1,					-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &xx_ei.gfx_element_initial,		EL_EMPTY_SPACE
+    -1,						-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &xx_ei.gfx_element_initial,			EL_EMPTY_SPACE
   },
 
   {
-    -1,					-1,
-    -1,					-1,
-    NULL,				-1
+    -1,						-1,
+    -1,						-1,
+    NULL,					-1
   }
 };
 
 static struct LevelFileConfigInfo chunk_config_CONF[] =		// (OBSOLETE)
 {
   {
-    EL_PLAYER_1,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(9),
-    &li.block_snap_field,		TRUE
+    EL_PLAYER_1,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(9),
+    &li.block_snap_field,			TRUE
   },
   {
-    EL_PLAYER_1,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(13),
-    &li.continuous_snapping,		TRUE
+    EL_PLAYER_1,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(13),
+    &li.continuous_snapping,			TRUE
   },
   {
-    EL_PLAYER_1,			-1,
-    TYPE_INTEGER,			CONF_VALUE_8_BIT(1),
-    &li.initial_player_stepsize[0],	STEPSIZE_NORMAL
+    EL_PLAYER_1,				-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(1),
+    &li.initial_player_stepsize[0],		STEPSIZE_NORMAL
   },
   {
-    EL_PLAYER_1,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(10),
-    &li.use_start_element[0],		FALSE
+    EL_PLAYER_1,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(10),
+    &li.use_start_element[0],			FALSE
   },
   {
-    EL_PLAYER_1,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(1),
-    &li.start_element[0],		EL_PLAYER_1
+    EL_PLAYER_1,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(1),
+    &li.start_element[0],			EL_PLAYER_1
   },
   {
-    EL_PLAYER_1,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(11),
-    &li.use_artwork_element[0],		FALSE
+    EL_PLAYER_1,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(11),
+    &li.use_artwork_element[0],			FALSE
   },
   {
-    EL_PLAYER_1,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(2),
-    &li.artwork_element[0],		EL_PLAYER_1
+    EL_PLAYER_1,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(2),
+    &li.artwork_element[0],			EL_PLAYER_1
   },
   {
-    EL_PLAYER_1,			-1,
-    TYPE_BOOLEAN,			CONF_VALUE_8_BIT(12),
-    &li.use_explosion_element[0],	FALSE
+    EL_PLAYER_1,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(12),
+    &li.use_explosion_element[0],		FALSE
   },
   {
-    EL_PLAYER_1,			-1,
-    TYPE_ELEMENT,			CONF_VALUE_16_BIT(3),
-    &li.explosion_element[0],		EL_PLAYER_1
+    EL_PLAYER_1,				-1,
+    TYPE_ELEMENT,				CONF_VALUE_16_BIT(3),
+    &li.explosion_element[0],			EL_PLAYER_1
   },
 
   {
-    -1,					-1,
-    -1,					-1,
-    NULL,				-1
+    -1,						-1,
+    -1,						-1,
+    NULL,					-1
   }
 };
 
@@ -2431,8 +2427,7 @@ void setElementChangePages(struct ElementInfo *ei, int change_pages)
 
   ei->num_change_pages = MAX(1, change_pages);
 
-  ei->change_page =
-    checked_realloc(ei->change_page, ei->num_change_pages * change_page_size);
+  ei->change_page = checked_realloc(ei->change_page, ei->num_change_pages * change_page_size);
 
   if (ei->current_change_page >= ei->num_change_pages)
     ei->current_change_page = ei->num_change_pages - 1;
@@ -2610,8 +2605,7 @@ static void setLevelInfoToDefaults_Elements(struct LevelInfo *level)
       int j;
 
       for (j = 0; j < level->num_mm_ball_contents; j++)
-	level->mm_ball_content[j] =
-	  map_element_MM_to_RND(level_mm->ball_content[j]);
+	level->mm_ball_content[j] = map_element_MM_to_RND(level_mm->ball_content[j]);
     }
 
     // never initialize clipboard elements after the very first time
@@ -2701,8 +2695,7 @@ static void setLevelInfoToDefaults_Elements(struct LevelInfo *level)
   clipboard_elements_initialized = TRUE;
 }
 
-static void setLevelInfoToDefaults(struct LevelInfo *level,
-				   boolean level_info_only,
+static void setLevelInfoToDefaults(struct LevelInfo *level, boolean level_info_only,
 				   boolean prepare_loading_level)
 {
   setLevelInfoToDefaults_Level(level, prepare_loading_level);
@@ -2985,8 +2978,7 @@ char *getDefaultLevelFilename(int nr)
 }
 
 #if ENABLE_UNUSED_CODE
-static void setLevelFileInfo_SingleLevelFilename(struct LevelFileInfo *lfi,
-						 int type)
+static void setLevelFileInfo_SingleLevelFilename(struct LevelFileInfo *lfi, int type)
 {
   lfi->type = type;
   lfi->packed = FALSE;
@@ -2996,8 +2988,8 @@ static void setLevelFileInfo_SingleLevelFilename(struct LevelFileInfo *lfi,
 }
 #endif
 
-static void setLevelFileInfo_FormatLevelFilename(struct LevelFileInfo *lfi,
-						 int type, char *format, ...)
+static void setLevelFileInfo_FormatLevelFilename(struct LevelFileInfo *lfi, int type,
+                                                 char *format, ...)
 {
   static char basename[MAX_FILENAME_LEN];
   va_list ap;
@@ -3013,8 +3005,7 @@ static void setLevelFileInfo_FormatLevelFilename(struct LevelFileInfo *lfi,
   setString(&lfi->filename, getLevelFilenameFromBasename(lfi->basename));
 }
 
-static void setLevelFileInfo_PackedLevelFilename(struct LevelFileInfo *lfi,
-						 int type)
+static void setLevelFileInfo_PackedLevelFilename(struct LevelFileInfo *lfi, int type)
 {
   lfi->type = type;
   lfi->packed = TRUE;
@@ -3069,8 +3060,7 @@ static void determineLevelFileInfo_Filename(struct LevelFileInfo *lfi)
   // special case: level number is negative => check for level template file
   if (nr < 0)
   {
-    setLevelFileInfo_FormatLevelFilename(lfi, LEVEL_FILE_TYPE_RND,
-					 getSingleLevelBasename(-1));
+    setLevelFileInfo_FormatLevelFilename(lfi, LEVEL_FILE_TYPE_RND, getSingleLevelBasename(-1));
 
     // replace local level template filename with global template filename
     setString(&lfi->filename, getGlobalLevelTemplateFilename());
@@ -3084,8 +3074,7 @@ static void determineLevelFileInfo_Filename(struct LevelFileInfo *lfi)
   {
     int filetype = getFiletypeFromID(leveldir_current->level_filetype);
 
-    setLevelFileInfo_FormatLevelFilename(lfi, filetype,
-					 leveldir_current->level_filename, nr);
+    setLevelFileInfo_FormatLevelFilename(lfi, filetype, leveldir_current->level_filename, nr);
 
     lfi->packed = checkForPackageFromBasename(leveldir_current->level_filename);
 
@@ -3097,15 +3086,13 @@ static void determineLevelFileInfo_Filename(struct LevelFileInfo *lfi)
     int filetype = getFiletypeFromID(leveldir_current->level_filetype);
 
     // check for specified native level file with standard file name
-    setLevelFileInfo_FormatLevelFilename(lfi, filetype,
-					 "%03d.%s", nr, LEVELFILE_EXTENSION);
+    setLevelFileInfo_FormatLevelFilename(lfi, filetype, "%03d.%s", nr, LEVELFILE_EXTENSION);
     if (fileExists(lfi->filename))
       return;
   }
 
   // check for native Rocks'n'Diamonds level file
-  setLevelFileInfo_FormatLevelFilename(lfi, LEVEL_FILE_TYPE_RND,
-				       "%03d.%s", nr, LEVELFILE_EXTENSION);
+  setLevelFileInfo_FormatLevelFilename(lfi, LEVEL_FILE_TYPE_RND, "%03d.%s", nr, LEVELFILE_EXTENSION);
   if (fileExists(lfi->filename))
     return;
 
@@ -3151,8 +3138,7 @@ static void determineLevelFileInfo_Filename(struct LevelFileInfo *lfi)
     return;
 
   // no known level file found -- use default values (and fail later)
-  setLevelFileInfo_FormatLevelFilename(lfi, LEVEL_FILE_TYPE_RND,
-				       "%03d.%s", nr, LEVELFILE_EXTENSION);
+  setLevelFileInfo_FormatLevelFilename(lfi, LEVEL_FILE_TYPE_RND, "%03d.%s", nr, LEVELFILE_EXTENSION);
 }
 
 static void determineLevelFileInfo_Filetype(struct LevelFileInfo *lfi)
@@ -3316,8 +3302,7 @@ static int LoadLevel_HEAD(File *file, int chunk_size, struct LevelInfo *level)
   level->time_wheel		= getFile8Bit(file);
   level->amoeba_content		= getMappedElement(getFile8Bit(file));
 
-  initial_player_stepsize	= (getFile8Bit(file) == 1 ? STEPSIZE_FAST :
-				   STEPSIZE_NORMAL);
+  initial_player_stepsize	= (getFile8Bit(file) == 1 ? STEPSIZE_FAST : STEPSIZE_NORMAL);
 
   for (i = 0; i < MAX_PLAYERS; i++)
     level->initial_player_stepsize[i] = initial_player_stepsize;
@@ -3397,8 +3382,8 @@ static int LoadLevel_BODY(File *file, int chunk_size, struct LevelInfo *level)
   for (y = 0; y < level->fieldy; y++)
     for (x = 0; x < level->fieldx; x++)
       level->field[x][y] =
-	getMappedElement(level->encoding_16bit_field ? getFile16BitBE(file) :
-			 getFile8Bit(file));
+	getMappedElement(level->encoding_16bit_field ? getFile16BitBE(file) : getFile8Bit(file));
+
   return chunk_size;
 }
 
@@ -3420,6 +3405,7 @@ static int LoadLevel_CONT(File *file, int chunk_size, struct LevelInfo *level)
   if (chunk_size_expected != chunk_size)
   {
     ReadUnusedBytesFromFile(file, chunk_size);
+
     return chunk_size_expected;
   }
 
@@ -3437,8 +3423,8 @@ static int LoadLevel_CONT(File *file, int chunk_size, struct LevelInfo *level)
     for (y = 0; y < 3; y++)
       for (x = 0; x < 3; x++)
 	level->yamyam_content[i].e[x][y] =
-	  getMappedElement(level->encoding_16bit_field ?
-			   getFile16BitBE(file) : getFile8Bit(file));
+	  getMappedElement(level->encoding_16bit_field ? getFile16BitBE(file) : getFile8Bit(file));
+
   return chunk_size;
 }
 
@@ -3512,6 +3498,7 @@ static int LoadLevel_CNT3(File *file, int chunk_size, struct LevelInfo *level)
   if (chunk_size_expected != chunk_size)
   {
     ReadUnusedBytesFromFile(file, chunk_size - LEVEL_CHUNK_CNT3_HEADER);
+
     return chunk_size_expected;
   }
 
@@ -3530,6 +3517,7 @@ static int LoadLevel_CUS1(File *file, int chunk_size, struct LevelInfo *level)
   if (chunk_size_expected != chunk_size)
   {
     ReadUnusedBytesFromFile(file, chunk_size - 2);
+
     return chunk_size_expected;
   }
 
@@ -3563,6 +3551,7 @@ static int LoadLevel_CUS2(File *file, int chunk_size, struct LevelInfo *level)
   if (chunk_size_expected != chunk_size)
   {
     ReadUnusedBytesFromFile(file, chunk_size - 2);
+
     return chunk_size_expected;
   }
 
@@ -3591,6 +3580,7 @@ static int LoadLevel_CUS3(File *file, int chunk_size, struct LevelInfo *level)
   if (chunk_size_expected != chunk_size)
   {
     ReadUnusedBytesFromFile(file, chunk_size - 2);
+
     return chunk_size_expected;
   }
 
@@ -3659,8 +3649,7 @@ static int LoadLevel_CUS3(File *file, int chunk_size, struct LevelInfo *level)
 
     for (y = 0; y < 3; y++)
       for (x = 0; x < 3; x++)
-	ei->change->target_content.e[x][y] =
-	  getMappedElement(getFile16BitBE(file));
+	ei->change->target_content.e[x][y] = getMappedElement(getFile16BitBE(file));
 
     ei->slippery_type = getFile8Bit(file);
 
@@ -3712,6 +3701,7 @@ static int LoadLevel_CUS4(File *file, int chunk_size, struct LevelInfo *level)
   if (chunk_size_expected != chunk_size)
   {
     ReadUnusedBytesFromFile(file, chunk_size - 43);
+
     return chunk_size_expected;
   }
 
@@ -3940,8 +3930,7 @@ static int LoadLevel_MicroChunk(File *file, struct LevelFileConfigInfo *conf,
 	  int j;
 
 	  for (j = 0; j < num_entities; j++)
-	    element_array[j] =
-	      getMappedElement(CONF_ELEMENTS_ELEMENT(buffer, j));
+	    element_array[j] = getMappedElement(CONF_ELEMENTS_ELEMENT(buffer, j));
 	}
 	else if (data_type == TYPE_CONTENT_LIST)
 	{
@@ -3951,11 +3940,12 @@ static int LoadLevel_MicroChunk(File *file, struct LevelFileConfigInfo *conf,
 	  for (c = 0; c < num_entities; c++)
 	    for (y = 0; y < 3; y++)
 	      for (x = 0; x < 3; x++)
-		content[c].e[x][y] =
-		  getMappedElement(CONF_CONTENTS_ELEMENT(buffer, c, x, y));
+		content[c].e[x][y] = getMappedElement(CONF_CONTENTS_ELEMENT(buffer, c, x, y));
 	}
 	else
+	{
 	  element_found = FALSE;
+	}
 
 	break;
       }
@@ -4042,8 +4032,8 @@ static int LoadLevel_CONF(File *file, int chunk_size, struct LevelInfo *level)
     int element = getMappedElement(getFile16BitBE(file));
 
     real_chunk_size += 2;
-    real_chunk_size += LoadLevel_MicroChunk(file, chunk_config_CONF,
-					    element, element);
+    real_chunk_size += LoadLevel_MicroChunk(file, chunk_config_CONF, element, element);
+
     if (real_chunk_size >= chunk_size)
       break;
   }
@@ -4064,8 +4054,8 @@ static int LoadLevel_ELEM(File *file, int chunk_size, struct LevelInfo *level)
     int element = getMappedElement(getFile16BitBE(file));
 
     real_chunk_size += 2;
-    real_chunk_size += LoadLevel_MicroChunk(file, chunk_config_ELEM,
-					    element, element);
+    real_chunk_size += LoadLevel_MicroChunk(file, chunk_config_ELEM, element, element);
+
     if (real_chunk_size >= chunk_size)
       break;
   }
@@ -4085,8 +4075,7 @@ static int LoadLevel_NOTE(File *file, int chunk_size, struct LevelInfo *level)
 
   while (!checkEndOfFile(file))
   {
-    real_chunk_size += LoadLevel_MicroChunk(file, chunk_config_NOTE,
-					    -1, element);
+    real_chunk_size += LoadLevel_MicroChunk(file, chunk_config_NOTE, -1, element);
 
     if (real_chunk_size >= chunk_size)
       break;
@@ -4110,8 +4099,8 @@ static int LoadLevel_CUSX(File *file, int chunk_size, struct LevelInfo *level)
 
   while (!checkEndOfFile(file))
   {
-    real_chunk_size += LoadLevel_MicroChunk(file, chunk_config_CUSX_base,
-					    -1, element);
+    real_chunk_size += LoadLevel_MicroChunk(file, chunk_config_CUSX_base, -1, element);
+
     if (xx_ei.num_change_pages != -1)
       break;
 
@@ -4123,8 +4112,7 @@ static int LoadLevel_CUSX(File *file, int chunk_size, struct LevelInfo *level)
 
   if (ei->num_change_pages == -1)
   {
-    Warn("LoadLevel_CUSX(): missing 'num_change_pages' for '%s'",
-	 EL_NAME(element));
+    Warn("LoadLevel_CUSX(): missing 'num_change_pages' for '%s'", EL_NAME(element));
 
     ei->num_change_pages = 1;
 
@@ -4154,8 +4142,7 @@ static int LoadLevel_CUSX(File *file, int chunk_size, struct LevelInfo *level)
 
     resetEventBits();		// reset bits; change page might have changed
 
-    real_chunk_size += LoadLevel_MicroChunk(file, chunk_config_CUSX_change,
-					    -1, element);
+    real_chunk_size += LoadLevel_MicroChunk(file, chunk_config_CUSX_change, -1, element);
 
     *change = xx_change;
 
@@ -4185,8 +4172,7 @@ static int LoadLevel_GRPX(File *file, int chunk_size, struct LevelInfo *level)
 
   while (!checkEndOfFile(file))
   {
-    real_chunk_size += LoadLevel_MicroChunk(file, chunk_config_GRPX,
-					    -1, element);
+    real_chunk_size += LoadLevel_MicroChunk(file, chunk_config_GRPX, -1, element);
 
     if (real_chunk_size >= chunk_size)
       break;
@@ -4210,8 +4196,7 @@ static int LoadLevel_EMPX(File *file, int chunk_size, struct LevelInfo *level)
 
   while (!checkEndOfFile(file))
   {
-    real_chunk_size += LoadLevel_MicroChunk(file, chunk_config_EMPX,
-					    -1, element);
+    real_chunk_size += LoadLevel_MicroChunk(file, chunk_config_EMPX, -1, element);
 
     if (real_chunk_size >= chunk_size)
       break;
@@ -4355,35 +4340,30 @@ static void LoadLevelFromFileInfo_RND(struct LevelInfo *level,
     {
       int i = 0;
 
-      while (chunk_info[i].name != NULL &&
-	     !strEqual(chunk_name, chunk_info[i].name))
+      while (chunk_info[i].name != NULL && !strEqual(chunk_name, chunk_info[i].name))
 	i++;
 
       if (chunk_info[i].name == NULL)
       {
-	Warn("unknown chunk '%s' in level file '%s'",
-	     chunk_name, filename);
+	Warn("unknown chunk '%s' in level file '%s'", chunk_name, filename);
 
 	ReadUnusedBytesFromFile(file, chunk_size);
       }
       else if (chunk_info[i].size != -1 &&
 	       chunk_info[i].size != chunk_size)
       {
-	Warn("wrong size (%d) of chunk '%s' in level file '%s'",
-	     chunk_size, chunk_name, filename);
+	Warn("wrong size (%d) of chunk '%s' in level file '%s'", chunk_size, chunk_name, filename);
 
 	ReadUnusedBytesFromFile(file, chunk_size);
       }
       else
       {
 	// call function to load this level chunk
-	int chunk_size_expected =
-	  (chunk_info[i].loader)(file, chunk_size, level);
+	int chunk_size_expected = (chunk_info[i].loader)(file, chunk_size, level);
 
 	if (chunk_size_expected < 0)
 	{
-	  Warn("error reading chunk '%s' in level file '%s'",
-	       chunk_name, filename);
+	  Warn("error reading chunk '%s' in level file '%s'", chunk_name, filename);
 
 	  break;
 	}
@@ -4393,8 +4373,7 @@ static void LoadLevelFromFileInfo_RND(struct LevelInfo *level,
 	// information, so check them here
 	if (chunk_size_expected != chunk_size)
 	{
-	  Warn("wrong size (%d) of chunk '%s' in level file '%s'",
-	       chunk_size, chunk_name, filename);
+	  Warn("wrong size (%d) of chunk '%s' in level file '%s'", chunk_size, chunk_name, filename);
 
 	  break;
 	}
@@ -4975,8 +4954,7 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
   for (i = 0; i < MAX_ELEMENT_CONTENTS; i++)
     for (j = 0; j < 8; j++)
       cav->ball_array[i][j] =
-	map_element_RND_to_EM_cave(level->ball_content[i].
-				   e[ball_xy[j][0]][ball_xy[j][1]]);
+	map_element_RND_to_EM_cave(level->ball_content[i].e[ball_xy[j][0]][ball_xy[j][1]]);
 
   map_android_clone_elements_RND_to_EM(level);
 
@@ -5225,8 +5203,7 @@ static void CopyNativeLevel_SP_to_RND(struct LevelInfo *level)
       {
 	num_invalid_elements++;
 
-	Debug("level:native:SP", "invalid element %d at position %d, %d",
-	      element_old, x, y);
+	Debug("level:native:SP", "invalid element %d at position %d, %d", element_old, x, y);
       }
 
       level->field[x][y] = element_new;
@@ -5238,8 +5215,7 @@ static void CopyNativeLevel_SP_to_RND(struct LevelInfo *level)
 	 (!options.debug ? " (use '--debug' for more details)" : ""));
 
   for (i = 0; i < MAX_PLAYERS; i++)
-    level->initial_player_gravity[i] =
-      (header->InitialGravity == 1 ? TRUE : FALSE);
+    level->initial_player_gravity[i] = (header->InitialGravity == 1 ? TRUE : FALSE);
 
   // skip leading spaces
   for (i = 0; i < SP_LEVEL_NAME_LEN; i++)
@@ -5289,7 +5265,8 @@ static void CopyNativeLevel_SP_to_RND(struct LevelInfo *level)
     // change previous (wrong) gravity inverting special port to either
     // gravity enabling special port or gravity disabling special port
     level->field[port_x][port_y] +=
-      (gravity == 1 ? EL_SP_GRAVITY_ON_PORT_RIGHT :
+      (gravity == 1 ?
+       EL_SP_GRAVITY_ON_PORT_RIGHT :
        EL_SP_GRAVITY_OFF_PORT_RIGHT) - EL_SP_GRAVITY_PORT_RIGHT;
   }
 
@@ -5346,8 +5323,7 @@ static void CopyNativeTape_RND_to_SP(struct LevelInfo *level)
 
     if (demo->length + demo_entries >= SP_MAX_TAPE_LEN)
     {
-      Warn("tape truncated: size exceeds maximum SP demo size %d",
-	   SP_MAX_TAPE_LEN);
+      Warn("tape truncated: size exceeds maximum SP demo size %d", SP_MAX_TAPE_LEN);
 
       break;
     }
@@ -5398,8 +5374,7 @@ static void CopyNativeTape_SP_to_RND(struct LevelInfo *level)
 
     if (!success)
     {
-      Warn("SP demo truncated: size exceeds maximum tape size %d",
-	   MAX_TAPE_LEN);
+      Warn("SP demo truncated: size exceeds maximum tape size %d", MAX_TAPE_LEN);
 
       break;
     }
@@ -5454,13 +5429,11 @@ static void CopyNativeLevel_RND_to_MM(struct LevelInfo *level)
   level_mm->explode_ball = level->explode_mm_ball;
 
   for (i = 0; i < level->num_mm_ball_contents; i++)
-    level_mm->ball_content[i] =
-      map_element_RND_to_MM(level->mm_ball_content[i]);
+    level_mm->ball_content[i] = map_element_RND_to_MM(level->mm_ball_content[i]);
 
   for (x = 0; x < level->fieldx; x++)
     for (y = 0; y < level->fieldy; y++)
-      Ur[x][y] =
-	level_mm->field[x][y] = map_element_RND_to_MM(level->field[x][y]);
+      Ur[x][y] = level_mm->field[x][y] = map_element_RND_to_MM(level->field[x][y]);
 }
 
 static void CopyNativeLevel_MM_to_RND(struct LevelInfo *level)
@@ -5508,8 +5481,7 @@ static void CopyNativeLevel_MM_to_RND(struct LevelInfo *level)
   level->explode_mm_ball = level_mm->explode_ball;
 
   for (i = 0; i < level->num_mm_ball_contents; i++)
-    level->mm_ball_content[i] =
-      map_element_MM_to_RND(level_mm->ball_content[i]);
+    level->mm_ball_content[i] = map_element_MM_to_RND(level_mm->ball_content[i]);
 
   for (x = 0; x < level->fieldx; x++)
     for (y = 0; y < level->fieldy; y++)
@@ -5523,8 +5495,7 @@ static void CopyNativeLevel_MM_to_RND(struct LevelInfo *level)
 
 #define DC_LEVEL_HEADER_SIZE		344
 
-static unsigned short getDecodedWord_DC(unsigned short data_encoded,
-					boolean init)
+static unsigned short getDecodedWord_DC(unsigned short data_encoded, boolean init)
 {
   static int last_data_encoded;
   static int offset1;
@@ -7026,7 +6997,8 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
   // do some simple sanity checks to ensure that level was correctly decoded
   if (fieldx < 1 || fieldx > 256 ||
       fieldy < 1 || fieldy > 256 ||
-      num_yamyam_contents < 1 || num_yamyam_contents > 8)
+      num_yamyam_contents < 1 ||
+      num_yamyam_contents > 8)
   {
     level->no_valid_file = TRUE;
 
@@ -7049,8 +7021,7 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
 
   for (i = 0; i < envelope_header_len; i++)
     if (envelope_size < MAX_ENVELOPE_TEXT_LEN)
-      level->envelope[0].text[envelope_size++] =
-	header[envelope_header_pos + 1 + i];
+      level->envelope[0].text[envelope_size++] = header[envelope_header_pos + 1 + i];
 
   if (envelope_header_len > 0 && envelope_content_len > 0)
   {
@@ -7265,16 +7236,16 @@ int getMappedElement_SB(int element_ascii, boolean use_ces)
   }
   sb_element_mapping[] =
   {
-    { ' ', EL_EMPTY,                EL_CUSTOM_1 },  // floor (space)
-    { '#', EL_STEELWALL,            EL_CUSTOM_2 },  // wall
-    { '@', EL_PLAYER_1,             EL_CUSTOM_3 },  // player
-    { '$', EL_SOKOBAN_OBJECT,       EL_CUSTOM_4 },  // box
-    { '.', EL_SOKOBAN_FIELD_EMPTY,  EL_CUSTOM_5 },  // goal square
-    { '*', EL_SOKOBAN_FIELD_FULL,   EL_CUSTOM_6 },  // box on goal square
-    { '+', EL_SOKOBAN_FIELD_PLAYER, EL_CUSTOM_7 },  // player on goal square
-    { '_', EL_INVISIBLE_STEELWALL,  EL_FROM_LEVEL_TEMPLATE },  // floor beyond border
+    { ' ', EL_EMPTY,			EL_CUSTOM_1		},	// floor (space)
+    { '#', EL_STEELWALL,		EL_CUSTOM_2		},	// wall
+    { '@', EL_PLAYER_1,			EL_CUSTOM_3		},	// player
+    { '$', EL_SOKOBAN_OBJECT,		EL_CUSTOM_4		},	// box
+    { '.', EL_SOKOBAN_FIELD_EMPTY,	EL_CUSTOM_5		},	// goal square
+    { '*', EL_SOKOBAN_FIELD_FULL,	EL_CUSTOM_6		},	// box on goal square
+    { '+', EL_SOKOBAN_FIELD_PLAYER,	EL_CUSTOM_7		},	// player on goal square
+    { '_', EL_INVISIBLE_STEELWALL,	EL_FROM_LEVEL_TEMPLATE	},	// floor beyond border
 
-    { 0,   -1,                      -1          },
+    { 0,   -1,				-1			},
   };
 
   int i;
@@ -7524,8 +7495,10 @@ static void LoadLevelFromFileInfo_SB(struct LevelInfo *level,
     if ((x == 0 || x == level->fieldx - 1 ||
 	 y == 0 || y == level->fieldy - 1) &&
 	level->field[x][y] == getMappedElement_SB(' ', load_xsb_to_ces))
+    {
       FloodFillLevel(x, y, getMappedElement_SB('_', load_xsb_to_ces),
 		     level->field, level->fieldx, level->fieldy);
+    }
   }
 
   // set special level settings for Sokoban levels
@@ -8029,10 +8002,8 @@ static void LoadLevel_InitSettings(struct LevelInfo *level)
 
   // rename levels with title "nameless level" or if renaming is forced
   if (leveldir_current->empty_level_name != NULL &&
-      (strEqual(level->name, NAMELESS_LEVEL_NAME) ||
-       leveldir_current->force_level_name))
-    snprintf(level->name, MAX_LEVEL_NAME_LEN + 1,
-	     leveldir_current->empty_level_name, level_nr);
+      (strEqual(level->name, NAMELESS_LEVEL_NAME) || leveldir_current->force_level_name))
+    snprintf(level->name, MAX_LEVEL_NAME_LEN + 1, leveldir_current->empty_level_name, level_nr);
 
   // initialize level specific colors
   LoadLevel_InitColorSettings(level);
@@ -8043,15 +8014,13 @@ static void LoadLevel_InitStandardElements(struct LevelInfo *level)
   int i, x, y;
 
   // map elements that have changed in newer versions
-  level->amoeba_content = getMappedElementByVersion(level->amoeba_content,
-						    level->game_version);
+  level->amoeba_content = getMappedElementByVersion(level->amoeba_content, level->game_version);
+
   for (i = 0; i < MAX_ELEMENT_CONTENTS; i++)
     for (x = 0; x < 3; x++)
       for (y = 0; y < 3; y++)
 	level->yamyam_content[i].e[x][y] =
-	  getMappedElementByVersion(level->yamyam_content[i].e[x][y],
-				    level->game_version);
-
+	  getMappedElementByVersion(level->yamyam_content[i].e[x][y], level->game_version);
 }
 
 static void LoadLevel_InitCustomElements(struct LevelInfo *level)
@@ -8225,8 +8194,7 @@ static void LoadLevel_InitPlayfield(struct LevelInfo *level)
   // map elements that have changed in newer versions
   for (y = 0; y < level->fieldy; y++)
     for (x = 0; x < level->fieldx; x++)
-      level->field[x][y] = getMappedElementByVersion(level->field[x][y],
-						     level->game_version);
+      level->field[x][y] = getMappedElementByVersion(level->field[x][y], level->game_version);
 
   // clear unused playfield data (nicer if level gets resized in editor)
   for (x = 0; x < MAX_LEV_FIELDX; x++)
@@ -8334,8 +8302,7 @@ void LoadLevelInfoOnly(int nr)
 
 void LoadNetworkLevel(struct NetworkLevelInfo *network_level)
 {
-  SetLevelSetInfo(network_level->leveldir_identifier,
-		  network_level->file_info.nr);
+  SetLevelSetInfo(network_level->leveldir_identifier, network_level->file_info.nr);
 
   copyLevelFileInfo(&network_level->file_info, &level.file_info);
 
@@ -8385,11 +8352,11 @@ static void SaveLevel_HEAD(FILE *file, struct LevelInfo *level)
       for (x = 0; x < 3; x++)
 	putFile8Bit(file, (level->encoding_16bit_yamyam ? EL_EMPTY :
 			   level->yamyam_content[i].e[x][y]));
+
   putFile8Bit(file, level->amoeba_speed);
   putFile8Bit(file, level->time_magic_wall);
   putFile8Bit(file, level->time_wheel);
-  putFile8Bit(file, (level->encoding_16bit_amoeba ? EL_EMPTY :
-		     level->amoeba_content));
+  putFile8Bit(file, (level->encoding_16bit_amoeba ? EL_EMPTY : level->amoeba_content));
   putFile8Bit(file, (level->initial_player_stepsize == STEPSIZE_FAST ? 1 : 0));
   putFile8Bit(file, (level->initial_gravity ? 1 : 0));
   putFile8Bit(file, (level->encoding_16bit_field ? 1 : 0));
@@ -8868,8 +8835,7 @@ static int SaveLevel_MicroChunk(FILE *file, struct LevelFileConfigInfo *entry,
   if (byte_mask != CONF_MASK_MULTI_BYTES)
   {
     void *value_ptr = entry->value;
-    int value = (data_type == TYPE_BOOLEAN ? *(boolean *)value_ptr :
-		 *(int *)value_ptr);
+    int value = (data_type == TYPE_BOOLEAN ? *(boolean *)value_ptr : *(int *)value_ptr);
 
     // check if any settings have been modified before saving them
     if (value != default_value)
@@ -9043,8 +9009,7 @@ static int SaveLevel_CUSX(FILE *file, struct LevelInfo *level, int element)
     setEventBitsFromEventFlags(change);
 
     for (j = 0; chunk_config_CUSX_change[j].data_type != -1; j++)
-      chunk_size += SaveLevel_MicroChunk(file, &chunk_config_CUSX_change[j],
-					 FALSE);
+      chunk_size += SaveLevel_MicroChunk(file, &chunk_config_CUSX_change[j], FALSE);
   }
 
   return chunk_size;
@@ -9297,8 +9262,7 @@ void DumpLevels(void)
 {
   static LevelDirTree *dumplevel_leveldir = NULL;
 
-  dumplevel_leveldir = getTreeInfoFromIdentifier(leveldir_first,
-						 global.dumplevel_leveldir);
+  dumplevel_leveldir = getTreeInfoFromIdentifier(leveldir_first, global.dumplevel_leveldir);
 
   if (dumplevel_leveldir == NULL)
     Fail("no such level identifier: '%s'", global.dumplevel_leveldir);
@@ -9338,8 +9302,8 @@ void DumpLevelset(void)
 {
   static LevelDirTree *dumplevelset_leveldir = NULL;
 
-  dumplevelset_leveldir = getTreeInfoFromIdentifier(leveldir_first,
-                                                    global.dumplevelset_leveldir);
+  dumplevelset_leveldir = getTreeInfoFromIdentifier(leveldir_first, global.dumplevelset_leveldir);
+
   if (dumplevelset_leveldir == NULL)
     Fail("no such level identifier: '%s'", global.dumplevelset_leveldir);
 
@@ -10209,8 +10173,7 @@ void DumpTapes(void)
 {
   static LevelDirTree *dumptape_leveldir = NULL;
 
-  dumptape_leveldir = getTreeInfoFromIdentifier(leveldir_first,
-						global.dumptape_leveldir);
+  dumptape_leveldir = getTreeInfoFromIdentifier(leveldir_first, global.dumptape_leveldir);
 
   if (dumptape_leveldir == NULL)
     Fail("no such level identifier: '%s'", global.dumptape_leveldir);
@@ -10326,6 +10289,7 @@ static void LoadScore_OLD(int nr)
       {
 	strncpy(scores.entry[i].name, line_ptr, MAX_PLAYER_NAME_LEN);
 	scores.entry[i].name[MAX_PLAYER_NAME_LEN] = '\0';
+
 	break;
       }
     }
@@ -10540,14 +10504,12 @@ void LoadScore(int nr)
     {
       int i = 0;
 
-      while (chunk_info[i].name != NULL &&
-	     !strEqual(chunk_name, chunk_info[i].name))
+      while (chunk_info[i].name != NULL && !strEqual(chunk_name, chunk_info[i].name))
 	i++;
 
       if (chunk_info[i].name == NULL)
       {
-	Warn("unknown chunk '%s' in score file '%s'",
-	      chunk_name, filename);
+	Warn("unknown chunk '%s' in score file '%s'", chunk_name, filename);
 
 	ReadUnusedBytesFromFile(file, chunk_size);
       }
@@ -10562,8 +10524,7 @@ void LoadScore(int nr)
       else
       {
 	// call function to load this score chunk
-	int chunk_size_expected =
-	  (chunk_info[i].loader)(file, chunk_size, &scores);
+	int chunk_size_expected = (chunk_info[i].loader)(file, chunk_size, &scores);
 
 	// the size of some chunks cannot be checked before reading other
 	// chunks first (like "HEAD" and "BODY") that contain some header
@@ -10890,8 +10851,7 @@ void SaveServerScore(int nr, boolean tape_saved)
   ApiAddScoreAsThread(nr, tape_saved, NULL);
 }
 
-void SaveServerScoreFromFile(int nr, boolean tape_saved,
-			     char *score_tape_filename)
+void SaveServerScoreFromFile(int nr, boolean tape_saved, char *score_tape_filename)
 {
   if (!runtime.use_api_server)
     return;
@@ -12011,100 +11971,100 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
 {
   int i;
 
-  si->player_name = getStringCopy(getDefaultUserName(user.nr));
+  si->player_name			= getStringCopy(getDefaultUserName(user.nr));
 
-  si->multiple_users = TRUE;
+  si->multiple_users			= TRUE;
 
-  si->sound = TRUE;
-  si->sound_loops = TRUE;
-  si->sound_music = TRUE;
-  si->sound_simple = TRUE;
-  si->toons = TRUE;
-  si->global_animations = TRUE;
-  si->scroll_delay = TRUE;
-  si->forced_scroll_delay = FALSE;
-  si->scroll_delay_value = STD_SCROLL_DELAY;
-  si->engine_snapshot_mode = getStringCopy(STR_SNAPSHOT_MODE_DEFAULT);
-  si->engine_snapshot_memory = SNAPSHOT_MEMORY_DEFAULT;
-  si->fade_screens = TRUE;
-  si->autorecord = TRUE;
-  si->autorecord_after_replay = TRUE;
-  si->auto_pause_on_start = FALSE;
-  si->show_titlescreen = TRUE;
-  si->show_level_story = STATE_ONCE;
-  si->quick_doors = FALSE;
-  si->team_mode = FALSE;
-  si->handicap = TRUE;
-  si->skip_levels = TRUE;
-  si->allow_skipping_levels = ARG_UNDEFINED_VALUE;
-  si->increment_levels = TRUE;
-  si->auto_play_next_level = TRUE;
-  si->count_score_after_game = TRUE;
-  si->show_scores_after_game = TRUE;
-  si->time_limit = TRUE;
-  si->fullscreen = FALSE;
-  si->window_scaling_percent = STD_WINDOW_SCALING_PERCENT;
-  si->window_scaling_quality = getStringCopy(SCALING_QUALITY_DEFAULT);
-  si->screen_rendering_mode = getStringCopy(STR_SPECIAL_RENDERING_DEFAULT);
-  si->vsync_mode = getStringCopy(STR_VSYNC_MODE_DEFAULT);
-  si->ask_on_escape = TRUE;
-  si->ask_on_escape_editor = TRUE;
-  si->ask_on_save_tape = TRUE;
-  si->ask_on_game_over = TRUE;
-  si->ask_on_quit_game = TRUE;
-  si->ask_on_quit_program = TRUE;
-  si->quick_switch = FALSE;
-  si->input_on_focus = FALSE;
-  si->prefer_aga_graphics = TRUE;
-  si->prefer_lowpass_sounds = FALSE;
-  si->show_extra_panel_items = FALSE;
-  si->game_speed_extended = FALSE;
-  si->game_frame_delay = GAME_FRAME_DELAY;
-  si->default_game_engine_type	= GAME_ENGINE_TYPE_RND;
-  si->bd_multiple_lives = FALSE;
-  si->bd_skip_uncovering = FALSE;
-  si->bd_skip_hatching = FALSE;
-  si->bd_scroll_delay = TRUE;
-  si->bd_show_invisible_outbox = FALSE;
-  si->bd_smooth_movements = STATE_TRUE;
-  si->bd_pushing_graphics = STATE_TRUE;
-  si->bd_up_down_graphics = STATE_TRUE;
-  si->bd_falling_sounds = STATE_AUTO;
-  si->bd_palette_c64 = GD_DEFAULT_PALETTE_C64;
-  si->bd_palette_c64dtv = GD_DEFAULT_PALETTE_C64DTV;
-  si->bd_palette_atari = GD_DEFAULT_PALETTE_ATARI;
-  si->bd_default_color_type = GD_DEFAULT_COLOR_TYPE;
-  si->bd_random_colors = FALSE;
-  si->sp_show_border_elements = FALSE;
-  si->small_game_graphics = FALSE;
-  si->show_load_save_buttons = FALSE;
-  si->show_undo_redo_buttons = FALSE;
-  si->show_menu_to_save_setup = FALSE;
-  si->scores_in_highscore_list = getStringCopy(STR_SCORES_TYPE_DEFAULT);
+  si->sound				= TRUE;
+  si->sound_loops			= TRUE;
+  si->sound_music			= TRUE;
+  si->sound_simple			= TRUE;
+  si->toons				= TRUE;
+  si->global_animations			= TRUE;
+  si->scroll_delay			= TRUE;
+  si->forced_scroll_delay		= FALSE;
+  si->scroll_delay_value		= STD_SCROLL_DELAY;
+  si->engine_snapshot_mode		= getStringCopy(STR_SNAPSHOT_MODE_DEFAULT);
+  si->engine_snapshot_memory		= SNAPSHOT_MEMORY_DEFAULT;
+  si->fade_screens			= TRUE;
+  si->autorecord			= TRUE;
+  si->autorecord_after_replay		= TRUE;
+  si->auto_pause_on_start		= FALSE;
+  si->show_titlescreen			= TRUE;
+  si->show_level_story			= STATE_ONCE;
+  si->quick_doors			= FALSE;
+  si->team_mode				= FALSE;
+  si->handicap				= TRUE;
+  si->skip_levels			= TRUE;
+  si->allow_skipping_levels		= ARG_UNDEFINED_VALUE;
+  si->increment_levels			= TRUE;
+  si->auto_play_next_level		= TRUE;
+  si->count_score_after_game		= TRUE;
+  si->show_scores_after_game		= TRUE;
+  si->time_limit			= TRUE;
+  si->fullscreen			= FALSE;
+  si->window_scaling_percent		= STD_WINDOW_SCALING_PERCENT;
+  si->window_scaling_quality		= getStringCopy(SCALING_QUALITY_DEFAULT);
+  si->screen_rendering_mode		= getStringCopy(STR_SPECIAL_RENDERING_DEFAULT);
+  si->vsync_mode			= getStringCopy(STR_VSYNC_MODE_DEFAULT);
+  si->ask_on_escape			= TRUE;
+  si->ask_on_escape_editor		= TRUE;
+  si->ask_on_save_tape			= TRUE;
+  si->ask_on_game_over			= TRUE;
+  si->ask_on_quit_game			= TRUE;
+  si->ask_on_quit_program		= TRUE;
+  si->quick_switch			= FALSE;
+  si->input_on_focus			= FALSE;
+  si->prefer_aga_graphics		= TRUE;
+  si->prefer_lowpass_sounds		= FALSE;
+  si->show_extra_panel_items		= FALSE;
+  si->game_speed_extended		= FALSE;
+  si->game_frame_delay			= GAME_FRAME_DELAY;
+  si->default_game_engine_type		= GAME_ENGINE_TYPE_RND;
+  si->bd_multiple_lives			= FALSE;
+  si->bd_skip_uncovering		= FALSE;
+  si->bd_skip_hatching			= FALSE;
+  si->bd_scroll_delay			= TRUE;
+  si->bd_show_invisible_outbox		= FALSE;
+  si->bd_smooth_movements		= STATE_TRUE;
+  si->bd_pushing_graphics		= STATE_TRUE;
+  si->bd_up_down_graphics		= STATE_TRUE;
+  si->bd_falling_sounds			= STATE_AUTO;
+  si->bd_palette_c64			= GD_DEFAULT_PALETTE_C64;
+  si->bd_palette_c64dtv			= GD_DEFAULT_PALETTE_C64DTV;
+  si->bd_palette_atari			= GD_DEFAULT_PALETTE_ATARI;
+  si->bd_default_color_type		= GD_DEFAULT_COLOR_TYPE;
+  si->bd_random_colors			= FALSE;
+  si->sp_show_border_elements		= FALSE;
+  si->small_game_graphics		= FALSE;
+  si->show_load_save_buttons		= FALSE;
+  si->show_undo_redo_buttons		= FALSE;
+  si->show_menu_to_save_setup		= FALSE;
+  si->scores_in_highscore_list		= getStringCopy(STR_SCORES_TYPE_DEFAULT);
 
-  si->graphics_set = getStringCopy(GFX_CLASSIC_SUBDIR);
-  si->sounds_set   = getStringCopy(SND_CLASSIC_SUBDIR);
-  si->music_set    = getStringCopy(MUS_CLASSIC_SUBDIR);
+  si->graphics_set			= getStringCopy(GFX_CLASSIC_SUBDIR);
+  si->sounds_set  			= getStringCopy(SND_CLASSIC_SUBDIR);
+  si->music_set   			= getStringCopy(MUS_CLASSIC_SUBDIR);
 
-  si->override_level_graphics = STATE_FALSE;
-  si->override_level_sounds = STATE_FALSE;
-  si->override_level_music = STATE_FALSE;
+  si->override_level_graphics		= STATE_FALSE;
+  si->override_level_sounds		= STATE_FALSE;
+  si->override_level_music		= STATE_FALSE;
 
-  si->volume_simple = 100;		// percent
-  si->volume_loops = 100;		// percent
-  si->volume_music = 100;		// percent
-  si->audio_sample_rate_44100 = FALSE;
+  si->volume_simple			= 100;					// percent
+  si->volume_loops			= 100;					// percent
+  si->volume_music			= 100;					// percent
+  si->audio_sample_rate_44100		= FALSE;
 
-  si->network_mode = FALSE;
-  si->network_player_nr = 0;		// first player
-  si->network_server_hostname = getStringCopy(STR_NETWORK_AUTO_DETECT);
+  si->network_mode			= FALSE;
+  si->network_player_nr			= 0;					// first player
+  si->network_server_hostname		= getStringCopy(STR_NETWORK_AUTO_DETECT);
 
-  si->touch.control_type = getStringCopy(TOUCH_CONTROL_DEFAULT);
-  si->touch.move_distance = TOUCH_MOVE_DISTANCE_DEFAULT;	// percent
-  si->touch.drop_distance = TOUCH_DROP_DISTANCE_DEFAULT;	// percent
-  si->touch.transparency = TOUCH_TRANSPARENCY_DEFAULT;		// percent
-  si->touch.draw_outlined = TRUE;
-  si->touch.draw_pressed = TRUE;
+  si->touch.control_type		= getStringCopy(TOUCH_CONTROL_DEFAULT);
+  si->touch.move_distance		= TOUCH_MOVE_DISTANCE_DEFAULT;		// percent
+  si->touch.drop_distance		= TOUCH_DROP_DISTANCE_DEFAULT;		// percent
+  si->touch.transparency		= TOUCH_TRANSPARENCY_DEFAULT;		// percent
+  si->touch.draw_outlined		= TRUE;
+  si->touch.draw_pressed		= TRUE;
 
   for (i = 0; i < 2; i++)
   {
@@ -12144,13 +12104,11 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
 
     for (x = 0; x < min_xsize; x++)
       for (y = 0; y < min_ysize; y++)
-	si->touch.grid_button[i][x][starty + y] =
-	  default_grid_button[y][0][x];
+	si->touch.grid_button[i][x][starty + y] = default_grid_button[y][0][x];
 
     for (x = 0; x < min_xsize; x++)
       for (y = 0; y < min_ysize; y++)
-	si->touch.grid_button[i][startx + x][starty + y] =
-	  default_grid_button[y][1][x];
+	si->touch.grid_button[i][startx + x][starty + y] = default_grid_button[y][1][x];
   }
 
   si->touch.grid_initialized		= video.initialized;
@@ -12191,129 +12149,129 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
 
   si->editor.use_template_for_new_levels = TRUE;
 
-  si->shortcut.save_game	= DEFAULT_KEY_SAVE_GAME;
-  si->shortcut.load_game	= DEFAULT_KEY_LOAD_GAME;
-  si->shortcut.restart_game	= DEFAULT_KEY_RESTART_GAME;
-  si->shortcut.pause_before_end	= DEFAULT_KEY_PAUSE_BEFORE_END;
-  si->shortcut.toggle_pause	= DEFAULT_KEY_TOGGLE_PAUSE;
+  si->shortcut.save_game		= DEFAULT_KEY_SAVE_GAME;
+  si->shortcut.load_game		= DEFAULT_KEY_LOAD_GAME;
+  si->shortcut.restart_game		= DEFAULT_KEY_RESTART_GAME;
+  si->shortcut.pause_before_end		= DEFAULT_KEY_PAUSE_BEFORE_END;
+  si->shortcut.toggle_pause		= DEFAULT_KEY_TOGGLE_PAUSE;
 
-  si->shortcut.focus_player[0]	= DEFAULT_KEY_FOCUS_PLAYER_1;
-  si->shortcut.focus_player[1]	= DEFAULT_KEY_FOCUS_PLAYER_2;
-  si->shortcut.focus_player[2]	= DEFAULT_KEY_FOCUS_PLAYER_3;
-  si->shortcut.focus_player[3]	= DEFAULT_KEY_FOCUS_PLAYER_4;
-  si->shortcut.focus_player_all	= DEFAULT_KEY_FOCUS_PLAYER_ALL;
+  si->shortcut.focus_player[0]		= DEFAULT_KEY_FOCUS_PLAYER_1;
+  si->shortcut.focus_player[1]		= DEFAULT_KEY_FOCUS_PLAYER_2;
+  si->shortcut.focus_player[2]		= DEFAULT_KEY_FOCUS_PLAYER_3;
+  si->shortcut.focus_player[3]		= DEFAULT_KEY_FOCUS_PLAYER_4;
+  si->shortcut.focus_player_all		= DEFAULT_KEY_FOCUS_PLAYER_ALL;
 
-  si->shortcut.tape_eject	= DEFAULT_KEY_TAPE_EJECT;
-  si->shortcut.tape_extra	= DEFAULT_KEY_TAPE_EXTRA;
-  si->shortcut.tape_stop	= DEFAULT_KEY_TAPE_STOP;
-  si->shortcut.tape_pause	= DEFAULT_KEY_TAPE_PAUSE;
-  si->shortcut.tape_record	= DEFAULT_KEY_TAPE_RECORD;
-  si->shortcut.tape_play	= DEFAULT_KEY_TAPE_PLAY;
+  si->shortcut.tape_eject		= DEFAULT_KEY_TAPE_EJECT;
+  si->shortcut.tape_extra		= DEFAULT_KEY_TAPE_EXTRA;
+  si->shortcut.tape_stop		= DEFAULT_KEY_TAPE_STOP;
+  si->shortcut.tape_pause		= DEFAULT_KEY_TAPE_PAUSE;
+  si->shortcut.tape_record		= DEFAULT_KEY_TAPE_RECORD;
+  si->shortcut.tape_play		= DEFAULT_KEY_TAPE_PLAY;
 
-  si->shortcut.sound_simple	= DEFAULT_KEY_SOUND_SIMPLE;
-  si->shortcut.sound_loops	= DEFAULT_KEY_SOUND_LOOPS;
-  si->shortcut.sound_music	= DEFAULT_KEY_SOUND_MUSIC;
+  si->shortcut.sound_simple		= DEFAULT_KEY_SOUND_SIMPLE;
+  si->shortcut.sound_loops		= DEFAULT_KEY_SOUND_LOOPS;
+  si->shortcut.sound_music		= DEFAULT_KEY_SOUND_MUSIC;
 
-  si->shortcut.snap_left	= DEFAULT_KEY_SNAP_LEFT;
-  si->shortcut.snap_right	= DEFAULT_KEY_SNAP_RIGHT;
-  si->shortcut.snap_up		= DEFAULT_KEY_SNAP_UP;
-  si->shortcut.snap_down	= DEFAULT_KEY_SNAP_DOWN;
+  si->shortcut.snap_left		= DEFAULT_KEY_SNAP_LEFT;
+  si->shortcut.snap_right		= DEFAULT_KEY_SNAP_RIGHT;
+  si->shortcut.snap_up			= DEFAULT_KEY_SNAP_UP;
+  si->shortcut.snap_down		= DEFAULT_KEY_SNAP_DOWN;
 
-  si->shortcut.speed_fast	= DEFAULT_KEY_SPEED_FAST;
-  si->shortcut.speed_slow	= DEFAULT_KEY_SPEED_SLOW;
+  si->shortcut.speed_fast		= DEFAULT_KEY_SPEED_FAST;
+  si->shortcut.speed_slow		= DEFAULT_KEY_SPEED_SLOW;
 
-  si->shortcut.suicide		= DEFAULT_KEY_SUICIDE;
-  si->shortcut.toggle_panel	= DEFAULT_KEY_TOGGLE_PANEL;
+  si->shortcut.suicide			= DEFAULT_KEY_SUICIDE;
+  si->shortcut.toggle_panel		= DEFAULT_KEY_TOGGLE_PANEL;
 
   for (i = 0; i < MAX_PLAYERS; i++)
   {
-    si->input[i].use_joystick = FALSE;
-    si->input[i].joy.device_name = getStringCopy(getDeviceNameFromJoystickNr(i));
-    si->input[i].joy.xleft   = JOYSTICK_XLEFT;
-    si->input[i].joy.xmiddle = JOYSTICK_XMIDDLE;
-    si->input[i].joy.xright  = JOYSTICK_XRIGHT;
-    si->input[i].joy.yupper  = JOYSTICK_YUPPER;
-    si->input[i].joy.ymiddle = JOYSTICK_YMIDDLE;
-    si->input[i].joy.ylower  = JOYSTICK_YLOWER;
-    si->input[i].joy.snap  = (i == 0 ? JOY_BUTTON_1 : 0);
-    si->input[i].joy.drop  = (i == 0 ? JOY_BUTTON_2 : 0);
-    si->input[i].key.left  = (i == 0 ? DEFAULT_KEY_LEFT  : KSYM_UNDEFINED);
-    si->input[i].key.right = (i == 0 ? DEFAULT_KEY_RIGHT : KSYM_UNDEFINED);
-    si->input[i].key.up    = (i == 0 ? DEFAULT_KEY_UP    : KSYM_UNDEFINED);
-    si->input[i].key.down  = (i == 0 ? DEFAULT_KEY_DOWN  : KSYM_UNDEFINED);
-    si->input[i].key.snap  = (i == 0 ? DEFAULT_KEY_SNAP  : KSYM_UNDEFINED);
-    si->input[i].key.drop  = (i == 0 ? DEFAULT_KEY_DROP  : KSYM_UNDEFINED);
+    si->input[i].use_joystick		= FALSE;
+    si->input[i].joy.device_name	= getStringCopy(getDeviceNameFromJoystickNr(i));
+    si->input[i].joy.xleft  		= JOYSTICK_XLEFT;
+    si->input[i].joy.xmiddle		= JOYSTICK_XMIDDLE;
+    si->input[i].joy.xright 		= JOYSTICK_XRIGHT;
+    si->input[i].joy.yupper 		= JOYSTICK_YUPPER;
+    si->input[i].joy.ymiddle		= JOYSTICK_YMIDDLE;
+    si->input[i].joy.ylower 		= JOYSTICK_YLOWER;
+    si->input[i].joy.snap 		= (i == 0 ? JOY_BUTTON_1 : 0);
+    si->input[i].joy.drop 		= (i == 0 ? JOY_BUTTON_2 : 0);
+    si->input[i].key.left 		= (i == 0 ? DEFAULT_KEY_LEFT  : KSYM_UNDEFINED);
+    si->input[i].key.right		= (i == 0 ? DEFAULT_KEY_RIGHT : KSYM_UNDEFINED);
+    si->input[i].key.up   		= (i == 0 ? DEFAULT_KEY_UP    : KSYM_UNDEFINED);
+    si->input[i].key.down 		= (i == 0 ? DEFAULT_KEY_DOWN  : KSYM_UNDEFINED);
+    si->input[i].key.snap 		= (i == 0 ? DEFAULT_KEY_SNAP  : KSYM_UNDEFINED);
+    si->input[i].key.drop 		= (i == 0 ? DEFAULT_KEY_DROP  : KSYM_UNDEFINED);
   }
 
-  si->system.sdl_renderdriver = getStringCopy(ARG_DEFAULT);
-  si->system.sdl_videodriver = getStringCopy(ARG_DEFAULT);
-  si->system.sdl_audiodriver = getStringCopy(ARG_DEFAULT);
-  si->system.audio_fragment_size = DEFAULT_AUDIO_FRAGMENT_SIZE;
+  si->system.sdl_renderdriver		= getStringCopy(ARG_DEFAULT);
+  si->system.sdl_videodriver		= getStringCopy(ARG_DEFAULT);
+  si->system.sdl_audiodriver		= getStringCopy(ARG_DEFAULT);
+  si->system.audio_fragment_size	= DEFAULT_AUDIO_FRAGMENT_SIZE;
 
-  si->internal.program_title     = getStringCopy(PROGRAM_TITLE_STRING);
-  si->internal.program_version   = getStringCopy(getProgramRealVersionString());
-  si->internal.program_author    = getStringCopy(PROGRAM_AUTHOR_STRING);
-  si->internal.program_email     = getStringCopy(PROGRAM_EMAIL_STRING);
-  si->internal.program_website   = getStringCopy(PROGRAM_WEBSITE_STRING);
-  si->internal.program_copyright = getStringCopy(PROGRAM_COPYRIGHT_STRING);
-  si->internal.program_company   = getStringCopy(PROGRAM_COMPANY_STRING);
+  si->internal.program_title    	= getStringCopy(PROGRAM_TITLE_STRING);
+  si->internal.program_version  	= getStringCopy(getProgramRealVersionString());
+  si->internal.program_author   	= getStringCopy(PROGRAM_AUTHOR_STRING);
+  si->internal.program_email    	= getStringCopy(PROGRAM_EMAIL_STRING);
+  si->internal.program_website  	= getStringCopy(PROGRAM_WEBSITE_STRING);
+  si->internal.program_copyright	= getStringCopy(PROGRAM_COPYRIGHT_STRING);
+  si->internal.program_company  	= getStringCopy(PROGRAM_COMPANY_STRING);
 
-  si->internal.program_icon_file = getStringCopy(PROGRAM_ICON_FILENAME);
+  si->internal.program_icon_file	= getStringCopy(PROGRAM_ICON_FILENAME);
 
-  si->internal.default_graphics_set = getStringCopy(GFX_CLASSIC_SUBDIR);
-  si->internal.default_sounds_set   = getStringCopy(SND_CLASSIC_SUBDIR);
-  si->internal.default_music_set    = getStringCopy(MUS_CLASSIC_SUBDIR);
+  si->internal.default_graphics_set	= getStringCopy(GFX_CLASSIC_SUBDIR);
+  si->internal.default_sounds_set  	= getStringCopy(SND_CLASSIC_SUBDIR);
+  si->internal.default_music_set   	= getStringCopy(MUS_CLASSIC_SUBDIR);
 
-  si->internal.fallback_graphics_file = getStringCopy(UNDEFINED_FILENAME);
-  si->internal.fallback_sounds_file   = getStringCopy(UNDEFINED_FILENAME);
-  si->internal.fallback_music_file    = getStringCopy(UNDEFINED_FILENAME);
+  si->internal.fallback_graphics_file	= getStringCopy(UNDEFINED_FILENAME);
+  si->internal.fallback_sounds_file  	= getStringCopy(UNDEFINED_FILENAME);
+  si->internal.fallback_music_file   	= getStringCopy(UNDEFINED_FILENAME);
 
-  si->internal.default_level_series = getStringCopy(UNDEFINED_LEVELSET);
-  si->internal.choose_from_top_leveldir = FALSE;
-  si->internal.show_scaling_in_title = TRUE;
-  si->internal.create_user_levelset = TRUE;
-  si->internal.info_screens_from_main = FALSE;
+  si->internal.default_level_series	= getStringCopy(UNDEFINED_LEVELSET);
+  si->internal.choose_from_top_leveldir	= FALSE;
+  si->internal.show_scaling_in_title	= TRUE;
+  si->internal.create_user_levelset	= TRUE;
+  si->internal.info_screens_from_main	= FALSE;
 
-  si->internal.default_window_width  = WIN_XSIZE_DEFAULT;
-  si->internal.default_window_height = WIN_YSIZE_DEFAULT;
+  si->internal.default_window_width 	= WIN_XSIZE_DEFAULT;
+  si->internal.default_window_height	= WIN_YSIZE_DEFAULT;
 
-  si->debug.frame_delay[0] = DEFAULT_FRAME_DELAY_0;
-  si->debug.frame_delay[1] = DEFAULT_FRAME_DELAY_1;
-  si->debug.frame_delay[2] = DEFAULT_FRAME_DELAY_2;
-  si->debug.frame_delay[3] = DEFAULT_FRAME_DELAY_3;
-  si->debug.frame_delay[4] = DEFAULT_FRAME_DELAY_4;
-  si->debug.frame_delay[5] = DEFAULT_FRAME_DELAY_5;
-  si->debug.frame_delay[6] = DEFAULT_FRAME_DELAY_6;
-  si->debug.frame_delay[7] = DEFAULT_FRAME_DELAY_7;
-  si->debug.frame_delay[8] = DEFAULT_FRAME_DELAY_8;
-  si->debug.frame_delay[9] = DEFAULT_FRAME_DELAY_9;
+  si->debug.frame_delay[0]		= DEFAULT_FRAME_DELAY_0;
+  si->debug.frame_delay[1]		= DEFAULT_FRAME_DELAY_1;
+  si->debug.frame_delay[2]		= DEFAULT_FRAME_DELAY_2;
+  si->debug.frame_delay[3]		= DEFAULT_FRAME_DELAY_3;
+  si->debug.frame_delay[4]		= DEFAULT_FRAME_DELAY_4;
+  si->debug.frame_delay[5]		= DEFAULT_FRAME_DELAY_5;
+  si->debug.frame_delay[6]		= DEFAULT_FRAME_DELAY_6;
+  si->debug.frame_delay[7]		= DEFAULT_FRAME_DELAY_7;
+  si->debug.frame_delay[8]		= DEFAULT_FRAME_DELAY_8;
+  si->debug.frame_delay[9]		= DEFAULT_FRAME_DELAY_9;
 
-  si->debug.frame_delay_key[0] = DEFAULT_KEY_FRAME_DELAY_0;
-  si->debug.frame_delay_key[1] = DEFAULT_KEY_FRAME_DELAY_1;
-  si->debug.frame_delay_key[2] = DEFAULT_KEY_FRAME_DELAY_2;
-  si->debug.frame_delay_key[3] = DEFAULT_KEY_FRAME_DELAY_3;
-  si->debug.frame_delay_key[4] = DEFAULT_KEY_FRAME_DELAY_4;
-  si->debug.frame_delay_key[5] = DEFAULT_KEY_FRAME_DELAY_5;
-  si->debug.frame_delay_key[6] = DEFAULT_KEY_FRAME_DELAY_6;
-  si->debug.frame_delay_key[7] = DEFAULT_KEY_FRAME_DELAY_7;
-  si->debug.frame_delay_key[8] = DEFAULT_KEY_FRAME_DELAY_8;
-  si->debug.frame_delay_key[9] = DEFAULT_KEY_FRAME_DELAY_9;
+  si->debug.frame_delay_key[0]		= DEFAULT_KEY_FRAME_DELAY_0;
+  si->debug.frame_delay_key[1]		= DEFAULT_KEY_FRAME_DELAY_1;
+  si->debug.frame_delay_key[2]		= DEFAULT_KEY_FRAME_DELAY_2;
+  si->debug.frame_delay_key[3]		= DEFAULT_KEY_FRAME_DELAY_3;
+  si->debug.frame_delay_key[4]		= DEFAULT_KEY_FRAME_DELAY_4;
+  si->debug.frame_delay_key[5]		= DEFAULT_KEY_FRAME_DELAY_5;
+  si->debug.frame_delay_key[6]		= DEFAULT_KEY_FRAME_DELAY_6;
+  si->debug.frame_delay_key[7]		= DEFAULT_KEY_FRAME_DELAY_7;
+  si->debug.frame_delay_key[8]		= DEFAULT_KEY_FRAME_DELAY_8;
+  si->debug.frame_delay_key[9]		= DEFAULT_KEY_FRAME_DELAY_9;
 
-  si->debug.frame_delay_use_mod_key = DEFAULT_FRAME_DELAY_USE_MOD_KEY;
-  si->debug.frame_delay_game_only   = DEFAULT_FRAME_DELAY_GAME_ONLY;
+  si->debug.frame_delay_use_mod_key	= DEFAULT_FRAME_DELAY_USE_MOD_KEY;
+  si->debug.frame_delay_game_only  	= DEFAULT_FRAME_DELAY_GAME_ONLY;
 
-  si->debug.show_frames_per_second = FALSE;
+  si->debug.show_frames_per_second	= FALSE;
 
-  si->debug.xsn_mode = STATE_AUTO;
-  si->debug.xsn_percent = 0;
+  si->debug.xsn_mode			= STATE_AUTO;
+  si->debug.xsn_percent			= 0;
 
-  si->options.verbose = FALSE;
-  si->options.debug = FALSE;
-  si->options.debug_mode = getStringCopy(ARG_UNDEFINED_STRING);
+  si->options.verbose			= FALSE;
+  si->options.debug			= FALSE;
+  si->options.debug_mode		= getStringCopy(ARG_UNDEFINED_STRING);
 
 #if defined(PLATFORM_ANDROID)
-  si->fullscreen = TRUE;
-  si->touch.overlay_buttons = TRUE;
+  si->fullscreen			= TRUE;
+  si->touch.overlay_buttons		= TRUE;
 #endif
 
   setHideSetupEntry(&setup.debug.xsn_mode);
@@ -12321,22 +12279,22 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
 
 static void setSetupInfoToDefaults_AutoSetup(struct SetupInfo *si)
 {
-  si->auto_setup.editor_zoom_tilesize = MINI_TILESIZE;
+  si->auto_setup.editor_zoom_tilesize	= MINI_TILESIZE;
 }
 
 static void setSetupInfoToDefaults_ServerSetup(struct SetupInfo *si)
 {
-  si->player_uuid = NULL;	// (will be set later)
-  si->player_version = 1;	// (will be set later)
+  si->player_uuid			= NULL;		// (will be set later)
+  si->player_version			= 1;		// (will be set later)
 
-  si->use_api_server = TRUE;
-  si->api_server_hostname = getStringCopy(API_SERVER_HOSTNAME);
-  si->api_server_password = getStringCopy(UNDEFINED_PASSWORD);
-  si->ask_for_uploading_tapes = TRUE;
-  si->ask_for_remaining_tapes = FALSE;
-  si->provide_uploading_tapes = TRUE;
-  si->ask_for_using_api_server = TRUE;
-  si->has_remaining_tapes = FALSE;
+  si->use_api_server			= TRUE;
+  si->api_server_hostname		= getStringCopy(API_SERVER_HOSTNAME);
+  si->api_server_password		= getStringCopy(UNDEFINED_PASSWORD);
+  si->ask_for_uploading_tapes		= TRUE;
+  si->ask_for_remaining_tapes		= FALSE;
+  si->provide_uploading_tapes		= TRUE;
+  si->ask_for_using_api_server		= TRUE;
+  si->has_remaining_tapes		= FALSE;
 }
 
 static void setSetupInfoToDefaults_EditorCascade(struct SetupInfo *si)
@@ -12367,7 +12325,7 @@ static void setSetupInfoToDefaults_EditorCascade(struct SetupInfo *si)
   si->editor_cascade.el_dynamic		= FALSE;
 }
 
-#define MAX_HIDE_SETUP_TOKEN_SIZE		20
+#define MAX_HIDE_SETUP_TOKEN_SIZE	20
 
 static char *getHideSetupToken(void *setup_value)
 {
@@ -12427,8 +12385,7 @@ static void setSetupInfoFromTokenInfo(SetupFileHash *setup_file_hash,
 				      struct TokenInfo *token_info,
 				      int token_nr)
 {
-  setSetupInfoFromTokenText(setup_file_hash, token_info, token_nr,
-			    token_info[token_nr].text);
+  setSetupInfoFromTokenText(setup_file_hash, token_info, token_nr, token_info[token_nr].text);
 }
 
 static void decodeSetupFileHash_Default(SetupFileHash *setup_file_hash)
@@ -12473,8 +12430,7 @@ static void decodeSetupFileHash_Default(SetupFileHash *setup_file_hash)
       {
 	char c = value_string[x];
 
-	setup.touch.grid_button[i][x][y] =
-	  (c == '.' ? CHAR_GRID_BUTTON_NONE : c);
+	setup.touch.grid_button[i][x][y] = (c == '.' ? CHAR_GRID_BUTTON_NONE : c);
       }
     }
   }
@@ -12497,8 +12453,7 @@ static void decodeSetupFileHash_Default(SetupFileHash *setup_file_hash)
       char full_token[100];
 
       sprintf(full_token, "%s%s", prefix, player_setup_tokens[i].text);
-      setSetupInfoFromTokenText(setup_file_hash, player_setup_tokens, i,
-				full_token);
+      setSetupInfoFromTokenText(setup_file_hash, player_setup_tokens, i, full_token);
     }
     setup.input[pnr] = setup_input;
   }
@@ -12527,8 +12482,7 @@ static void decodeSetupFileHash_AutoSetup(SetupFileHash *setup_file_hash)
 
   for (i = 0; i < ARRAY_SIZE(auto_setup_tokens); i++)
     setSetupInfo(auto_setup_tokens, i,
-		 getHashEntry(setup_file_hash,
-			      auto_setup_tokens[i].text));
+                 getHashEntry(setup_file_hash, auto_setup_tokens[i].text));
 }
 
 static void decodeSetupFileHash_ServerSetup(SetupFileHash *setup_file_hash)
@@ -12540,8 +12494,7 @@ static void decodeSetupFileHash_ServerSetup(SetupFileHash *setup_file_hash)
 
   for (i = 0; i < ARRAY_SIZE(server_setup_tokens); i++)
     setSetupInfo(server_setup_tokens, i,
-		 getHashEntry(setup_file_hash,
-			      server_setup_tokens[i].text));
+                 getHashEntry(setup_file_hash, server_setup_tokens[i].text));
 }
 
 static void decodeSetupFileHash_EditorCascade(SetupFileHash *setup_file_hash)
@@ -12553,8 +12506,7 @@ static void decodeSetupFileHash_EditorCascade(SetupFileHash *setup_file_hash)
 
   for (i = 0; i < ARRAY_SIZE(editor_cascade_setup_tokens); i++)
     setSetupInfo(editor_cascade_setup_tokens, i,
-		 getHashEntry(setup_file_hash,
-			      editor_cascade_setup_tokens[i].text));
+                 getHashEntry(setup_file_hash, editor_cascade_setup_tokens[i].text));
 }
 
 void LoadUserNames(void)
@@ -12742,8 +12694,7 @@ void LoadSetup(void)
   LoadSetup_EditorCascade();
 }
 
-static void addGameControllerMappingToHash(SetupFileHash *mappings_hash,
-					   char *mapping_line)
+static void addGameControllerMappingToHash(SetupFileHash *mappings_hash, char *mapping_line)
 {
   char mapping_guid[MAX_LINE_LEN];
   char *mapping_start, *mapping_end;
@@ -12766,8 +12717,7 @@ static void addGameControllerMappingToHash(SetupFileHash *mappings_hash,
   setHashEntry(mappings_hash, mapping_guid, mapping_line);
 }
 
-static void LoadSetup_ReadGameControllerMappings(SetupFileHash *mappings_hash,
-						 char *filename)
+static void LoadSetup_ReadGameControllerMappings(SetupFileHash *mappings_hash, char *filename)
 {
   FILE *file;
 
@@ -12880,8 +12830,7 @@ void SaveSetup_Default(void)
 
   fprintf(file, "\n");
   for (i = 0; i < ARRAY_SIZE(debug_setup_tokens); i++)
-    if (!strPrefix(debug_setup_tokens[i].text, "debug.xsn_") ||
-	setup.debug.xsn_mode != STATE_AUTO)
+    if (!strPrefix(debug_setup_tokens[i].text, "debug.xsn_") || setup.debug.xsn_mode != STATE_AUTO)
       fprintf(file, "%s\n", getSetupLine(debug_setup_tokens, "", i));
 
   fprintf(file, "\n");
@@ -13001,8 +12950,7 @@ void SaveSetupIfNeeded(void)
     SaveSetup();
 }
 
-static void SaveSetup_WriteGameControllerMappings(SetupFileHash *mappings_hash,
-						  char *filename)
+static void SaveSetup_WriteGameControllerMappings(SetupFileHash *mappings_hash, char *filename)
 {
   FILE *file;
 
@@ -13115,8 +13063,7 @@ static int AddGlobalAnimEventList(void)
   gaei->event_list = checked_realloc(gaei->event_list, gaei->num_event_lists *
 				     sizeof(struct GlobalAnimEventListInfo *));
 
-  gaei->event_list[list_pos] =
-    checked_calloc(sizeof(struct GlobalAnimEventListInfo));
+  gaei->event_list[list_pos] = checked_calloc(sizeof(struct GlobalAnimEventListInfo));
 
   struct GlobalAnimEventListInfo *gaeli = gaei->event_list[list_pos];
 
@@ -13679,8 +13626,7 @@ boolean hasClass(int class, int value)
   return ((class & value) != 0);
 }
 
-void InitMenuDesignSettings_FromHash(SetupFileHash *setup_file_hash,
-				     boolean ignore_defaults)
+void InitMenuDesignSettings_FromHash(SetupFileHash *setup_file_hash, boolean ignore_defaults)
 {
   int i;
 
@@ -13693,8 +13639,7 @@ void InitMenuDesignSettings_FromHash(SetupFileHash *setup_file_hash,
       continue;
 
     if (value != NULL)
-      *image_config_vars[i].value =
-	get_token_parameter_value(image_config_vars[i].token, value);
+      *image_config_vars[i].value = get_token_parameter_value(image_config_vars[i].token, value);
   }
 }
 
@@ -13712,74 +13657,66 @@ static void InitMenuDesignSettings_SpecialPreProcessing(void)
 
   // special case: initialize "ARG_DEFAULT" values in static default config
   // (e.g., initialize "[titlemessage].fade_mode" from "[title].fade_mode")
-  titlescreen_initial_first_default.fade_mode  =
-    title_initial_first_default.fade_mode;
-  titlescreen_initial_first_default.fade_delay =
-    title_initial_first_default.fade_delay;
-  titlescreen_initial_first_default.post_delay =
-    title_initial_first_default.post_delay;
-  titlescreen_initial_first_default.auto_delay =
-    title_initial_first_default.auto_delay;
-  titlescreen_initial_first_default.auto_delay_unit =
-    title_initial_first_default.auto_delay_unit;
-  titlescreen_first_default.fade_mode  = title_first_default.fade_mode;
-  titlescreen_first_default.fade_delay = title_first_default.fade_delay;
-  titlescreen_first_default.post_delay = title_first_default.post_delay;
-  titlescreen_first_default.auto_delay = title_first_default.auto_delay;
-  titlescreen_first_default.auto_delay_unit =
-    title_first_default.auto_delay_unit;
-  titlemessage_initial_first_default.fade_mode  =
-    title_initial_first_default.fade_mode;
-  titlemessage_initial_first_default.fade_delay =
-    title_initial_first_default.fade_delay;
-  titlemessage_initial_first_default.post_delay =
-    title_initial_first_default.post_delay;
-  titlemessage_initial_first_default.auto_delay =
-    title_initial_first_default.auto_delay;
-  titlemessage_initial_first_default.auto_delay_unit =
-    title_initial_first_default.auto_delay_unit;
-  titlemessage_first_default.fade_mode  = title_first_default.fade_mode;
-  titlemessage_first_default.fade_delay = title_first_default.fade_delay;
-  titlemessage_first_default.post_delay = title_first_default.post_delay;
-  titlemessage_first_default.auto_delay = title_first_default.auto_delay;
-  titlemessage_first_default.auto_delay_unit =
-    title_first_default.auto_delay_unit;
+  titlescreen_initial_first_default.fade_mode        = title_initial_first_default.fade_mode;
+  titlescreen_initial_first_default.fade_delay       = title_initial_first_default.fade_delay;
+  titlescreen_initial_first_default.post_delay       = title_initial_first_default.post_delay;
+  titlescreen_initial_first_default.auto_delay       = title_initial_first_default.auto_delay;
+  titlescreen_initial_first_default.auto_delay_unit  = title_initial_first_default.auto_delay_unit;
 
-  titlescreen_initial_default.fade_mode  = title_initial_default.fade_mode;
-  titlescreen_initial_default.fade_delay = title_initial_default.fade_delay;
-  titlescreen_initial_default.post_delay = title_initial_default.post_delay;
-  titlescreen_initial_default.auto_delay = title_initial_default.auto_delay;
-  titlescreen_initial_default.auto_delay_unit =
-    title_initial_default.auto_delay_unit;
-  titlescreen_default.fade_mode  = title_default.fade_mode;
-  titlescreen_default.fade_delay = title_default.fade_delay;
-  titlescreen_default.post_delay = title_default.post_delay;
-  titlescreen_default.auto_delay = title_default.auto_delay;
-  titlescreen_default.auto_delay_unit = title_default.auto_delay_unit;
-  titlemessage_initial_default.fade_mode  = title_initial_default.fade_mode;
-  titlemessage_initial_default.fade_delay = title_initial_default.fade_delay;
-  titlemessage_initial_default.post_delay = title_initial_default.post_delay;
-  titlemessage_initial_default.auto_delay_unit =
-    title_initial_default.auto_delay_unit;
-  titlemessage_default.fade_mode  = title_default.fade_mode;
-  titlemessage_default.fade_delay = title_default.fade_delay;
-  titlemessage_default.post_delay = title_default.post_delay;
-  titlemessage_default.auto_delay = title_default.auto_delay;
-  titlemessage_default.auto_delay_unit = title_default.auto_delay_unit;
+  titlescreen_first_default.fade_mode                = title_first_default.fade_mode;
+  titlescreen_first_default.fade_delay               = title_first_default.fade_delay;
+  titlescreen_first_default.post_delay               = title_first_default.post_delay;
+  titlescreen_first_default.auto_delay               = title_first_default.auto_delay;
+  titlescreen_first_default.auto_delay_unit          = title_first_default.auto_delay_unit;
+
+  titlemessage_initial_first_default.fade_mode       = title_initial_first_default.fade_mode;
+  titlemessage_initial_first_default.fade_delay      = title_initial_first_default.fade_delay;
+  titlemessage_initial_first_default.post_delay      = title_initial_first_default.post_delay;
+  titlemessage_initial_first_default.auto_delay      = title_initial_first_default.auto_delay;
+  titlemessage_initial_first_default.auto_delay_unit = title_initial_first_default.auto_delay_unit;
+
+  titlemessage_first_default.fade_mode               = title_first_default.fade_mode;
+  titlemessage_first_default.fade_delay              = title_first_default.fade_delay;
+  titlemessage_first_default.post_delay              = title_first_default.post_delay;
+  titlemessage_first_default.auto_delay              = title_first_default.auto_delay;
+  titlemessage_first_default.auto_delay_unit         = title_first_default.auto_delay_unit;
+
+  titlescreen_initial_default.fade_mode              = title_initial_default.fade_mode;
+  titlescreen_initial_default.fade_delay             = title_initial_default.fade_delay;
+  titlescreen_initial_default.post_delay             = title_initial_default.post_delay;
+  titlescreen_initial_default.auto_delay             = title_initial_default.auto_delay;
+  titlescreen_initial_default.auto_delay_unit        = title_initial_default.auto_delay_unit;
+
+  titlescreen_default.fade_mode                      = title_default.fade_mode;
+  titlescreen_default.fade_delay                     = title_default.fade_delay;
+  titlescreen_default.post_delay                     = title_default.post_delay;
+  titlescreen_default.auto_delay                     = title_default.auto_delay;
+  titlescreen_default.auto_delay_unit                = title_default.auto_delay_unit;
+
+  titlemessage_initial_default.fade_mode             = title_initial_default.fade_mode;
+  titlemessage_initial_default.fade_delay            = title_initial_default.fade_delay;
+  titlemessage_initial_default.post_delay            = title_initial_default.post_delay;
+  titlemessage_initial_default.auto_delay_unit       = title_initial_default.auto_delay_unit;
+
+  titlemessage_default.fade_mode                     = title_default.fade_mode;
+  titlemessage_default.fade_delay                    = title_default.fade_delay;
+  titlemessage_default.post_delay                    = title_default.post_delay;
+  titlemessage_default.auto_delay                    = title_default.auto_delay;
+  titlemessage_default.auto_delay_unit               = title_default.auto_delay_unit;
 
   // special case: initialize "ARG_DEFAULT" values in static default config
   // (e.g., init "titlemessage_1.fade_mode" from "[titlemessage].fade_mode")
   for (i = 0; i < MAX_NUM_TITLE_MESSAGES; i++)
   {
-    titlescreen_initial_first[i] = titlescreen_initial_first_default;
-    titlescreen_first[i] = titlescreen_first_default;
+    titlescreen_initial_first[i]  = titlescreen_initial_first_default;
+    titlescreen_first[i]          = titlescreen_first_default;
     titlemessage_initial_first[i] = titlemessage_initial_first_default;
-    titlemessage_first[i] = titlemessage_first_default;
+    titlemessage_first[i]         = titlemessage_first_default;
 
-    titlescreen_initial[i] = titlescreen_initial_default;
-    titlescreen[i] = titlescreen_default;
-    titlemessage_initial[i] = titlemessage_initial_default;
-    titlemessage[i] = titlemessage_default;
+    titlescreen_initial[i]        = titlescreen_initial_default;
+    titlescreen[i]                = titlescreen_default;
+    titlemessage_initial[i]       = titlemessage_initial_default;
+    titlemessage[i]               = titlemessage_default;
   }
 
   // special case: initialize "ARG_DEFAULT" values in static default config
@@ -13950,8 +13887,7 @@ static void InitMenuDesignSettings_SpecialPostProcessing(void)
     {
       if (vp_playfield->border_left == -1)
       {
-	vp_playfield->border_left = (vp_playfield->x -
-				     vp_playfield->margin_left);
+	vp_playfield->border_left = vp_playfield->x - vp_playfield->margin_left;
 	vp_playfield->x     -= vp_playfield->border_left;
 	vp_playfield->width += vp_playfield->border_left;
       }
@@ -13970,8 +13906,7 @@ static void InitMenuDesignSettings_SpecialPostProcessing(void)
     {
       if (vp_playfield->border_top == -1)
       {
-	vp_playfield->border_top = (vp_playfield->y -
-				    vp_playfield->margin_top);
+	vp_playfield->border_top = vp_playfield->y - vp_playfield->margin_top;
 	vp_playfield->y      -= vp_playfield->border_top;
 	vp_playfield->height += vp_playfield->border_top;
       }
@@ -14081,19 +14016,26 @@ static void InitMenuDesignSettings_SpecialPostProcessing_AfterGraphics(void)
   editor_buttons_xy[] =
   {
     {
-      &editor.button.element_left,	&editor.palette.element_left,
+      &editor.button.element_left,
+      &editor.palette.element_left,
       IMG_GFX_EDITOR_BUTTON_ELEMENT_LEFT
     },
     {
-      &editor.button.element_middle,	&editor.palette.element_middle,
+      &editor.button.element_middle,
+      &editor.palette.element_middle,
       IMG_GFX_EDITOR_BUTTON_ELEMENT_MIDDLE
     },
     {
-      &editor.button.element_right,	&editor.palette.element_right,
+      &editor.button.element_right,
+      &editor.palette.element_right,
       IMG_GFX_EDITOR_BUTTON_ELEMENT_RIGHT
     },
 
-    { NULL,			NULL			}
+    {
+      NULL,
+      NULL,
+      0
+    }
   };
   int i;
 
@@ -14296,9 +14238,9 @@ static void LoadMenuDesignSettingsFromFilename(char *filename)
   {
     struct TokenIntPtrInfo menu_config[] =
     {
-      { "menu.draw_xoffset",	&menu.draw_xoffset[i]	},
-      { "menu.draw_yoffset",	&menu.draw_yoffset[i]	},
-      { "menu.list_size",	&menu.list_size[i]	}
+      { "menu.draw_xoffset",		&menu.draw_xoffset[i]	},
+      { "menu.draw_yoffset",		&menu.draw_yoffset[i]	},
+      { "menu.list_size",		&menu.list_size[i]	}
     };
 
     for (j = 0; j < ARRAY_SIZE(menu_config); j++)
@@ -14420,42 +14362,41 @@ static void LoadMenuDesignSettingsFromFilename(char *filename)
     }
     vp_struct[] =
     {
-      { "viewport.window",	&viewport.window[i]	},
-      { "viewport.playfield",	&viewport.playfield[i]	},
-      { "viewport.door_1",	&viewport.door_1[i]	},
-      { "viewport.door_2",	&viewport.door_2[i]	}
+      { "viewport.window",		&viewport.window[i]	},
+      { "viewport.playfield",		&viewport.playfield[i]	},
+      { "viewport.door_1",		&viewport.door_1[i]	},
+      { "viewport.door_2",		&viewport.door_2[i]	}
     };
 
     for (j = 0; j < ARRAY_SIZE(vp_struct); j++)
     {
       struct TokenIntPtrInfo vp_config[] =
       {
-        { ".x",			&vp_struct[j].struct_ptr->x		},
-        { ".y",			&vp_struct[j].struct_ptr->y		},
-        { ".width",		&vp_struct[j].struct_ptr->width		},
-        { ".height",		&vp_struct[j].struct_ptr->height	},
-        { ".min_width",		&vp_struct[j].struct_ptr->min_width	},
-        { ".min_height",	&vp_struct[j].struct_ptr->min_height	},
-        { ".max_width",		&vp_struct[j].struct_ptr->max_width	},
-        { ".max_height",	&vp_struct[j].struct_ptr->max_height	},
-        { ".margin_left",	&vp_struct[j].struct_ptr->margin_left	},
-        { ".margin_right",	&vp_struct[j].struct_ptr->margin_right	},
-        { ".margin_top",	&vp_struct[j].struct_ptr->margin_top	},
-        { ".margin_bottom",	&vp_struct[j].struct_ptr->margin_bottom	},
-        { ".border_left",	&vp_struct[j].struct_ptr->border_left	},
-        { ".border_right",	&vp_struct[j].struct_ptr->border_right	},
-        { ".border_top",	&vp_struct[j].struct_ptr->border_top	},
-        { ".border_bottom",	&vp_struct[j].struct_ptr->border_bottom	},
-        { ".border_size",	&vp_struct[j].struct_ptr->border_size	},
-        { ".align_size",	&vp_struct[j].struct_ptr->align_size	},
-        { ".align",		&vp_struct[j].struct_ptr->align		},
-        { ".valign",		&vp_struct[j].struct_ptr->valign	}
+        { ".x",				&vp_struct[j].struct_ptr->x		},
+        { ".y",				&vp_struct[j].struct_ptr->y		},
+        { ".width",			&vp_struct[j].struct_ptr->width		},
+        { ".height",			&vp_struct[j].struct_ptr->height	},
+        { ".min_width",			&vp_struct[j].struct_ptr->min_width	},
+        { ".min_height",		&vp_struct[j].struct_ptr->min_height	},
+        { ".max_width",			&vp_struct[j].struct_ptr->max_width	},
+        { ".max_height",		&vp_struct[j].struct_ptr->max_height	},
+        { ".margin_left",		&vp_struct[j].struct_ptr->margin_left	},
+        { ".margin_right",		&vp_struct[j].struct_ptr->margin_right	},
+        { ".margin_top",		&vp_struct[j].struct_ptr->margin_top	},
+        { ".margin_bottom",		&vp_struct[j].struct_ptr->margin_bottom	},
+        { ".border_left",		&vp_struct[j].struct_ptr->border_left	},
+        { ".border_right",		&vp_struct[j].struct_ptr->border_right	},
+        { ".border_top",		&vp_struct[j].struct_ptr->border_top	},
+        { ".border_bottom",		&vp_struct[j].struct_ptr->border_bottom	},
+        { ".border_size",		&vp_struct[j].struct_ptr->border_size	},
+        { ".align_size",		&vp_struct[j].struct_ptr->align_size	},
+        { ".align",			&vp_struct[j].struct_ptr->align		},
+        { ".valign",			&vp_struct[j].struct_ptr->valign	}
       };
 
       for (k = 0; k < ARRAY_SIZE(vp_config); k++)
       {
-        char *token = getStringCat2(vp_struct[j].token_prefix,
-                                    vp_config[k].token);
+        char *token = getStringCat2(vp_struct[j].token_prefix, vp_config[k].token);
         char *value = getHashEntry(setup_file_hash, token);
 
         if (value != NULL)
@@ -14565,8 +14506,7 @@ void LoadMenuDesignSettings_AfterGraphics(void)
   InitMenuDesignSettings_SpecialPostProcessing_AfterGraphics();
 }
 
-void InitSoundSettings_FromHash(SetupFileHash *setup_file_hash,
-				boolean ignore_defaults)
+void InitSoundSettings_FromHash(SetupFileHash *setup_file_hash, boolean ignore_defaults)
 {
   int i;
 
@@ -14579,8 +14519,7 @@ void InitSoundSettings_FromHash(SetupFileHash *setup_file_hash,
       continue;
 
     if (value != NULL)
-      *sound_config_vars[i].value =
-	get_token_parameter_value(sound_config_vars[i].token, value);
+      *sound_config_vars[i].value = get_token_parameter_value(sound_config_vars[i].token, value);
   }
 }
 
@@ -14706,8 +14645,7 @@ void LoadUserDefinedEditorElementList(int **elements, int *num_elements)
 #endif
 }
 
-static struct MusicFileInfo *get_music_file_info_ext(char *basename, int music,
-						     boolean is_sound)
+static struct MusicFileInfo *get_music_file_info_ext(char *basename, int music, boolean is_sound)
 {
   SetupFileHash *setup_file_hash = NULL;
   struct MusicFileInfo tmp_music_file_info, *new_music_file_info;
@@ -14735,7 +14673,8 @@ static struct MusicFileInfo *get_music_file_info_ext(char *basename, int music,
   };
   int i;
 
-  filename_music = (is_sound ? getCustomSoundFilename(basename) :
+  filename_music = (is_sound ?
+		    getCustomSoundFilename(basename) :
 		    getCustomMusicFilename(basename));
 
   if (filename_music == NULL)
@@ -14955,15 +14894,15 @@ void LoadMusicInfo(void)
   }
 }
 
-static void add_helpanim_entry(int element, int action, int direction,
-			       int delay, int *num_list_entries)
+static void add_helpanim_entry(int element, int action, int direction, int delay,
+                               int *num_list_entries)
 {
   struct HelpAnimInfo *new_list_entry;
+
   (*num_list_entries)++;
 
-  helpanim_info =
-    checked_realloc(helpanim_info,
-		    *num_list_entries * sizeof(struct HelpAnimInfo));
+  helpanim_info = checked_realloc(helpanim_info, *num_list_entries * sizeof(struct HelpAnimInfo));
+
   new_list_entry = &helpanim_info[*num_list_entries - 1];
 
   new_list_entry->element = element;
@@ -15007,9 +14946,8 @@ void LoadHelpAnimInfo(void)
     // use reliable default values from static configuration
     SetupFileList *insert_ptr;
 
-    insert_ptr = setup_file_list =
-      newSetupFileList(helpanim_config[0].token,
-		       helpanim_config[0].value);
+    insert_ptr = setup_file_list = newSetupFileList(helpanim_config[0].token,
+                                                    helpanim_config[0].value);
 
     for (i = 1; helpanim_config[i].token; i++)
       insert_ptr = addListEntry(insert_ptr,
@@ -15026,7 +14964,7 @@ void LoadHelpAnimInfo(void)
 
   for (i = 0; i < NUM_ACTIONS; i++)
     setHashEntry(action_hash, element_action_info[i].suffix,
-		 i_to_a(element_action_info[i].value));
+                 i_to_a(element_action_info[i].value));
 
   // do not store direction index (bit) here, but direction value!
   for (i = 0; i < NUM_DIRECTIONS_FULL; i++)
@@ -15053,14 +14991,11 @@ void LoadHelpAnimInfo(void)
     if (strchr(list->token, '.') == NULL)	// token contains no '.'
     {
       element_value = getHashEntry(element_hash, list->token);
+
       if (element_value != NULL)	// element found
-	add_helpanim_entry(atoi(element_value), -1, -1, delay,
-			   &num_list_entries);
-      else
-      {
-	// no further suffixes found -- this is not an element
+	add_helpanim_entry(atoi(element_value), -1, -1, delay, &num_list_entries);
+      else				// no further suffixes found -- this is not an element
 	print_unknown_token(filename, list->token, num_unknown_tokens++);
-      }
 
       continue;
     }
@@ -15078,9 +15013,9 @@ void LoadHelpAnimInfo(void)
     if (element_value == NULL)		// this is no element
     {
       element_value = getHashEntry(element_hash, list->token);
+
       if (element_value != NULL)	// combined element found
-	add_helpanim_entry(atoi(element_value), -1, -1, delay,
-			   &num_list_entries);
+	add_helpanim_entry(atoi(element_value), -1, -1, delay, &num_list_entries);
       else
 	print_unknown_token(filename, list->token, num_unknown_tokens++);
 
@@ -15093,8 +15028,7 @@ void LoadHelpAnimInfo(void)
 
     if (action_value != NULL)		// action found
     {
-      add_helpanim_entry(atoi(element_value), atoi(action_value), -1, delay,
-		    &num_list_entries);
+      add_helpanim_entry(atoi(element_value), atoi(action_value), -1, delay, &num_list_entries);
 
       free(element_token);
 
@@ -15105,8 +15039,7 @@ void LoadHelpAnimInfo(void)
 
     if (direction_value != NULL)	// direction found
     {
-      add_helpanim_entry(atoi(element_value), -1, atoi(direction_value), delay,
-			 &num_list_entries);
+      add_helpanim_entry(atoi(element_value), -1, atoi(direction_value), delay, &num_list_entries);
 
       free(element_token);
 
@@ -15118,9 +15051,9 @@ void LoadHelpAnimInfo(void)
       // no further suffixes found -- this is not an action nor direction
 
       element_value = getHashEntry(element_hash, list->token);
+
       if (element_value != NULL)	// combined element found
-	add_helpanim_entry(atoi(element_value), -1, -1, delay,
-			   &num_list_entries);
+	add_helpanim_entry(atoi(element_value), -1, -1, delay, &num_list_entries);
       else
 	print_unknown_token(filename, list->token, num_unknown_tokens++);
 
@@ -15141,9 +15074,9 @@ void LoadHelpAnimInfo(void)
     if (action_value == NULL)		// this is no action
     {
       element_value = getHashEntry(element_hash, list->token);
+
       if (element_value != NULL)	// combined element found
-	add_helpanim_entry(atoi(element_value), -1, -1, delay,
-			   &num_list_entries);
+	add_helpanim_entry(atoi(element_value), -1, -1, delay, &num_list_entries);
       else
 	print_unknown_token(filename, list->token, num_unknown_tokens++);
 
@@ -15170,8 +15103,7 @@ void LoadHelpAnimInfo(void)
 
     element_value = getHashEntry(element_hash, list->token);
     if (element_value != NULL)		// combined element found
-      add_helpanim_entry(atoi(element_value), -1, -1, delay,
-			 &num_list_entries);
+      add_helpanim_entry(atoi(element_value), -1, -1, delay, &num_list_entries);
     else
       print_unknown_token(filename, list->token, num_unknown_tokens++);
 
@@ -15251,8 +15183,7 @@ void ConvertLevels(void)
   static boolean levels_failed[MAX_NUM_CONVERT_LEVELS];
   int i;
 
-  convert_leveldir = getTreeInfoFromIdentifier(leveldir_first,
-					       global.convert_leveldir);
+  convert_leveldir = getTreeInfoFromIdentifier(leveldir_first, global.convert_leveldir);
 
   if (convert_leveldir == NULL)
     Fail("no such level identifier: '%s'", global.convert_leveldir);
@@ -15290,6 +15221,7 @@ void ConvertLevels(void)
     Print("Level %03d: ", level_nr);
 
     LoadLevel(level_nr);
+
     if (level.no_level_file || level.no_valid_file)
     {
       Print("(no level)\n");
@@ -15449,8 +15381,7 @@ void CreateCollectElementImages(void)
     if (createCollectImage(i))
       num_collect_images++;
 
-  Info("Creating %d element collecting animation images ...",
-       num_collect_images);
+  Info("Creating %d element collecting animation images ...", num_collect_images);
 
   int dst_width  = anim_width * 2;
   int dst_height = anim_height * num_collect_images / 2;
@@ -15464,9 +15395,7 @@ void CreateCollectElementImages(void)
   int max_command_len = MAX_FILENAME_LEN + len_filename_bmp + len_filename_png;
   char cmd_convert[max_command_len];
 
-  snprintf(cmd_convert, max_command_len, "convert \"%s\" \"%s\"",
-	   filename_bmp,
-	   filename_png);
+  snprintf(cmd_convert, max_command_len, "convert \"%s\" \"%s\"", filename_bmp, filename_png);
 
   // force using RGBA surface for destination bitmap
   SDL_SetColorKey(dst_bitmap->surface, SET_TRANSPARENT_PIXEL,
@@ -15492,8 +15421,7 @@ void CreateCollectElementImages(void)
 
     getGraphicSource(graphic, 0, &src_bitmap, &src_x, &src_y);
 
-    BlitBitmap(src_bitmap, tmp_bitmap, src_x, src_y,
-	       tile_size, tile_size, 0, 0);
+    BlitBitmap(src_bitmap, tmp_bitmap, src_x, src_y, tile_size, tile_size, 0, 0);
 
     // force using RGBA surface for temporary bitmap (using transparent black)
     SDL_SetColorKey(tmp_bitmap->surface, SET_TRANSPARENT_PIXEL,
@@ -15522,8 +15450,7 @@ void CreateCollectElementImages(void)
 	frame_bitmap = half_bitmap;
       }
 
-      BlitBitmapMasked(frame_bitmap, dst_bitmap, 0, 0,
-		       frame_size_final, frame_size_final,
+      BlitBitmapMasked(frame_bitmap, dst_bitmap, 0, 0, frame_size_final, frame_size_final,
 		       dst_x + j * tile_size + offset, dst_y + offset);
 
       FreeBitmap(frame_bitmap);
@@ -15576,8 +15503,7 @@ void CreateCustomElementImages(char *directory)
 
   src_bitmap = LoadImage(src_filename);
 
-  bitmap = CreateBitmap(TILEX * 16 * 2,
-			TILEY * (NUM_CUSTOM_ELEMENTS + NUM_GROUP_ELEMENTS) / 16,
+  bitmap = CreateBitmap(TILEX * 16 * 2, TILEY * (NUM_CUSTOM_ELEMENTS + NUM_GROUP_ELEMENTS) / 16,
 			DEFAULT_DEPTH);
 
   for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
@@ -15587,11 +15513,9 @@ void CreateCustomElementImages(char *directory)
     int ii = i + 1;
     int j;
 
-    BlitBitmap(src_bitmap, bitmap, 0, 0, TILEX, TILEY,
-	       TILEX * x, TILEY * y + yoffset_ce);
+    BlitBitmap(src_bitmap, bitmap, 0, 0, TILEX, TILEY, TILEX * x, TILEY * y + yoffset_ce);
 
-    BlitBitmap(src_bitmap, bitmap, 0, TILEY,
-	       TILEX, TILEY,
+    BlitBitmap(src_bitmap, bitmap, 0, TILEY, TILEX, TILEY,
 	       TILEX * x + TILEX * 16,
 	       TILEY * y + yoffset_ce);
 
@@ -15599,13 +15523,11 @@ void CreateCustomElementImages(char *directory)
     {
       int c = ii % 10;
 
-      BlitBitmap(src_bitmap, bitmap,
-		 TILEX + c * 7, 0, 6, 10,
+      BlitBitmap(src_bitmap, bitmap, TILEX + c * 7, 0, 6, 10,
 		 TILEX * x + 6 + j * 7,
 		 TILEY * y + 11 + yoffset_ce);
 
-      BlitBitmap(src_bitmap, bitmap,
-		 TILEX + c * 8, TILEY, 6, 10,
+      BlitBitmap(src_bitmap, bitmap, TILEX + c * 8, TILEY, 6, 10,
 		 TILEX * 16 + TILEX * x + 6 + j * 8,
 		 TILEY * y + 10 + yoffset_ce);
 
@@ -15620,11 +15542,9 @@ void CreateCustomElementImages(char *directory)
     int ii = i + 1;
     int j;
 
-    BlitBitmap(src_bitmap, bitmap, 0, 0, TILEX, TILEY,
-	       TILEX * x, TILEY * y + yoffset_ge);
+    BlitBitmap(src_bitmap, bitmap, 0, 0, TILEX, TILEY, TILEX * x, TILEY * y + yoffset_ge);
 
-    BlitBitmap(src_bitmap, bitmap, 0, TILEY,
-	       TILEX, TILEY,
+    BlitBitmap(src_bitmap, bitmap, 0, TILEY, TILEX, TILEY,
 	       TILEX * x + TILEX * 16,
 	       TILEY * y + yoffset_ge);
 
@@ -15636,8 +15556,7 @@ void CreateCustomElementImages(char *directory)
 		 TILEX * x + 6 + j * 10,
 		 TILEY * y + 11 + yoffset_ge);
 
-      BlitBitmap(src_bitmap, bitmap,
-		 TILEX + c * 8, TILEY + 12, 6, 10,
+      BlitBitmap(src_bitmap, bitmap, TILEX + c * 8, TILEY + 12, 6, 10,
 		 TILEX * 16 + TILEX * x + 10 + j * 8,
 		 TILEY * y + 10 + yoffset_ge);
 
