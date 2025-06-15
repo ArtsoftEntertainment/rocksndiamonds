@@ -21,8 +21,7 @@
 // generic helper functions
 // ============================================================================
 
-static void ExecuteAsThread(SDL_ThreadFunction function, char *name, void *data,
-			    char *error)
+static void ExecuteAsThread(SDL_ThreadFunction function, char *name, void *data, char *error)
 {
 #if defined(PLATFORM_EMSCRIPTEN)
   // threads currently not fully supported by Emscripten/SDL and some browsers
@@ -128,11 +127,9 @@ struct ApiAddScoreThreadData
   struct ScoreEntry score_entry;
 };
 
-static void *CreateThreadData_ApiAddScore(int nr, boolean tape_saved,
-					  char *score_tape_filename)
+static void *CreateThreadData_ApiAddScore(int nr, boolean tape_saved, char *score_tape_filename)
 {
-  struct ApiAddScoreThreadData *data =
-    checked_malloc(sizeof(struct ApiAddScoreThreadData));
+  struct ApiAddScoreThreadData *data = checked_malloc(sizeof(struct ApiAddScoreThreadData));
   struct ScoreEntry *score_entry = &scores.entry[scores.last_added];
 
   if (score_tape_filename == NULL)
@@ -156,8 +153,7 @@ static void FreeThreadData_ApiAddScore(void *data_raw)
   checked_free(data);
 }
 
-static boolean SetRequest_ApiAddScore(struct HttpRequest *request,
-				      void *data_raw)
+static boolean SetRequest_ApiAddScore(struct HttpRequest *request, void *data_raw)
 {
   struct ApiAddScoreThreadData *data = data_raw;
   struct ScoreEntry *score_entry = &data->score_entry;
@@ -257,8 +253,7 @@ static boolean SetRequest_ApiAddScore(struct HttpRequest *request,
   return TRUE;
 }
 
-static void HandleResponse_ApiAddScore(struct HttpResponse *response,
-				       void *data_raw)
+static void HandleResponse_ApiAddScore(struct HttpResponse *response, void *data_raw)
 {
   server_scores.uploaded = TRUE;
 }
@@ -308,8 +303,7 @@ static void Emscripten_ApiAddScore_Progress(unsigned handle, void *data_raw,
   // nothing to do here
 }
 
-static void Emscripten_ApiAddScore_HttpRequest(struct HttpRequest *request,
-					       void *data_raw)
+static void Emscripten_ApiAddScore_HttpRequest(struct HttpRequest *request, void *data_raw)
 {
   if (!SetRequest_ApiAddScore(request, data_raw))
   {
@@ -414,8 +408,7 @@ struct ApiGetScoreThreadData
 
 static void *CreateThreadData_ApiGetScore(int nr)
 {
-  struct ApiGetScoreThreadData *data =
-    checked_malloc(sizeof(struct ApiGetScoreThreadData));
+  struct ApiGetScoreThreadData *data = checked_malloc(sizeof(struct ApiGetScoreThreadData));
   char *score_cache_filename = getScoreCacheFilename(nr);
 
   data->level_nr = nr;
@@ -432,8 +425,7 @@ static void FreeThreadData_ApiGetScore(void *data_raw)
   checked_free(data);
 }
 
-static boolean SetRequest_ApiGetScore(struct HttpRequest *request,
-				      void *data_raw)
+static boolean SetRequest_ApiGetScore(struct HttpRequest *request, void *data_raw)
 {
   struct ApiGetScoreThreadData *data = data_raw;
   int level_nr = data->level_nr;
@@ -470,8 +462,7 @@ static boolean SetRequest_ApiGetScore(struct HttpRequest *request,
   return TRUE;
 }
 
-static void HandleResponse_ApiGetScore(struct HttpResponse *response,
-				       void *data_raw)
+static void HandleResponse_ApiGetScore(struct HttpResponse *response, void *data_raw)
 {
   struct ApiGetScoreThreadData *data = data_raw;
 
@@ -542,8 +533,7 @@ static void Emscripten_ApiGetScore_Progress(unsigned handle, void *data_raw,
   // nothing to do here
 }
 
-static void Emscripten_ApiGetScore_HttpRequest(struct HttpRequest *request,
-					       void *data_raw)
+static void Emscripten_ApiGetScore_HttpRequest(struct HttpRequest *request, void *data_raw)
 {
   if (!SetRequest_ApiGetScore(request, data_raw))
   {
@@ -646,8 +636,7 @@ struct ApiGetScoreTapeThreadData
   char *score_tape_filename;
 };
 
-static void *CreateThreadData_ApiGetScoreTape(int nr, int id,
-					      char *score_tape_basename)
+static void *CreateThreadData_ApiGetScoreTape(int nr, int id, char *score_tape_basename)
 {
   struct ApiGetScoreTapeThreadData *data =
     checked_malloc(sizeof(struct ApiGetScoreTapeThreadData));
@@ -668,8 +657,7 @@ static void FreeThreadData_ApiGetScoreTape(void *data_raw)
   checked_free(data);
 }
 
-static boolean SetRequest_ApiGetScoreTape(struct HttpRequest *request,
-                                          void *data_raw)
+static boolean SetRequest_ApiGetScoreTape(struct HttpRequest *request, void *data_raw)
 {
   struct ApiGetScoreTapeThreadData *data = data_raw;
   int score_id = data->score_id;
@@ -696,8 +684,7 @@ static boolean SetRequest_ApiGetScoreTape(struct HttpRequest *request,
   return TRUE;
 }
 
-static void HandleResponse_ApiGetScoreTape(struct HttpResponse *response,
-                                           void *data_raw)
+static void HandleResponse_ApiGetScoreTape(struct HttpResponse *response, void *data_raw)
 {
   struct ApiGetScoreTapeThreadData *data = data_raw;
 
@@ -769,8 +756,7 @@ static void Emscripten_ApiGetScoreTape_Progress(unsigned handle, void *data_raw,
   // nothing to do here
 }
 
-static void Emscripten_ApiGetScoreTape_HttpRequest(struct HttpRequest *request,
-                                                   void *data_raw)
+static void Emscripten_ApiGetScoreTape_HttpRequest(struct HttpRequest *request, void *data_raw)
 {
   if (!SetRequest_ApiGetScoreTape(request, data_raw))
   {
@@ -893,8 +879,7 @@ static void FreeThreadData_ApiRenamePlayer(void *data_raw)
   checked_free(data);
 }
 
-static boolean SetRequest_ApiRenamePlayer(struct HttpRequest *request,
-					  void *data_raw)
+static boolean SetRequest_ApiRenamePlayer(struct HttpRequest *request, void *data_raw)
 {
   struct ApiRenamePlayerThreadData *data = data_raw;
   char *player_name_raw = data->player_name;
@@ -930,8 +915,7 @@ static boolean SetRequest_ApiRenamePlayer(struct HttpRequest *request,
   return TRUE;
 }
 
-static void HandleResponse_ApiRenamePlayer(struct HttpResponse *response,
-					   void *data_raw)
+static void HandleResponse_ApiRenamePlayer(struct HttpResponse *response, void *data_raw)
 {
   // nothing to do here
 }
@@ -970,8 +954,7 @@ static void Emscripten_ApiRenamePlayer_Progress(unsigned handle, void *data_raw,
   // nothing to do here
 }
 
-static void Emscripten_ApiRenamePlayer_HttpRequest(struct HttpRequest *request,
-						   void *data_raw)
+static void Emscripten_ApiRenamePlayer_HttpRequest(struct HttpRequest *request, void *data_raw)
 {
   if (!SetRequest_ApiRenamePlayer(request, data_raw))
   {
@@ -1092,8 +1075,7 @@ static void FreeThreadData_ApiResetUUID(void *data_raw)
   checked_free(data);
 }
 
-static boolean SetRequest_ApiResetUUID(struct HttpRequest *request,
-				       void *data_raw)
+static boolean SetRequest_ApiResetUUID(struct HttpRequest *request, void *data_raw)
 {
   struct ApiResetUUIDThreadData *data = data_raw;
   char *player_name_raw = data->player_name;
@@ -1134,8 +1116,7 @@ static boolean SetRequest_ApiResetUUID(struct HttpRequest *request,
   return TRUE;
 }
 
-static void HandleResponse_ApiResetUUID(struct HttpResponse *response,
-					void *data_raw)
+static void HandleResponse_ApiResetUUID(struct HttpResponse *response, void *data_raw)
 {
   struct ApiResetUUIDThreadData *data = data_raw;
 
