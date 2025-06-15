@@ -4509,6 +4509,9 @@ static void DrawInfoScreen_Generic(void)
   FreeScreenGadgets();
   CreateScreenGadgets();
 
+  FreeWrappedText(wrapped_text);
+  wrapped_text = NULL;
+
   // map gadgets for level info screen
   if (info_mode == INFO_MODE_LEVEL)
     MapScreenMenuGadgets(SCREEN_MASK_INFO);
