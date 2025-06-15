@@ -45,20 +45,20 @@
 #define ED_CTRL7_BUTTONS_HORIZ		1	// palette
 #define ED_CTRL7_BUTTONS_VERT		1
 
-#define ED_NUM_CTRL1_BUTTONS   (ED_CTRL1_BUTTONS_HORIZ * ED_CTRL1_BUTTONS_VERT)
-#define ED_NUM_CTRL2_BUTTONS   (ED_CTRL2_BUTTONS_HORIZ * ED_CTRL2_BUTTONS_VERT)
-#define ED_NUM_CTRL3_BUTTONS   (ED_CTRL3_BUTTONS_HORIZ * ED_CTRL3_BUTTONS_VERT)
-#define ED_NUM_CTRL4_BUTTONS   (ED_CTRL4_BUTTONS_HORIZ * ED_CTRL4_BUTTONS_VERT)
-#define ED_NUM_CTRL5_BUTTONS   (ED_CTRL5_BUTTONS_HORIZ * ED_CTRL5_BUTTONS_VERT)
-#define ED_NUM_CTRL6_BUTTONS   (ED_CTRL6_BUTTONS_HORIZ * ED_CTRL6_BUTTONS_VERT)
-#define ED_NUM_CTRL7_BUTTONS   (ED_CTRL7_BUTTONS_HORIZ * ED_CTRL7_BUTTONS_VERT)
-#define ED_NUM_CTRL1_2_BUTTONS (ED_NUM_CTRL1_BUTTONS   + ED_NUM_CTRL2_BUTTONS)
-#define ED_NUM_CTRL1_3_BUTTONS (ED_NUM_CTRL1_2_BUTTONS + ED_NUM_CTRL3_BUTTONS)
-#define ED_NUM_CTRL1_4_BUTTONS (ED_NUM_CTRL1_3_BUTTONS + ED_NUM_CTRL4_BUTTONS)
-#define ED_NUM_CTRL1_5_BUTTONS (ED_NUM_CTRL1_4_BUTTONS + ED_NUM_CTRL5_BUTTONS)
-#define ED_NUM_CTRL1_6_BUTTONS (ED_NUM_CTRL1_5_BUTTONS + ED_NUM_CTRL6_BUTTONS)
-#define ED_NUM_CTRL1_7_BUTTONS (ED_NUM_CTRL1_6_BUTTONS + ED_NUM_CTRL7_BUTTONS)
-#define ED_NUM_CTRL_BUTTONS    ED_NUM_CTRL1_7_BUTTONS
+#define ED_NUM_CTRL1_BUTTONS		(ED_CTRL1_BUTTONS_HORIZ * ED_CTRL1_BUTTONS_VERT)
+#define ED_NUM_CTRL2_BUTTONS		(ED_CTRL2_BUTTONS_HORIZ * ED_CTRL2_BUTTONS_VERT)
+#define ED_NUM_CTRL3_BUTTONS		(ED_CTRL3_BUTTONS_HORIZ * ED_CTRL3_BUTTONS_VERT)
+#define ED_NUM_CTRL4_BUTTONS		(ED_CTRL4_BUTTONS_HORIZ * ED_CTRL4_BUTTONS_VERT)
+#define ED_NUM_CTRL5_BUTTONS		(ED_CTRL5_BUTTONS_HORIZ * ED_CTRL5_BUTTONS_VERT)
+#define ED_NUM_CTRL6_BUTTONS		(ED_CTRL6_BUTTONS_HORIZ * ED_CTRL6_BUTTONS_VERT)
+#define ED_NUM_CTRL7_BUTTONS		(ED_CTRL7_BUTTONS_HORIZ * ED_CTRL7_BUTTONS_VERT)
+#define ED_NUM_CTRL1_2_BUTTONS		(ED_NUM_CTRL1_BUTTONS   + ED_NUM_CTRL2_BUTTONS)
+#define ED_NUM_CTRL1_3_BUTTONS		(ED_NUM_CTRL1_2_BUTTONS + ED_NUM_CTRL3_BUTTONS)
+#define ED_NUM_CTRL1_4_BUTTONS		(ED_NUM_CTRL1_3_BUTTONS + ED_NUM_CTRL4_BUTTONS)
+#define ED_NUM_CTRL1_5_BUTTONS		(ED_NUM_CTRL1_4_BUTTONS + ED_NUM_CTRL5_BUTTONS)
+#define ED_NUM_CTRL1_6_BUTTONS		(ED_NUM_CTRL1_5_BUTTONS + ED_NUM_CTRL6_BUTTONS)
+#define ED_NUM_CTRL1_7_BUTTONS		(ED_NUM_CTRL1_6_BUTTONS + ED_NUM_CTRL7_BUTTONS)
+#define ED_NUM_CTRL_BUTTONS		(ED_NUM_CTRL1_7_BUTTONS)
 
 // values for the element list
 #define ED_ELEMENTLIST_XPOS		(editor.palette.x)
@@ -79,8 +79,7 @@
 #define ED_GADGET_LINE_DISTANCE		(editor.gadget.line_spacing)
 #define ED_GADGET_TEXT_DISTANCE		(editor.gadget.text_spacing)
 #define ED_TAB_BAR_HEIGHT		(editor.gadget.separator_line.height)
-#define ED_DRAWINGAREA_TEXT_DISTANCE	(ED_GADGET_TEXT_DISTANCE +	\
-					 ED_DRAWINGAREA_BORDER_SIZE)
+#define ED_DRAWINGAREA_TEXT_DISTANCE	(ED_GADGET_TEXT_DISTANCE + ED_DRAWINGAREA_BORDER_SIZE)
 #define ED_GADGET_SPACE_DISTANCE	(getFontWidth(FONT_TEXT_1))
 
 // values for drawingarea gadgets
@@ -91,11 +90,11 @@
 #define ED_DRAWINGAREA_TILE_SIZE	(editor.drawingarea.tile_size)
 
 // values for checkbutton gadgets
-#define ED_CHECKBUTTON_XSIZE	     (graphic_info[IMG_EDITOR_CHECKBOX].width)
-#define ED_CHECKBUTTON_YSIZE	     (graphic_info[IMG_EDITOR_CHECKBOX].height)
+#define ED_CHECKBUTTON_XSIZE		(graphic_info[IMG_EDITOR_CHECKBOX].width)
+#define ED_CHECKBUTTON_YSIZE		(graphic_info[IMG_EDITOR_CHECKBOX].height)
 
-#define ED_TABBUTTON_XSIZE	     (graphic_info[IMG_EDITOR_TABBUTTON].width)
-#define ED_TABBUTTON_YSIZE	     (graphic_info[IMG_EDITOR_TABBUTTON].height)
+#define ED_TABBUTTON_XSIZE		(graphic_info[IMG_EDITOR_TABBUTTON].width)
+#define ED_TABBUTTON_YSIZE		(graphic_info[IMG_EDITOR_TABBUTTON].height)
 
 #define ED_SETTINGS_LEVEL_TABS_X	(editor.settings.tabs.x)
 #define ED_SETTINGS_LEVEL_TABS_Y	(editor.settings.tabs.y)
@@ -145,10 +144,8 @@
 					 ED_TAB_BAR_HEIGHT +		\
 					 ED_SETTINGS_TABS_YOFFSET)
 
-#define ED_SETTINGS_XOFFSET		(ED_CHECKBUTTON_XSIZE +		\
-					 ED_GADGET_TEXT_DISTANCE)
-#define ED_SETTINGS_YOFFSET		(ED_CHECKBUTTON_YSIZE +		\
-					 ED_GADGET_LINE_DISTANCE)
+#define ED_SETTINGS_XOFFSET		(ED_CHECKBUTTON_XSIZE + ED_GADGET_TEXT_DISTANCE)
+#define ED_SETTINGS_YOFFSET		(ED_CHECKBUTTON_YSIZE + ED_GADGET_LINE_DISTANCE)
 
 #define ED_POS_RANGE			(10000)
 #define ED_POS_LEVEL_TABS_FIRST		(1 * ED_POS_RANGE)
@@ -182,18 +179,18 @@
 #define ED_ELEMENT_SETTINGS_XPOS(n)	(ED_POS_ELEMENT_SETTINGS_FIRST + (n))
 #define ED_ELEMENT_SETTINGS_YPOS(n)	(ED_POS_ELEMENT_SETTINGS_FIRST + (n))
 
-#define IS_POS_LEVEL_TABS(n)	      ((n) >= ED_POS_LEVEL_TABS_FIRST && \
-				       (n) <= ED_POS_LEVEL_TABS_LAST)
-#define IS_POS_LEVEL_SETTINGS(n)      ((n) >= ED_POS_LEVEL_SETTINGS_FIRST && \
-				       (n) <= ED_POS_LEVEL_SETTINGS_LAST)
-#define IS_POS_ENGINE_TABS(n)	      ((n) >= ED_POS_ENGINE_TABS_FIRST && \
-				       (n) <= ED_POS_ENGINE_TABS_LAST)
-#define IS_POS_ENGINE_SETTINGS(n)     ((n) >= ED_POS_ENGINE_SETTINGS_FIRST && \
-				       (n) <= ED_POS_ENGINE_SETTINGS_LAST)
-#define IS_POS_ELEMENT_TABS(n)	      ((n) >= ED_POS_ELEMENT_TABS_FIRST && \
-				       (n) <= ED_POS_ELEMENT_TABS_LAST)
-#define IS_POS_ELEMENT_SETTINGS(n)    ((n) >= ED_POS_ELEMENT_SETTINGS_FIRST && \
-				       (n) <= ED_POS_ELEMENT_SETTINGS_LAST)
+#define IS_POS_LEVEL_TABS(n)		((n) >= ED_POS_LEVEL_TABS_FIRST &&		\
+					 (n) <= ED_POS_LEVEL_TABS_LAST)
+#define IS_POS_LEVEL_SETTINGS(n)	((n) >= ED_POS_LEVEL_SETTINGS_FIRST &&		\
+					 (n) <= ED_POS_LEVEL_SETTINGS_LAST)
+#define IS_POS_ENGINE_TABS(n)		((n) >= ED_POS_ENGINE_TABS_FIRST &&		\
+					 (n) <= ED_POS_ENGINE_TABS_LAST)
+#define IS_POS_ENGINE_SETTINGS(n)	((n) >= ED_POS_ENGINE_SETTINGS_FIRST &&		\
+					 (n) <= ED_POS_ENGINE_SETTINGS_LAST)
+#define IS_POS_ELEMENT_TABS(n)		((n) >= ED_POS_ELEMENT_TABS_FIRST &&		\
+					 (n) <= ED_POS_ELEMENT_TABS_LAST)
+#define IS_POS_ELEMENT_SETTINGS(n)	((n) >= ED_POS_ELEMENT_SETTINGS_FIRST &&	\
+					 (n) <= ED_POS_ELEMENT_SETTINGS_LAST)
 
 #define ED_LEVEL_TABS_LINE(n)		((n) - ED_POS_LEVEL_TABS_FIRST)
 #define ED_LEVEL_SETTINGS_LINE(n)	((n) - ED_POS_LEVEL_SETTINGS_FIRST)
@@ -202,116 +199,87 @@
 #define ED_ELEMENT_TABS_LINE(n)		((n) - ED_POS_ELEMENT_TABS_FIRST)
 #define ED_ELEMENT_SETTINGS_LINE(n)	((n) - ED_POS_ELEMENT_SETTINGS_FIRST)
 
-#define ED_LEVEL_TABS_X(n)		(ED_LEVEL_TABS_XSTART +	\
-					 (n) * ED_SETTINGS_TABS_XOFFSET)
-#define ED_LEVEL_TABS_Y(n)		(ED_LEVEL_TABS_YSTART +	\
-					 (n) * ED_SETTINGS_TABS_YOFFSET)
+#define ED_LEVEL_TABS_X(n)		(ED_LEVEL_TABS_XSTART + (n) * ED_SETTINGS_TABS_XOFFSET)
+#define ED_LEVEL_TABS_Y(n)		(ED_LEVEL_TABS_YSTART + (n) * ED_SETTINGS_TABS_YOFFSET)
 
-#define ED_LEVEL_SETTINGS_X(n)		(ED_LEVEL_SETTINGS_XSTART +	\
-					 (n) * ED_SETTINGS_XOFFSET)
-#define ED_LEVEL_SETTINGS_Y(n)		((use_2nd_tab_row ?		\
-					  ED_ENGINE_SETTINGS_YSTART :	\
-					  ED_LEVEL_SETTINGS_YSTART) +	\
-					 (n) * ED_SETTINGS_YOFFSET)
+#define ED_LEVEL_SETTINGS_X(n)		(ED_LEVEL_SETTINGS_XSTART + (n) * ED_SETTINGS_XOFFSET)
+#define ED_LEVEL_SETTINGS_Y(n)		((use_2nd_tab_row ?			\
+					  ED_ENGINE_SETTINGS_YSTART :		\
+					  ED_LEVEL_SETTINGS_YSTART) + (n) * ED_SETTINGS_YOFFSET)
 
-#define ED_ENGINE_TABS_X(n)		(ED_ENGINE_TABS_XSTART +	\
-					 (n) * ED_SETTINGS_TABS_XOFFSET)
-#define ED_ENGINE_TABS_Y(n)		(ED_ENGINE_TABS_YSTART +	\
-					 (n) * ED_SETTINGS_TABS_YOFFSET)
+#define ED_ENGINE_TABS_X(n)		(ED_ENGINE_TABS_XSTART + (n) * ED_SETTINGS_TABS_XOFFSET)
+#define ED_ENGINE_TABS_Y(n)		(ED_ENGINE_TABS_YSTART + (n) * ED_SETTINGS_TABS_YOFFSET)
 
-#define ED_ENGINE_SETTINGS_X(n)		(ED_ENGINE_SETTINGS_XSTART +	\
-					 (n) * ED_SETTINGS_XOFFSET)
-#define ED_ENGINE_SETTINGS_Y(n)		(ED_ENGINE_SETTINGS_YSTART +	\
-					 (n) * ED_SETTINGS_YOFFSET)
+#define ED_ENGINE_SETTINGS_X(n)		(ED_ENGINE_SETTINGS_XSTART + (n) * ED_SETTINGS_XOFFSET)
+#define ED_ENGINE_SETTINGS_Y(n)		(ED_ENGINE_SETTINGS_YSTART + (n) * ED_SETTINGS_YOFFSET)
 
-#define ED_ELEMENT_TABS_X(n)		(ED_ELEMENT_TABS_XSTART +	\
-					 (n) * ED_SETTINGS_TABS_XOFFSET)
-#define ED_ELEMENT_TABS_Y(n)		(ED_ELEMENT_TABS_YSTART +	\
-					 (n) * ED_SETTINGS_TABS_YOFFSET)
+#define ED_ELEMENT_TABS_X(n)		(ED_ELEMENT_TABS_XSTART + (n) * ED_SETTINGS_TABS_XOFFSET)
+#define ED_ELEMENT_TABS_Y(n)		(ED_ELEMENT_TABS_YSTART + (n) * ED_SETTINGS_TABS_YOFFSET)
 
-#define ED_ELEMENT_SETTINGS_X(n)	(ED_ELEMENT_SETTINGS_XSTART +	\
-					 (n) * ED_SETTINGS_XOFFSET)
-#define ED_ELEMENT_SETTINGS_Y(n)	(ED_ELEMENT_SETTINGS_YSTART +	\
-					 (n) * ED_SETTINGS_YOFFSET)
+#define ED_ELEMENT_SETTINGS_X(n)	(ED_ELEMENT_SETTINGS_XSTART + (n) * ED_SETTINGS_XOFFSET)
+#define ED_ELEMENT_SETTINGS_Y(n)	(ED_ELEMENT_SETTINGS_YSTART + (n) * ED_SETTINGS_YOFFSET)
 
-#define ED_POS_TO_LEVEL_TABS_X(n)	\
-  (ED_LEVEL_TABS_X(ED_LEVEL_TABS_LINE(n)))
-#define ED_POS_TO_LEVEL_TABS_Y(n)	\
-  (ED_LEVEL_TABS_Y(ED_LEVEL_TABS_LINE(n)))
+#define ED_POS_TO_LEVEL_TABS_X(n)	(ED_LEVEL_TABS_X(ED_LEVEL_TABS_LINE(n)))
+#define ED_POS_TO_LEVEL_TABS_Y(n)	(ED_LEVEL_TABS_Y(ED_LEVEL_TABS_LINE(n)))
 
-#define ED_POS_TO_LEVEL_SETTINGS_X(n)	\
-  (ED_LEVEL_SETTINGS_X(ED_LEVEL_SETTINGS_LINE(n)))
-#define ED_POS_TO_LEVEL_SETTINGS_Y(n)	\
-  (ED_LEVEL_SETTINGS_Y(ED_LEVEL_SETTINGS_LINE(n)))
+#define ED_POS_TO_LEVEL_SETTINGS_X(n)	(ED_LEVEL_SETTINGS_X(ED_LEVEL_SETTINGS_LINE(n)))
+#define ED_POS_TO_LEVEL_SETTINGS_Y(n)	(ED_LEVEL_SETTINGS_Y(ED_LEVEL_SETTINGS_LINE(n)))
 
-#define ED_POS_TO_ENGINE_TABS_X(n)	\
-  (ED_ENGINE_TABS_X(ED_ENGINE_TABS_LINE(n)))
-#define ED_POS_TO_ENGINE_TABS_Y(n)	\
-  (ED_ENGINE_TABS_Y(ED_ENGINE_TABS_LINE(n)))
+#define ED_POS_TO_ENGINE_TABS_X(n)	(ED_ENGINE_TABS_X(ED_ENGINE_TABS_LINE(n)))
+#define ED_POS_TO_ENGINE_TABS_Y(n)	(ED_ENGINE_TABS_Y(ED_ENGINE_TABS_LINE(n)))
 
-#define ED_POS_TO_ENGINE_SETTINGS_X(n)	\
-  (ED_ENGINE_SETTINGS_X(ED_ENGINE_SETTINGS_LINE(n)))
-#define ED_POS_TO_ENGINE_SETTINGS_Y(n)	\
-  (ED_ENGINE_SETTINGS_Y(ED_ENGINE_SETTINGS_LINE(n)))
+#define ED_POS_TO_ENGINE_SETTINGS_X(n)	(ED_ENGINE_SETTINGS_X(ED_ENGINE_SETTINGS_LINE(n)))
+#define ED_POS_TO_ENGINE_SETTINGS_Y(n)	(ED_ENGINE_SETTINGS_Y(ED_ENGINE_SETTINGS_LINE(n)))
 
-#define ED_POS_TO_ELEMENT_TABS_X(n)	\
-  (ED_ELEMENT_TABS_X(ED_ELEMENT_TABS_LINE(n)))
-#define ED_POS_TO_ELEMENT_TABS_Y(n)	\
-  (ED_ELEMENT_TABS_Y(ED_ELEMENT_TABS_LINE(n)))
+#define ED_POS_TO_ELEMENT_TABS_X(n)	(ED_ELEMENT_TABS_X(ED_ELEMENT_TABS_LINE(n)))
+#define ED_POS_TO_ELEMENT_TABS_Y(n)	(ED_ELEMENT_TABS_Y(ED_ELEMENT_TABS_LINE(n)))
 
-#define ED_POS_TO_ELEMENT_SETTINGS_X(n)	\
-  (ED_ELEMENT_SETTINGS_X(ED_ELEMENT_SETTINGS_LINE(n)))
-#define ED_POS_TO_ELEMENT_SETTINGS_Y(n)	\
-  (ED_ELEMENT_SETTINGS_Y(ED_ELEMENT_SETTINGS_LINE(n)))
+#define ED_POS_TO_ELEMENT_SETTINGS_X(n)	(ED_ELEMENT_SETTINGS_X(ED_ELEMENT_SETTINGS_LINE(n)))
+#define ED_POS_TO_ELEMENT_SETTINGS_Y(n)	(ED_ELEMENT_SETTINGS_Y(ED_ELEMENT_SETTINGS_LINE(n)))
 
-#define ED_SETTINGS_X(n)		(IS_POS_LEVEL_TABS(n) ?	\
-					 ED_POS_TO_LEVEL_TABS_X(n) : \
-					 IS_POS_LEVEL_SETTINGS(n) ?	\
-					 ED_POS_TO_LEVEL_SETTINGS_X(n) : \
-					 IS_POS_ENGINE_TABS(n) ?	\
-					 ED_POS_TO_ENGINE_TABS_X(n) : \
-					 IS_POS_ENGINE_SETTINGS(n) ?	\
-					 ED_POS_TO_ENGINE_SETTINGS_X(n) : \
-					 IS_POS_ELEMENT_TABS(n) ?	\
-					 ED_POS_TO_ELEMENT_TABS_X(n) : \
-					 IS_POS_ELEMENT_SETTINGS(n) ?	\
+#define ED_SETTINGS_X(n)		(IS_POS_LEVEL_TABS(n) ?			\
+					 ED_POS_TO_LEVEL_TABS_X(n) :		\
+					 IS_POS_LEVEL_SETTINGS(n) ?		\
+					 ED_POS_TO_LEVEL_SETTINGS_X(n) :	\
+					 IS_POS_ENGINE_TABS(n) ?		\
+					 ED_POS_TO_ENGINE_TABS_X(n) :		\
+					 IS_POS_ENGINE_SETTINGS(n) ?		\
+					 ED_POS_TO_ENGINE_SETTINGS_X(n) :	\
+					 IS_POS_ELEMENT_TABS(n) ?		\
+					 ED_POS_TO_ELEMENT_TABS_X(n) :		\
+					 IS_POS_ELEMENT_SETTINGS(n) ?		\
 					 ED_POS_TO_ELEMENT_SETTINGS_X(n) : (n))
-#define ED_SETTINGS_Y(n)		(IS_POS_LEVEL_TABS(n) ?	\
-					 ED_POS_TO_LEVEL_TABS_Y(n) : \
-					 IS_POS_LEVEL_SETTINGS(n) ?	\
-					 ED_POS_TO_LEVEL_SETTINGS_Y(n) : \
-					 IS_POS_ENGINE_TABS(n) ?	\
-					 ED_POS_TO_ENGINE_TABS_Y(n) : \
-					 IS_POS_ENGINE_SETTINGS(n) ?	\
-					 ED_POS_TO_ENGINE_SETTINGS_Y(n) : \
-					 IS_POS_ELEMENT_TABS(n) ?	\
-					 ED_POS_TO_ELEMENT_TABS_Y(n) : \
-					 IS_POS_ELEMENT_SETTINGS(n) ?	\
+#define ED_SETTINGS_Y(n)		(IS_POS_LEVEL_TABS(n) ?			\
+					 ED_POS_TO_LEVEL_TABS_Y(n) :		\
+					 IS_POS_LEVEL_SETTINGS(n) ?		\
+					 ED_POS_TO_LEVEL_SETTINGS_Y(n) :	\
+					 IS_POS_ENGINE_TABS(n) ?		\
+					 ED_POS_TO_ENGINE_TABS_Y(n) :		\
+					 IS_POS_ENGINE_SETTINGS(n) ?		\
+					 ED_POS_TO_ENGINE_SETTINGS_Y(n) :	\
+					 IS_POS_ELEMENT_TABS(n) ?		\
+					 ED_POS_TO_ELEMENT_TABS_Y(n) :		\
+					 IS_POS_ELEMENT_SETTINGS(n) ?		\
 					 ED_POS_TO_ELEMENT_SETTINGS_Y(n) : (n))
 
-#define ED_SETTINGS_XOFF(n)		(5 * ((n) % 4) *		\
-					 ED_DRAWINGAREA_TILE_SIZE)
-#define ED_SETTINGS_YOFF(n)		(5 * ((n) / 4) *		\
-					 ED_DRAWINGAREA_TILE_SIZE)
+#define ED_SETTINGS_XOFF(n)		(5 * ((n) % 4) * ED_DRAWINGAREA_TILE_SIZE)
+#define ED_SETTINGS_YOFF(n)		(5 * ((n) / 4) * ED_DRAWINGAREA_TILE_SIZE)
 
-#define ED_AREA_XOFFSET_1(n)		((n) != 0 ?			\
-					 ED_DRAWINGAREA_BORDER_SIZE : 0)
-#define ED_AREA_YOFFSET_1(n)		((n) != 0 ?			\
-					 (ED_CHECKBUTTON_YSIZE -	\
-					  ED_DRAWINGAREA_TILE_SIZE) / 2 : 0)
+#define ED_AREA_XOFFSET_1(n)		((n) != 0 ? ED_DRAWINGAREA_BORDER_SIZE : 0)
+#define ED_AREA_YOFFSET_1(n)		((n) != 0 ?				\
+					 (ED_CHECKBUTTON_YSIZE - ED_DRAWINGAREA_TILE_SIZE) / 2 : 0)
 
-#define ED_AREA_XOFFSET_2(n)	  (0)
-#define ED_AREA_YOFFSET_2(n)	  ((n) == 3 ?			\
-				   ((n) - 1) * ED_DRAWINGAREA_TILE_SIZE / 2 : 0)
+#define ED_AREA_XOFFSET_2(n)		(0)
+#define ED_AREA_YOFFSET_2(n)		((n) == 3 ? ((n) - 1) * ED_DRAWINGAREA_TILE_SIZE / 2 : 0)
 
-#define ED_AREA_SETTINGS_X(i)	   (ED_SETTINGS_X((i).x) +		\
-				    ED_SETTINGS_XOFF((i).xoffset) +	\
-				    ED_AREA_XOFFSET_1((i).x) -		\
-				    ED_AREA_XOFFSET_2((i).area_xsize))
-#define ED_AREA_SETTINGS_Y(i)	   (ED_SETTINGS_Y((i).y) +		\
-				    ED_SETTINGS_YOFF((i).yoffset) +	\
-				    ED_AREA_YOFFSET_1((i).y) -		\
-				    ED_AREA_YOFFSET_2((i).area_ysize))
+#define ED_AREA_SETTINGS_X(i)		(ED_SETTINGS_X((i).x) +			\
+					 ED_SETTINGS_XOFF((i).xoffset) +	\
+					 ED_AREA_XOFFSET_1((i).x) -		\
+					 ED_AREA_XOFFSET_2((i).area_xsize))
+#define ED_AREA_SETTINGS_Y(i)		(ED_SETTINGS_Y((i).y) +			\
+					 ED_SETTINGS_YOFF((i).yoffset) +	\
+					 ED_AREA_YOFFSET_1((i).y) -		\
+					 ED_AREA_YOFFSET_2((i).area_ysize))
 
 // values for element content drawing areas
 #define ED_AREA_1X1_LSETTINGS_XPOS(n)	ED_LEVEL_SETTINGS_XPOS(n)
@@ -340,11 +308,11 @@
 #define ED_AREA_YAMYAM_CONTENT_YPOS	ED_ELEMENT_SETTINGS_YPOS(ED_YPOS_YAM)
 #define ED_AREA_YAMYAM_CONTENT_XOFF(n)	ED_AREA_ELEMENT_CONTENT_XOFF(n)
 #define ED_AREA_YAMYAM_CONTENT_YOFF(n)	ED_AREA_ELEMENT_CONTENT_YOFF(n)
-#define ED_AREA_YAMYAM_CONTENT_X(n)	(ED_ELEMENT_SETTINGS_X(ED_XPOS_YAM) + \
+#define ED_AREA_YAMYAM_CONTENT_X(n)	(ED_ELEMENT_SETTINGS_X(ED_XPOS_YAM) +	\
 					 ED_SETTINGS_XOFF(n))
-#define ED_AREA_YAMYAM_CONTENT_Y(n)	(ED_ELEMENT_SETTINGS_Y(ED_YPOS_YAM) + \
-					 ED_SETTINGS_YOFF(n) +		\
-					 ED_AREA_YOFFSET_1(ED_YPOS_YAM) - \
+#define ED_AREA_YAMYAM_CONTENT_Y(n)	(ED_ELEMENT_SETTINGS_Y(ED_YPOS_YAM) +	\
+					 ED_SETTINGS_YOFF(n) +			\
+					 ED_AREA_YOFFSET_1(ED_YPOS_YAM) -	\
 					 ED_AREA_YOFFSET_2(3))
 
 // magic ball content
@@ -354,11 +322,11 @@
 #define ED_AREA_MAGIC_BALL_CONTENT_YPOS	ED_ELEMENT_SETTINGS_YPOS(ED_YPOS_BALL)
 #define ED_AREA_MAGIC_BALL_CONTENT_XOFF(n) ED_AREA_ELEMENT_CONTENT_XOFF(n)
 #define ED_AREA_MAGIC_BALL_CONTENT_YOFF(n) ED_AREA_ELEMENT_CONTENT_YOFF(n)
-#define ED_AREA_MAGIC_BALL_CONTENT_X(n)	(ED_ELEMENT_SETTINGS_X(ED_XPOS_BALL) + \
+#define ED_AREA_MAGIC_BALL_CONTENT_X(n)	(ED_ELEMENT_SETTINGS_X(ED_XPOS_BALL) +	\
 					 ED_SETTINGS_XOFF(n))
-#define ED_AREA_MAGIC_BALL_CONTENT_Y(n)	(ED_ELEMENT_SETTINGS_Y(ED_YPOS_BALL) + \
-					 ED_SETTINGS_YOFF(n) +		\
-					 ED_AREA_YOFFSET_1(ED_YPOS_BALL) - \
+#define ED_AREA_MAGIC_BALL_CONTENT_Y(n)	(ED_ELEMENT_SETTINGS_Y(ED_YPOS_BALL) +	\
+					 ED_SETTINGS_YOFF(n) +			\
+					 ED_AREA_YOFFSET_1(ED_YPOS_BALL) -	\
 					 ED_AREA_YOFFSET_2(3))
 
 // values for scrolling gadgets for drawing area
@@ -373,14 +341,12 @@
 #define ED_SCROLL_LEFT_YPOS		(SYSIZE - 2 * ED_SCROLLBUTTON_YSIZE)
 #define ED_SCROLL_RIGHT_XPOS		(SXSIZE - 2 * ED_SCROLLBUTTON_XSIZE)
 #define ED_SCROLL_RIGHT_YPOS		ED_SCROLL_LEFT_YPOS
-#define ED_SCROLL_HORIZONTAL_XPOS	(ED_SCROLL_LEFT_XPOS +		\
-					 ED_SCROLLBUTTON_XSIZE)
+#define ED_SCROLL_HORIZONTAL_XPOS	(ED_SCROLL_LEFT_XPOS + ED_SCROLLBUTTON_XSIZE)
 #define ED_SCROLL_HORIZONTAL_YPOS	ED_SCROLL_LEFT_YPOS
 #define ED_SCROLL_HORIZONTAL_XSIZE	(SXSIZE - 3 * ED_SCROLLBUTTON_XSIZE)
 #define ED_SCROLL_HORIZONTAL_YSIZE	ED_SCROLLBUTTON_YSIZE
 #define ED_SCROLL_VERTICAL_XPOS		ED_SCROLL_UP_XPOS
-#define ED_SCROLL_VERTICAL_YPOS		(ED_SCROLL_UP_YPOS +		\
-					 ED_SCROLLBUTTON_YSIZE)
+#define ED_SCROLL_VERTICAL_YPOS		(ED_SCROLL_UP_YPOS + ED_SCROLLBUTTON_YSIZE)
 #define ED_SCROLL_VERTICAL_XSIZE	ED_SCROLLBUTTON_XSIZE
 #define ED_SCROLL_VERTICAL_YSIZE	(SYSIZE - 4 * ED_SCROLLBUTTON_YSIZE)
 
@@ -388,46 +354,46 @@
 #define ED_SCROLLBUTTON2_XSIZE		(graphic_info[IMG_EDITOR_PALETTE_SCROLL_UP].width)
 #define ED_SCROLLBUTTON2_YSIZE		(graphic_info[IMG_EDITOR_PALETTE_SCROLL_UP].height)
 
-#define ED_SCROLL2_UP_XPOS		(ED_ELEMENTLIST_XPOS +		\
-					 ED_ELEMENTLIST_BUTTONS_HORIZ *	\
+#define ED_SCROLL2_UP_XPOS		(ED_ELEMENTLIST_XPOS +			\
+					 ED_ELEMENTLIST_BUTTONS_HORIZ *		\
 					 ED_ELEMENTLIST_XSIZE)
 #define ED_SCROLL2_UP_YPOS		ED_ELEMENTLIST_YPOS
 #define ED_SCROLL2_DOWN_XPOS		ED_SCROLL2_UP_XPOS
-#define ED_SCROLL2_DOWN_YPOS		(ED_SCROLL2_UP_YPOS +		\
-					 ED_ELEMENTLIST_BUTTONS_VERT *	\
-					 ED_ELEMENTLIST_YSIZE -		\
+#define ED_SCROLL2_DOWN_YPOS		(ED_SCROLL2_UP_YPOS +			\
+					 ED_ELEMENTLIST_BUTTONS_VERT *		\
+					 ED_ELEMENTLIST_YSIZE -			\
 					 ED_SCROLLBUTTON2_YSIZE)
 #define ED_SCROLL2_VERTICAL_XPOS	ED_SCROLL2_UP_XPOS
-#define ED_SCROLL2_VERTICAL_YPOS	(ED_SCROLL2_UP_YPOS +		\
+#define ED_SCROLL2_VERTICAL_YPOS	(ED_SCROLL2_UP_YPOS +			\
 					 ED_SCROLLBUTTON2_YSIZE)
 #define ED_SCROLL2_VERTICAL_XSIZE	ED_SCROLLBUTTON2_XSIZE
-#define ED_SCROLL2_VERTICAL_YSIZE	(ED_ELEMENTLIST_BUTTONS_VERT *	\
-					 ED_ELEMENTLIST_YSIZE -		\
+#define ED_SCROLL2_VERTICAL_YSIZE	(ED_ELEMENTLIST_BUTTONS_VERT *		\
+					 ED_ELEMENTLIST_YSIZE -			\
 					 2 * ED_SCROLLBUTTON2_YSIZE)
 
-#define COLORPICKER_X		(editor.settings.colorpicker.x)
-#define COLORPICKER_Y		(editor.settings.colorpicker.y)
-#define COLORPICKER_X_REDEFINED (COLORPICKER_X != -1)
-#define COLORPICKER_Y_REDEFINED (COLORPICKER_Y != -1)
-#define COLORPICKER_XPOS	SX + (COLORPICKER_X_REDEFINED ? COLORPICKER_X : \
-				      ED_LEVEL_SETTINGS_X(0))
-#define COLORPICKER_YPOS	SY + (COLORPICKER_Y_REDEFINED ? COLORPICKER_Y : \
-				      ED_LEVEL_SETTINGS_Y(0) + ED_GADGET_TEXT_DISTANCE)
-#define COLORPICKER_C64_VALUES	16
-#define COLORPICKER_MAX_VALUES	256
+#define COLORPICKER_X			(editor.settings.colorpicker.x)
+#define COLORPICKER_Y			(editor.settings.colorpicker.y)
+#define COLORPICKER_X_REDEFINED		(COLORPICKER_X != -1)
+#define COLORPICKER_Y_REDEFINED		(COLORPICKER_Y != -1)
+#define COLORPICKER_XPOS		SX + (COLORPICKER_X_REDEFINED ? COLORPICKER_X : \
+					      ED_LEVEL_SETTINGS_X(0))
+#define COLORPICKER_YPOS		SY + (COLORPICKER_Y_REDEFINED ? COLORPICKER_Y : \
+					      ED_LEVEL_SETTINGS_Y(0) + ED_GADGET_TEXT_DISTANCE)
+#define COLORPICKER_C64_VALUES		16
+#define COLORPICKER_MAX_VALUES		256
 
 // values for ClearEditorGadgetInfoText() and HandleEditorGadgetInfoText()
-#define INFOTEXT_FONT		FONT_TEXT_2
-#define INFOTEXT_XSIZE		SXSIZE
-#define INFOTEXT_YSIZE		getFontHeight(INFOTEXT_FONT)
-#define INFOTEXT_YSIZE_FULL	(INFOTEXT_YSIZE + ED_GADGET_SMALL_DISTANCE)
-#define INFOTEXT_X		(editor.settings.tooltip.x)
-#define INFOTEXT_Y		(editor.settings.tooltip.y)
-#define INFOTEXT_X_REDEFINED	(INFOTEXT_X != -1)
-#define INFOTEXT_Y_REDEFINED	(INFOTEXT_Y != -1)
-#define INFOTEXT_XPOS		SX + (INFOTEXT_X_REDEFINED ? INFOTEXT_X : 0)
-#define INFOTEXT_YPOS		SY + (INFOTEXT_Y_REDEFINED ? INFOTEXT_Y : \
-				      SYSIZE - INFOTEXT_YSIZE)
+#define INFOTEXT_FONT			FONT_TEXT_2
+#define INFOTEXT_XSIZE			SXSIZE
+#define INFOTEXT_YSIZE			getFontHeight(INFOTEXT_FONT)
+#define INFOTEXT_YSIZE_FULL		(INFOTEXT_YSIZE + ED_GADGET_SMALL_DISTANCE)
+#define INFOTEXT_X			(editor.settings.tooltip.x)
+#define INFOTEXT_Y			(editor.settings.tooltip.y)
+#define INFOTEXT_X_REDEFINED		(INFOTEXT_X != -1)
+#define INFOTEXT_Y_REDEFINED		(INFOTEXT_Y != -1)
+#define INFOTEXT_XPOS			SX + (INFOTEXT_X_REDEFINED ? INFOTEXT_X : 0)
+#define INFOTEXT_YPOS			SY + (INFOTEXT_Y_REDEFINED ? INFOTEXT_Y : \
+					      SYSIZE - INFOTEXT_YSIZE)
 
 
 // ----------------------------------------------------------------------------
@@ -5990,10 +5956,10 @@ static int new_element3 = EL_SAND;
 
 static int use_permanent_palette = TRUE;
 
-#define PX		(use_permanent_palette ? DX : SX)
-#define PY		(use_permanent_palette ? DY : SY)
-#define PXSIZE		(use_permanent_palette ? DXSIZE : SXSIZE)
-#define PYSIZE		(use_permanent_palette ? DYSIZE : SYSIZE)
+#define PX			(use_permanent_palette ? DX : SX)
+#define PY			(use_permanent_palette ? DY : SY)
+#define PXSIZE			(use_permanent_palette ? DXSIZE : SXSIZE)
+#define PYSIZE			(use_permanent_palette ? DYSIZE : SYSIZE)
 
 // forward declaration for internal use
 static void CopyBrushToCursor(int, int);
@@ -8585,9 +8551,9 @@ static void ReinitializeElementList(void)
       boolean cascade_value = *editor_elements_info[i].setup_cascade_value;
 
       if (IS_EDITOR_CASCADE(*cascade_element))
-	*cascade_element =
-	  (cascade_value ? EL_CASCADE_ACTIVE(*cascade_element) :
-	   EL_CASCADE_INACTIVE(*cascade_element));
+	*cascade_element = (cascade_value ?
+                            EL_CASCADE_ACTIVE(*cascade_element) :
+                            EL_CASCADE_INACTIVE(*cascade_element));
     }
 
     initialization_needed = FALSE;
@@ -8596,12 +8562,10 @@ static void ReinitializeElementList(void)
   checked_free(editor_elements);
 
   // reload optional user defined element list for each invocation of editor
-  LoadUserDefinedEditorElementList(&editor_el_user_defined_ptr,
-				   &num_editor_el_user_defined);
+  LoadUserDefinedEditorElementList(&editor_el_user_defined_ptr, &num_editor_el_user_defined);
 
   // initialize dynamic level element list for each invocation of editor
-  InitDynamicEditorElementList(&editor_el_dynamic_ptr,
-			       &num_editor_el_dynamic);
+  InitDynamicEditorElementList(&editor_el_dynamic_ptr, &num_editor_el_dynamic);
 
   // initialize list of empty elements (used for padding, if needed)
   for (i = 0; i < ED_NUM_ELEMENTLIST_BUTTONS; i++)
@@ -8652,8 +8616,7 @@ static void ReinitializeElementList(void)
 
       // required for correct padding of palette element buttons
       int element_list_size = *editor_elements_info[i].element_list_size;
-      int element_rows =
-	(element_list_size + ED_ELEMENTLIST_COLS - 1) / ED_ELEMENTLIST_COLS;
+      int element_rows = (element_list_size + ED_ELEMENTLIST_COLS - 1) / ED_ELEMENTLIST_COLS;
       int element_buttons = ED_ELEMENTLIST_COLS * element_rows;
 
       num_editor_elements += element_buttons;
@@ -8707,8 +8670,7 @@ static void ReinitializeElementList(void)
 
       // required for correct padding of palette element buttons
       int element_list_size = *editor_elements_info[i].element_list_size;
-      int element_rows =
-	(element_list_size + ED_ELEMENTLIST_COLS - 1) / ED_ELEMENTLIST_COLS;
+      int element_rows = (element_list_size + ED_ELEMENTLIST_COLS - 1) / ED_ELEMENTLIST_COLS;
       int element_buttons = ED_ELEMENTLIST_COLS * element_rows;
 
       // copy all elements from element list
@@ -8781,8 +8743,7 @@ static void ReinitializeElementListButtons(void)
       initialization_needed = TRUE;
 
     for (i = 0; editor_elements_info[i].setup_value != NULL; i++)
-      if (editor_elements_info[i].last_setup_value !=
-	  *editor_elements_info[i].setup_value)
+      if (editor_elements_info[i].last_setup_value != *editor_elements_info[i].setup_value)
 	initialization_needed = TRUE;
   }
 
@@ -8795,17 +8756,14 @@ static void ReinitializeElementListButtons(void)
   // store current setup values for next invocation of this function
   last_setup_value_headlines = setup.editor.el_headlines;
   for (i = 0; editor_elements_info[i].setup_value != NULL; i++)
-    editor_elements_info[i].last_setup_value =
-      *editor_elements_info[i].setup_value;
+    editor_elements_info[i].last_setup_value = *editor_elements_info[i].setup_value;
 
   initialization_needed = FALSE;
 }
 
-static void DrawElementBorder(int dest_x, int dest_y, int width, int height,
-			      boolean input)
+static void DrawElementBorder(int dest_x, int dest_y, int width, int height, boolean input)
 {
-  int border_graphic =
-    (input ? IMG_EDITOR_ELEMENT_BORDER_INPUT : IMG_EDITOR_ELEMENT_BORDER);
+  int border_graphic = (input ? IMG_EDITOR_ELEMENT_BORDER_INPUT : IMG_EDITOR_ELEMENT_BORDER);
   struct GraphicInfo *g = &graphic_info[border_graphic];
   Bitmap *src_bitmap = g->bitmap;
   int src_x = g->src_x;
@@ -8817,36 +8775,28 @@ static void DrawElementBorder(int dest_x, int dest_y, int width, int height,
   int i;
 
   BlitBitmap(src_bitmap, drawto, src_x, src_y,
-	     border_size, border_size,
-	     dest_x - border_size, dest_y - border_size);
+	     border_size, border_size, dest_x - border_size, dest_y - border_size);
   BlitBitmap(src_bitmap, drawto, src_x + border_xpos, src_y,
-	     border_size, border_size,
-	     dest_x + width, dest_y - border_size);
+	     border_size, border_size, dest_x + width, dest_y - border_size);
   BlitBitmap(src_bitmap, drawto, src_x, src_y + border_ypos,
-	     border_size, border_size,
-	     dest_x - border_size, dest_y + height);
+	     border_size, border_size, dest_x - border_size, dest_y + height);
   BlitBitmap(src_bitmap, drawto, src_x + border_xpos, src_y + border_ypos,
-	     border_size, border_size,
-	     dest_x + width, dest_y + height);
+	     border_size, border_size, dest_x + width, dest_y + height);
 
   for (i = 0; i < width / tilesize; i++)
   {
     BlitBitmap(src_bitmap, drawto, src_x + border_size, src_y,
-	       tilesize, border_size,
-	       dest_x + i * tilesize, dest_y - border_size);
+	       tilesize, border_size, dest_x + i * tilesize, dest_y - border_size);
     BlitBitmap(src_bitmap, drawto, src_x + border_size, src_y + border_ypos,
-	       tilesize, border_size,
-	       dest_x + i * tilesize, dest_y + height);
+	       tilesize, border_size, dest_x + i * tilesize, dest_y + height);
   }
 
   for (i = 0; i < height / tilesize; i++)
   {
     BlitBitmap(src_bitmap, drawto, src_x, src_y + border_size,
-	       border_size, tilesize,
-	       dest_x - border_size, dest_y + i * tilesize);
+	       border_size, tilesize, dest_x - border_size, dest_y + i * tilesize);
     BlitBitmap(src_bitmap, drawto, src_x + border_xpos, src_y + border_size,
-	       border_size, tilesize,
-	       dest_x + width, dest_y + i * tilesize);
+	       border_size, tilesize, dest_x + width, dest_y + i * tilesize);
   }
 
   ClearRectangle(drawto, dest_x - 1, dest_y - 1, width + 2, height + 2);
@@ -8971,8 +8921,7 @@ static void ScrollEditorLevel(int from_x, int from_y, int scroll)
   BackToFront();
 }
 
-static void getEditorGraphicSource(int element, int tile_size, Bitmap **bitmap,
-				   int *x, int *y)
+static void getEditorGraphicSource(int element, int tile_size, Bitmap **bitmap, int *x, int *y)
 {
   int graphic;
   int frame;
@@ -9250,8 +9199,7 @@ static void CreateCounterButtons(void)
 
     // determine horizontal position to the right of specified gadget
     if (counterbutton_info[i].gadget_id_align != GADGET_ID_NONE)
-      x = (right_gadget_border[counterbutton_info[i].gadget_id_align] +
-	   ED_GADGET_TEXT_DISTANCE);
+      x = (right_gadget_border[counterbutton_info[i].gadget_id_align] + ED_GADGET_TEXT_DISTANCE);
 
     // determine horizontal offset for leading text
     if (counterbutton_info[i].text_left != NULL)
@@ -9302,8 +9250,7 @@ static void CreateCounterButtons(void)
       gd_x2 = gd->src_x + gd->pressed_xoffset;
       gd_y2 = gd->src_y + gd->pressed_yoffset;
 
-      sprintf(infotext, "%s counter value by 1, 5 or 10",
-	      (j == 0 ? "Decrease" : "Increase"));
+      sprintf(infotext, "%s counter value by 1, 5 or 10", (j == 0 ? "Decrease" : "Increase"));
 
       gi = CreateGadget(GDI_CUSTOM_ID, id,
 			GDI_CUSTOM_TYPE_ID, type_id,
@@ -9326,8 +9273,7 @@ static void CreateCounterButtons(void)
 	Fail("cannot create gadget");
 
       level_editor_gadget[id] = gi;
-      right_gadget_border[id] =
-	getRightGadgetBorder(gi, counterbutton_info[i].text_right);
+      right_gadget_border[id] = getRightGadgetBorder(gi, counterbutton_info[i].text_right);
 
       x += gi->width + ED_GADGET_SMALL_DISTANCE;	// text count button
 
@@ -9388,8 +9334,7 @@ static void CreateCounterButtons(void)
 	  Fail("cannot create gadget");
 
 	level_editor_gadget[id] = gi;
-	right_gadget_border[id] =
-	  getRightGadgetBorder(gi, counterbutton_info[i].text_right);
+	right_gadget_border[id] = getRightGadgetBorder(gi, counterbutton_info[i].text_right);
 
 	x += gi->width + ED_GADGET_SMALL_DISTANCE;	// up count button
       }
@@ -9414,19 +9359,20 @@ static void CreateDrawingAreas(void)
     int y = SY + ED_AREA_SETTINGS_Y(drawingarea_info[i]);
     int area_xsize = drawingarea_info[i].area_xsize;
     int area_ysize = drawingarea_info[i].area_ysize;
-    int item_size = (id == GADGET_ID_DRAWING_LEVEL ?
-		     ed_tilesize : ED_DRAWINGAREA_TILE_SIZE);
+    int item_size = (id == GADGET_ID_DRAWING_LEVEL ? ed_tilesize : ED_DRAWINGAREA_TILE_SIZE);
     unsigned int event_mask =
-      GD_EVENT_PRESSED | GD_EVENT_RELEASED | GD_EVENT_MOVING |
-      GD_EVENT_OFF_BORDERS | GD_EVENT_PIXEL_PRECISE;
+      GD_EVENT_PRESSED |
+      GD_EVENT_RELEASED |
+      GD_EVENT_MOVING |
+      GD_EVENT_OFF_BORDERS |
+      GD_EVENT_PIXEL_PRECISE;
 
     if (type_id != i)
       Fail("'drawingarea_info' structure corrupted at index %d -- please fix", i);
 
     // determine horizontal position to the right of specified gadget
     if (drawingarea_info[i].gadget_id_align != GADGET_ID_NONE)
-      x = (right_gadget_border[drawingarea_info[i].gadget_id_align] +
-	   ED_DRAWINGAREA_TEXT_DISTANCE);
+      x = (right_gadget_border[drawingarea_info[i].gadget_id_align] + ED_DRAWINGAREA_TEXT_DISTANCE);
 
     // determine horizontal offset for leading text
     if (drawingarea_info[i].text_left != NULL)
@@ -9448,8 +9394,7 @@ static void CreateDrawingAreas(void)
       Fail("cannot create gadget");
 
     level_editor_gadget[id] = gi;
-    right_gadget_border[id] =
-      getRightGadgetBorder(gi, drawingarea_info[i].text_right);
+    right_gadget_border[id] = getRightGadgetBorder(gi, drawingarea_info[i].text_right);
   }
 }
 
@@ -9527,8 +9472,7 @@ static void CreateTextInputGadgets(void)
       Fail("cannot create gadget");
 
     level_editor_gadget[id] = gi;
-    right_gadget_border[id] =
-      getRightGadgetBorder(gi, textinput_info[i].text_right);
+    right_gadget_border[id] = getRightGadgetBorder(gi, textinput_info[i].text_right);
   }
 }
 
@@ -9604,8 +9548,7 @@ static void CreateSelectboxGadgets(void)
     int type_id = selectbox_info[i].gadget_type_id;
     int x = SX + ED_SETTINGS_X(selectbox_info[i].x);
     int y = SY + ED_SETTINGS_Y(selectbox_info[i].y);
-    unsigned int event_mask =
-      GD_EVENT_RELEASED | GD_EVENT_TEXT_RETURN | GD_EVENT_TEXT_LEAVING;
+    unsigned int event_mask = GD_EVENT_RELEASED | GD_EVENT_TEXT_RETURN | GD_EVENT_TEXT_LEAVING;
 
     if (type_id != i)
       Fail("'selectbox_info' structure corrupted at index %d -- please fix", i);
@@ -9626,8 +9569,7 @@ static void CreateSelectboxGadgets(void)
 
     // determine horizontal position to the right of specified gadget
     if (selectbox_info[i].gadget_id_align != GADGET_ID_NONE)
-      x = (right_gadget_border[selectbox_info[i].gadget_id_align] +
-	   ED_GADGET_TEXT_DISTANCE);
+      x = (right_gadget_border[selectbox_info[i].gadget_id_align] + ED_GADGET_TEXT_DISTANCE);
 
     // determine horizontal offset for leading text
     if (selectbox_info[i].text_left != NULL)
@@ -9662,8 +9604,7 @@ static void CreateSelectboxGadgets(void)
       Fail("cannot create gadget");
 
     level_editor_gadget[id] = gi;
-    right_gadget_border[id] =
-      getRightGadgetBorder(gi, selectbox_info[i].text_right);
+    right_gadget_border[id] = getRightGadgetBorder(gi, selectbox_info[i].text_right);
   }
 }
 
@@ -9678,11 +9619,9 @@ static void CreateTextbuttonGadgets(void)
     int type_id = textbutton_info[i].gadget_type_id;
     int is_tab_button =
       ((id >= GADGET_ID_LEVELCONFIG_LEVEL && id <= GADGET_ID_LEVELCONFIG_ENGINE) ||
-       (id >= GADGET_ID_PROPERTIES_INFO && id <= GADGET_ID_PROPERTIES_CHANGE));
-    int graphic =
-      (is_tab_button ? IMG_EDITOR_TABBUTTON : IMG_EDITOR_TEXTBUTTON);
-    int gadget_distance =
-      (is_tab_button ? ED_GADGET_SMALL_DISTANCE : ED_GADGET_TEXT_DISTANCE);
+       (id >= GADGET_ID_PROPERTIES_INFO   && id <= GADGET_ID_PROPERTIES_CHANGE));
+    int graphic = (is_tab_button ? IMG_EDITOR_TABBUTTON : IMG_EDITOR_TEXTBUTTON);
+    int gadget_distance = (is_tab_button ? ED_GADGET_SMALL_DISTANCE : ED_GADGET_TEXT_DISTANCE);
     struct GraphicInfo *gd = &graphic_info[graphic];
     int gd_x1 = gd->src_x;
     int gd_y1 = gd->src_y;
@@ -9748,8 +9687,7 @@ static void CreateTextbuttonGadgets(void)
       Fail("cannot create gadget");
 
     level_editor_gadget[id] = gi;
-    right_gadget_border[id] =
-      getRightGadgetBorder(gi, textbutton_info[i].text_right);
+    right_gadget_border[id] = getRightGadgetBorder(gi, textbutton_info[i].text_right);
   }
 }
 
@@ -9778,8 +9716,7 @@ static void CreateGraphicbuttonGadgets(void)
 
     // determine horizontal position to the right of specified gadget
     if (graphicbutton_info[i].gadget_id_align != GADGET_ID_NONE)
-      x = (right_gadget_border[graphicbutton_info[i].gadget_id_align] +
-	   ED_GADGET_TEXT_DISTANCE);
+      x = (right_gadget_border[graphicbutton_info[i].gadget_id_align] + ED_GADGET_TEXT_DISTANCE);
 
     // determine horizontal offset for leading text
     if (graphicbutton_info[i].text_left != NULL)
@@ -9806,8 +9743,7 @@ static void CreateGraphicbuttonGadgets(void)
       Fail("cannot create gadget");
 
     level_editor_gadget[id] = gi;
-    right_gadget_border[id] =
-      getRightGadgetBorder(gi, graphicbutton_info[i].text_right);
+    right_gadget_border[id] = getRightGadgetBorder(gi, graphicbutton_info[i].text_right);
   }
 }
 
@@ -9816,40 +9752,28 @@ static void CreateScrollbarGadgets(void)
   int i;
 
   // these values are not constant, but can change at runtime
-  scrollbar_pos[ED_SCROLLBAR_ID_AREA_HORIZONTAL].x =
-    SX + ED_SCROLL_HORIZONTAL_XPOS;
-  scrollbar_pos[ED_SCROLLBAR_ID_AREA_HORIZONTAL].y =
-    SY + ED_SCROLL_HORIZONTAL_YPOS;
-  scrollbar_pos[ED_SCROLLBAR_ID_AREA_HORIZONTAL].width =
-    ED_SCROLL_HORIZONTAL_XSIZE;
-  scrollbar_pos[ED_SCROLLBAR_ID_AREA_HORIZONTAL].height =
-    ED_SCROLL_HORIZONTAL_YSIZE;
+  scrollbar_pos[ED_SCROLLBAR_ID_AREA_HORIZONTAL].x = SX + ED_SCROLL_HORIZONTAL_XPOS;
+  scrollbar_pos[ED_SCROLLBAR_ID_AREA_HORIZONTAL].y = SY + ED_SCROLL_HORIZONTAL_YPOS;
+  scrollbar_pos[ED_SCROLLBAR_ID_AREA_HORIZONTAL].width  = ED_SCROLL_HORIZONTAL_XSIZE;
+  scrollbar_pos[ED_SCROLLBAR_ID_AREA_HORIZONTAL].height = ED_SCROLL_HORIZONTAL_YSIZE;
   scrollbar_pos[ED_SCROLLBAR_ID_AREA_HORIZONTAL].wheel_x      = SX;
   scrollbar_pos[ED_SCROLLBAR_ID_AREA_HORIZONTAL].wheel_y      = SY;
   scrollbar_pos[ED_SCROLLBAR_ID_AREA_HORIZONTAL].wheel_width  = SXSIZE;
   scrollbar_pos[ED_SCROLLBAR_ID_AREA_HORIZONTAL].wheel_height = SYSIZE;
 
-  scrollbar_pos[ED_SCROLLBAR_ID_AREA_VERTICAL].x =
-    SX + ED_SCROLL_VERTICAL_XPOS;
-  scrollbar_pos[ED_SCROLLBAR_ID_AREA_VERTICAL].y =
-    SY + ED_SCROLL_VERTICAL_YPOS;
-  scrollbar_pos[ED_SCROLLBAR_ID_AREA_VERTICAL].width =
-    ED_SCROLL_VERTICAL_XSIZE;
-  scrollbar_pos[ED_SCROLLBAR_ID_AREA_VERTICAL].height =
-    ED_SCROLL_VERTICAL_YSIZE;
+  scrollbar_pos[ED_SCROLLBAR_ID_AREA_VERTICAL].x = SX + ED_SCROLL_VERTICAL_XPOS;
+  scrollbar_pos[ED_SCROLLBAR_ID_AREA_VERTICAL].y = SY + ED_SCROLL_VERTICAL_YPOS;
+  scrollbar_pos[ED_SCROLLBAR_ID_AREA_VERTICAL].width  = ED_SCROLL_VERTICAL_XSIZE;
+  scrollbar_pos[ED_SCROLLBAR_ID_AREA_VERTICAL].height = ED_SCROLL_VERTICAL_YSIZE;
   scrollbar_pos[ED_SCROLLBAR_ID_AREA_VERTICAL].wheel_x      = SX;
   scrollbar_pos[ED_SCROLLBAR_ID_AREA_VERTICAL].wheel_y      = SY;
   scrollbar_pos[ED_SCROLLBAR_ID_AREA_VERTICAL].wheel_width  = SXSIZE;
   scrollbar_pos[ED_SCROLLBAR_ID_AREA_VERTICAL].wheel_height = SYSIZE;
 
-  scrollbar_pos[ED_SCROLLBAR_ID_LIST_VERTICAL].x =
-    PX + ED_SCROLL2_VERTICAL_XPOS;
-  scrollbar_pos[ED_SCROLLBAR_ID_LIST_VERTICAL].y =
-    PY + ED_SCROLL2_VERTICAL_YPOS;
-  scrollbar_pos[ED_SCROLLBAR_ID_LIST_VERTICAL].width =
-    ED_SCROLL2_VERTICAL_XSIZE;
-  scrollbar_pos[ED_SCROLLBAR_ID_LIST_VERTICAL].height =
-    ED_SCROLL2_VERTICAL_YSIZE;
+  scrollbar_pos[ED_SCROLLBAR_ID_LIST_VERTICAL].x = PX + ED_SCROLL2_VERTICAL_XPOS;
+  scrollbar_pos[ED_SCROLLBAR_ID_LIST_VERTICAL].y = PY + ED_SCROLL2_VERTICAL_YPOS;
+  scrollbar_pos[ED_SCROLLBAR_ID_LIST_VERTICAL].width  = ED_SCROLL2_VERTICAL_XSIZE;
+  scrollbar_pos[ED_SCROLLBAR_ID_LIST_VERTICAL].height = ED_SCROLL2_VERTICAL_YSIZE;
   scrollbar_pos[ED_SCROLLBAR_ID_LIST_VERTICAL].wheel_x = PX;
   scrollbar_pos[ED_SCROLLBAR_ID_LIST_VERTICAL].wheel_y = PY;
   scrollbar_pos[ED_SCROLLBAR_ID_LIST_VERTICAL].wheel_width  = PXSIZE;
@@ -9935,8 +9859,7 @@ static void CreateCheckbuttonGadgets(void)
   {
     int id = checkbutton_info[i].gadget_id;
     int type_id = checkbutton_info[i].gadget_type_id;
-    int graphic = (id == GADGET_ID_STICK_ELEMENT ? IMG_EDITOR_STICKYBUTTON :
-		   IMG_EDITOR_CHECKBOX);
+    int graphic = (id == GADGET_ID_STICK_ELEMENT ? IMG_EDITOR_STICKYBUTTON : IMG_EDITOR_CHECKBOX);
     struct GraphicInfo *gd = &graphic_info[graphic];
     int gd_x1 = gd->src_x;
     int gd_y1 = gd->src_y;
@@ -9955,8 +9878,7 @@ static void CreateCheckbuttonGadgets(void)
 
     // determine horizontal position to the right of specified gadget
     if (checkbutton_info[i].gadget_id_align != GADGET_ID_NONE)
-      x = (right_gadget_border[checkbutton_info[i].gadget_id_align] +
-	   ED_GADGET_TEXT_DISTANCE);
+      x = (right_gadget_border[checkbutton_info[i].gadget_id_align] + ED_GADGET_TEXT_DISTANCE);
 
     // determine horizontal offset for leading text
     if (checkbutton_info[i].text_left != NULL)
@@ -9985,8 +9907,7 @@ static void CreateCheckbuttonGadgets(void)
       Fail("cannot create gadget");
 
     level_editor_gadget[id] = gi;
-    right_gadget_border[id] =
-      getRightGadgetBorder(gi, checkbutton_info[i].text_right);
+    right_gadget_border[id] = getRightGadgetBorder(gi, checkbutton_info[i].text_right);
   }
 }
 
@@ -10021,8 +9942,7 @@ static void CreateRadiobuttonGadgets(void)
 
     // determine horizontal position to the right of specified gadget
     if (radiobutton_info[i].gadget_id_align != GADGET_ID_NONE)
-      x = (right_gadget_border[radiobutton_info[i].gadget_id_align] +
-	   ED_GADGET_TEXT_DISTANCE);
+      x = (right_gadget_border[radiobutton_info[i].gadget_id_align] + ED_GADGET_TEXT_DISTANCE);
 
     // determine horizontal offset for leading text
     if (radiobutton_info[i].text_left != NULL)
@@ -10052,8 +9972,7 @@ static void CreateRadiobuttonGadgets(void)
       Fail("cannot create gadget");
 
     level_editor_gadget[id] = gi;
-    right_gadget_border[id] =
-      getRightGadgetBorder(gi, radiobutton_info[i].text_right);
+    right_gadget_border[id] = getRightGadgetBorder(gi, radiobutton_info[i].text_right);
   }
 }
 
@@ -10170,10 +10089,8 @@ void CreateLevelEditorGadgets(void)
 
   // Debug("editor", "allocating %d gadgets ...\n", num_editor_gadgets);
 
-  level_editor_gadget =
-    checked_calloc(num_editor_gadgets * sizeof(struct GadgetInfo *));
-  right_gadget_border =
-    checked_calloc(num_editor_gadgets * sizeof(int));
+  level_editor_gadget = checked_calloc(num_editor_gadgets * sizeof(struct GadgetInfo *));
+  right_gadget_border = checked_calloc(num_editor_gadgets * sizeof(int));
 
   // set number of empty (padding) element buttons to maximum number of buttons
   num_editor_el_empty = ED_NUM_ELEMENTLIST_BUTTONS;
@@ -10247,8 +10164,7 @@ static void MapCounterButtons(int id)
   int y;	// set after gadget position was modified
 
   // counter limits must be changed first to prevent value truncation
-  ModifyEditorCounterLimits(id, counterbutton_info[id].min_value,
-			    counterbutton_info[id].max_value);
+  ModifyEditorCounterLimits(id, counterbutton_info[id].min_value, counterbutton_info[id].max_value);
 
   // right text position might have changed after setting position above
   x_right = gi_up->x + gi_up->width + xoffset_right;
@@ -10492,8 +10408,7 @@ static void MapRadiobuttonGadget(int id)
   int x_left = gi->x - xoffset_left;
   int x_right = gi->x + gi->width + xoffset_right;
   int y = gi->y + yoffset;
-  boolean checked =
-    (*radiobutton_info[id].value == radiobutton_info[id].checked_value);
+  boolean checked = (*radiobutton_info[id].value == radiobutton_info[id].checked_value);
 
   if (radiobutton_info[id].text_left)
     DrawText(x_left, y, radiobutton_info[id].text_left, font_nr);
@@ -10662,11 +10577,9 @@ static void MapMainDrawingArea(void)
   for (i = ED_SCROLLBUTTON_ID_AREA_FIRST; i <= ED_SCROLLBUTTON_ID_AREA_LAST; i++)
   {
     if (((i == ED_SCROLLBUTTON_ID_AREA_LEFT ||
-	  i == ED_SCROLLBUTTON_ID_AREA_RIGHT) &&
-	 no_horizontal_scrollbar) ||
+	  i == ED_SCROLLBUTTON_ID_AREA_RIGHT) && no_horizontal_scrollbar) ||
 	((i == ED_SCROLLBUTTON_ID_AREA_UP ||
-	  i == ED_SCROLLBUTTON_ID_AREA_DOWN) &&
-	 no_vertical_scrollbar))
+	  i == ED_SCROLLBUTTON_ID_AREA_DOWN) && no_vertical_scrollbar))
       continue;
 
     MapGadget(level_editor_gadget[scrollbutton_info[i].gadget_id]);
@@ -10744,8 +10657,7 @@ static void MapOrUnmapLevelEditorToolboxDrawingGadgets(boolean map)
 
 	UnmapGadget(gi);
 
-	BlitBitmap(gd->bitmap, drawto, gd->src_x, gd->src_y,
-		   gi->width, gi->height, gi->x, gi->y);
+	BlitBitmap(gd->bitmap, drawto, gd->src_x, gd->src_y, gi->width, gi->height, gi->x, gi->y);
 
 	redraw_mask |= REDRAW_DOOR_3;
       }
@@ -10773,8 +10685,7 @@ static void UnmapLevelEditorFieldGadgets(void)
   int i;
 
   for (i = 0; i < num_editor_gadgets; i++)
-    if (IN_GFX_FIELD_FULL(level_editor_gadget[i]->x,
-			  level_editor_gadget[i]->y))
+    if (IN_GFX_FIELD_FULL(level_editor_gadget[i]->x, level_editor_gadget[i]->y))
       UnmapGadget(level_editor_gadget[i]);
 }
 
@@ -10875,8 +10786,7 @@ static boolean PrepareSavingIntoPersonalLevelSet(void)
     return FALSE;
 
   // "cd" to personal level set dir (for writing copy the first time)
-  leveldir_current =
-    getTreeInfoFromIdentifier(leveldir_first, getLoginName());
+  leveldir_current = getTreeInfoFromIdentifier(leveldir_first, getLoginName());
 
   // this may happen if "setup.internal.create_user_levelset" is FALSE
   // or if file "levelinfo.conf" is missing in personal user level set
@@ -10915,19 +10825,15 @@ static void ModifyLevelConfigForSavingIntoPersonalLevelSet(char *former_name)
   FILE *file;
 
   // annotate this copy-and-mod in personal levelinfo.conf
-  setString(&filename_levelinfo,
-	    getPath2(getCurrentLevelDir(), LEVELINFO_FILENAME));
+  setString(&filename_levelinfo, getPath2(getCurrentLevelDir(), LEVELINFO_FILENAME));
 
   if ((file = fopen(filename_levelinfo, MODE_APPEND)))
   {
     fprintf(file, "\n");
     fprintf(file, "# level %d was modified from:\n", level_nr);
-    fprintf(file, "# - previous level set name:    %s\n",
-	    former_name);
-    fprintf(file, "# - level within previous set:  %d \"%s\"\n",
-	    level.file_info.nr, level.name);
-    fprintf(file, "# - previous author:            %s\n",
-	    level.author);
+    fprintf(file, "# - previous level set name:    %s\n", former_name);
+    fprintf(file, "# - level within previous set:  %d \"%s\"\n", level.file_info.nr, level.name);
+    fprintf(file, "# - previous author:            %s\n", level.author);
     fprintf(file, "# - previous save date:         ");
 
     if (level.creation_date.src == DATE_SRC_LEVELFILE)
@@ -10958,12 +10864,10 @@ static void ModifyLevelConfigForSavingIntoPersonalLevelSet(char *former_name)
   // try to fit "Joe after Bob", "Joe (ed.)", then just "Joe"
   if (!strEqual(level.author, leveldir_current->author))
   {
-    setString(&mod_name, getStringCat3(leveldir_current->author,
-				       " after ", level.author));
+    setString(&mod_name, getStringCat3(leveldir_current->author, " after ", level.author));
 
     if (strlen(mod_name) > MAX_LEVEL_AUTHOR_LEN)
-      setString(&mod_name,
-		getStringCat2(leveldir_current->author, " (ed.)"));
+      setString(&mod_name, getStringCat2(leveldir_current->author, " (ed.)"));
 
     if (strlen(mod_name) > MAX_LEVEL_AUTHOR_LEN)
       setString(&mod_name, leveldir_current->author);
@@ -11013,13 +10917,11 @@ static void setSelectboxSpecialActionVariablesIfNeeded(void)
       int mode = action_arg_options[i].mode;
 
       // only change if corresponding selectbox has changed
-      if (selectbox_info[ED_SELECTBOX_ID_ACTION_MODE].options !=
-	  action_arg_modes[mode])
+      if (selectbox_info[ED_SELECTBOX_ID_ACTION_MODE].options != action_arg_modes[mode])
 	custom_element_change.action_mode = -1;
 
       // only change if corresponding selectbox has changed
-      if (selectbox_info[ED_SELECTBOX_ID_ACTION_ARG].options !=
-	  action_arg_options[i].options)
+      if (selectbox_info[ED_SELECTBOX_ID_ACTION_ARG].options != action_arg_options[i].options)
 	custom_element_change.action_arg = -1;
 
       break;
@@ -11038,15 +10940,12 @@ static void setSelectboxSpecialActionOptions(void)
     {
       int mode = action_arg_options[i].mode;
 
-      ModifyEditorSelectboxOptions(ED_SELECTBOX_ID_ACTION_MODE,
-				   action_arg_modes[mode]);
-      ModifyEditorSelectboxValue(ED_SELECTBOX_ID_ACTION_MODE,
-				 custom_element_change.action_mode);
+      ModifyEditorSelectboxOptions(ED_SELECTBOX_ID_ACTION_MODE, action_arg_modes[mode]);
+      ModifyEditorSelectboxValue(ED_SELECTBOX_ID_ACTION_MODE, custom_element_change.action_mode);
 
-      ModifyEditorSelectboxOptions(ED_SELECTBOX_ID_ACTION_ARG,
-				   action_arg_options[i].options);
-      ModifyEditorSelectboxValue(ED_SELECTBOX_ID_ACTION_ARG,
-				 custom_element_change.action_arg);
+      ModifyEditorSelectboxOptions(ED_SELECTBOX_ID_ACTION_ARG, action_arg_options[i].options);
+      ModifyEditorSelectboxValue(ED_SELECTBOX_ID_ACTION_ARG, custom_element_change.action_arg);
+
       break;
     }
   }
@@ -11060,8 +10959,7 @@ static void copy_custom_element_settings(int element_from, int element_to)
   copyElementInfo(ei_from, ei_to);
 }
 
-static void replace_custom_element_in_settings(int element_from,
-					       int element_to)
+static void replace_custom_element_in_settings(int element_from, int element_to)
 {
   int i, j, x, y;
 
@@ -11100,8 +10998,7 @@ static void replace_custom_element_in_settings(int element_from,
   }
 }
 
-static void replace_custom_element_in_playfield(int element_from,
-						int element_to)
+static void replace_custom_element_in_playfield(int element_from, int element_to)
 {
   int x, y;
 
@@ -11111,8 +11008,7 @@ static void replace_custom_element_in_playfield(int element_from,
 	Tile[x][y] = element_to;
 }
 
-static boolean CopyCustomElement(int element_old, int element_new,
-				 int copy_mode)
+static boolean CopyCustomElement(int element_old, int element_new, int copy_mode)
 {
   int copy_mode_orig = copy_mode;
 
@@ -11121,13 +11017,15 @@ static boolean CopyCustomElement(int element_old, int element_new,
     if (copy_mode == GADGET_ID_CUSTOM_COPY)
     {
       element_new = (IS_CUSTOM_ELEMENT(element_old) ?
-		     EL_INTERNAL_CLIPBOARD_CUSTOM : EL_INTERNAL_CLIPBOARD_GROUP);
+		     EL_INTERNAL_CLIPBOARD_CUSTOM :
+                     EL_INTERNAL_CLIPBOARD_GROUP);
       copy_mode = GADGET_ID_CUSTOM_COPY_TO;
     }
     else if (copy_mode == GADGET_ID_CUSTOM_PASTE)
     {
       element_old = (IS_CUSTOM_ELEMENT(element_new) ?
-		     EL_INTERNAL_CLIPBOARD_CUSTOM : EL_INTERNAL_CLIPBOARD_GROUP);
+		     EL_INTERNAL_CLIPBOARD_CUSTOM :
+                     EL_INTERNAL_CLIPBOARD_GROUP);
       copy_mode = GADGET_ID_CUSTOM_COPY_TO;
 
       level.changed = TRUE;
@@ -11212,8 +11110,7 @@ static void CopyCustomElementPropertiesToEditor(int element)
   // needed here to initialize combined element properties
   InitElementPropertiesEngine(level.game_version);
 
-  element_info[element].change =
-    &element_info[element].change_page[current_change_page];
+  element_info[element].change = &element_info[element].change_page[current_change_page];
 
   custom_element = element_info[element];
   custom_element_change = *element_info[element].change;
@@ -11293,58 +11190,58 @@ static void CopyCustomElementPropertiesToEditor(int element)
 
   // set "change by direct action" selectbox help value
   custom_element_change.direct_action =
-    (HAS_CHANGE_EVENT(element, CE_NEXT_TO_PLAYER) ? CE_NEXT_TO_PLAYER :
-     HAS_CHANGE_EVENT(element, CE_TOUCHED_BY_PLAYER) ? CE_TOUCHED_BY_PLAYER :
-     HAS_CHANGE_EVENT(element, CE_PRESSED_BY_PLAYER) ? CE_PRESSED_BY_PLAYER :
-     HAS_CHANGE_EVENT(element, CE_SWITCHED_BY_PLAYER) ? CE_SWITCHED_BY_PLAYER :
-     HAS_CHANGE_EVENT(element, CE_SNAPPED_BY_PLAYER) ? CE_SNAPPED_BY_PLAYER :
-     HAS_CHANGE_EVENT(element, CE_PUSHED_BY_PLAYER) ? CE_PUSHED_BY_PLAYER :
-     HAS_CHANGE_EVENT(element, CE_ENTERED_BY_PLAYER) ? CE_ENTERED_BY_PLAYER :
-     HAS_CHANGE_EVENT(element, CE_LEFT_BY_PLAYER) ? CE_LEFT_BY_PLAYER :
-     HAS_CHANGE_EVENT(element, CE_DROPPED_BY_PLAYER) ? CE_DROPPED_BY_PLAYER :
-     HAS_CHANGE_EVENT(element, CE_SWITCHED) ? CE_SWITCHED :
-     HAS_CHANGE_EVENT(element, CE_HITTING_SOMETHING) ? CE_HITTING_SOMETHING :
-     HAS_CHANGE_EVENT(element, CE_HIT_BY_SOMETHING) ? CE_HIT_BY_SOMETHING :
-     HAS_CHANGE_EVENT(element, CE_BLOCKED) ? CE_BLOCKED :
-     HAS_CHANGE_EVENT(element, CE_IMPACT) ? CE_IMPACT :
-     HAS_CHANGE_EVENT(element, CE_SMASHED) ? CE_SMASHED :
-     HAS_CHANGE_EVENT(element, CE_VALUE_CHANGES) ? CE_VALUE_CHANGES :
-     HAS_CHANGE_EVENT(element, CE_SCORE_CHANGES) ? CE_SCORE_CHANGES :
-     HAS_CHANGE_EVENT(element, CE_VALUE_GETS_ZERO) ? CE_VALUE_GETS_ZERO :
-     HAS_CHANGE_EVENT(element, CE_SCORE_GETS_ZERO) ? CE_SCORE_GETS_ZERO :
-     HAS_CHANGE_EVENT(element, CE_CLICKED_BY_MOUSE) ? CE_CLICKED_BY_MOUSE :
-     HAS_CHANGE_EVENT(element, CE_PRESSED_BY_MOUSE) ? CE_PRESSED_BY_MOUSE :
+    (HAS_CHANGE_EVENT(element, CE_NEXT_TO_PLAYER)	? CE_NEXT_TO_PLAYER :
+     HAS_CHANGE_EVENT(element, CE_TOUCHED_BY_PLAYER)	? CE_TOUCHED_BY_PLAYER :
+     HAS_CHANGE_EVENT(element, CE_PRESSED_BY_PLAYER)	? CE_PRESSED_BY_PLAYER :
+     HAS_CHANGE_EVENT(element, CE_SWITCHED_BY_PLAYER)	? CE_SWITCHED_BY_PLAYER :
+     HAS_CHANGE_EVENT(element, CE_SNAPPED_BY_PLAYER)	? CE_SNAPPED_BY_PLAYER :
+     HAS_CHANGE_EVENT(element, CE_PUSHED_BY_PLAYER)	? CE_PUSHED_BY_PLAYER :
+     HAS_CHANGE_EVENT(element, CE_ENTERED_BY_PLAYER)	? CE_ENTERED_BY_PLAYER :
+     HAS_CHANGE_EVENT(element, CE_LEFT_BY_PLAYER)	? CE_LEFT_BY_PLAYER :
+     HAS_CHANGE_EVENT(element, CE_DROPPED_BY_PLAYER)	? CE_DROPPED_BY_PLAYER :
+     HAS_CHANGE_EVENT(element, CE_SWITCHED)		? CE_SWITCHED :
+     HAS_CHANGE_EVENT(element, CE_HITTING_SOMETHING)	? CE_HITTING_SOMETHING :
+     HAS_CHANGE_EVENT(element, CE_HIT_BY_SOMETHING)	? CE_HIT_BY_SOMETHING :
+     HAS_CHANGE_EVENT(element, CE_BLOCKED)		? CE_BLOCKED :
+     HAS_CHANGE_EVENT(element, CE_IMPACT)		? CE_IMPACT :
+     HAS_CHANGE_EVENT(element, CE_SMASHED)		? CE_SMASHED :
+     HAS_CHANGE_EVENT(element, CE_VALUE_CHANGES)	? CE_VALUE_CHANGES :
+     HAS_CHANGE_EVENT(element, CE_SCORE_CHANGES)	? CE_SCORE_CHANGES :
+     HAS_CHANGE_EVENT(element, CE_VALUE_GETS_ZERO)	? CE_VALUE_GETS_ZERO :
+     HAS_CHANGE_EVENT(element, CE_SCORE_GETS_ZERO)	? CE_SCORE_GETS_ZERO :
+     HAS_CHANGE_EVENT(element, CE_CLICKED_BY_MOUSE)	? CE_CLICKED_BY_MOUSE :
+     HAS_CHANGE_EVENT(element, CE_PRESSED_BY_MOUSE)	? CE_PRESSED_BY_MOUSE :
      custom_element_change.direct_action);
 
   // set "change by other element action" selectbox help value
   custom_element_change.other_action =
-    (HAS_CHANGE_EVENT(element, CE_PLAYER_NEXT_TO_X) ? CE_PLAYER_NEXT_TO_X :
-     HAS_CHANGE_EVENT(element, CE_PLAYER_TOUCHES_X) ? CE_PLAYER_TOUCHES_X :
-     HAS_CHANGE_EVENT(element, CE_PLAYER_PRESSES_X) ? CE_PLAYER_PRESSES_X :
-     HAS_CHANGE_EVENT(element, CE_PLAYER_SWITCHES_X) ? CE_PLAYER_SWITCHES_X :
-     HAS_CHANGE_EVENT(element, CE_PLAYER_SNAPS_X) ? CE_PLAYER_SNAPS_X :
-     HAS_CHANGE_EVENT(element, CE_PLAYER_PUSHES_X) ? CE_PLAYER_PUSHES_X :
-     HAS_CHANGE_EVENT(element, CE_PLAYER_ENTERS_X) ? CE_PLAYER_ENTERS_X :
-     HAS_CHANGE_EVENT(element, CE_PLAYER_LEAVES_X) ? CE_PLAYER_LEAVES_X :
-     HAS_CHANGE_EVENT(element, CE_PLAYER_DIGS_X) ? CE_PLAYER_DIGS_X :
-     HAS_CHANGE_EVENT(element, CE_PLAYER_COLLECTS_X) ? CE_PLAYER_COLLECTS_X :
-     HAS_CHANGE_EVENT(element, CE_PLAYER_DROPS_X) ? CE_PLAYER_DROPS_X :
-     HAS_CHANGE_EVENT(element, CE_NEXT_TO_X) ? CE_NEXT_TO_X :
-     HAS_CHANGE_EVENT(element, CE_TOUCHING_X) ? CE_TOUCHING_X :
-     HAS_CHANGE_EVENT(element, CE_HITTING_X) ? CE_HITTING_X :
-     HAS_CHANGE_EVENT(element, CE_DIGGING_X) ? CE_DIGGING_X :
-     HAS_CHANGE_EVENT(element, CE_HIT_BY_X) ? CE_HIT_BY_X :
-     HAS_CHANGE_EVENT(element, CE_SWITCH_OF_X) ? CE_SWITCH_OF_X :
-     HAS_CHANGE_EVENT(element, CE_CHANGE_OF_X) ? CE_CHANGE_OF_X :
-     HAS_CHANGE_EVENT(element, CE_EXPLOSION_OF_X) ? CE_EXPLOSION_OF_X :
-     HAS_CHANGE_EVENT(element, CE_MOVE_OF_X) ? CE_MOVE_OF_X :
-     HAS_CHANGE_EVENT(element, CE_CREATION_OF_X) ? CE_CREATION_OF_X :
-     HAS_CHANGE_EVENT(element, CE_VALUE_CHANGES_OF_X) ? CE_VALUE_CHANGES_OF_X :
-     HAS_CHANGE_EVENT(element, CE_SCORE_CHANGES_OF_X) ? CE_SCORE_CHANGES_OF_X :
-     HAS_CHANGE_EVENT(element, CE_VALUE_GETS_ZERO_OF_X) ? CE_VALUE_GETS_ZERO_OF_X :
-     HAS_CHANGE_EVENT(element, CE_SCORE_GETS_ZERO_OF_X) ? CE_SCORE_GETS_ZERO_OF_X :
-     HAS_CHANGE_EVENT(element, CE_MOUSE_CLICKED_ON_X) ? CE_MOUSE_CLICKED_ON_X :
-     HAS_CHANGE_EVENT(element, CE_MOUSE_PRESSED_ON_X) ? CE_MOUSE_PRESSED_ON_X :
+    (HAS_CHANGE_EVENT(element, CE_PLAYER_NEXT_TO_X)	? CE_PLAYER_NEXT_TO_X :
+     HAS_CHANGE_EVENT(element, CE_PLAYER_TOUCHES_X)	? CE_PLAYER_TOUCHES_X :
+     HAS_CHANGE_EVENT(element, CE_PLAYER_PRESSES_X)	? CE_PLAYER_PRESSES_X :
+     HAS_CHANGE_EVENT(element, CE_PLAYER_SWITCHES_X)	? CE_PLAYER_SWITCHES_X :
+     HAS_CHANGE_EVENT(element, CE_PLAYER_SNAPS_X)	? CE_PLAYER_SNAPS_X :
+     HAS_CHANGE_EVENT(element, CE_PLAYER_PUSHES_X)	? CE_PLAYER_PUSHES_X :
+     HAS_CHANGE_EVENT(element, CE_PLAYER_ENTERS_X)	? CE_PLAYER_ENTERS_X :
+     HAS_CHANGE_EVENT(element, CE_PLAYER_LEAVES_X)	? CE_PLAYER_LEAVES_X :
+     HAS_CHANGE_EVENT(element, CE_PLAYER_DIGS_X)	? CE_PLAYER_DIGS_X :
+     HAS_CHANGE_EVENT(element, CE_PLAYER_COLLECTS_X)	? CE_PLAYER_COLLECTS_X :
+     HAS_CHANGE_EVENT(element, CE_PLAYER_DROPS_X)	? CE_PLAYER_DROPS_X :
+     HAS_CHANGE_EVENT(element, CE_NEXT_TO_X)		? CE_NEXT_TO_X :
+     HAS_CHANGE_EVENT(element, CE_TOUCHING_X)		? CE_TOUCHING_X :
+     HAS_CHANGE_EVENT(element, CE_HITTING_X)		? CE_HITTING_X :
+     HAS_CHANGE_EVENT(element, CE_DIGGING_X)		? CE_DIGGING_X :
+     HAS_CHANGE_EVENT(element, CE_HIT_BY_X)		? CE_HIT_BY_X :
+     HAS_CHANGE_EVENT(element, CE_SWITCH_OF_X)		? CE_SWITCH_OF_X :
+     HAS_CHANGE_EVENT(element, CE_CHANGE_OF_X)		? CE_CHANGE_OF_X :
+     HAS_CHANGE_EVENT(element, CE_EXPLOSION_OF_X)	? CE_EXPLOSION_OF_X :
+     HAS_CHANGE_EVENT(element, CE_MOVE_OF_X)		? CE_MOVE_OF_X :
+     HAS_CHANGE_EVENT(element, CE_CREATION_OF_X)	? CE_CREATION_OF_X :
+     HAS_CHANGE_EVENT(element, CE_VALUE_CHANGES_OF_X)	? CE_VALUE_CHANGES_OF_X :
+     HAS_CHANGE_EVENT(element, CE_SCORE_CHANGES_OF_X)	? CE_SCORE_CHANGES_OF_X :
+     HAS_CHANGE_EVENT(element, CE_VALUE_GETS_ZERO_OF_X)	? CE_VALUE_GETS_ZERO_OF_X :
+     HAS_CHANGE_EVENT(element, CE_SCORE_GETS_ZERO_OF_X)	? CE_SCORE_GETS_ZERO_OF_X :
+     HAS_CHANGE_EVENT(element, CE_MOUSE_CLICKED_ON_X)	? CE_MOUSE_CLICKED_ON_X :
+     HAS_CHANGE_EVENT(element, CE_MOUSE_PRESSED_ON_X)	? CE_MOUSE_PRESSED_ON_X :
      custom_element_change.other_action);
 }
 
@@ -11362,12 +11259,10 @@ static void CopyEmptyElementPropertiesToEditor(int element)
 static void CopyClassicElementPropertiesToEditor(int element)
 {
   if (IS_PLAYER_ELEMENT(element) || COULD_MOVE_INTO_ACID(element))
-    custom_element_properties[EP_CAN_MOVE_INTO_ACID] =
-      getMoveIntoAcidProperty(&level, element);
+    custom_element_properties[EP_CAN_MOVE_INTO_ACID] = getMoveIntoAcidProperty(&level, element);
 
   if (MAYBE_DONT_COLLIDE_WITH(element))
-    custom_element_properties[EP_DONT_COLLIDE_WITH] =
-      getDontCollideWithProperty(&level, element);
+    custom_element_properties[EP_DONT_COLLIDE_WITH] = getDontCollideWithProperty(&level, element);
 }
 
 static void CopyElementPropertiesToEditor(int element)
@@ -11388,10 +11283,8 @@ static boolean AskToCopyAndModifyLevelTemplate(void)
   {
     level.use_custom_template = FALSE;
 
-    ModifyGadget(level_editor_gadget[GADGET_ID_CUSTOM_USE_TEMPLATE_1],
-		 GDI_CHECKED, FALSE, GDI_END);
-    ModifyGadget(level_editor_gadget[GADGET_ID_CUSTOM_USE_TEMPLATE_2],
-		 GDI_CHECKED, FALSE, GDI_END);
+    ModifyGadget(level_editor_gadget[GADGET_ID_CUSTOM_USE_TEMPLATE_1], GDI_CHECKED, FALSE, GDI_END);
+    ModifyGadget(level_editor_gadget[GADGET_ID_CUSTOM_USE_TEMPLATE_2], GDI_CHECKED, FALSE, GDI_END);
 
     return TRUE;
   }
@@ -11423,100 +11316,98 @@ static void CopyCustomElementPropertiesToGame(int element)
   // ---------- element settings: configure (custom elements) -----------------
 
   // set accessible property from checkbox and selectbox
-  custom_element_properties[EP_WALKABLE_OVER] = FALSE;
-  custom_element_properties[EP_WALKABLE_INSIDE] = FALSE;
-  custom_element_properties[EP_WALKABLE_UNDER] = FALSE;
-  custom_element_properties[EP_PASSABLE_OVER] = FALSE;
-  custom_element_properties[EP_PASSABLE_INSIDE] = FALSE;
-  custom_element_properties[EP_PASSABLE_UNDER] = FALSE;
+  custom_element_properties[EP_WALKABLE_OVER]		= FALSE;
+  custom_element_properties[EP_WALKABLE_INSIDE]		= FALSE;
+  custom_element_properties[EP_WALKABLE_UNDER]		= FALSE;
+  custom_element_properties[EP_PASSABLE_OVER]		= FALSE;
+  custom_element_properties[EP_PASSABLE_INSIDE]		= FALSE;
+  custom_element_properties[EP_PASSABLE_UNDER]		= FALSE;
   access_type_and_layer = ((custom_element.access_type == EP_WALKABLE ?
 			    EP_WALKABLE_OVER : EP_PASSABLE_OVER) +
 			   (custom_element.access_layer - EP_ACCESSIBLE_OVER));
-  custom_element_properties[access_type_and_layer] =
-    custom_element_properties[EP_ACCESSIBLE];
-  custom_element_properties[EP_PROTECTED] =
-    (custom_element.access_protected != 0 &&
-     custom_element_properties[EP_ACCESSIBLE]);
+  custom_element_properties[access_type_and_layer] = custom_element_properties[EP_ACCESSIBLE];
+  custom_element_properties[EP_PROTECTED] = (custom_element.access_protected != 0 &&
+					     custom_element_properties[EP_ACCESSIBLE]);
 
   // set walk-to-object property from checkbox and selectbox
-  custom_element_properties[EP_DIGGABLE] = FALSE;
-  custom_element_properties[EP_COLLECTIBLE_ONLY] = FALSE;
-  custom_element_properties[EP_DROPPABLE] = FALSE;
-  custom_element_properties[EP_THROWABLE] = FALSE;
-  custom_element_properties[EP_PUSHABLE] = FALSE;
+  custom_element_properties[EP_DIGGABLE]		= FALSE;
+  custom_element_properties[EP_COLLECTIBLE_ONLY]	= FALSE;
+  custom_element_properties[EP_DROPPABLE]		= FALSE;
+  custom_element_properties[EP_THROWABLE]		= FALSE;
+  custom_element_properties[EP_PUSHABLE]		= FALSE;
   custom_element_properties[custom_element.walk_to_action] =
     custom_element_properties[EP_WALK_TO_OBJECT];
 
   // set smash property from checkbox and selectbox
-  custom_element_properties[EP_CAN_SMASH_PLAYER] = FALSE;
-  custom_element_properties[EP_CAN_SMASH_ENEMIES] = FALSE;
-  custom_element_properties[EP_CAN_SMASH_EVERYTHING] = FALSE;
+  custom_element_properties[EP_CAN_SMASH_PLAYER]	= FALSE;
+  custom_element_properties[EP_CAN_SMASH_ENEMIES]	= FALSE;
+  custom_element_properties[EP_CAN_SMASH_EVERYTHING]	= FALSE;
   custom_element_properties[custom_element.smash_targets] =
     custom_element_properties[EP_CAN_SMASH];
 
   // set deadliness property from checkbox and selectbox
-  custom_element_properties[EP_DONT_RUN_INTO] = FALSE;
-  custom_element_properties[EP_DONT_COLLIDE_WITH] = FALSE;
-  custom_element_properties[EP_DONT_GET_HIT_BY] = FALSE;
-  custom_element_properties[EP_DONT_TOUCH] = FALSE;
+  custom_element_properties[EP_DONT_RUN_INTO]		= FALSE;
+  custom_element_properties[EP_DONT_COLLIDE_WITH]	= FALSE;
+  custom_element_properties[EP_DONT_GET_HIT_BY]		= FALSE;
+  custom_element_properties[EP_DONT_TOUCH]		= FALSE;
   custom_element_properties[custom_element.deadliness] =
     custom_element_properties[EP_DEADLY];
 
   // ---------- element settings: advanced (custom elements) ------------------
 
   // set player change event from checkbox and selectbox
-  custom_element_change_events[CE_NEXT_TO_PLAYER] = FALSE;
-  custom_element_change_events[CE_TOUCHED_BY_PLAYER] = FALSE;
-  custom_element_change_events[CE_PRESSED_BY_PLAYER] = FALSE;
-  custom_element_change_events[CE_SWITCHED_BY_PLAYER] = FALSE;
-  custom_element_change_events[CE_SNAPPED_BY_PLAYER] = FALSE;
-  custom_element_change_events[CE_PUSHED_BY_PLAYER] = FALSE;
-  custom_element_change_events[CE_ENTERED_BY_PLAYER] = FALSE;
-  custom_element_change_events[CE_LEFT_BY_PLAYER] = FALSE;
-  custom_element_change_events[CE_DROPPED_BY_PLAYER] = FALSE;
-  custom_element_change_events[CE_SWITCHED] = FALSE;
-  custom_element_change_events[CE_HITTING_SOMETHING] = FALSE;
-  custom_element_change_events[CE_HIT_BY_SOMETHING] = FALSE;
-  custom_element_change_events[CE_BLOCKED] = FALSE;
-  custom_element_change_events[CE_IMPACT] = FALSE;
-  custom_element_change_events[CE_SMASHED] = FALSE;
-  custom_element_change_events[CE_VALUE_CHANGES] = FALSE;
-  custom_element_change_events[CE_SCORE_CHANGES] = FALSE;
-  custom_element_change_events[CE_VALUE_GETS_ZERO] = FALSE;
-  custom_element_change_events[CE_SCORE_GETS_ZERO] = FALSE;
-  custom_element_change_events[CE_CLICKED_BY_MOUSE] = FALSE;
-  custom_element_change_events[CE_PRESSED_BY_MOUSE] = FALSE;
+  custom_element_change_events[CE_NEXT_TO_PLAYER]	= FALSE;
+  custom_element_change_events[CE_TOUCHED_BY_PLAYER]	= FALSE;
+  custom_element_change_events[CE_PRESSED_BY_PLAYER]	= FALSE;
+  custom_element_change_events[CE_SWITCHED_BY_PLAYER]	= FALSE;
+  custom_element_change_events[CE_SNAPPED_BY_PLAYER]	= FALSE;
+  custom_element_change_events[CE_PUSHED_BY_PLAYER]	= FALSE;
+  custom_element_change_events[CE_ENTERED_BY_PLAYER]	= FALSE;
+  custom_element_change_events[CE_LEFT_BY_PLAYER]	= FALSE;
+  custom_element_change_events[CE_DROPPED_BY_PLAYER]	= FALSE;
+  custom_element_change_events[CE_SWITCHED]		= FALSE;
+  custom_element_change_events[CE_HITTING_SOMETHING]	= FALSE;
+  custom_element_change_events[CE_HIT_BY_SOMETHING]	= FALSE;
+  custom_element_change_events[CE_BLOCKED]		= FALSE;
+  custom_element_change_events[CE_IMPACT]		= FALSE;
+  custom_element_change_events[CE_SMASHED]		= FALSE;
+  custom_element_change_events[CE_VALUE_CHANGES]	= FALSE;
+  custom_element_change_events[CE_SCORE_CHANGES]	= FALSE;
+  custom_element_change_events[CE_VALUE_GETS_ZERO]	= FALSE;
+  custom_element_change_events[CE_SCORE_GETS_ZERO]	= FALSE;
+  custom_element_change_events[CE_CLICKED_BY_MOUSE]	= FALSE;
+  custom_element_change_events[CE_PRESSED_BY_MOUSE]	= FALSE;
   custom_element_change_events[custom_element_change.direct_action] =
     custom_element_change_events[CE_BY_DIRECT_ACTION];
 
   // set other element action change event from checkbox and selectbox
-  custom_element_change_events[CE_PLAYER_NEXT_TO_X] = FALSE;
-  custom_element_change_events[CE_PLAYER_TOUCHES_X] = FALSE;
-  custom_element_change_events[CE_PLAYER_PRESSES_X] = FALSE;
-  custom_element_change_events[CE_PLAYER_SWITCHES_X] = FALSE;
-  custom_element_change_events[CE_PLAYER_SNAPS_X] = FALSE;
-  custom_element_change_events[CE_PLAYER_PUSHES_X] = FALSE;
-  custom_element_change_events[CE_PLAYER_ENTERS_X] = FALSE;
-  custom_element_change_events[CE_PLAYER_LEAVES_X] = FALSE;
-  custom_element_change_events[CE_PLAYER_DIGS_X] = FALSE;
-  custom_element_change_events[CE_PLAYER_COLLECTS_X] = FALSE;
-  custom_element_change_events[CE_PLAYER_DROPS_X] = FALSE;
-  custom_element_change_events[CE_NEXT_TO_X] = FALSE;
-  custom_element_change_events[CE_TOUCHING_X] = FALSE;
-  custom_element_change_events[CE_HITTING_X] = FALSE;
-  custom_element_change_events[CE_DIGGING_X] = FALSE;
-  custom_element_change_events[CE_HIT_BY_X] = FALSE;
-  custom_element_change_events[CE_SWITCH_OF_X] = FALSE;
-  custom_element_change_events[CE_CHANGE_OF_X] = FALSE;
-  custom_element_change_events[CE_EXPLOSION_OF_X] = FALSE;
-  custom_element_change_events[CE_MOVE_OF_X] = FALSE;
-  custom_element_change_events[CE_CREATION_OF_X] = FALSE;
-  custom_element_change_events[CE_VALUE_CHANGES_OF_X] = FALSE;
-  custom_element_change_events[CE_SCORE_CHANGES_OF_X] = FALSE;
-  custom_element_change_events[CE_VALUE_GETS_ZERO_OF_X] = FALSE;
-  custom_element_change_events[CE_SCORE_GETS_ZERO_OF_X] = FALSE;
-  custom_element_change_events[CE_MOUSE_CLICKED_ON_X] = FALSE;
-  custom_element_change_events[CE_MOUSE_PRESSED_ON_X] = FALSE;
+  custom_element_change_events[CE_PLAYER_NEXT_TO_X]	= FALSE;
+  custom_element_change_events[CE_PLAYER_TOUCHES_X]	= FALSE;
+  custom_element_change_events[CE_PLAYER_PRESSES_X]	= FALSE;
+  custom_element_change_events[CE_PLAYER_SWITCHES_X]	= FALSE;
+  custom_element_change_events[CE_PLAYER_SNAPS_X]	= FALSE;
+  custom_element_change_events[CE_PLAYER_PUSHES_X]	= FALSE;
+  custom_element_change_events[CE_PLAYER_ENTERS_X]	= FALSE;
+  custom_element_change_events[CE_PLAYER_LEAVES_X]	= FALSE;
+  custom_element_change_events[CE_PLAYER_DIGS_X]	= FALSE;
+  custom_element_change_events[CE_PLAYER_COLLECTS_X]	= FALSE;
+  custom_element_change_events[CE_PLAYER_DROPS_X]	= FALSE;
+  custom_element_change_events[CE_NEXT_TO_X]		= FALSE;
+  custom_element_change_events[CE_TOUCHING_X]		= FALSE;
+  custom_element_change_events[CE_HITTING_X]		= FALSE;
+  custom_element_change_events[CE_DIGGING_X]		= FALSE;
+  custom_element_change_events[CE_HIT_BY_X]		= FALSE;
+  custom_element_change_events[CE_SWITCH_OF_X]		= FALSE;
+  custom_element_change_events[CE_CHANGE_OF_X]		= FALSE;
+  custom_element_change_events[CE_EXPLOSION_OF_X]	= FALSE;
+  custom_element_change_events[CE_MOVE_OF_X]		= FALSE;
+  custom_element_change_events[CE_CREATION_OF_X]	= FALSE;
+  custom_element_change_events[CE_VALUE_CHANGES_OF_X]	= FALSE;
+  custom_element_change_events[CE_SCORE_CHANGES_OF_X]	= FALSE;
+  custom_element_change_events[CE_VALUE_GETS_ZERO_OF_X]	= FALSE;
+  custom_element_change_events[CE_SCORE_GETS_ZERO_OF_X]	= FALSE;
+  custom_element_change_events[CE_MOUSE_CLICKED_ON_X]	= FALSE;
+  custom_element_change_events[CE_MOUSE_PRESSED_ON_X]	= FALSE;
   custom_element_change_events[custom_element_change.other_action] =
     custom_element_change_events[CE_BY_OTHER_ACTION];
 
@@ -11568,12 +11459,10 @@ static void CopyEmptyElementPropertiesToGame(int element)
 static void CopyClassicElementPropertiesToGame(int element)
 {
   if (IS_PLAYER_ELEMENT(element) || COULD_MOVE_INTO_ACID(element))
-    setMoveIntoAcidProperty(&level, element,
-			    custom_element_properties[EP_CAN_MOVE_INTO_ACID]);
+    setMoveIntoAcidProperty(&level, element, custom_element_properties[EP_CAN_MOVE_INTO_ACID]);
 
   if (MAYBE_DONT_COLLIDE_WITH(element))
-    setDontCollideWithProperty(&level, element,
-			      custom_element_properties[EP_DONT_COLLIDE_WITH]);
+    setDontCollideWithProperty(&level, element, custom_element_properties[EP_DONT_COLLIDE_WITH]);
 }
 
 static void CopyElementPropertiesToGame(int element)
@@ -11668,10 +11557,8 @@ static void InitDrawingElements(void)
 
 static void InitLevelSetInfo(void)
 {
-  snprintf(levelset_name,   MAX_LEVEL_NAME_LEN + 1,
-	   "%s", leveldir_current->name);
-  snprintf(levelset_author, MAX_LEVEL_AUTHOR_LEN + 1,
-	   "%s", leveldir_current->author);
+  snprintf(levelset_name,   MAX_LEVEL_NAME_LEN + 1,   "%s", leveldir_current->name);
+  snprintf(levelset_author, MAX_LEVEL_AUTHOR_LEN + 1, "%s", leveldir_current->author);
 
   levelset_num_levels = leveldir_current->levels;
 
@@ -11718,8 +11605,7 @@ static boolean useEditorDoorAnimation(void)
   return (door_1_viewport_unchanged && door_1_contains_toolbox);
 }
 
-static void DrawEditorDoorBackground(int graphic, int x, int y,
-				     int width, int height)
+static void DrawEditorDoorBackground(int graphic, int x, int y, int width, int height)
 {
   struct GraphicInfo *g = &graphic_info[graphic];
 
@@ -12020,8 +11906,7 @@ static void ModifyEditorCounterLimits(int counter_id, int min, int max)
     struct GadgetInfo *gi_up = level_editor_gadget[gadget_id_up];
 
     ModifyGadget(gi, GDI_TEXT_SIZE, (max < 10 ? 1 : 3), GDI_END);
-    ModifyGadget(gi_up, GDI_X, gi->x + gi->width + ED_GADGET_SMALL_DISTANCE,
-		 GDI_END);
+    ModifyGadget(gi_up, GDI_X, gi->x + gi->width + ED_GADGET_SMALL_DISTANCE, GDI_END);
   }
 }
 
@@ -12043,8 +11928,7 @@ static void ModifyEditorSelectboxOptions(int selectbox_id,
   selectbox_info[selectbox_id].options = options;
 
   // set index to zero -- list may be shorter now (correct later, if needed)
-  ModifyGadget(gi, GDI_SELECTBOX_INDEX, 0,
-	       GDI_SELECTBOX_OPTIONS, options, GDI_END);
+  ModifyGadget(gi, GDI_SELECTBOX_INDEX, 0, GDI_SELECTBOX_OPTIONS, options, GDI_END);
 }
 
 static void ModifyEditorDrawingArea(int drawingarea_id, int xsize, int ysize)
@@ -12291,8 +12175,7 @@ static void DrawPropertiesTabulatorGadgets(void)
 
   // draw little border line below tabulator buttons
   if (tab_color != BLACK_PIXEL)			// black => transparent
-    FillRectangle(drawto, gd_gi1->x, gd_gi1->y + gd_gi1->height +
-		  ED_GADGET_TINY_DISTANCE,
+    FillRectangle(drawto, gd_gi1->x, gd_gi1->y + gd_gi1->height + ED_GADGET_TINY_DISTANCE,
 		  getTabulatorBarWidth(), getTabulatorBarHeight(), tab_color);
 }
 
@@ -12863,8 +12746,7 @@ static void DrawPlayerInitialInventoryArea(int element)
 
   // determine horizontal position to the right of specified gadget
   if (drawingarea_info[id].gadget_id_align != GADGET_ID_NONE)
-    sx = (right_gadget_border[drawingarea_info[id].gadget_id_align] +
-	  ED_DRAWINGAREA_TEXT_DISTANCE);
+    sx = (right_gadget_border[drawingarea_info[id].gadget_id_align] + ED_DRAWINGAREA_TEXT_DISTANCE);
 
   // determine horizontal offset for leading text
   if (drawingarea_info[id].text_left != NULL)
@@ -12914,8 +12796,7 @@ static void DrawEnvelopeTextArea(int envelope_nr)
 
   UnmapGadget(gi);
 
-  DrawBackground(gi->x, gi->y,
-		 gi->textarea.crop_width, gi->textarea.crop_height);
+  DrawBackground(gi->x, gi->y, gi->textarea.crop_width, gi->textarea.crop_height);
 
   if (envelope_nr != -1)
     textarea_info[id].value = level.envelope[envelope_nr].text;
@@ -13035,8 +12916,7 @@ static void DrawPropertiesInfo(void)
       {
 	num_elements_in_level++;
       }
-      else if (IS_MM_WALL(Tile[x][y]) &&
-	       map_mm_wall_element(Tile[x][y]) == properties_element)
+      else if (IS_MM_WALL(Tile[x][y]) && map_mm_wall_element(Tile[x][y]) == properties_element)
       {
 	num_hires_tiles_in_level += numHiresTiles(Tile[x][y]);
       }
@@ -13970,8 +13850,7 @@ static void DrawPropertiesConfig(void)
       properties_element == EL_SOKOBAN_FIELD_FULL)
   {
     checkbutton_info[ED_CHECKBUTTON_ID_AUTO_EXIT_SOKOBAN].y =
-      ED_ELEMENT_SETTINGS_XPOS(properties_element == EL_SOKOBAN_FIELD_FULL ?
-			       0 : 1);
+      ED_ELEMENT_SETTINGS_XPOS(properties_element == EL_SOKOBAN_FIELD_FULL ? 0 : 1);
 
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_AUTO_EXIT_SOKOBAN);
   }
@@ -14134,8 +14013,7 @@ static void DrawPropertiesConfig(void)
     if (tab_color != BLACK_PIXEL)		// black => transparent
       FillRectangle(drawto,
 		    SX + ED_ELEMENT_SETTINGS_X(0),
-		    SY + ED_ELEMENT_SETTINGS_Y(14) - ED_SETTINGS_TABS_YOFFSET -
-		    ED_TAB_BAR_HEIGHT,
+		    SY + ED_ELEMENT_SETTINGS_Y(14) - ED_SETTINGS_TABS_YOFFSET - ED_TAB_BAR_HEIGHT,
 		    getTabulatorBarWidth(), getTabulatorBarHeight(), tab_color);
   }
 }
@@ -14225,7 +14103,9 @@ static void DrawEditorElementName(int x, int y, int font_nr)
   int max_chars_per_line = max_text_width / font_width;
 
   if (strlen(element_name) <= max_chars_per_line)
+  {
     DrawTextS(x, y, font_nr, element_name);
+  }
   else
   {
     char buffer[max_chars_per_line + 1];
@@ -14235,7 +14115,9 @@ static void DrawEditorElementName(int x, int y, int font_nr)
     buffer[max_chars_per_line] = '\0';
 
     if (element_name[max_chars_per_line] == ' ')
+    {
       next_pos++;
+    }
     else
     {
       int i;
@@ -14271,10 +14153,8 @@ static void DrawPropertiesWindow(void)
   int yoffset = (TILEY - font_height) / 2;
   int x1 = editor.settings.element_graphic.x + element_border;
   int y1 = editor.settings.element_graphic.y + element_border;
-  int x2 = (editor.settings.element_name.x == -1 ? x1 + xoffset :
-	    editor.settings.element_name.x);
-  int y2 = (editor.settings.element_name.y == -1 ? y1 + yoffset :
-	    editor.settings.element_name.y);
+  int x2 = (editor.settings.element_name.x == -1 ? x1 + xoffset : editor.settings.element_name.x);
+  int y2 = (editor.settings.element_name.y == -1 ? y1 + yoffset : editor.settings.element_name.y);
   char *text = "Element Settings";
   int font2_nr = FONT_TITLE_1;
   struct MenuPosInfo *pos = &editor.settings.headline;
@@ -14437,8 +14317,7 @@ static int getBeltFromNrAndOpenDirection(int nr, int direction)
   return getBeltElementFromBeltNrAndBeltDir(nr, belt_dir);
 }
 
-static int getBeltFromNrAndOpenDirectionNotEmpty(int nr, int direction,
-						 int element_old)
+static int getBeltFromNrAndOpenDirectionNotEmpty(int nr, int direction, int element_old)
 {
   int element_new = getBeltFromNrAndOpenDirection(nr, direction);
 
@@ -14757,8 +14636,7 @@ static int getClosedChip(int x, int y)
   return getChipFromOpenDirectionNotEmpty(direction_new, element_old);
 }
 
-static void SetElementSimpleExt(int x, int y, int dx, int dy, int element,
-				boolean change_level)
+static void SetElementSimpleExt(int x, int y, int dx, int dy, int element, boolean change_level)
 {
   int sx = x - level_xpos;
   int sy = y - level_ypos;
@@ -14874,8 +14752,7 @@ static void SetElementIntelliDraw(int x, int y, int dx, int dy, int new_element,
     new_element = getTubeFromOpenDirectionNotEmpty(direction, new_element);
 
     if (last_element_new != EL_UNDEFINED)
-      MergeAndCloseNeighbourElements(x, y, &new_element,
-				     last_x, last_y, &last_element_new,
+      MergeAndCloseNeighbourElements(x, y, &new_element, last_x, last_y, &last_element_new,
 				     getClosedTube, change_level);
   }
   else if (IS_BELT(new_element))
@@ -14904,8 +14781,8 @@ static void SetElementIntelliDraw(int x, int y, int dx, int dy, int new_element,
 	int last_direction_old = getOpenDirectionFromBelt(last_element_old);
 	int last_direction_new = last_direction_old | dir_opposite;
 
-	last_element_new = getBeltFromNrAndOpenDirection(last_belt_nr,
-							 last_direction_new);
+	last_element_new = getBeltFromNrAndOpenDirection(last_belt_nr, last_direction_new);
+
 	direction |= dir;
       }
     }
@@ -14913,8 +14790,7 @@ static void SetElementIntelliDraw(int x, int y, int dx, int dy, int new_element,
     new_element = getBeltFromNrAndOpenDirectionNotEmpty(belt_nr, direction,
 							new_element);
     if (last_element_new != EL_UNDEFINED)
-      MergeAndCloseNeighbourElements(x, y, &new_element,
-				     last_x, last_y, &last_element_new,
+      MergeAndCloseNeighbourElements(x, y, &new_element, last_x, last_y, &last_element_new,
 				     getClosedBelt, change_level);
   }
   else if (IS_ACID_POOL_OR_ACID(new_element))
@@ -14956,8 +14832,7 @@ static void SetElementIntelliDraw(int x, int y, int dx, int dy, int new_element,
     new_element = getPoolFromOpenDirectionNotEmpty(direction, new_element);
 
     if (last_element_new != EL_UNDEFINED)
-      MergeAndCloseNeighbourElements(x, y, &new_element,
-				     last_x, last_y, &last_element_new,
+      MergeAndCloseNeighbourElements(x, y, &new_element, last_x, last_y, &last_element_new,
 				     getClosedPool, change_level);
   }
   else if (IS_EMC_PILLAR(new_element))
@@ -14993,8 +14868,7 @@ static void SetElementIntelliDraw(int x, int y, int dx, int dy, int new_element,
     new_element = getPillarFromOpenDirectionNotEmpty(direction, new_element);
 
     if (last_element_new != EL_UNDEFINED)
-      MergeAndCloseNeighbourElements(x, y, &new_element,
-				     last_x, last_y, &last_element_new,
+      MergeAndCloseNeighbourElements(x, y, &new_element, last_x, last_y, &last_element_new,
 				     getClosedPillar, change_level);
   }
   else if (IS_DC_STEELWALL_2(new_element))
@@ -15030,8 +14904,7 @@ static void SetElementIntelliDraw(int x, int y, int dx, int dy, int new_element,
     new_element = getSteel2FromOpenDirectionNotEmpty(direction, new_element);
 
     if (last_element_new != EL_UNDEFINED)
-      MergeAndCloseNeighbourElements(x, y, &new_element,
-				     last_x, last_y, &last_element_new,
+      MergeAndCloseNeighbourElements(x, y, &new_element, last_x, last_y, &last_element_new,
 				     getClosedSteel2, change_level);
   }
   else if (IS_SP_CHIP(new_element))
@@ -15075,8 +14948,7 @@ static void SetElementIntelliDraw(int x, int y, int dx, int dy, int new_element,
     new_element = getChipFromOpenDirectionNotEmpty(direction, new_element);
 
     if (last_element_new != EL_UNDEFINED)
-      MergeAndCloseNeighbourElements(x, y, &new_element,
-				     last_x, last_y, &last_element_new,
+      MergeAndCloseNeighbourElements(x, y, &new_element, last_x, last_y, &last_element_new,
 				     getClosedChip, change_level);
   }
   else if (IS_SP_HARDWARE_BASE(new_element))
@@ -15616,8 +15488,7 @@ static void SetElementIntelliDraw(int x, int y, int dx, int dy, int new_element,
 
       ClearEditorGadgetInfoText();
 
-      DrawTextS(INFOTEXT_XPOS - SX, INFOTEXT_YPOS - SY, INFOTEXT_FONT,
-		infotext);
+      DrawTextS(INFOTEXT_XPOS - SX, INFOTEXT_YPOS - SY, INFOTEXT_FONT, infotext);
     }
   }
 
@@ -15663,9 +15534,7 @@ static int numHiresTiles(int element)
 
 static void SetDrawModeHiRes(int element)
 {
-  draw_mode_hires =
-    (level.game_engine_type == GAME_ENGINE_TYPE_MM &&
-     isHiresDrawElement(element));
+  draw_mode_hires = (level.game_engine_type == GAME_ENGINE_TYPE_MM && isHiresDrawElement(element));
 }
 
 static boolean getDrawModeHiRes(void)
@@ -15683,8 +15552,8 @@ static int getLoResScreenMod(int pos)
   return (getDrawModeHiRes() ? pos % 2 : 0);
 }
 
-static void SetElementExt(int x, int y, int dx, int dy, int element,
-			  boolean change_level, int button)
+static void SetElementExt(int x, int y, int dx, int dy, int element, boolean change_level,
+                          int button)
 {
   if (element < 0)
     SetElementSimple(x, y, Tile[x][y], change_level);
@@ -15750,8 +15619,7 @@ static void DrawLineElement(int x, int y, int element, boolean change_level)
   SetElementHiRes(x, y, element, change_level);
 }
 
-static void DrawLine(int from_x, int from_y, int to_x, int to_y,
-		     int element, boolean change_level)
+static void DrawLine(int from_x, int from_y, int to_x, int to_y, int element, boolean change_level)
 {
   int xsize = ABS(to_x - from_x);
   int ysize = ABS(to_y - from_y);
@@ -15798,8 +15666,7 @@ static void DrawLine(int from_x, int from_y, int to_x, int to_y,
   }
 }
 
-static void DrawBox(int from_x, int from_y, int to_x, int to_y,
-		    int element, boolean change_level)
+static void DrawBox(int from_x, int from_y, int to_x, int to_y, int element, boolean change_level)
 {
   DrawLine(from_x, from_y, from_x, to_y, element, change_level);
   DrawLine(from_x, to_y, to_x, to_y, element, change_level);
@@ -15807,8 +15674,7 @@ static void DrawBox(int from_x, int from_y, int to_x, int to_y,
   DrawLine(to_x, from_y, from_x, from_y, element, change_level);
 }
 
-static void DrawFilledBox(int from_x, int from_y, int to_x, int to_y,
-			  int element, boolean change_level)
+static void DrawFilledBox(int from_x, int from_y, int to_x, int to_y, int element, boolean change_level)
 {
   int y;
 
@@ -15819,8 +15685,7 @@ static void DrawFilledBox(int from_x, int from_y, int to_x, int to_y,
     DrawLine(from_x, y, to_x, y, element, change_level);
 }
 
-static void DrawArcExt(int from_x, int from_y, int to_x2, int to_y2,
-		       int element, boolean change_level)
+static void DrawArcExt(int from_x, int from_y, int to_x2, int to_y2, int element, boolean change_level)
 {
   int to_x = to_x2 - (to_x2 > from_x ? +1 : -1);
   int to_y = to_y2 - (to_y2 > from_y ? +1 : -1);
@@ -15868,8 +15733,7 @@ static void DrawArcExt(int from_x, int from_y, int to_x2, int to_y2,
   }
 }
 
-static void DrawArc(int from_x, int from_y, int to_x, int to_y,
-		    int element, boolean change_level)
+static void DrawArc(int from_x, int from_y, int to_x, int to_y, int element, boolean change_level)
 {
   int to_x2 = to_x + (to_x < from_x ? -1 : +1);
   int to_y2 = to_y + (to_y > from_y ? +1 : -1);
@@ -15880,8 +15744,7 @@ static void DrawArc(int from_x, int from_y, int to_x, int to_y,
 #define DRAW_CIRCLES_BUTTON_AVAILABLE	0
 
 #if DRAW_CIRCLES_BUTTON_AVAILABLE
-static void DrawCircle(int from_x, int from_y, int to_x, int to_y,
-		       int element, boolean change_level)
+static void DrawCircle(int from_x, int from_y, int to_x, int to_y, int element, boolean change_level)
 {
   int to_x2 = to_x + (to_x < from_x ? -1 : +1);
   int to_y2 = to_y + (to_y > from_y ? +1 : -1);
@@ -15922,14 +15785,12 @@ static void DrawAreaBorder(int from_x, int from_y, int to_x, int to_y)
     redraw_mask |= REDRAW_FIELD;
 }
 
-static void DrawAreaBox(int from_x, int from_y, int to_x, int to_y,
-			int element, boolean change_level)
+static void DrawAreaBox(int from_x, int from_y, int to_x, int to_y, int element, boolean change_level)
 {
   DrawBox(from_x, from_y, to_x, to_y, element, change_level);
 }
 
-static void SelectArea(int from_x, int from_y, int to_x, int to_y,
-		       int element, boolean change_level)
+static void SelectArea(int from_x, int from_y, int to_x, int to_y, int element, boolean change_level)
 {
   if (element == -1 || change_level)
     DrawAreaBox(from_x, from_y, to_x, to_y, -1, FALSE);
@@ -15952,12 +15813,12 @@ static void SelectArea(int from_x, int from_y, int to_x, int to_y,
 #define CB_FLIP_BRUSH_Y			11
 #define CB_FLIP_BRUSH_XY		12
 
-#define MAX_CB_PART_SIZE	10
-#define MAX_CB_LINE_SIZE	(MAX_LEV_FIELDX + 1)	// text plus newline
-#define MAX_CB_NUM_LINES	(MAX_LEV_FIELDY)
-#define MAX_CB_TEXT_SIZE	(MAX_CB_LINE_SIZE *	\
-				 MAX_CB_NUM_LINES *	\
-				 MAX_CB_PART_SIZE)
+#define MAX_CB_PART_SIZE		10
+#define MAX_CB_LINE_SIZE		(MAX_LEV_FIELDX + 1)	// text plus newline
+#define MAX_CB_NUM_LINES		(MAX_LEV_FIELDY)
+#define MAX_CB_TEXT_SIZE		(MAX_CB_LINE_SIZE *	\
+					 MAX_CB_NUM_LINES *	\
+					 MAX_CB_PART_SIZE)
 
 static int getFlippedTileExt(int map[], int element)
 {
@@ -16143,8 +16004,7 @@ static void DrawBrushElement(int sx, int sy, int element, boolean change_level)
   DrawLineElement(sx, sy, element, change_level);
 }
 
-static void CopyBrushExt(int from_x, int from_y, int to_x, int to_y,
-			 int button, int mode)
+static void CopyBrushExt(int from_x, int from_y, int to_x, int to_y, int button, int mode)
 {
   static short brush_buffer[MAX_LEV_FIELDX][MAX_LEV_FIELDY];
   static int brush_width, brush_height;
@@ -16177,8 +16037,7 @@ static void CopyBrushExt(int from_x, int from_y, int to_x, int to_y,
       for (x = 0; x < width; x++)
       {
 	int element = (draw_with_brush ? brush_buffer[x][y] : Tile[x][y]);
-	char *prefix = (mode == CB_DUMP_BRUSH ||
-			mode == CB_BRUSH_TO_CLIPBOARD ? "`" : "¸");
+	char *prefix = (mode == CB_DUMP_BRUSH || mode == CB_BRUSH_TO_CLIPBOARD ? "`" : "¸");
 
 	if (element >= NUM_FILE_ELEMENTS)
 	  element = EL_UNKNOWN;
@@ -16214,8 +16073,7 @@ static void CopyBrushExt(int from_x, int from_y, int to_x, int to_y,
       return;
     }
 
-    boolean copy_to_brush = (draw_with_brush ||
-			     drawing_function == GADGET_ID_GRAB_BRUSH);
+    boolean copy_to_brush = (draw_with_brush || drawing_function == GADGET_ID_GRAB_BRUSH);
 
     // this will delete the old brush, if already drawing with a brush
     if (copy_to_brush)
@@ -16445,8 +16303,7 @@ static void CopyBrushExt(int from_x, int from_y, int to_x, int to_y,
 
     delete_old_brush = FALSE;
   }
-  else if (mode == CB_BRUSH_TO_CURSOR || mode == CB_DELETE_OLD_CURSOR ||
-	   mode == CB_BRUSH_TO_LEVEL)
+  else if (mode == CB_BRUSH_TO_CURSOR || mode == CB_DELETE_OLD_CURSOR || mode == CB_BRUSH_TO_LEVEL)
   {
     int cursor_x = (mode == CB_DELETE_OLD_CURSOR ? last_cursor_x : from_x);
     int cursor_y = (mode == CB_DELETE_OLD_CURSOR ? last_cursor_y : from_y);
@@ -16507,8 +16364,7 @@ static void CopyBrushExt(int from_x, int from_y, int to_x, int to_y,
   {
     for (y = 0; y < brush_height; y++)
       for (x = 0; x < (brush_width + 1) / 2; x++)
-	SwapFlippedTiles(&brush_buffer[x][y],
-			 &brush_buffer[brush_width - x - 1][y], mode);
+	SwapFlippedTiles(&brush_buffer[x][y], &brush_buffer[brush_width - x - 1][y], mode);
 
     CopyBrushExt(last_cursor_x, last_cursor_y, 0, 0, 0, CB_BRUSH_TO_CURSOR);
   }
@@ -16516,8 +16372,7 @@ static void CopyBrushExt(int from_x, int from_y, int to_x, int to_y,
   {
     for (y = 0; y < (brush_height + 1) / 2; y++)
       for (x = 0; x < brush_width; x++)
-	SwapFlippedTiles(&brush_buffer[x][y],
-			 &brush_buffer[x][brush_height - y - 1], mode);
+	SwapFlippedTiles(&brush_buffer[x][y], &brush_buffer[x][brush_height - y - 1], mode);
 
     CopyBrushExt(last_cursor_x, last_cursor_y, 0, 0, 0, CB_BRUSH_TO_CURSOR);
   }
@@ -16527,8 +16382,7 @@ static void CopyBrushExt(int from_x, int from_y, int to_x, int to_y,
 
     for (y = 0; y < MAX(brush_width, brush_height); y++)
       for (x = 0; x <= y; x++)
-	SwapFlippedTiles(&brush_buffer[x][y],
-			 &brush_buffer[y][x], mode);
+	SwapFlippedTiles(&brush_buffer[x][y], &brush_buffer[y][x], mode);
 
     swap_numbers(&brush_width, &brush_height);
 
@@ -16542,8 +16396,7 @@ static void CopyBrushExt(int from_x, int from_y, int to_x, int to_y,
   }
 }
 
-static void CopyAreaToBrush(int from_x, int from_y, int to_x, int to_y,
-			    int button)
+static void CopyAreaToBrush(int from_x, int from_y, int to_x, int to_y, int button)
 {
   CopyBrushExt(from_x, from_y, to_x, to_y, button, CB_AREA_TO_BRUSH);
 }
@@ -16709,8 +16562,7 @@ static int DrawLevelText(int sx, int sy, char letter, int mode)
     case TEXT_SETCURSOR:
       DrawEditorElement(last_sx, last_sy, Tile[lx][ly]);
       DrawAreaBorder(sx, sy, sx, sy);
-      StartTextInput(SX + sx * ed_tilesize, SY + sy * ed_tilesize,
-		     ed_tilesize, ed_tilesize);
+      StartTextInput(SX + sx * ed_tilesize, SY + sy * ed_tilesize, ed_tilesize, ed_tilesize);
       last_sx = sx;
       last_sy = sy;
       break;
@@ -16769,8 +16621,7 @@ static int DrawLevelText(int sx, int sy, char letter, int mode)
   return typing;
 }
 
-static void SetTextCursor(int unused_sx, int unused_sy, int sx, int sy,
-			  int element, boolean change_level)
+static void SetTextCursor(int unused_sx, int unused_sy, int sx, int sy, int element, boolean change_level)
 {
   int lx = sx + level_xpos;
   int ly = sy + level_ypos;
@@ -16905,15 +16756,13 @@ static void WrapLevel(int dx, int dy)
 
   for (x = 0; x < lev_fieldx; x++)
     for (y = 0; y < lev_fieldy; y++)
-      Tile[x][y] =
-	TileBackup[(x + wrap_dx) % lev_fieldx][(y + wrap_dy) % lev_fieldy];
+      Tile[x][y] = TileBackup[(x + wrap_dx) % lev_fieldx][(y + wrap_dy) % lev_fieldy];
 
   DrawEditorLevel(ed_fieldx, ed_fieldy, level_xpos, level_ypos);
   CopyLevelToUndoBuffer(UNDO_ACCUMULATE);
 }
 
-static void DrawAreaElementHighlight(boolean highlighted,
-				     boolean highlighted_similar)
+static void DrawAreaElementHighlight(boolean highlighted, boolean highlighted_similar)
 {
   DrawEditorLevel(ed_fieldx, ed_fieldy, level_xpos, level_ypos);
 
@@ -16944,8 +16793,7 @@ static void DrawAreaElementHighlight(boolean highlighted,
 	highlight = TRUE;
 
       // check if element is matching MM style wall
-      if (IS_MM_WALL(Tile[lx][ly]) &&
-	  map_mm_wall_element(Tile[lx][ly]) == new_element1)
+      if (IS_MM_WALL(Tile[lx][ly]) && map_mm_wall_element(Tile[lx][ly]) == new_element1)
 	highlight = TRUE;
 
       if (!highlight)
@@ -16996,8 +16844,7 @@ static void DrawAreaElementHighlight(boolean highlighted,
 static void CopyLevelTemplateToUserLevelSet(char *levelset_subdir)
 {
   char *template_filename_old = getLocalLevelTemplateFilename();
-  char *template_filename_new =
-    getPath2(getUserLevelDir(levelset_subdir), LEVELTEMPLATE_FILENAME);
+  char *template_filename_new = getPath2(getUserLevelDir(levelset_subdir), LEVELTEMPLATE_FILENAME);
 
   if (copyFile(template_filename_old, template_filename_new) != 0)
     Request("Cannot copy level template!", REQ_CONFIRM);
@@ -17081,7 +16928,7 @@ static void HandleDrawingAreas(struct GadgetInfo *gi)
 			     isHiresDrawElement(new_element));
 
     // prevent handling events for every pixel position when moving mouse
-    if ((sx == last_sx && sy == last_sy && !hires_drawing) ||
+    if ((sx  == last_sx  && sy  == last_sy && !hires_drawing) ||
 	(sx2 == last_sx2 && sy2 == last_sy2))
       return;
   }
@@ -17132,8 +16979,7 @@ static void HandleDrawingAreas(struct GadgetInfo *gi)
 	{
 	  CopyLevelToUndoBuffer(UNDO_IMMEDIATE);
 
-	  if (edit_mode == ED_MODE_DRAWING && draw_with_brush &&
-	      !inside_drawing_area)
+	  if (edit_mode == ED_MODE_DRAWING && draw_with_brush && !inside_drawing_area)
 	    DeleteBrushFromCursor();
 
 	  break;
@@ -17295,8 +17141,7 @@ static void HandleDrawingAreas(struct GadgetInfo *gi)
 	  {
 	    CopyAreaToBrush(start_sx, start_sy, sx, sy, button);
 	    CopyBrushToCursor(sx, sy);
-	    ClickOnGadget(level_editor_gadget[GADGET_ID_SINGLE_ITEMS],
-			  MB_LEFTBUTTON);
+	    ClickOnGadget(level_editor_gadget[GADGET_ID_SINGLE_ITEMS], MB_LEFTBUTTON);
 	    draw_with_brush = TRUE;
 	  }
 	  else if (drawing_function == GADGET_ID_TEXT)
@@ -17331,8 +17176,7 @@ static void HandleDrawingAreas(struct GadgetInfo *gi)
 
     case GADGET_ID_PICK_ELEMENT:
       if (button_release_event)
-	ClickOnGadget(level_editor_gadget[last_drawing_function],
-		      MB_LEFTBUTTON);
+	ClickOnGadget(level_editor_gadget[last_drawing_function], MB_LEFTBUTTON);
       else if (draw_level)
 	PickDrawingElement(button, Tile[lx][ly]);
       else
@@ -17362,8 +17206,8 @@ static void HandleCounterButtons(struct GadgetInfo *gi)
   int counter_id = gi->custom_type_id;
   int button = gi->event.button;
   int *counter_value = counterbutton_info[counter_id].value;
-  int step = BUTTON_STEPSIZE(button) *
-    (gadget_id == counterbutton_info[counter_id].gadget_id_down ? -1 : +1);
+  int dir = (gadget_id == counterbutton_info[counter_id].gadget_id_down ? -1 : +1);
+  int step = BUTTON_STEPSIZE(button) * dir;
 
   if (counter_id == ED_COUNTER_ID_SELECT_LEVEL)
   {
@@ -17374,8 +17218,7 @@ static void HandleCounterButtons(struct GadgetInfo *gi)
     if ((level_changed && pressed) || (!level_changed && released))
       return;
 
-    if (level_changed && !Request("Level has changed! Discard changes?",
-				  REQ_ASK))
+    if (level_changed && !Request("Level has changed! Discard changes?", REQ_ASK))
     {
       if (gadget_id == counterbutton_info[counter_id].gadget_id_text)
 	ModifyEditorCounterValue(counter_id, *counter_value);
@@ -17513,8 +17356,7 @@ static void HandleTextAreaGadgets(struct GadgetInfo *gi)
 {
   int type_id = gi->custom_type_id;
 
-  strncpy(textarea_info[type_id].value, gi->textarea.value,
-	  MAX_ENVELOPE_TEXT_LEN);
+  strncpy(textarea_info[type_id].value, gi->textarea.value, MAX_ENVELOPE_TEXT_LEN);
   textarea_info[type_id].value[MAX_ENVELOPE_TEXT_LEN] = '\0';
 
   level.changed = TRUE;
@@ -17660,8 +17502,7 @@ static void HandleTextbuttonGadgets(struct GadgetInfo *gi)
     // "SaveLevelTemplate()" uses "level.field", so copy editor playfield
     CopyPlayfield(Tile, level.field);
 
-    if (new_template ||
-	Request("Save this template and kill the old?", REQ_ASK))
+    if (new_template || Request("Save this template and kill the old?", REQ_ASK))
       SaveLevelTemplate();
 
     if (new_template)
@@ -17674,8 +17515,7 @@ static void HandleTextbuttonGadgets(struct GadgetInfo *gi)
   {
     char *levelset_subdir = getLevelSubdirFromSaveMode(levelset_save_mode);
 
-    if (levelset_save_mode == LEVELSET_SAVE_MODE_UPDATE &&
-	leveldir_current->readonly)
+    if (levelset_save_mode == LEVELSET_SAVE_MODE_UPDATE && leveldir_current->readonly)
     {
       Request("This level set is read-only!", REQ_CONFIRM);
 
@@ -17712,8 +17552,7 @@ static void HandleTextbuttonGadgets(struct GadgetInfo *gi)
     }
     else if (levelset_save_mode == LEVELSET_SAVE_MODE_CREATE)
     {
-      if (level.changed && !Request("Level has changed! Discard changes?",
-				     REQ_ASK))
+      if (level.changed && !Request("Level has changed! Discard changes?", REQ_ASK))
 	return;
 
       if (CreateUserLevelSet(levelset_subdir,
@@ -17845,8 +17684,7 @@ static void HandleRadiobuttons(struct GadgetInfo *gi)
 {
   int type_id = gi->custom_type_id;
 
-  *radiobutton_info[type_id].value =
-    radiobutton_info[type_id].checked_value;
+  *radiobutton_info[type_id].value = radiobutton_info[type_id].checked_value;
 
   // do not mark level as modified for certain non-level-changing gadgets
   if (type_id >= ED_RADIOBUTTON_ID_EDITOR_FIRST &&
@@ -18038,8 +17876,10 @@ static void HandleControlButtons(struct GadgetInfo *gi)
 	  break;
 
 	level_xpos -= step;
+
 	if (level_xpos < -1)
 	  level_xpos = -1;
+
 	if (button == 1)
 	  ScrollEditorLevel(level_xpos, level_ypos, ED_SCROLL_RIGHT);
 	else
@@ -18057,8 +17897,10 @@ static void HandleControlButtons(struct GadgetInfo *gi)
 	  break;
 
 	level_xpos += step;
+
 	if (level_xpos > lev_fieldx - ed_fieldx + 1)
 	  level_xpos = lev_fieldx - ed_fieldx + 1;
+
 	if (button == 1)
 	  ScrollEditorLevel(level_xpos, level_ypos, ED_SCROLL_LEFT);
 	else
@@ -18076,8 +17918,10 @@ static void HandleControlButtons(struct GadgetInfo *gi)
 	  break;
 
 	level_ypos -= step;
+
 	if (level_ypos < -1)
 	  level_ypos = -1;
+
 	if (button == 1)
 	  ScrollEditorLevel(level_xpos, level_ypos, ED_SCROLL_DOWN);
 	else
@@ -18095,8 +17939,10 @@ static void HandleControlButtons(struct GadgetInfo *gi)
 	  break;
 
 	level_ypos += step;
+
 	if (level_ypos > lev_fieldy - ed_fieldy + 1)
 	  level_ypos = lev_fieldy - ed_fieldy + 1;
+
 	if (button == 1)
 	  ScrollEditorLevel(level_xpos, level_ypos, ED_SCROLL_UP);
 	else
@@ -18127,7 +17973,9 @@ static void HandleControlButtons(struct GadgetInfo *gi)
     case GADGET_ID_SCROLL_LIST_DOWN:
     case GADGET_ID_SCROLL_LIST_VERTICAL:
       if (id == GADGET_ID_SCROLL_LIST_VERTICAL)
+      {
 	element_shift = gi->event.item_position * ED_ELEMENTLIST_BUTTONS_HORIZ;
+      }
       else
       {
 	step *= (id == GADGET_ID_SCROLL_LIST_UP ? -1 : +1);
@@ -18165,8 +18013,7 @@ static void HandleControlButtons(struct GadgetInfo *gi)
 	ChangeEditModeWindow(ED_MODE_PROPERTIES);
 
 	last_level_drawing_function = drawing_function;
-	ClickOnGadget(level_editor_gadget[GADGET_ID_SINGLE_ITEMS],
-		      MB_LEFTBUTTON);
+	ClickOnGadget(level_editor_gadget[GADGET_ID_SINGLE_ITEMS], MB_LEFTBUTTON);
       }
       else if (properties_element != last_properties_element)
       {
@@ -18176,8 +18023,7 @@ static void HandleControlButtons(struct GadgetInfo *gi)
       {
 	ChangeEditModeWindow(ED_MODE_DRAWING);
 
-	ClickOnGadget(level_editor_gadget[last_level_drawing_function],
-		      MB_LEFTBUTTON);
+	ClickOnGadget(level_editor_gadget[last_level_drawing_function], MB_LEFTBUTTON);
       }
       break;
 
@@ -18303,8 +18149,7 @@ static void HandleControlButtons(struct GadgetInfo *gi)
       {
 	// undo
 
-	undo_buffer_position =
-	  (undo_buffer_position - 1 + NUM_UNDO_STEPS) % NUM_UNDO_STEPS;
+	undo_buffer_position = (undo_buffer_position - 1 + NUM_UNDO_STEPS) % NUM_UNDO_STEPS;
 
 	undo_buffer_steps--;
 	redo_buffer_steps++;
@@ -18365,15 +18210,13 @@ static void HandleControlButtons(struct GadgetInfo *gi)
       char *level_filename;
       boolean new_level;
 
-      if (leveldir_current->readonly &&
-	  !PrepareSavingIntoPersonalLevelSet())
+      if (leveldir_current->readonly && !PrepareSavingIntoPersonalLevelSet())
 	break;
 
       level_filename = getDefaultLevelFilename(level_nr);
       new_level = !fileExists(level_filename);
 
-      if (new_level ||
-	  Request("Save this level and kill the old?", REQ_ASK))
+      if (new_level || Request("Save this level and kill the old?", REQ_ASK))
       {
 	if (leveldir_former->readonly)
 	  ModifyLevelConfigForSavingIntoPersonalLevelSet(leveldir_former->name);
@@ -18390,9 +18233,7 @@ static void HandleControlButtons(struct GadgetInfo *gi)
 	  char level_saved_msg[64];
 
 	  if (leveldir_former->readonly)
-	    sprintf(level_saved_msg,
-		    "Level saved as level %d into personal level set!",
-		    level_nr);
+	    sprintf(level_saved_msg, "Level saved as level %d into personal level set!", level_nr);
 	  else
 	    strcpy(level_saved_msg, "Level saved!");
 
@@ -18477,11 +18318,9 @@ static void HandleControlButtons(struct GadgetInfo *gi)
 
 	if (last_custom_copy_mode != -1)
 	{
-	  if (CopyCustomElement(properties_element, new_element,
-				last_custom_copy_mode))
+	  if (CopyCustomElement(properties_element, new_element, last_custom_copy_mode))
 	  {
-	    ClickOnGadget(level_editor_gadget[last_drawing_function],
-			  MB_LEFTBUTTON);
+	    ClickOnGadget(level_editor_gadget[last_drawing_function], MB_LEFTBUTTON);
 
 	    last_custom_copy_mode = -1;
 	  }
@@ -18505,8 +18344,7 @@ static void HandleControlButtons(struct GadgetInfo *gi)
 	}
 
 	if (drawing_function == GADGET_ID_PICK_ELEMENT)
-	  ClickOnGadget(level_editor_gadget[last_drawing_function],
-			MB_LEFTBUTTON);
+	  ClickOnGadget(level_editor_gadget[last_drawing_function], MB_LEFTBUTTON);
 
 	if (!use_permanent_palette)
 	  ChangeEditModeWindow(last_edit_mode);
@@ -18529,8 +18367,7 @@ void HandleLevelEditorKeyInput(Key key)
 {
   char letter = getCharFromKey(key);
 
-  if (drawing_function == GADGET_ID_TEXT &&
-      DrawLevelText(0, 0, 0, TEXT_QUERY_TYPING) == TRUE)
+  if (drawing_function == GADGET_ID_TEXT && DrawLevelText(0, 0, 0, TEXT_QUERY_TYPING) == TRUE)
   {
     if (letter)
       DrawLevelText(0, 0, letter, TEXT_WRITECHAR);
@@ -18585,8 +18422,7 @@ void HandleLevelEditorKeyInput(Key key)
 
     case KSYM_Home:
     case KSYM_End:
-      element_shift = (key == KSYM_Home ? 0 :
-		       num_editor_elements - ED_NUM_ELEMENTLIST_BUTTONS);
+      element_shift = (key == KSYM_Home ? 0 : num_editor_elements - ED_NUM_ELEMENTLIST_BUTTONS);
 
       ModifyGadget(level_editor_gadget[GADGET_ID_SCROLL_LIST_VERTICAL],
 		   GDI_SCROLLBAR_ITEM_POSITION,
@@ -18777,8 +18613,7 @@ void PrintEditorGadgetInfoText(struct GadgetInfo *gi)
       else if (gi->custom_id == GADGET_ID_ZOOM)
 	sprintf(shortcut, " ('%c', '0', '-')", key);
       else
-	sprintf(shortcut, " ('%s%c')",
-		(key >= 'A' && key <= 'Z' ? "Shift-" : ""), key);
+	sprintf(shortcut, " ('%s%c')", (key >= 'A' && key <= 'Z' ? "Shift-" : ""), key);
 
       if (strlen(infotext) + strlen(shortcut) <= max_infotext_len)
 	strcat(infotext, shortcut);
@@ -18912,8 +18747,7 @@ static void HandleDrawingAreaInfo(struct GadgetInfo *gi)
 	if (actual_drawing_function == GADGET_ID_PICK_ELEMENT)
 	  sprintf(infotext, "%s: %d, %d", text, lx, ly);
 	else
-	  sprintf(infotext, "%s: %d, %d", text,
-		  ABS(lx - start_lx) + 1, ABS(ly - start_ly) + 1);
+	  sprintf(infotext, "%s: %d, %d", text, ABS(lx - start_lx) + 1, ABS(ly - start_ly) + 1);
       }
       else if (actual_drawing_function == GADGET_ID_PICK_ELEMENT)
 	strncpy(infotext, getElementInfoText(Tile[lx][ly]), max_infotext_len);
@@ -18971,8 +18805,7 @@ void RequestExitLevelEditor(boolean ask_if_level_has_changed,
 {
   if (!ask_if_level_has_changed ||
       !LevelChanged() ||
-      Request("Level has changed! Exit without saving?",
-	      REQ_ASK | REQ_STAY_OPEN))
+      Request("Level has changed! Exit without saving?", REQ_ASK | REQ_STAY_OPEN))
   {
     struct RectWithBorder *vp_door_1 = &viewport.door_1[GAME_MODE_MAIN];
     struct RectWithBorder *vp_door_2 = &viewport.door_2[GAME_MODE_MAIN];
