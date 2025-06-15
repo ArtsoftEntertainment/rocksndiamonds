@@ -275,8 +275,7 @@ static boolean handle_click = FALSE;
 // generic animation frame calculation
 // ============================================================================
 
-int getAnimationFrame(int num_frames, int delay, int mode, int start_frame,
-		      int sync_frame)
+int getAnimationFrame(int num_frames, int delay, int mode, int start_frame, int sync_frame)
 {
   int frame = 0;
 
@@ -349,8 +348,7 @@ static int getGlobalAnimationPart(struct GlobalAnimMainControlInfo *anim)
 
   gfx.anim_random_frame = -1;	// (use simple, ad-hoc random numbers)
 
-  part_nr = getAnimationFrame(anim->num_parts, 1,
-			      c->anim_mode, c->anim_start_frame,
+  part_nr = getAnimationFrame(anim->num_parts, 1, c->anim_mode, c->anim_start_frame,
 			      anim->part_counter);
 
   gfx.anim_random_frame = last_anim_random_frame;
@@ -624,12 +622,10 @@ static void InitGlobalAnimControls(void)
   for (m = 0; m < NUM_GAME_MODES; m++)
     for (a = 0; a < global_anim_ctrl[m].num_anims; a++)
       for (p = 0; p < global_anim_ctrl[m].anim[a].num_parts_all; p++)
-	global_anim_list[num_global_anim_list++] =
-	  &global_anim_ctrl[m].anim[a].part[p];
+	global_anim_list[num_global_anim_list++] = &global_anim_ctrl[m].anim[a].part[p];
 
   // sort list of all animation parts according to draw_order and number
-  qsort(global_anim_list, num_global_anim_list,
-	sizeof(struct GlobalAnimPartControlInfo *),
+  qsort(global_anim_list, num_global_anim_list, sizeof(struct GlobalAnimPartControlInfo *),
 	compareGlobalAnimPartControlInfo);
 
   for (i = 0; i < NUM_GAME_MODES; i++)
@@ -705,9 +701,8 @@ void InitGlobalAnimations(void)
   InitGlobalAnimControls();
 }
 
-static void BlitGlobalAnimation(struct GlobalAnimPartControlInfo *part,
-				Bitmap *src_bitmap, int src_x0, int src_y0,
-				int drawing_target)
+static void BlitGlobalAnimation(struct GlobalAnimPartControlInfo *part, Bitmap *src_bitmap,
+                                int src_x0, int src_y0, int drawing_target)
 {
   struct GraphicInfo *g = &part->graphic_info;
   struct GraphicInfo *c = &part->control_info;
@@ -768,11 +763,9 @@ static void BlitGlobalAnimation(struct GlobalAnimPartControlInfo *part,
       SetBitmapAlphaNextBlit(src_bitmap, alpha);
 
       if (drawing_target == DRAW_TO_SCREEN)
-	blit_screen(src_bitmap, src_x, src_y, width, height,
-		    dst_x, dst_y);
+	blit_screen(src_bitmap, src_x, src_y, width, height, dst_x, dst_y);
       else
-	blit_bitmap(src_bitmap, fade_bitmap, src_x, src_y, width, height,
-		    dst_x, dst_y);
+	blit_bitmap(src_bitmap, fade_bitmap, src_x, src_y, width, height, dst_x, dst_y);
     }
   }
 }
@@ -930,14 +923,12 @@ static void DrawGlobalAnimationsExt(int drawing_target, int drawing_stage)
 
     gfx.anim_random_frame = part->anim_random_frame;
 
-    frame = getAnimationFrame(g->anim_frames, g->anim_delay,
-			      g->anim_mode, g->anim_start_frame,
+    frame = getAnimationFrame(g->anim_frames, g->anim_delay, g->anim_mode, g->anim_start_frame,
 			      sync_frame);
 
     gfx.anim_random_frame = last_anim_random_frame;
 
-    getGlobalAnimGraphicSource(part->graphic, frame, &src_bitmap,
-			       &src_x, &src_y);
+    getGlobalAnimGraphicSource(part->graphic, frame, &src_bitmap, &src_x, &src_y);
 
     BlitGlobalAnimation(part, src_bitmap, src_x, src_y, drawing_target);
   }
@@ -1250,8 +1241,7 @@ static boolean isClickablePart(struct GlobalAnimPartControlInfo *part, int mask)
   return FALSE;
 }
 
-static boolean isInsidePartStacked(struct GlobalAnimPartControlInfo *part,
-				   int mx, int my)
+static boolean isInsidePartStacked(struct GlobalAnimPartControlInfo *part, int mx, int my)
 {
   struct GraphicInfo *g = &part->graphic_info;
   struct GraphicInfo *c = &part->control_info;
@@ -1279,8 +1269,8 @@ static boolean isInsidePartStacked(struct GlobalAnimPartControlInfo *part,
   return FALSE;
 }
 
-static boolean isClickedPart(struct GlobalAnimPartControlInfo *part,
-			     int mx, int my, boolean clicked)
+static boolean isClickedPart(struct GlobalAnimPartControlInfo *part, int mx, int my,
+                             boolean clicked)
 {
   // check if mouse click was detected at all
   if (!clicked)
@@ -1333,8 +1323,7 @@ static void SetGlobalAnimPartTileXY(struct GlobalAnimPartControlInfo *part)
 }
 
 static void InitGlobalAnim_Triggered(struct GlobalAnimPartControlInfo *part,
-				     boolean *click_consumed,
-				     boolean *any_event_action,
+				     boolean *click_consumed, boolean *any_event_action,
 				     int event_value, char *info_text)
 {
   struct GlobalAnimControlInfo *ctrl = &global_anim_ctrl[part->mode_nr];
@@ -1399,10 +1388,8 @@ static void InitGlobalAnim_Triggered(struct GlobalAnimPartControlInfo *part,
   }
 }
 
-static void InitGlobalAnim_Triggered_ByCustomElement(int nr, int page,
-						     int x, int y,
-						     int trigger_x,
-						     int trigger_y)
+static void InitGlobalAnim_Triggered_ByCustomElement(int nr, int page, int x, int y,
+						     int trigger_x, int trigger_y)
 {
   struct GlobalAnimControlInfo *ctrl = &global_anim_ctrl[GAME_MODE_PLAYING];
 
@@ -1460,8 +1447,8 @@ static void InitGlobalAnim_Triggered_ByCustomElement(int nr, int page,
   }
 }
 
-static void HandleGlobalAnimDelay(struct GlobalAnimPartControlInfo *part,
-				  int delay_type, char *info_text)
+static void HandleGlobalAnimDelay(struct GlobalAnimPartControlInfo *part, int delay_type,
+                                  char *info_text)
 {
 #if DEBUG_ANIM_DELAY
   Debug("anim:HandleGlobalAnimDelay", "%d.%d %s",
@@ -1471,8 +1458,8 @@ static void HandleGlobalAnimDelay(struct GlobalAnimPartControlInfo *part,
   DoGlobalAnim_DelayAction(part, delay_type);
 }
 
-static void HandleGlobalAnimEvent(struct GlobalAnimPartControlInfo *part,
-				  int event_value, char *info_text)
+static void HandleGlobalAnimEvent(struct GlobalAnimPartControlInfo *part, int event_value,
+                                  char *info_text)
 {
 #if DEBUG_ANIM_EVENTS
   Debug("anim:HandleGlobalAnimEvent", "%d.%d %s",
@@ -1483,12 +1470,10 @@ static void HandleGlobalAnimEvent(struct GlobalAnimPartControlInfo *part,
   boolean any_event_action = FALSE;
 
   // check if this event is defined to trigger other animations
-  InitGlobalAnim_Triggered(part, &click_consumed, &any_event_action,
-			   event_value, info_text);
+  InitGlobalAnim_Triggered(part, &click_consumed, &any_event_action, event_value, info_text);
 }
 
-static int HandleGlobalAnim_Part(struct GlobalAnimPartControlInfo *part,
-				 int state)
+static int HandleGlobalAnim_Part(struct GlobalAnimPartControlInfo *part, int state)
 {
   if (handle_click && !part->clicked)
     return state;
@@ -1516,12 +1501,8 @@ static int HandleGlobalAnim_Part(struct GlobalAnimPartControlInfo *part,
 
     ResetDelayCounterExt(&part->step_delay, anim_sync_frame);
 
-    part->init_delay_counter =
-      (c->init_delay_fixed + GetSimpleRandom(c->init_delay_random));
-
-    part->anim_delay_counter =
-      (c->anim_delay_fixed + GetSimpleRandom(c->anim_delay_random));
-
+    part->init_delay_counter = (c->init_delay_fixed + GetSimpleRandom(c->init_delay_random));
+    part->anim_delay_counter = (c->anim_delay_fixed + GetSimpleRandom(c->anim_delay_random));
     part->post_delay_counter = 0;
 
     part->init_event_state = (c->init_event != ANIM_EVENT_UNDEFINED);
@@ -1710,8 +1691,7 @@ static int HandleGlobalAnim_Part(struct GlobalAnimPartControlInfo *part,
 
       HandleGlobalAnimEvent(part, ANIM_EVENT_END, "END [ANIM/OFF-SCREEN]");
 
-      part->post_delay_counter =
-	(c->post_delay_fixed + GetSimpleRandom(c->post_delay_random));
+      part->post_delay_counter = (c->post_delay_fixed + GetSimpleRandom(c->post_delay_random));
 
       if (part->post_delay_counter > 0)
 	return ANIM_STATE_RUNNING;
@@ -1734,8 +1714,7 @@ static int HandleGlobalAnim_Part(struct GlobalAnimPartControlInfo *part,
       HandleGlobalAnimDelay(part, ANIM_DELAY_ANIM, "END [ANIM_DELAY]");
       HandleGlobalAnimEvent(part, ANIM_EVENT_END,  "END [ANIM_DELAY/EVENT]");
 
-      part->post_delay_counter =
-	(c->post_delay_fixed + GetSimpleRandom(c->post_delay_random));
+      part->post_delay_counter = (c->post_delay_fixed + GetSimpleRandom(c->post_delay_random));
 
       if (part->post_delay_counter > 0)
 	return ANIM_STATE_RUNNING;
@@ -1803,8 +1782,7 @@ static int HandleGlobalAnim_Part(struct GlobalAnimPartControlInfo *part,
   return ANIM_STATE_RUNNING;
 }
 
-static void HandleGlobalAnim_Main(struct GlobalAnimMainControlInfo *anim,
-				  int action)
+static void HandleGlobalAnim_Main(struct GlobalAnimMainControlInfo *anim, int action)
 {
   struct GlobalAnimPartControlInfo *part;
   struct GraphicInfo *c = &anim->control_info;
@@ -2002,8 +1980,7 @@ static void DoAnimationExt(void)
 #endif
 }
 
-static void DoGlobalAnim_DelayAction(struct GlobalAnimPartControlInfo *part,
-				     int delay_type)
+static void DoGlobalAnim_DelayAction(struct GlobalAnimPartControlInfo *part, int delay_type)
 {
   int delay_action =
     (delay_type == ANIM_DELAY_INIT ? part->control_info.init_delay_action :
