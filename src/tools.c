@@ -3657,6 +3657,14 @@ static void DrawPreviewLevelLabel(int mode)
   DrawPreviewLevelLabelExt(mode, &menu.main.text.level_info_2);
 }
 
+static void DrawPreviewLevelInfo(int mode)
+{
+  if (mode == MICROLABEL_LEVEL_NAME)
+    DrawPreviewLevelLabelExt(mode, &menu.main.text.level_name);
+  else if (mode == MICROLABEL_LEVEL_AUTHOR)
+    DrawPreviewLevelLabelExt(mode, &menu.main.text.level_author);
+}
+
 static void DrawPreviewLevelExt(boolean restart)
 {
   static DelayCounter scroll_delay = { 0 };
@@ -3692,6 +3700,9 @@ static void DrawPreviewLevelExt(boolean restart)
 
     DrawPreviewLevelPlayfield(from_x, from_y);
     DrawPreviewLevelLabel(label_state);
+
+    DrawPreviewLevelInfo(MICROLABEL_LEVEL_NAME);
+    DrawPreviewLevelInfo(MICROLABEL_LEVEL_AUTHOR);
 
     // initialize delay counters
     ResetDelayCounter(&scroll_delay);
