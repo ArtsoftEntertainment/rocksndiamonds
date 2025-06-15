@@ -69,10 +69,10 @@
 #define LEVELX(a)			((a) + scroll_x)
 #define LEVELY(a)			((a) + scroll_y)
 
-#define IN_FIELD(x, y, xsize, ysize)	((x) >= 0 && (x) < (xsize) &&	   \
+#define IN_FIELD(x, y, xsize, ysize)	((x) >= 0 && (x) < (xsize) &&		\
 					 (y) >= 0 && (y) < (ysize))
-#define IN_FIELD_MINMAX(x, y, xmin, ymin, xmax, ymax)			   \
-					((x) >= (xmin) && (x) <= (xmax) && \
+#define IN_FIELD_MINMAX(x, y, xmin, ymin, xmax, ymax)				\
+					((x) >= (xmin) && (x) <= (xmax) &&	\
 					 (y) >= (ymin) && (y) <= (ymax))
 
 #define IN_PIX_FIELD(x, y)		IN_FIELD(x, y, SXSIZE, SYSIZE)
@@ -202,8 +202,8 @@
 #define PROPERTY_BIT(p)			(1u << ((p) % 32))
 #define PROPERTY_VAR(e, p)		(element_info[e].properties[(p) / 32])
 #define HAS_PROPERTY(e, p)		((PROPERTY_VAR(e, p) & PROPERTY_BIT(p)) != 0)
-#define SET_PROPERTY(e, p, v)		((v) ?					   \
-					 (PROPERTY_VAR(e,p) |=  PROPERTY_BIT(p)) : \
+#define SET_PROPERTY(e, p, v)		((v) ?						\
+					 (PROPERTY_VAR(e,p) |=  PROPERTY_BIT(p)) :	\
 					 (PROPERTY_VAR(e,p) &= ~PROPERTY_BIT(p)))
 
 
@@ -288,9 +288,9 @@
 #define PLAYER_BITS_2			(1 << 1)
 #define PLAYER_BITS_3			(1 << 2)
 #define PLAYER_BITS_4			(1 << 3)
-#define PLAYER_BITS_ANY			(PLAYER_BITS_1 | \
-					 PLAYER_BITS_2 | \
-					 PLAYER_BITS_3 | \
+#define PLAYER_BITS_ANY			(PLAYER_BITS_1 |	\
+					 PLAYER_BITS_2 |	\
+					 PLAYER_BITS_3 |	\
 					 PLAYER_BITS_4)
 #define PLAYER_BITS_TRIGGER		(1 << 4)
 #define PLAYER_BITS_ACTION		(1 << 5)
@@ -330,9 +330,9 @@
 #define CH_SIDE_TOP_BOTTOM		MV_VERTICAL
 #define CH_SIDE_ANY			MV_ANY_DIRECTION
 
-#define CH_SIDE_FROM_BUTTON(b)		((b) == MB_LEFTBUTTON   ? CH_SIDE_LEFT :       \
-					 (b) == MB_RIGHTBUTTON  ? CH_SIDE_RIGHT :      \
-					 (b) == MB_MIDDLEBUTTON ? CH_SIDE_TOP_BOTTOM : \
+#define CH_SIDE_FROM_BUTTON(b)		((b) == MB_LEFTBUTTON   ? CH_SIDE_LEFT :	\
+					 (b) == MB_RIGHTBUTTON  ? CH_SIDE_RIGHT :	\
+					 (b) == MB_MIDDLEBUTTON ? CH_SIDE_TOP_BOTTOM :	\
 					 CH_SIDE_NONE)
 
 // values for change player for custom elements
@@ -862,8 +862,8 @@
 #define IS_IN_GROUP(e, nr)		(element_info[e].in_group[nr] == TRUE)
 #define IS_IN_GROUP_EL(e, ge)		(IS_IN_GROUP(e, (ge) - EL_GROUP_START))
 
-#define IS_EQUAL_OR_IN_GROUP(e, ge)					\
-	(ge == EL_ANY_ELEMENT ? TRUE :					\
+#define IS_EQUAL_OR_IN_GROUP(e, ge)						\
+	(ge == EL_ANY_ELEMENT ? TRUE :						\
 	 IS_GROUP_ELEMENT(ge) ? IS_IN_GROUP(e, GROUP_NR(ge)) : (e) == (ge))
 
 #define IS_PLAYER(x, y)			(IS_PLAYER_ELEMENT(StorePlayer[x][y]))
@@ -877,85 +877,85 @@
 
 #define IS_MV_DIAGONAL(x)		((x) & MV_HORIZONTAL && (x) & MV_VERTICAL)
 
-#define EL_CHANGED(e)			((e) == EL_ROCK           ? EL_EMERALD :    \
-					 (e) == EL_BD_ROCK        ? EL_BD_DIAMOND : \
-					 (e) == EL_EMERALD        ? EL_DIAMOND :    \
-					 (e) == EL_EMERALD_YELLOW ? EL_DIAMOND :    \
-					 (e) == EL_EMERALD_RED    ? EL_DIAMOND :    \
-					 (e) == EL_EMERALD_PURPLE ? EL_DIAMOND :    \
+#define EL_CHANGED(e)			((e) == EL_ROCK           ? EL_EMERALD :	\
+					 (e) == EL_BD_ROCK        ? EL_BD_DIAMOND :	\
+					 (e) == EL_EMERALD        ? EL_DIAMOND :	\
+					 (e) == EL_EMERALD_YELLOW ? EL_DIAMOND :	\
+					 (e) == EL_EMERALD_RED    ? EL_DIAMOND :	\
+					 (e) == EL_EMERALD_PURPLE ? EL_DIAMOND :	\
 					 EL_ROCK)
-#define EL_CHANGED_BD(e)		((e) == EL_ROCK           ? EL_BD_DIAMOND : \
-					 (e) == EL_BD_ROCK        ? EL_BD_DIAMOND : \
+#define EL_CHANGED_BD(e)		((e) == EL_ROCK           ? EL_BD_DIAMOND :	\
+					 (e) == EL_BD_ROCK        ? EL_BD_DIAMOND :	\
 					 EL_BD_ROCK)
-#define EL_CHANGED_DC(e)		((e) == EL_ROCK           ? EL_EMERALD :    \
-					 (e) == EL_BD_ROCK        ? EL_BD_DIAMOND : \
-					 (e) == EL_EMERALD        ? EL_DIAMOND :    \
-					 (e) == EL_EMERALD_YELLOW ? EL_DIAMOND :    \
-					 (e) == EL_EMERALD_RED    ? EL_DIAMOND :    \
-					 (e) == EL_EMERALD_PURPLE ? EL_DIAMOND :    \
-					 (e) == EL_PEARL          ? EL_BOMB    :    \
-					 (e) == EL_CRYSTAL        ? EL_CRYSTAL :    \
+#define EL_CHANGED_DC(e)		((e) == EL_ROCK           ? EL_EMERALD :	\
+					 (e) == EL_BD_ROCK        ? EL_BD_DIAMOND :	\
+					 (e) == EL_EMERALD        ? EL_DIAMOND :	\
+					 (e) == EL_EMERALD_YELLOW ? EL_DIAMOND :	\
+					 (e) == EL_EMERALD_RED    ? EL_DIAMOND :	\
+					 (e) == EL_EMERALD_PURPLE ? EL_DIAMOND :	\
+					 (e) == EL_PEARL          ? EL_BOMB    :	\
+					 (e) == EL_CRYSTAL        ? EL_CRYSTAL :	\
 					 EL_ROCK)
 
-#define IS_BDX_PLAYER_ELEMENT(e)	((e) == EL_BDX_INBOX ||			\
-					 (e) == EL_BDX_PLAYER ||		\
-					 (e) == EL_BDX_PLAYER_WITH_BOMB ||	\
-					 (e) == EL_BDX_PLAYER_WITH_ROCKET_LAUNCHER || \
-					 (e) == EL_BDX_PLAYER_GLUED ||		\
+#define IS_BDX_PLAYER_ELEMENT(e)	((e) == EL_BDX_INBOX ||				\
+					 (e) == EL_BDX_PLAYER ||			\
+					 (e) == EL_BDX_PLAYER_WITH_BOMB ||		\
+					 (e) == EL_BDX_PLAYER_WITH_ROCKET_LAUNCHER ||	\
+					 (e) == EL_BDX_PLAYER_GLUED ||			\
 					 (e) == EL_BDX_PLAYER_STIRRING)
 
-#define IS_BD_FIREFLY(e)		((e) == EL_BD_FIREFLY ||		\
-					 (e) == EL_BD_FIREFLY_RIGHT ||		\
-					 (e) == EL_BD_FIREFLY_UP ||		\
-					 (e) == EL_BD_FIREFLY_LEFT ||		\
+#define IS_BD_FIREFLY(e)		((e) == EL_BD_FIREFLY ||			\
+					 (e) == EL_BD_FIREFLY_RIGHT ||			\
+					 (e) == EL_BD_FIREFLY_UP ||			\
+					 (e) == EL_BD_FIREFLY_LEFT ||			\
 					 (e) == EL_BD_FIREFLY_DOWN)
 
-#define IS_BDX_FIREFLY_1(e)		((e) == EL_BDX_FIREFLY_1 ||		\
-					 (e) == EL_BDX_FIREFLY_1_RIGHT ||	\
-					 (e) == EL_BDX_FIREFLY_1_UP ||		\
-					 (e) == EL_BDX_FIREFLY_1_LEFT ||	\
+#define IS_BDX_FIREFLY_1(e)		((e) == EL_BDX_FIREFLY_1 ||			\
+					 (e) == EL_BDX_FIREFLY_1_RIGHT ||		\
+					 (e) == EL_BDX_FIREFLY_1_UP ||			\
+					 (e) == EL_BDX_FIREFLY_1_LEFT ||		\
 					 (e) == EL_BDX_FIREFLY_1_DOWN)
 
-#define IS_BDX_FIREFLY_2(e)		((e) == EL_BDX_FIREFLY_2 ||		\
-					 (e) == EL_BDX_FIREFLY_2_RIGHT ||	\
-					 (e) == EL_BDX_FIREFLY_2_UP ||		\
-					 (e) == EL_BDX_FIREFLY_2_LEFT ||	\
+#define IS_BDX_FIREFLY_2(e)		((e) == EL_BDX_FIREFLY_2 ||			\
+					 (e) == EL_BDX_FIREFLY_2_RIGHT ||		\
+					 (e) == EL_BDX_FIREFLY_2_UP ||			\
+					 (e) == EL_BDX_FIREFLY_2_LEFT ||		\
 					 (e) == EL_BDX_FIREFLY_2_DOWN)
 
-#define IS_BD_BUTTERFLY(e)		((e) == EL_BD_BUTTERFLY ||		\
-					 (e) == EL_BD_BUTTERFLY_RIGHT ||	\
-					 (e) == EL_BD_BUTTERFLY_UP ||		\
-					 (e) == EL_BD_BUTTERFLY_LEFT ||		\
+#define IS_BD_BUTTERFLY(e)		((e) == EL_BD_BUTTERFLY ||			\
+					 (e) == EL_BD_BUTTERFLY_RIGHT ||		\
+					 (e) == EL_BD_BUTTERFLY_UP ||			\
+					 (e) == EL_BD_BUTTERFLY_LEFT ||			\
 					 (e) == EL_BD_BUTTERFLY_DOWN)
 
-#define IS_BDX_BUTTERFLY_1(e)		((e) == EL_BDX_BUTTERFLY_1 ||		\
-					 (e) == EL_BDX_BUTTERFLY_1_RIGHT ||	\
-					 (e) == EL_BDX_BUTTERFLY_1_UP ||	\
-					 (e) == EL_BDX_BUTTERFLY_1_LEFT ||	\
+#define IS_BDX_BUTTERFLY_1(e)		((e) == EL_BDX_BUTTERFLY_1 ||			\
+					 (e) == EL_BDX_BUTTERFLY_1_RIGHT ||		\
+					 (e) == EL_BDX_BUTTERFLY_1_UP ||		\
+					 (e) == EL_BDX_BUTTERFLY_1_LEFT ||		\
 					 (e) == EL_BDX_BUTTERFLY_1_DOWN)
 
-#define IS_BDX_BUTTERFLY_2(e)		((e) == EL_BDX_BUTTERFLY_2 ||		\
-					 (e) == EL_BDX_BUTTERFLY_2_RIGHT ||	\
-					 (e) == EL_BDX_BUTTERFLY_2_UP ||	\
-					 (e) == EL_BDX_BUTTERFLY_2_LEFT ||	\
+#define IS_BDX_BUTTERFLY_2(e)		((e) == EL_BDX_BUTTERFLY_2 ||			\
+					 (e) == EL_BDX_BUTTERFLY_2_RIGHT ||		\
+					 (e) == EL_BDX_BUTTERFLY_2_UP ||		\
+					 (e) == EL_BDX_BUTTERFLY_2_LEFT ||		\
 					 (e) == EL_BDX_BUTTERFLY_2_DOWN)
 
-#define IS_BDX_STONEFLY(e)		((e) == EL_BDX_STONEFLY ||		\
-					 (e) == EL_BDX_STONEFLY_RIGHT ||	\
-					 (e) == EL_BDX_STONEFLY_UP ||		\
-					 (e) == EL_BDX_STONEFLY_LEFT ||		\
+#define IS_BDX_STONEFLY(e)		((e) == EL_BDX_STONEFLY ||			\
+					 (e) == EL_BDX_STONEFLY_RIGHT ||		\
+					 (e) == EL_BDX_STONEFLY_UP ||			\
+					 (e) == EL_BDX_STONEFLY_LEFT ||			\
 					 (e) == EL_BDX_STONEFLY_DOWN)
 
-#define IS_BDX_DRAGONFLY(e)		((e) == EL_BDX_DRAGONFLY ||		\
-					 (e) == EL_BDX_DRAGONFLY_RIGHT ||	\
-					 (e) == EL_BDX_DRAGONFLY_UP ||		\
-					 (e) == EL_BDX_DRAGONFLY_LEFT ||	\
+#define IS_BDX_DRAGONFLY(e)		((e) == EL_BDX_DRAGONFLY ||			\
+					 (e) == EL_BDX_DRAGONFLY_RIGHT ||		\
+					 (e) == EL_BDX_DRAGONFLY_UP ||			\
+					 (e) == EL_BDX_DRAGONFLY_LEFT ||		\
 					 (e) == EL_BDX_DRAGONFLY_DOWN)
 
-#define IS_BDX_BITER(e)			((e) == EL_BDX_BITER ||			\
-					 (e) == EL_BDX_BITER_RIGHT ||		\
-					 (e) == EL_BDX_BITER_UP ||		\
-					 (e) == EL_BDX_BITER_LEFT ||		\
+#define IS_BDX_BITER(e)			((e) == EL_BDX_BITER ||				\
+					 (e) == EL_BDX_BITER_RIGHT ||			\
+					 (e) == EL_BDX_BITER_UP ||			\
+					 (e) == EL_BDX_BITER_LEFT ||			\
 					 (e) == EL_BDX_BITER_DOWN)
 
 #define IS_BDX_EXPANDABLE_WALL(e)	((e) == EL_BDX_EXPANDABLE_WALL_HORIZONTAL ||		\
@@ -966,30 +966,30 @@
 					 (e) == EL_BDX_EXPANDABLE_STEELWALL_VERTICAL ||		\
 					 (e) == EL_BDX_EXPANDABLE_STEELWALL_ANY)
 
-#define IS_BDX_CONVEYOR_BELT(e)		((e) == EL_BDX_CONVEYOR_LEFT ||		\
-					 (e) == EL_BDX_CONVEYOR_LEFT_ACTIVE ||	\
-					 (e) == EL_BDX_CONVEYOR_RIGHT ||	\
+#define IS_BDX_CONVEYOR_BELT(e)		((e) == EL_BDX_CONVEYOR_LEFT ||			\
+					 (e) == EL_BDX_CONVEYOR_LEFT_ACTIVE ||		\
+					 (e) == EL_BDX_CONVEYOR_RIGHT ||		\
 					 (e) == EL_BDX_CONVEYOR_RIGHT_ACTIVE)
 
-#define IS_BDX_CONVEYOR_BELT_SWITCH(e)	((e) == EL_BDX_CONVEYOR_SWITCH ||	\
-					 (e) == EL_BDX_CONVEYOR_SWITCH_ACTIVE ||\
-					 (e) == EL_BDX_CONVEYOR_DIR_SWITCH ||	\
+#define IS_BDX_CONVEYOR_BELT_SWITCH(e)	((e) == EL_BDX_CONVEYOR_SWITCH ||		\
+					 (e) == EL_BDX_CONVEYOR_SWITCH_ACTIVE ||	\
+					 (e) == EL_BDX_CONVEYOR_DIR_SWITCH ||		\
 					 (e) == EL_BDX_CONVEYOR_DIR_SWITCH_ACTIVE)
 
-#define IS_BDX_ELEMENT(e)		((e) >= EL_BDX_START &&			\
+#define IS_BDX_ELEMENT(e)		((e) >= EL_BDX_START &&				\
 					 (e) <= EL_BDX_END)
 
-#define IS_BDX_RUNTIME_ELEMENT(e)	((e) >= EL_BDX_RUNTIME_START &&		\
+#define IS_BDX_RUNTIME_ELEMENT(e)	((e) >= EL_BDX_RUNTIME_START &&			\
 					 (e) <= EL_BDX_RUNTIME_END)
 
-#define IS_BDX_EFFECTS_ELEMENT(e)	((e) >= EL_BDX_EFFECTS_START &&		\
+#define IS_BDX_EFFECTS_ELEMENT(e)	((e) >= EL_BDX_EFFECTS_START &&			\
 					 (e) <= EL_BDX_EFFECTS_END)
 
-#define IS_BDX_SCANNED_ELEMENT(e)	((e) >= EL_BDX_SCANNED_START &&		\
+#define IS_BDX_SCANNED_ELEMENT(e)	((e) >= EL_BDX_SCANNED_START &&			\
 					 (e) <= EL_BDX_SCANNED_END)
 
-#define IS_SOKOBAN_OBJECT_OR_FIELD(e)	((e) == EL_SOKOBAN_OBJECT ||		\
-					 (e) == EL_SOKOBAN_FIELD_EMPTY ||	\
+#define IS_SOKOBAN_OBJECT_OR_FIELD(e)	((e) == EL_SOKOBAN_OBJECT ||			\
+					 (e) == EL_SOKOBAN_FIELD_EMPTY ||		\
 					 (e) == EL_SOKOBAN_FIELD_FULL)
 
 #define IS_DRAWABLE(e)			((e) < EL_BLOCKED)
@@ -1045,7 +1045,7 @@
 
 #define EL_CASCADE_ACTIVE(e)		(IS_EDITOR_CASCADE_INACTIVE(e) ? (e) + 1 : (e))
 #define EL_CASCADE_INACTIVE(e)		(IS_EDITOR_CASCADE_ACTIVE(e)   ? (e) - 1 : (e))
-#define EL_CASCADE_TOGGLE(e)		(IS_EDITOR_CASCADE_INACTIVE(e) ? (e) + 1 :    \
+#define EL_CASCADE_TOGGLE(e)		(IS_EDITOR_CASCADE_INACTIVE(e) ? (e) + 1 :	\
 					 IS_EDITOR_CASCADE_ACTIVE(e)   ? (e) - 1 : (e))
 
 #define EL_NAME(e)			((e) >= 0 ? element_info[e].token_name : "(?)")
@@ -1059,1623 +1059,1624 @@
 #define BUTTON_ACTIVE(b)		(ActiveButton[b])
 #define FONT_ACTIVE(f)			(ActiveFont[f])
 
+
 // fundamental game speed values
-#define MICROLEVEL_SCROLL_DELAY			50	// delay for scrolling micro level
-#define MICROLEVEL_LABEL_DELAY			250	// delay for micro level label
+#define MICROLEVEL_SCROLL_DELAY				50	// delay for scrolling micro level
+#define MICROLEVEL_LABEL_DELAY				250	// delay for micro level label
 
 // boundaries of arrays etc.
-#define MAX_LEVEL_NAME_LEN			32
-#define MAX_LEVEL_AUTHOR_LEN			32
-#define MAX_ELEMENT_NAME_LEN			32
-#define MAX_TAPES_PER_SET			1024
-#define MAX_SCORE_ENTRIES			100
-#define MAX_NUM_TITLE_IMAGES			5
-#define MAX_NUM_TITLE_MESSAGES			5
+#define MAX_LEVEL_NAME_LEN				32
+#define MAX_LEVEL_AUTHOR_LEN				32
+#define MAX_ELEMENT_NAME_LEN				32
+#define MAX_TAPES_PER_SET				1024
+#define MAX_SCORE_ENTRIES				100
+#define MAX_NUM_TITLE_IMAGES				5
+#define MAX_NUM_TITLE_MESSAGES				5
 
-#define MAX_NUM_AMOEBA				100
+#define MAX_NUM_AMOEBA					100
 
-#define NUM_ENVELOPES				4
-#define MIN_ENVELOPE_XSIZE			1
-#define MIN_ENVELOPE_YSIZE			1
-#define MAX_ENVELOPE_XSIZE			30
-#define MAX_ENVELOPE_YSIZE			20
-#define MAX_ENVELOPE_TEXT_LEN			(MAX_ENVELOPE_XSIZE * MAX_ENVELOPE_YSIZE)
-#define MIN_CHANGE_PAGES			1
-#define MAX_CHANGE_PAGES			32
-#define MIN_ELEMENTS_IN_GROUP			1
-#define MAX_ELEMENTS_IN_GROUP			16
-#define MIN_ANDROID_ELEMENTS			1
-#define MAX_ANDROID_ELEMENTS			32
-#define MAX_ANDROID_ELEMENTS_OLD		16	// (extended since version 4.2.0.0)
+#define NUM_ENVELOPES					4
+#define MIN_ENVELOPE_XSIZE				1
+#define MIN_ENVELOPE_YSIZE				1
+#define MAX_ENVELOPE_XSIZE				30
+#define MAX_ENVELOPE_YSIZE				20
+#define MAX_ENVELOPE_TEXT_LEN				(MAX_ENVELOPE_XSIZE * MAX_ENVELOPE_YSIZE)
+#define MIN_CHANGE_PAGES				1
+#define MAX_CHANGE_PAGES				32
+#define MIN_ELEMENTS_IN_GROUP				1
+#define MAX_ELEMENTS_IN_GROUP				16
+#define MIN_ANDROID_ELEMENTS				1
+#define MAX_ANDROID_ELEMENTS				32
+#define MAX_ANDROID_ELEMENTS_OLD			16	// (extended since version 4.2.0.0)
 
-#define MAX_ISO_DATE_LEN			10
-#define MAX_PLATFORM_TEXT_LEN			16
-#define MAX_VERSION_TEXT_LEN			16
-#define MAX_COUNTRY_CODE_LEN			2
-#define MAX_COUNTRY_NAME_LEN			64
+#define MAX_ISO_DATE_LEN				10
+#define MAX_PLATFORM_TEXT_LEN				16
+#define MAX_VERSION_TEXT_LEN				16
+#define MAX_COUNTRY_CODE_LEN				2
+#define MAX_COUNTRY_NAME_LEN				64
 
 // values for elements with content
-#define MIN_ELEMENT_CONTENTS			1
-#define STD_ELEMENT_CONTENTS			4
-#define MAX_ELEMENT_CONTENTS			8
+#define MIN_ELEMENT_CONTENTS				1
+#define STD_ELEMENT_CONTENTS				4
+#define MAX_ELEMENT_CONTENTS				8
 
-#define MIN_MM_BALL_CONTENTS			1
-#define STD_MM_BALL_CONTENTS			8
-#define MAX_MM_BALL_CONTENTS			16
+#define MIN_MM_BALL_CONTENTS				1
+#define STD_MM_BALL_CONTENTS				8
+#define MAX_MM_BALL_CONTENTS				16
 
 // values for initial player inventory
-#define MIN_INITIAL_INVENTORY_SIZE		1
-#define MAX_INITIAL_INVENTORY_SIZE		8
+#define MIN_INITIAL_INVENTORY_SIZE			1
+#define MAX_INITIAL_INVENTORY_SIZE			8
 
 // often used screen positions
-#define TILESIZE				32
-#define TILEX					TILESIZE
-#define TILEY					TILESIZE
-#define TILEX_VAR				TILESIZE_VAR
-#define TILEY_VAR				TILESIZE_VAR
-#define MINI_TILESIZE				(TILESIZE / 2)
-#define MINI_TILEX				MINI_TILESIZE
-#define MINI_TILEY				MINI_TILESIZE
-#define MICRO_TILESIZE				(TILESIZE / 8)
-#define MICRO_TILEX				MICRO_TILESIZE
-#define MICRO_TILEY				MICRO_TILESIZE
-#define MIDPOSX					(SCR_FIELDX / 2)
-#define MIDPOSY					(SCR_FIELDY / 2)
-#define FXSIZE					((2 + SCR_FIELDX + 2) * TILEX_VAR)
-#define FYSIZE					((2 + SCR_FIELDY + 2) * TILEY_VAR)
+#define TILESIZE					32
+#define TILEX						TILESIZE
+#define TILEY						TILESIZE
+#define TILEX_VAR					TILESIZE_VAR
+#define TILEY_VAR					TILESIZE_VAR
+#define MINI_TILESIZE					(TILESIZE / 2)
+#define MINI_TILEX					MINI_TILESIZE
+#define MINI_TILEY					MINI_TILESIZE
+#define MICRO_TILESIZE					(TILESIZE / 8)
+#define MICRO_TILEX					MICRO_TILESIZE
+#define MICRO_TILEY					MICRO_TILESIZE
+#define MIDPOSX						(SCR_FIELDX / 2)
+#define MIDPOSY						(SCR_FIELDY / 2)
+#define FXSIZE						((2 + SCR_FIELDX + 2) * TILEX_VAR)
+#define FYSIZE						((2 + SCR_FIELDY + 2) * TILEY_VAR)
 
-#define MICROLEVEL_XSIZE			((STD_LEV_FIELDX + 2) * MICRO_TILEX)
-#define MICROLEVEL_YSIZE			((STD_LEV_FIELDY + 2) * MICRO_TILEY)
-#define MICROLEVEL_XPOS				(SX + (SXSIZE - MICROLEVEL_XSIZE) / 2)
-#define MICROLEVEL_YPOS				(SY + 12 * TILEY - MICRO_TILEY)
-#define MICROLABEL1_YPOS			(MICROLEVEL_YPOS - 36)
-#define MICROLABEL2_YPOS			(MICROLEVEL_YPOS + MICROLEVEL_YSIZE + 7)
+#define MICROLEVEL_XSIZE				((STD_LEV_FIELDX + 2) * MICRO_TILEX)
+#define MICROLEVEL_YSIZE				((STD_LEV_FIELDY + 2) * MICRO_TILEY)
+#define MICROLEVEL_XPOS					(SX + (SXSIZE - MICROLEVEL_XSIZE) / 2)
+#define MICROLEVEL_YPOS					(SY + 12 * TILEY - MICRO_TILEY)
+#define MICROLABEL1_YPOS				(MICROLEVEL_YPOS - 36)
+#define MICROLABEL2_YPOS				(MICROLEVEL_YPOS + MICROLEVEL_YSIZE + 7)
 
 // values for GfxRedraw
-#define GFX_REDRAW_NONE				(0)
-#define GFX_REDRAW_TILE				(1 << 0)
-#define GFX_REDRAW_TILE_CRUMBLED		(1 << 1)
-#define GFX_REDRAW_TILE_CRUMBLED_NEIGHBOURS	(1 << 2)
-#define GFX_REDRAW_TILE_TWINKLED		(1 << 3)
+#define GFX_REDRAW_NONE					(0)
+#define GFX_REDRAW_TILE					(1 << 0)
+#define GFX_REDRAW_TILE_CRUMBLED			(1 << 1)
+#define GFX_REDRAW_TILE_CRUMBLED_NEIGHBOURS		(1 << 2)
+#define GFX_REDRAW_TILE_TWINKLED			(1 << 3)
 
 // score for elements
-#define SC_EMERALD				0
-#define SC_DIAMOND				1
-#define SC_BUG					2
-#define SC_SPACESHIP				3
-#define SC_YAMYAM				4
-#define SC_ROBOT				5
-#define SC_PACMAN				6
-#define SC_NUT					7
-#define SC_DYNAMITE				8
-#define SC_KEY					9
-#define SC_TIME_BONUS				10
-#define SC_CRYSTAL				11
-#define SC_PEARL				12
-#define SC_SHIELD				13
-#define SC_ELEM_BONUS				14
-#define SC_DIAMOND_EXTRA			15
+#define SC_EMERALD					0
+#define SC_DIAMOND					1
+#define SC_BUG						2
+#define SC_SPACESHIP					3
+#define SC_YAMYAM					4
+#define SC_ROBOT					5
+#define SC_PACMAN					6
+#define SC_NUT						7
+#define SC_DYNAMITE					8
+#define SC_KEY						9
+#define SC_TIME_BONUS					10
+#define SC_CRYSTAL					11
+#define SC_PEARL					12
+#define SC_SHIELD					13
+#define SC_ELEM_BONUS					14
+#define SC_DIAMOND_EXTRA				15
 
-#define LEVEL_SCORE_ELEMENTS			16	// level elements with score
+#define LEVEL_SCORE_ELEMENTS				16	// level elements with score
 
 
 // "real" level file elements
-#define EL_UNDEFINED				-1
+#define EL_UNDEFINED					-1
 
-#define EL_EMPTY_SPACE				0
-#define EL_EMPTY				EL_EMPTY_SPACE
-#define EL_SAND					1
-#define EL_WALL					2
-#define EL_WALL_SLIPPERY			3
-#define EL_ROCK					4
-#define EL_KEY_OBSOLETE				5	// obsolete; now EL_KEY_1
-#define EL_EMERALD				6
-#define EL_EXIT_CLOSED				7
-#define EL_PLAYER_OBSOLETE			8	// obsolete; now EL_PLAYER_1
-#define EL_BUG					9
-#define EL_SPACESHIP				10
-#define EL_YAMYAM				11
-#define EL_ROBOT				12
-#define EL_STEELWALL				13
-#define EL_DIAMOND				14
-#define EL_AMOEBA_DEAD				15
-#define EL_QUICKSAND_EMPTY			16
-#define EL_QUICKSAND_FULL			17
-#define EL_AMOEBA_DROP				18
-#define EL_BOMB					19
-#define EL_MAGIC_WALL				20
-#define EL_SPEED_PILL				21
-#define EL_ACID					22
-#define EL_AMOEBA_WET				23
-#define EL_AMOEBA_DRY				24
-#define EL_NUT					25
-#define EL_GAME_OF_LIFE				26
-#define EL_BIOMAZE				27
-#define EL_DYNAMITE_ACTIVE			28
-#define EL_STONEBLOCK				29
-#define EL_ROBOT_WHEEL				30
-#define EL_ROBOT_WHEEL_ACTIVE			31
-#define EL_KEY_1				32
-#define EL_KEY_2				33
-#define EL_KEY_3				34
-#define EL_KEY_4				35
-#define EL_GATE_1				36
-#define EL_GATE_2				37
-#define EL_GATE_3				38
-#define EL_GATE_4				39
-#define EL_GATE_1_GRAY				40
-#define EL_GATE_2_GRAY				41
-#define EL_GATE_3_GRAY				42
-#define EL_GATE_4_GRAY				43
-#define EL_DYNAMITE				44
-#define EL_PACMAN				45
-#define EL_INVISIBLE_WALL			46
-#define EL_LAMP					47
-#define EL_LAMP_ACTIVE				48
-#define EL_WALL_EMERALD				49
-#define EL_WALL_DIAMOND				50
-#define EL_AMOEBA_FULL				51
-#define EL_BD_AMOEBA				52
-#define EL_TIME_ORB_FULL			53
-#define EL_TIME_ORB_EMPTY			54
-#define EL_EXPANDABLE_WALL			55
-#define EL_BD_DIAMOND				56
-#define EL_EMERALD_YELLOW			57
-#define EL_WALL_BD_DIAMOND			58
-#define EL_WALL_EMERALD_YELLOW			59
-#define EL_DARK_YAMYAM				60
-#define EL_BD_MAGIC_WALL			61
-#define EL_INVISIBLE_STEELWALL			62
-#define EL_SOKOBAN_FIELD_PLAYER			63
-#define EL_DYNABOMB_INCREASE_NUMBER		64
-#define EL_DYNABOMB_INCREASE_SIZE		65
-#define EL_DYNABOMB_INCREASE_POWER		66
-#define EL_SOKOBAN_OBJECT			67
-#define EL_SOKOBAN_FIELD_EMPTY			68
-#define EL_SOKOBAN_FIELD_FULL			69
-#define EL_BD_BUTTERFLY_RIGHT			70
-#define EL_BD_BUTTERFLY_UP			71
-#define EL_BD_BUTTERFLY_LEFT			72
-#define EL_BD_BUTTERFLY_DOWN			73
-#define EL_BD_FIREFLY_RIGHT			74
-#define EL_BD_FIREFLY_UP			75
-#define EL_BD_FIREFLY_LEFT			76
-#define EL_BD_FIREFLY_DOWN			77
-#define EL_BD_BUTTERFLY				78
-#define EL_BD_FIREFLY				79
-#define EL_PLAYER_1				80
-#define EL_PLAYER_2				81
-#define EL_PLAYER_3				82
-#define EL_PLAYER_4				83
-#define EL_BUG_RIGHT				84
-#define EL_BUG_UP				85
-#define EL_BUG_LEFT				86
-#define EL_BUG_DOWN				87
-#define EL_SPACESHIP_RIGHT			88
-#define EL_SPACESHIP_UP				89
-#define EL_SPACESHIP_LEFT			90
-#define EL_SPACESHIP_DOWN			91
-#define EL_PACMAN_RIGHT				92
-#define EL_PACMAN_UP				93
-#define EL_PACMAN_LEFT				94
-#define EL_PACMAN_DOWN				95
-#define EL_EMERALD_RED				96
-#define EL_EMERALD_PURPLE			97
-#define EL_WALL_EMERALD_RED			98
-#define EL_WALL_EMERALD_PURPLE			99
-#define EL_ACID_POOL_TOPLEFT			100
-#define EL_ACID_POOL_TOPRIGHT			101
-#define EL_ACID_POOL_BOTTOMLEFT			102
-#define EL_ACID_POOL_BOTTOM			103
-#define EL_ACID_POOL_BOTTOMRIGHT		104
-#define EL_BD_WALL				105
-#define EL_BD_ROCK				106
-#define EL_EXIT_OPEN				107
-#define EL_BLACK_ORB				108
-#define EL_AMOEBA_TO_DIAMOND			109
-#define EL_MOLE					110
-#define EL_PENGUIN				111
-#define EL_SATELLITE				112
-#define EL_ARROW_LEFT				113
-#define EL_ARROW_RIGHT				114
-#define EL_ARROW_UP				115
-#define EL_ARROW_DOWN				116
-#define EL_PIG					117
-#define EL_DRAGON				118
+#define EL_EMPTY_SPACE					0
+#define EL_EMPTY					EL_EMPTY_SPACE
+#define EL_SAND						1
+#define EL_WALL						2
+#define EL_WALL_SLIPPERY				3
+#define EL_ROCK						4
+#define EL_KEY_OBSOLETE					5	// obsolete; now EL_KEY_1
+#define EL_EMERALD					6
+#define EL_EXIT_CLOSED					7
+#define EL_PLAYER_OBSOLETE				8	// obsolete; now EL_PLAYER_1
+#define EL_BUG						9
+#define EL_SPACESHIP					10
+#define EL_YAMYAM					11
+#define EL_ROBOT					12
+#define EL_STEELWALL					13
+#define EL_DIAMOND					14
+#define EL_AMOEBA_DEAD					15
+#define EL_QUICKSAND_EMPTY				16
+#define EL_QUICKSAND_FULL				17
+#define EL_AMOEBA_DROP					18
+#define EL_BOMB						19
+#define EL_MAGIC_WALL					20
+#define EL_SPEED_PILL					21
+#define EL_ACID						22
+#define EL_AMOEBA_WET					23
+#define EL_AMOEBA_DRY					24
+#define EL_NUT						25
+#define EL_GAME_OF_LIFE					26
+#define EL_BIOMAZE					27
+#define EL_DYNAMITE_ACTIVE				28
+#define EL_STONEBLOCK					29
+#define EL_ROBOT_WHEEL					30
+#define EL_ROBOT_WHEEL_ACTIVE				31
+#define EL_KEY_1					32
+#define EL_KEY_2					33
+#define EL_KEY_3					34
+#define EL_KEY_4					35
+#define EL_GATE_1					36
+#define EL_GATE_2					37
+#define EL_GATE_3					38
+#define EL_GATE_4					39
+#define EL_GATE_1_GRAY					40
+#define EL_GATE_2_GRAY					41
+#define EL_GATE_3_GRAY					42
+#define EL_GATE_4_GRAY					43
+#define EL_DYNAMITE					44
+#define EL_PACMAN					45
+#define EL_INVISIBLE_WALL				46
+#define EL_LAMP						47
+#define EL_LAMP_ACTIVE					48
+#define EL_WALL_EMERALD					49
+#define EL_WALL_DIAMOND					50
+#define EL_AMOEBA_FULL					51
+#define EL_BD_AMOEBA					52
+#define EL_TIME_ORB_FULL				53
+#define EL_TIME_ORB_EMPTY				54
+#define EL_EXPANDABLE_WALL				55
+#define EL_BD_DIAMOND					56
+#define EL_EMERALD_YELLOW				57
+#define EL_WALL_BD_DIAMOND				58
+#define EL_WALL_EMERALD_YELLOW				59
+#define EL_DARK_YAMYAM					60
+#define EL_BD_MAGIC_WALL				61
+#define EL_INVISIBLE_STEELWALL				62
+#define EL_SOKOBAN_FIELD_PLAYER				63
+#define EL_DYNABOMB_INCREASE_NUMBER			64
+#define EL_DYNABOMB_INCREASE_SIZE			65
+#define EL_DYNABOMB_INCREASE_POWER			66
+#define EL_SOKOBAN_OBJECT				67
+#define EL_SOKOBAN_FIELD_EMPTY				68
+#define EL_SOKOBAN_FIELD_FULL				69
+#define EL_BD_BUTTERFLY_RIGHT				70
+#define EL_BD_BUTTERFLY_UP				71
+#define EL_BD_BUTTERFLY_LEFT				72
+#define EL_BD_BUTTERFLY_DOWN				73
+#define EL_BD_FIREFLY_RIGHT				74
+#define EL_BD_FIREFLY_UP				75
+#define EL_BD_FIREFLY_LEFT				76
+#define EL_BD_FIREFLY_DOWN				77
+#define EL_BD_BUTTERFLY					78
+#define EL_BD_FIREFLY					79
+#define EL_PLAYER_1					80
+#define EL_PLAYER_2					81
+#define EL_PLAYER_3					82
+#define EL_PLAYER_4					83
+#define EL_BUG_RIGHT					84
+#define EL_BUG_UP					85
+#define EL_BUG_LEFT					86
+#define EL_BUG_DOWN					87
+#define EL_SPACESHIP_RIGHT				88
+#define EL_SPACESHIP_UP					89
+#define EL_SPACESHIP_LEFT				90
+#define EL_SPACESHIP_DOWN				91
+#define EL_PACMAN_RIGHT					92
+#define EL_PACMAN_UP					93
+#define EL_PACMAN_LEFT					94
+#define EL_PACMAN_DOWN					95
+#define EL_EMERALD_RED					96
+#define EL_EMERALD_PURPLE				97
+#define EL_WALL_EMERALD_RED				98
+#define EL_WALL_EMERALD_PURPLE				99
+#define EL_ACID_POOL_TOPLEFT				100
+#define EL_ACID_POOL_TOPRIGHT				101
+#define EL_ACID_POOL_BOTTOMLEFT				102
+#define EL_ACID_POOL_BOTTOM				103
+#define EL_ACID_POOL_BOTTOMRIGHT			104
+#define EL_BD_WALL					105
+#define EL_BD_ROCK					106
+#define EL_EXIT_OPEN					107
+#define EL_BLACK_ORB					108
+#define EL_AMOEBA_TO_DIAMOND				109
+#define EL_MOLE						110
+#define EL_PENGUIN					111
+#define EL_SATELLITE					112
+#define EL_ARROW_LEFT					113
+#define EL_ARROW_RIGHT					114
+#define EL_ARROW_UP					115
+#define EL_ARROW_DOWN					116
+#define EL_PIG						117
+#define EL_DRAGON					118
 
-#define EL_EM_KEY_1_FILE_OBSOLETE		119	// obsolete; now EL_EM_KEY_1
+#define EL_EM_KEY_1_FILE_OBSOLETE			119	// obsolete; now EL_EM_KEY_1
 
 // text character elements
-#define EL_CHAR_START				120
-#define EL_CHAR_ASCII0				(EL_CHAR_START  - 32)
-#define EL_CHAR_ASCII0_START			(EL_CHAR_ASCII0 + 32)
+#define EL_CHAR_START					120
+#define EL_CHAR_ASCII0					(EL_CHAR_START  - 32)
+#define EL_CHAR_ASCII0_START				(EL_CHAR_ASCII0 + 32)
 
 #include "conf_chr.h"	// include auto-generated data structure definitions
 
-#define EL_CHAR_ASCII0_END			(EL_CHAR_ASCII0 + 111)
-#define EL_CHAR_END				(EL_CHAR_START  + 79)
+#define EL_CHAR_ASCII0_END				(EL_CHAR_ASCII0 + 111)
+#define EL_CHAR_END					(EL_CHAR_START  + 79)
 
-#define EL_CHAR(c)				(EL_CHAR_ASCII0 + MAP_FONT_ASCII(c))
+#define EL_CHAR(c)					(EL_CHAR_ASCII0 + MAP_FONT_ASCII(c))
 
-#define EL_EXPANDABLE_WALL_HORIZONTAL		200
-#define EL_EXPANDABLE_WALL_VERTICAL		201
-#define EL_EXPANDABLE_WALL_ANY			202
+#define EL_EXPANDABLE_WALL_HORIZONTAL			200
+#define EL_EXPANDABLE_WALL_VERTICAL			201
+#define EL_EXPANDABLE_WALL_ANY				202
 
 // EM style elements
-#define EL_EM_GATE_1				203
-#define EL_EM_GATE_2				204
-#define EL_EM_GATE_3				205
-#define EL_EM_GATE_4				206
+#define EL_EM_GATE_1					203
+#define EL_EM_GATE_2					204
+#define EL_EM_GATE_3					205
+#define EL_EM_GATE_4					206
 
-#define EL_EM_KEY_2_FILE_OBSOLETE		207	// obsolete; now EL_EM_KEY_2
-#define EL_EM_KEY_3_FILE_OBSOLETE		208	// obsolete; now EL_EM_KEY_3
-#define EL_EM_KEY_4_FILE_OBSOLETE		209	// obsolete; now EL_EM_KEY_4
+#define EL_EM_KEY_2_FILE_OBSOLETE			207	// obsolete; now EL_EM_KEY_2
+#define EL_EM_KEY_3_FILE_OBSOLETE			208	// obsolete; now EL_EM_KEY_3
+#define EL_EM_KEY_4_FILE_OBSOLETE			209	// obsolete; now EL_EM_KEY_4
 
 // SP style elements
-#define EL_SP_START				210
-#define EL_SP_EMPTY_SPACE			(EL_SP_START + 0)
-#define EL_SP_EMPTY				EL_SP_EMPTY_SPACE
-#define EL_SP_ZONK				(EL_SP_START + 1)
-#define EL_SP_BASE				(EL_SP_START + 2)
-#define EL_SP_MURPHY				(EL_SP_START + 3)
-#define EL_SP_INFOTRON				(EL_SP_START + 4)
-#define EL_SP_CHIP_SINGLE			(EL_SP_START + 5)
-#define EL_SP_HARDWARE_GRAY			(EL_SP_START + 6)
-#define EL_SP_EXIT_CLOSED			(EL_SP_START + 7)
-#define EL_SP_DISK_ORANGE			(EL_SP_START + 8)
-#define EL_SP_PORT_RIGHT			(EL_SP_START + 9)
-#define EL_SP_PORT_DOWN				(EL_SP_START + 10)
-#define EL_SP_PORT_LEFT				(EL_SP_START + 11)
-#define EL_SP_PORT_UP				(EL_SP_START + 12)
-#define EL_SP_GRAVITY_PORT_RIGHT		(EL_SP_START + 13)
-#define EL_SP_GRAVITY_PORT_DOWN			(EL_SP_START + 14)
-#define EL_SP_GRAVITY_PORT_LEFT			(EL_SP_START + 15)
-#define EL_SP_GRAVITY_PORT_UP			(EL_SP_START + 16)
-#define EL_SP_SNIKSNAK				(EL_SP_START + 17)
-#define EL_SP_DISK_YELLOW			(EL_SP_START + 18)
-#define EL_SP_TERMINAL				(EL_SP_START + 19)
-#define EL_SP_DISK_RED				(EL_SP_START + 20)
-#define EL_SP_PORT_VERTICAL			(EL_SP_START + 21)
-#define EL_SP_PORT_HORIZONTAL			(EL_SP_START + 22)
-#define EL_SP_PORT_ANY				(EL_SP_START + 23)
-#define EL_SP_ELECTRON				(EL_SP_START + 24)
-#define EL_SP_BUGGY_BASE			(EL_SP_START + 25)
-#define EL_SP_CHIP_LEFT				(EL_SP_START + 26)
-#define EL_SP_CHIP_RIGHT			(EL_SP_START + 27)
-#define EL_SP_HARDWARE_BASE_1			(EL_SP_START + 28)
-#define EL_SP_HARDWARE_GREEN			(EL_SP_START + 29)
-#define EL_SP_HARDWARE_BLUE			(EL_SP_START + 30)
-#define EL_SP_HARDWARE_RED			(EL_SP_START + 31)
-#define EL_SP_HARDWARE_YELLOW			(EL_SP_START + 32)
-#define EL_SP_HARDWARE_BASE_2			(EL_SP_START + 33)
-#define EL_SP_HARDWARE_BASE_3			(EL_SP_START + 34)
-#define EL_SP_HARDWARE_BASE_4			(EL_SP_START + 35)
-#define EL_SP_HARDWARE_BASE_5			(EL_SP_START + 36)
-#define EL_SP_HARDWARE_BASE_6			(EL_SP_START + 37)
-#define EL_SP_CHIP_TOP				(EL_SP_START + 38)
-#define EL_SP_CHIP_BOTTOM			(EL_SP_START + 39)
-#define EL_SP_END				(EL_SP_START + 39)
+#define EL_SP_START					210
+#define EL_SP_EMPTY_SPACE				(EL_SP_START + 0)
+#define EL_SP_EMPTY					EL_SP_EMPTY_SPACE
+#define EL_SP_ZONK					(EL_SP_START + 1)
+#define EL_SP_BASE					(EL_SP_START + 2)
+#define EL_SP_MURPHY					(EL_SP_START + 3)
+#define EL_SP_INFOTRON					(EL_SP_START + 4)
+#define EL_SP_CHIP_SINGLE				(EL_SP_START + 5)
+#define EL_SP_HARDWARE_GRAY				(EL_SP_START + 6)
+#define EL_SP_EXIT_CLOSED				(EL_SP_START + 7)
+#define EL_SP_DISK_ORANGE				(EL_SP_START + 8)
+#define EL_SP_PORT_RIGHT				(EL_SP_START + 9)
+#define EL_SP_PORT_DOWN					(EL_SP_START + 10)
+#define EL_SP_PORT_LEFT					(EL_SP_START + 11)
+#define EL_SP_PORT_UP					(EL_SP_START + 12)
+#define EL_SP_GRAVITY_PORT_RIGHT			(EL_SP_START + 13)
+#define EL_SP_GRAVITY_PORT_DOWN				(EL_SP_START + 14)
+#define EL_SP_GRAVITY_PORT_LEFT				(EL_SP_START + 15)
+#define EL_SP_GRAVITY_PORT_UP				(EL_SP_START + 16)
+#define EL_SP_SNIKSNAK					(EL_SP_START + 17)
+#define EL_SP_DISK_YELLOW				(EL_SP_START + 18)
+#define EL_SP_TERMINAL					(EL_SP_START + 19)
+#define EL_SP_DISK_RED					(EL_SP_START + 20)
+#define EL_SP_PORT_VERTICAL				(EL_SP_START + 21)
+#define EL_SP_PORT_HORIZONTAL				(EL_SP_START + 22)
+#define EL_SP_PORT_ANY					(EL_SP_START + 23)
+#define EL_SP_ELECTRON					(EL_SP_START + 24)
+#define EL_SP_BUGGY_BASE				(EL_SP_START + 25)
+#define EL_SP_CHIP_LEFT					(EL_SP_START + 26)
+#define EL_SP_CHIP_RIGHT				(EL_SP_START + 27)
+#define EL_SP_HARDWARE_BASE_1				(EL_SP_START + 28)
+#define EL_SP_HARDWARE_GREEN				(EL_SP_START + 29)
+#define EL_SP_HARDWARE_BLUE				(EL_SP_START + 30)
+#define EL_SP_HARDWARE_RED				(EL_SP_START + 31)
+#define EL_SP_HARDWARE_YELLOW				(EL_SP_START + 32)
+#define EL_SP_HARDWARE_BASE_2				(EL_SP_START + 33)
+#define EL_SP_HARDWARE_BASE_3				(EL_SP_START + 34)
+#define EL_SP_HARDWARE_BASE_4				(EL_SP_START + 35)
+#define EL_SP_HARDWARE_BASE_5				(EL_SP_START + 36)
+#define EL_SP_HARDWARE_BASE_6				(EL_SP_START + 37)
+#define EL_SP_CHIP_TOP					(EL_SP_START + 38)
+#define EL_SP_CHIP_BOTTOM				(EL_SP_START + 39)
+#define EL_SP_END					(EL_SP_START + 39)
 
 // EM style elements
-#define EL_EM_GATE_1_GRAY			250
-#define EL_EM_GATE_2_GRAY			251
-#define EL_EM_GATE_3_GRAY			252
-#define EL_EM_GATE_4_GRAY			253
+#define EL_EM_GATE_1_GRAY				250
+#define EL_EM_GATE_2_GRAY				251
+#define EL_EM_GATE_3_GRAY				252
+#define EL_EM_GATE_4_GRAY				253
 
-#define EL_EM_DYNAMITE				254
-#define EL_EM_DYNAMITE_ACTIVE			255
+#define EL_EM_DYNAMITE					254
+#define EL_EM_DYNAMITE_ACTIVE				255
 
 // DC2 style elements
-#define EL_PEARL				256
-#define EL_CRYSTAL				257
-#define EL_WALL_PEARL				258
-#define EL_WALL_CRYSTAL				259
-#define EL_DC_GATE_WHITE			260
-#define EL_DC_GATE_WHITE_GRAY			261
-#define EL_DC_KEY_WHITE				262
-#define EL_SHIELD_NORMAL			263
-#define EL_EXTRA_TIME				264
-#define EL_SWITCHGATE_OPEN			265
-#define EL_SWITCHGATE_CLOSED			266
-#define EL_SWITCHGATE_SWITCH_UP			267
-#define EL_SWITCHGATE_SWITCH_DOWN		268
+#define EL_PEARL					256
+#define EL_CRYSTAL					257
+#define EL_WALL_PEARL					258
+#define EL_WALL_CRYSTAL					259
+#define EL_DC_GATE_WHITE				260
+#define EL_DC_GATE_WHITE_GRAY				261
+#define EL_DC_KEY_WHITE					262
+#define EL_SHIELD_NORMAL				263
+#define EL_EXTRA_TIME					264
+#define EL_SWITCHGATE_OPEN				265
+#define EL_SWITCHGATE_CLOSED				266
+#define EL_SWITCHGATE_SWITCH_UP				267
+#define EL_SWITCHGATE_SWITCH_DOWN			268
 
-#define EL_UNUSED_269				269
-#define EL_UNUSED_270				270
+#define EL_UNUSED_269					269
+#define EL_UNUSED_270					270
 
-#define EL_CONVEYOR_BELT_1_LEFT			271
-#define EL_CONVEYOR_BELT_1_MIDDLE		272
-#define EL_CONVEYOR_BELT_1_RIGHT		273
-#define EL_CONVEYOR_BELT_1_SWITCH_LEFT		274
-#define EL_CONVEYOR_BELT_1_SWITCH_MIDDLE	275
-#define EL_CONVEYOR_BELT_1_SWITCH_RIGHT		276
-#define EL_CONVEYOR_BELT_2_LEFT			277
-#define EL_CONVEYOR_BELT_2_MIDDLE		278
-#define EL_CONVEYOR_BELT_2_RIGHT		279
-#define EL_CONVEYOR_BELT_2_SWITCH_LEFT		280
-#define EL_CONVEYOR_BELT_2_SWITCH_MIDDLE	281
-#define EL_CONVEYOR_BELT_2_SWITCH_RIGHT		282
-#define EL_CONVEYOR_BELT_3_LEFT			283
-#define EL_CONVEYOR_BELT_3_MIDDLE		284
-#define EL_CONVEYOR_BELT_3_RIGHT		285
-#define EL_CONVEYOR_BELT_3_SWITCH_LEFT		286
-#define EL_CONVEYOR_BELT_3_SWITCH_MIDDLE	287
-#define EL_CONVEYOR_BELT_3_SWITCH_RIGHT		288
-#define EL_CONVEYOR_BELT_4_LEFT			289
-#define EL_CONVEYOR_BELT_4_MIDDLE		290
-#define EL_CONVEYOR_BELT_4_RIGHT		291
-#define EL_CONVEYOR_BELT_4_SWITCH_LEFT		292
-#define EL_CONVEYOR_BELT_4_SWITCH_MIDDLE	293
-#define EL_CONVEYOR_BELT_4_SWITCH_RIGHT		294
-#define EL_LANDMINE				295
-#define EL_ENVELOPE_OBSOLETE			296	// obsolete; now EL_ENVELOPE_1
-#define EL_LIGHT_SWITCH				297
-#define EL_LIGHT_SWITCH_ACTIVE			298
-#define EL_SIGN_EXCLAMATION			299
-#define EL_SIGN_RADIOACTIVITY			300
-#define EL_SIGN_STOP				301
-#define EL_SIGN_WHEELCHAIR			302
-#define EL_SIGN_PARKING				303
-#define EL_SIGN_NO_ENTRY			304
-#define EL_SIGN_UNUSED_1			305
-#define EL_SIGN_GIVE_WAY			306
-#define EL_SIGN_ENTRY_FORBIDDEN			307
-#define EL_SIGN_EMERGENCY_EXIT			308
-#define EL_SIGN_YIN_YANG			309
-#define EL_SIGN_UNUSED_2			310
-#define EL_MOLE_LEFT				311
-#define EL_MOLE_RIGHT				312
-#define EL_MOLE_UP				313
-#define EL_MOLE_DOWN				314
-#define EL_STEELWALL_SLIPPERY			315
-#define EL_INVISIBLE_SAND			316
-#define EL_DX_UNKNOWN_15			317
-#define EL_DX_UNKNOWN_42			318
+#define EL_CONVEYOR_BELT_1_LEFT				271
+#define EL_CONVEYOR_BELT_1_MIDDLE			272
+#define EL_CONVEYOR_BELT_1_RIGHT			273
+#define EL_CONVEYOR_BELT_1_SWITCH_LEFT			274
+#define EL_CONVEYOR_BELT_1_SWITCH_MIDDLE		275
+#define EL_CONVEYOR_BELT_1_SWITCH_RIGHT			276
+#define EL_CONVEYOR_BELT_2_LEFT				277
+#define EL_CONVEYOR_BELT_2_MIDDLE			278
+#define EL_CONVEYOR_BELT_2_RIGHT			279
+#define EL_CONVEYOR_BELT_2_SWITCH_LEFT			280
+#define EL_CONVEYOR_BELT_2_SWITCH_MIDDLE		281
+#define EL_CONVEYOR_BELT_2_SWITCH_RIGHT			282
+#define EL_CONVEYOR_BELT_3_LEFT				283
+#define EL_CONVEYOR_BELT_3_MIDDLE			284
+#define EL_CONVEYOR_BELT_3_RIGHT			285
+#define EL_CONVEYOR_BELT_3_SWITCH_LEFT			286
+#define EL_CONVEYOR_BELT_3_SWITCH_MIDDLE		287
+#define EL_CONVEYOR_BELT_3_SWITCH_RIGHT			288
+#define EL_CONVEYOR_BELT_4_LEFT				289
+#define EL_CONVEYOR_BELT_4_MIDDLE			290
+#define EL_CONVEYOR_BELT_4_RIGHT			291
+#define EL_CONVEYOR_BELT_4_SWITCH_LEFT			292
+#define EL_CONVEYOR_BELT_4_SWITCH_MIDDLE		293
+#define EL_CONVEYOR_BELT_4_SWITCH_RIGHT			294
+#define EL_LANDMINE					295
+#define EL_ENVELOPE_OBSOLETE				296	// obsolete; now EL_ENVELOPE_1
+#define EL_LIGHT_SWITCH					297
+#define EL_LIGHT_SWITCH_ACTIVE				298
+#define EL_SIGN_EXCLAMATION				299
+#define EL_SIGN_RADIOACTIVITY				300
+#define EL_SIGN_STOP					301
+#define EL_SIGN_WHEELCHAIR				302
+#define EL_SIGN_PARKING					303
+#define EL_SIGN_NO_ENTRY				304
+#define EL_SIGN_UNUSED_1				305
+#define EL_SIGN_GIVE_WAY				306
+#define EL_SIGN_ENTRY_FORBIDDEN				307
+#define EL_SIGN_EMERGENCY_EXIT				308
+#define EL_SIGN_YIN_YANG				309
+#define EL_SIGN_UNUSED_2				310
+#define EL_MOLE_LEFT					311
+#define EL_MOLE_RIGHT					312
+#define EL_MOLE_UP					313
+#define EL_MOLE_DOWN					314
+#define EL_STEELWALL_SLIPPERY				315
+#define EL_INVISIBLE_SAND				316
+#define EL_DX_UNKNOWN_15				317
+#define EL_DX_UNKNOWN_42				318
 
-#define EL_UNUSED_319				319
-#define EL_UNUSED_320				320
+#define EL_UNUSED_319					319
+#define EL_UNUSED_320					320
 
-#define EL_SHIELD_DEADLY			321
-#define EL_TIMEGATE_OPEN			322
-#define EL_TIMEGATE_CLOSED			323
-#define EL_TIMEGATE_SWITCH_ACTIVE		324
-#define EL_TIMEGATE_SWITCH			325
+#define EL_SHIELD_DEADLY				321
+#define EL_TIMEGATE_OPEN				322
+#define EL_TIMEGATE_CLOSED				323
+#define EL_TIMEGATE_SWITCH_ACTIVE			324
+#define EL_TIMEGATE_SWITCH				325
 
 // EMC style elements
-#define EL_BALLOON				326
-#define EL_BALLOON_SWITCH_LEFT			327
-#define EL_BALLOON_SWITCH_RIGHT			328
-#define EL_BALLOON_SWITCH_UP			329
-#define EL_BALLOON_SWITCH_DOWN			330
-#define EL_BALLOON_SWITCH_ANY			331
+#define EL_BALLOON					326
+#define EL_BALLOON_SWITCH_LEFT				327
+#define EL_BALLOON_SWITCH_RIGHT				328
+#define EL_BALLOON_SWITCH_UP				329
+#define EL_BALLOON_SWITCH_DOWN				330
+#define EL_BALLOON_SWITCH_ANY				331
 
-#define EL_EMC_STEELWALL_1			332
-#define EL_EMC_STEELWALL_2			333
-#define EL_EMC_STEELWALL_3 			334
-#define EL_EMC_STEELWALL_4			335
-#define EL_EMC_WALL_1				336
-#define EL_EMC_WALL_2				337
-#define EL_EMC_WALL_3				338
-#define EL_EMC_WALL_4				339
-#define EL_EMC_WALL_5				340
-#define EL_EMC_WALL_6				341
-#define EL_EMC_WALL_7				342
-#define EL_EMC_WALL_8				343
+#define EL_EMC_STEELWALL_1				332
+#define EL_EMC_STEELWALL_2				333
+#define EL_EMC_STEELWALL_3 				334
+#define EL_EMC_STEELWALL_4				335
+#define EL_EMC_WALL_1					336
+#define EL_EMC_WALL_2					337
+#define EL_EMC_WALL_3					338
+#define EL_EMC_WALL_4					339
+#define EL_EMC_WALL_5					340
+#define EL_EMC_WALL_6					341
+#define EL_EMC_WALL_7					342
+#define EL_EMC_WALL_8					343
 
 // DX style elements
-#define EL_TUBE_ANY				344
-#define EL_TUBE_VERTICAL			345
-#define EL_TUBE_HORIZONTAL			346
-#define EL_TUBE_VERTICAL_LEFT			347
-#define EL_TUBE_VERTICAL_RIGHT			348
-#define EL_TUBE_HORIZONTAL_UP			349
-#define EL_TUBE_HORIZONTAL_DOWN			350
-#define EL_TUBE_LEFT_UP				351
-#define EL_TUBE_LEFT_DOWN			352
-#define EL_TUBE_RIGHT_UP			353
-#define EL_TUBE_RIGHT_DOWN			354
-#define EL_SPRING				355
-#define EL_TRAP					356
-#define EL_DX_SUPABOMB				357
+#define EL_TUBE_ANY					344
+#define EL_TUBE_VERTICAL				345
+#define EL_TUBE_HORIZONTAL				346
+#define EL_TUBE_VERTICAL_LEFT				347
+#define EL_TUBE_VERTICAL_RIGHT				348
+#define EL_TUBE_HORIZONTAL_UP				349
+#define EL_TUBE_HORIZONTAL_DOWN				350
+#define EL_TUBE_LEFT_UP					351
+#define EL_TUBE_LEFT_DOWN				352
+#define EL_TUBE_RIGHT_UP				353
+#define EL_TUBE_RIGHT_DOWN				354
+#define EL_SPRING					355
+#define EL_TRAP						356
+#define EL_DX_SUPABOMB					357
 
-#define EL_UNUSED_358				358
-#define EL_UNUSED_359				359
+#define EL_UNUSED_358					358
+#define EL_UNUSED_359					359
 
 // ---------- begin of custom elements section --------------------------------
-#define EL_CUSTOM_START				360
+#define EL_CUSTOM_START					360
 
 #include "conf_cus.h"	// include auto-generated data structure definitions
 
-#define NUM_CUSTOM_ELEMENTS			256
-#define EL_CUSTOM_END				615
+#define NUM_CUSTOM_ELEMENTS				256
+#define EL_CUSTOM_END					615
 // ---------- end of custom elements section ----------------------------------
 
 // EM style elements
-#define EL_EM_KEY_1				616
-#define EL_EM_KEY_2				617
-#define EL_EM_KEY_3				618
-#define EL_EM_KEY_4				619
+#define EL_EM_KEY_1					616
+#define EL_EM_KEY_2					617
+#define EL_EM_KEY_3					618
+#define EL_EM_KEY_4					619
 
 // DC2 style elements
-#define EL_ENVELOPE_1				620
-#define EL_ENVELOPE_2				621
-#define EL_ENVELOPE_3				622
-#define EL_ENVELOPE_4				623
+#define EL_ENVELOPE_1					620
+#define EL_ENVELOPE_2					621
+#define EL_ENVELOPE_3					622
+#define EL_ENVELOPE_4					623
 
 // ---------- begin of group elements section ---------------------------------
-#define EL_GROUP_START				624
+#define EL_GROUP_START					624
 
 #include "conf_grp.h"	// include auto-generated data structure definitions
 
-#define NUM_GROUP_ELEMENTS			32
-#define EL_GROUP_END				655
+#define NUM_GROUP_ELEMENTS				32
+#define EL_GROUP_END					655
 // ---------- end of group elements section -----------------------------------
 
-#define EL_UNKNOWN				656
-#define EL_TRIGGER_ELEMENT			657
-#define EL_TRIGGER_PLAYER			658
+#define EL_UNKNOWN					656
+#define EL_TRIGGER_ELEMENT				657
+#define EL_TRIGGER_PLAYER				658
 
 // SP style elements
-#define EL_SP_GRAVITY_ON_PORT_RIGHT		659
-#define EL_SP_GRAVITY_ON_PORT_DOWN		660
-#define EL_SP_GRAVITY_ON_PORT_LEFT		661
-#define EL_SP_GRAVITY_ON_PORT_UP		662
-#define EL_SP_GRAVITY_OFF_PORT_RIGHT		663
-#define EL_SP_GRAVITY_OFF_PORT_DOWN		664
-#define EL_SP_GRAVITY_OFF_PORT_LEFT		665
-#define EL_SP_GRAVITY_OFF_PORT_UP		666
+#define EL_SP_GRAVITY_ON_PORT_RIGHT			659
+#define EL_SP_GRAVITY_ON_PORT_DOWN			660
+#define EL_SP_GRAVITY_ON_PORT_LEFT			661
+#define EL_SP_GRAVITY_ON_PORT_UP			662
+#define EL_SP_GRAVITY_OFF_PORT_RIGHT			663
+#define EL_SP_GRAVITY_OFF_PORT_DOWN			664
+#define EL_SP_GRAVITY_OFF_PORT_LEFT			665
+#define EL_SP_GRAVITY_OFF_PORT_UP			666
 
 // EMC style elements
-#define EL_BALLOON_SWITCH_NONE			667
-#define EL_EMC_GATE_5				668
-#define EL_EMC_GATE_6				669
-#define EL_EMC_GATE_7				670
-#define EL_EMC_GATE_8				671
-#define EL_EMC_GATE_5_GRAY			672
-#define EL_EMC_GATE_6_GRAY			673
-#define EL_EMC_GATE_7_GRAY			674
-#define EL_EMC_GATE_8_GRAY			675
-#define EL_EMC_KEY_5				676
-#define EL_EMC_KEY_6				677
-#define EL_EMC_KEY_7				678
-#define EL_EMC_KEY_8				679
-#define EL_EMC_ANDROID				680
-#define EL_EMC_GRASS				681
-#define EL_EMC_MAGIC_BALL			682
-#define EL_EMC_MAGIC_BALL_ACTIVE		683
-#define EL_EMC_MAGIC_BALL_SWITCH		684
-#define EL_EMC_MAGIC_BALL_SWITCH_ACTIVE		685
-#define EL_EMC_SPRING_BUMPER			686
-#define EL_EMC_PLANT				687
-#define EL_EMC_LENSES				688
-#define EL_EMC_MAGNIFIER			689
-#define EL_EMC_WALL_9				690
-#define EL_EMC_WALL_10				691
-#define EL_EMC_WALL_11				692
-#define EL_EMC_WALL_12				693
-#define EL_EMC_WALL_13				694
-#define EL_EMC_WALL_14				695
-#define EL_EMC_WALL_15				696
-#define EL_EMC_WALL_16				697
-#define EL_EMC_WALL_SLIPPERY_1			698
-#define EL_EMC_WALL_SLIPPERY_2			699
-#define EL_EMC_WALL_SLIPPERY_3			700
-#define EL_EMC_WALL_SLIPPERY_4			701
-#define EL_EMC_FAKE_GRASS			702
-#define EL_EMC_FAKE_ACID			703
-#define EL_EMC_DRIPPER				704
+#define EL_BALLOON_SWITCH_NONE				667
+#define EL_EMC_GATE_5					668
+#define EL_EMC_GATE_6					669
+#define EL_EMC_GATE_7					670
+#define EL_EMC_GATE_8					671
+#define EL_EMC_GATE_5_GRAY				672
+#define EL_EMC_GATE_6_GRAY				673
+#define EL_EMC_GATE_7_GRAY				674
+#define EL_EMC_GATE_8_GRAY				675
+#define EL_EMC_KEY_5					676
+#define EL_EMC_KEY_6					677
+#define EL_EMC_KEY_7					678
+#define EL_EMC_KEY_8					679
+#define EL_EMC_ANDROID					680
+#define EL_EMC_GRASS					681
+#define EL_EMC_MAGIC_BALL				682
+#define EL_EMC_MAGIC_BALL_ACTIVE			683
+#define EL_EMC_MAGIC_BALL_SWITCH			684
+#define EL_EMC_MAGIC_BALL_SWITCH_ACTIVE			685
+#define EL_EMC_SPRING_BUMPER				686
+#define EL_EMC_PLANT					687
+#define EL_EMC_LENSES					688
+#define EL_EMC_MAGNIFIER				689
+#define EL_EMC_WALL_9					690
+#define EL_EMC_WALL_10					691
+#define EL_EMC_WALL_11					692
+#define EL_EMC_WALL_12					693
+#define EL_EMC_WALL_13					694
+#define EL_EMC_WALL_14					695
+#define EL_EMC_WALL_15					696
+#define EL_EMC_WALL_16					697
+#define EL_EMC_WALL_SLIPPERY_1				698
+#define EL_EMC_WALL_SLIPPERY_2				699
+#define EL_EMC_WALL_SLIPPERY_3				700
+#define EL_EMC_WALL_SLIPPERY_4				701
+#define EL_EMC_FAKE_GRASS				702
+#define EL_EMC_FAKE_ACID				703
+#define EL_EMC_DRIPPER					704
 
-#define EL_TRIGGER_CE_VALUE			705
-#define EL_TRIGGER_CE_SCORE			706
-#define EL_CURRENT_CE_VALUE			707
-#define EL_CURRENT_CE_SCORE			708
+#define EL_TRIGGER_CE_VALUE				705
+#define EL_TRIGGER_CE_SCORE				706
+#define EL_CURRENT_CE_VALUE				707
+#define EL_CURRENT_CE_SCORE				708
 
-#define EL_YAMYAM_LEFT				709
-#define EL_YAMYAM_RIGHT				710
-#define EL_YAMYAM_UP				711
-#define EL_YAMYAM_DOWN				712
+#define EL_YAMYAM_LEFT					709
+#define EL_YAMYAM_RIGHT					710
+#define EL_YAMYAM_UP					711
+#define EL_YAMYAM_DOWN					712
 
-#define EL_BD_EXPANDABLE_WALL			713
+#define EL_BD_EXPANDABLE_WALL				713
 
 // reference elements
-#define EL_PREV_CE_8				714
-#define EL_PREV_CE_7				715
-#define EL_PREV_CE_6				716
-#define EL_PREV_CE_5				717
-#define EL_PREV_CE_4				718
-#define EL_PREV_CE_3				719
-#define EL_PREV_CE_2				720
-#define EL_PREV_CE_1				721
-#define EL_SELF					722
-#define EL_NEXT_CE_1				723
-#define EL_NEXT_CE_2				724
-#define EL_NEXT_CE_3				725
-#define EL_NEXT_CE_4				726
-#define EL_NEXT_CE_5				727
-#define EL_NEXT_CE_6				728
-#define EL_NEXT_CE_7				729
-#define EL_NEXT_CE_8				730
-#define EL_ANY_ELEMENT				731
+#define EL_PREV_CE_8					714
+#define EL_PREV_CE_7					715
+#define EL_PREV_CE_6					716
+#define EL_PREV_CE_5					717
+#define EL_PREV_CE_4					718
+#define EL_PREV_CE_3					719
+#define EL_PREV_CE_2					720
+#define EL_PREV_CE_1					721
+#define EL_SELF						722
+#define EL_NEXT_CE_1					723
+#define EL_NEXT_CE_2					724
+#define EL_NEXT_CE_3					725
+#define EL_NEXT_CE_4					726
+#define EL_NEXT_CE_5					727
+#define EL_NEXT_CE_6					728
+#define EL_NEXT_CE_7					729
+#define EL_NEXT_CE_8					730
+#define EL_ANY_ELEMENT					731
 
 // text character elements
-#define EL_STEEL_CHAR_START			732
-#define EL_STEEL_CHAR_ASCII0			(EL_STEEL_CHAR_START  - 32)
-#define EL_STEEL_CHAR_ASCII0_START		(EL_STEEL_CHAR_ASCII0 + 32)
+#define EL_STEEL_CHAR_START				732
+#define EL_STEEL_CHAR_ASCII0				(EL_STEEL_CHAR_START  - 32)
+#define EL_STEEL_CHAR_ASCII0_START			(EL_STEEL_CHAR_ASCII0 + 32)
 
 // (auto-generated data structure definitions included with normal chars)
 
-#define EL_STEEL_CHAR_ASCII0_END		(EL_STEEL_CHAR_ASCII0 + 111)
-#define EL_STEEL_CHAR_END			(EL_STEEL_CHAR_START  + 79)
+#define EL_STEEL_CHAR_ASCII0_END			(EL_STEEL_CHAR_ASCII0 + 111)
+#define EL_STEEL_CHAR_END				(EL_STEEL_CHAR_START  + 79)
 
-#define EL_STEEL_CHAR(c)			(EL_STEEL_CHAR_ASCII0+MAP_FONT_ASCII(c))
+#define EL_STEEL_CHAR(c)				(EL_STEEL_CHAR_ASCII0+MAP_FONT_ASCII(c))
 
 // unused elements
-#define EL_SPERMS				812
-#define EL_BULLET				813
-#define EL_HEART				814
-#define EL_CROSS				815
-#define EL_FRANKIE				816
-#define EL_SIGN_SPERMS				817
-#define EL_SIGN_BULLET				818
-#define EL_SIGN_HEART				819
-#define EL_SIGN_CROSS				820
-#define EL_SIGN_FRANKIE				821
+#define EL_SPERMS					812
+#define EL_BULLET					813
+#define EL_HEART					814
+#define EL_CROSS					815
+#define EL_FRANKIE					816
+#define EL_SIGN_SPERMS					817
+#define EL_SIGN_BULLET					818
+#define EL_SIGN_HEART					819
+#define EL_SIGN_CROSS					820
+#define EL_SIGN_FRANKIE					821
 
 // DC2 style elements
-#define EL_STEEL_EXIT_CLOSED			822
-#define EL_STEEL_EXIT_OPEN			823
+#define EL_STEEL_EXIT_CLOSED				822
+#define EL_STEEL_EXIT_OPEN				823
 
-#define EL_DC_STEELWALL_1_LEFT			824
-#define EL_DC_STEELWALL_1_RIGHT			825
-#define EL_DC_STEELWALL_1_TOP			826
-#define EL_DC_STEELWALL_1_BOTTOM		827
-#define EL_DC_STEELWALL_1_HORIZONTAL		828
-#define EL_DC_STEELWALL_1_VERTICAL		829
-#define EL_DC_STEELWALL_1_TOPLEFT		830
-#define EL_DC_STEELWALL_1_TOPRIGHT		831
-#define EL_DC_STEELWALL_1_BOTTOMLEFT		832
-#define EL_DC_STEELWALL_1_BOTTOMRIGHT		833
-#define EL_DC_STEELWALL_1_TOPLEFT_2		834
-#define EL_DC_STEELWALL_1_TOPRIGHT_2		835
-#define EL_DC_STEELWALL_1_BOTTOMLEFT_2		836
-#define EL_DC_STEELWALL_1_BOTTOMRIGHT_2		837
+#define EL_DC_STEELWALL_1_LEFT				824
+#define EL_DC_STEELWALL_1_RIGHT				825
+#define EL_DC_STEELWALL_1_TOP				826
+#define EL_DC_STEELWALL_1_BOTTOM			827
+#define EL_DC_STEELWALL_1_HORIZONTAL			828
+#define EL_DC_STEELWALL_1_VERTICAL			829
+#define EL_DC_STEELWALL_1_TOPLEFT			830
+#define EL_DC_STEELWALL_1_TOPRIGHT			831
+#define EL_DC_STEELWALL_1_BOTTOMLEFT			832
+#define EL_DC_STEELWALL_1_BOTTOMRIGHT			833
+#define EL_DC_STEELWALL_1_TOPLEFT_2			834
+#define EL_DC_STEELWALL_1_TOPRIGHT_2			835
+#define EL_DC_STEELWALL_1_BOTTOMLEFT_2			836
+#define EL_DC_STEELWALL_1_BOTTOMRIGHT_2			837
 
-#define EL_DC_STEELWALL_2_LEFT			838
-#define EL_DC_STEELWALL_2_RIGHT			839
-#define EL_DC_STEELWALL_2_TOP			840
-#define EL_DC_STEELWALL_2_BOTTOM		841
-#define EL_DC_STEELWALL_2_HORIZONTAL		842
-#define EL_DC_STEELWALL_2_VERTICAL		843
-#define EL_DC_STEELWALL_2_MIDDLE		844
-#define EL_DC_STEELWALL_2_SINGLE		845
+#define EL_DC_STEELWALL_2_LEFT				838
+#define EL_DC_STEELWALL_2_RIGHT				839
+#define EL_DC_STEELWALL_2_TOP				840
+#define EL_DC_STEELWALL_2_BOTTOM			841
+#define EL_DC_STEELWALL_2_HORIZONTAL			842
+#define EL_DC_STEELWALL_2_VERTICAL			843
+#define EL_DC_STEELWALL_2_MIDDLE			844
+#define EL_DC_STEELWALL_2_SINGLE			845
 
-#define EL_DC_SWITCHGATE_SWITCH_UP		846
-#define EL_DC_SWITCHGATE_SWITCH_DOWN		847
-#define EL_DC_TIMEGATE_SWITCH			848
-#define EL_DC_TIMEGATE_SWITCH_ACTIVE		849
+#define EL_DC_SWITCHGATE_SWITCH_UP			846
+#define EL_DC_SWITCHGATE_SWITCH_DOWN			847
+#define EL_DC_TIMEGATE_SWITCH				848
+#define EL_DC_TIMEGATE_SWITCH_ACTIVE			849
 
-#define EL_DC_LANDMINE				850
+#define EL_DC_LANDMINE					850
 
-#define EL_EXPANDABLE_STEELWALL			851
-#define EL_EXPANDABLE_STEELWALL_HORIZONTAL	852
-#define EL_EXPANDABLE_STEELWALL_VERTICAL	853
-#define EL_EXPANDABLE_STEELWALL_ANY		854
+#define EL_EXPANDABLE_STEELWALL				851
+#define EL_EXPANDABLE_STEELWALL_HORIZONTAL		852
+#define EL_EXPANDABLE_STEELWALL_VERTICAL		853
+#define EL_EXPANDABLE_STEELWALL_ANY			854
 
-#define EL_EM_EXIT_CLOSED			855
-#define EL_EM_EXIT_OPEN				856
-#define EL_EM_STEEL_EXIT_CLOSED			857
-#define EL_EM_STEEL_EXIT_OPEN			858
+#define EL_EM_EXIT_CLOSED				855
+#define EL_EM_EXIT_OPEN					856
+#define EL_EM_STEEL_EXIT_CLOSED				857
+#define EL_EM_STEEL_EXIT_OPEN				858
 
-#define EL_DC_GATE_FAKE_GRAY			859
+#define EL_DC_GATE_FAKE_GRAY				859
 
-#define EL_DC_MAGIC_WALL			860
+#define EL_DC_MAGIC_WALL				860
 
-#define EL_QUICKSAND_FAST_EMPTY			861
-#define EL_QUICKSAND_FAST_FULL			862
+#define EL_QUICKSAND_FAST_EMPTY				861
+#define EL_QUICKSAND_FAST_FULL				862
 
-#define EL_FROM_LEVEL_TEMPLATE			863
+#define EL_FROM_LEVEL_TEMPLATE				863
 
 // MM style elements
-#define EL_MM_START				864
-#define EL_MM_START_1				EL_MM_START
+#define EL_MM_START					864
+#define EL_MM_START_1					EL_MM_START
 
-#define EL_MM_EMPTY_SPACE			(EL_MM_START + 0)
-#define EL_MM_EMPTY				EL_MM_EMPTY_SPACE
-#define EL_MM_MIRROR_START			(EL_MM_START + 1)
-#define EL_MM_MIRROR_1				(EL_MM_MIRROR_START + 0)
-#define EL_MM_MIRROR_2				(EL_MM_MIRROR_START + 1)
-#define EL_MM_MIRROR_3				(EL_MM_MIRROR_START + 2)
-#define EL_MM_MIRROR_4				(EL_MM_MIRROR_START + 3)
-#define EL_MM_MIRROR_5				(EL_MM_MIRROR_START + 4)
-#define EL_MM_MIRROR_6				(EL_MM_MIRROR_START + 5)
-#define EL_MM_MIRROR_7				(EL_MM_MIRROR_START + 6)
-#define EL_MM_MIRROR_8				(EL_MM_MIRROR_START + 7)
-#define EL_MM_MIRROR_9				(EL_MM_MIRROR_START + 8)
-#define EL_MM_MIRROR_10				(EL_MM_MIRROR_START + 9)
-#define EL_MM_MIRROR_11				(EL_MM_MIRROR_START + 10)
-#define EL_MM_MIRROR_12				(EL_MM_MIRROR_START + 11)
-#define EL_MM_MIRROR_13				(EL_MM_MIRROR_START + 12)
-#define EL_MM_MIRROR_14				(EL_MM_MIRROR_START + 13)
-#define EL_MM_MIRROR_15				(EL_MM_MIRROR_START + 14)
-#define EL_MM_MIRROR_16				(EL_MM_MIRROR_START + 15)
-#define EL_MM_MIRROR_END			EL_MM_MIRROR_15
-#define EL_MM_STEEL_GRID_FIXED_START		(EL_MM_START + 17)
-#define EL_MM_STEEL_GRID_FIXED_1		(EL_MM_STEEL_GRID_FIXED_START + 0)
-#define EL_MM_STEEL_GRID_FIXED_2		(EL_MM_STEEL_GRID_FIXED_START + 1)
-#define EL_MM_STEEL_GRID_FIXED_3		(EL_MM_STEEL_GRID_FIXED_START + 2)
-#define EL_MM_STEEL_GRID_FIXED_4		(EL_MM_STEEL_GRID_FIXED_START + 3)
-#define EL_MM_STEEL_GRID_FIXED_END		EL_MM_STEEL_GRID_FIXED_03
-#define EL_MM_MCDUFFIN_START			(EL_MM_START + 21)
-#define EL_MM_MCDUFFIN_RIGHT			(EL_MM_MCDUFFIN_START + 0)
-#define EL_MM_MCDUFFIN_UP			(EL_MM_MCDUFFIN_START + 1)
-#define EL_MM_MCDUFFIN_LEFT			(EL_MM_MCDUFFIN_START + 2)
-#define EL_MM_MCDUFFIN_DOWN			(EL_MM_MCDUFFIN_START + 3)
-#define EL_MM_MCDUFFIN_END			EL_MM_MCDUFFIN_DOWN
-#define EL_MM_EXIT_CLOSED			(EL_MM_START + 25)
-#define EL_MM_EXIT_OPENING_1			(EL_MM_START + 26)
-#define EL_MM_EXIT_OPENING_2			(EL_MM_START + 27)
-#define EL_MM_EXIT_OPEN				(EL_MM_START + 28)
-#define EL_MM_KETTLE				(EL_MM_START + 29)
-#define EL_MM_BOMB				(EL_MM_START + 30)
-#define EL_MM_PRISM				(EL_MM_START + 31)
-#define EL_MM_WALL_START			(EL_MM_START + 32)
-#define EL_MM_WALL_EMPTY			EL_MM_WALL_START
-#define EL_MM_WALL_00				EL_MM_WALL_START
-#define EL_MM_STEEL_WALL_START			EL_MM_WALL_00
-#define EL_MM_STEEL_WALL_1			EL_MM_STEEL_WALL_START
-#define EL_MM_WALL_15				(EL_MM_START + 47)
-#define EL_MM_STEEL_WALL_END			EL_MM_WALL_15
-#define EL_MM_WALL_16				(EL_MM_START + 48)
-#define EL_MM_WOODEN_WALL_START			EL_MM_WALL_16
-#define EL_MM_WOODEN_WALL_1			EL_MM_WOODEN_WALL_START
-#define EL_MM_WALL_31				(EL_MM_START + 63)
-#define EL_MM_WOODEN_WALL_END			EL_MM_WALL_31
-#define EL_MM_WALL_32				(EL_MM_START + 64)
-#define EL_MM_ICE_WALL_START			EL_MM_WALL_32
-#define EL_MM_ICE_WALL_1			EL_MM_ICE_WALL_START
-#define EL_MM_WALL_47				(EL_MM_START + 79)
-#define EL_MM_ICE_WALL_END			EL_MM_WALL_47
-#define EL_MM_WALL_48				(EL_MM_START + 80)
-#define EL_MM_AMOEBA_WALL_START			EL_MM_WALL_48
-#define EL_MM_AMOEBA_WALL_1			EL_MM_AMOEBA_WALL_START
-#define EL_MM_WALL_63				(EL_MM_START + 95)
-#define EL_MM_AMOEBA_WALL_END			EL_MM_WALL_63
-#define EL_MM_WALL_END				EL_MM_WALL_63
-#define EL_MM_WOODEN_BLOCK			(EL_MM_START + 96)
-#define EL_MM_GRAY_BALL				(EL_MM_START + 97)
-#define EL_MM_TELEPORTER_START			(EL_MM_START + 98)
-#define EL_MM_TELEPORTER_1			(EL_MM_TELEPORTER_START + 0)
-#define EL_MM_TELEPORTER_2			(EL_MM_TELEPORTER_START + 1)
-#define EL_MM_TELEPORTER_3			(EL_MM_TELEPORTER_START + 2)
-#define EL_MM_TELEPORTER_4			(EL_MM_TELEPORTER_START + 3)
-#define EL_MM_TELEPORTER_5			(EL_MM_TELEPORTER_START + 4)
-#define EL_MM_TELEPORTER_6			(EL_MM_TELEPORTER_START + 5)
-#define EL_MM_TELEPORTER_7			(EL_MM_TELEPORTER_START + 6)
-#define EL_MM_TELEPORTER_8			(EL_MM_TELEPORTER_START + 7)
-#define EL_MM_TELEPORTER_9			(EL_MM_TELEPORTER_START + 8)
-#define EL_MM_TELEPORTER_10			(EL_MM_TELEPORTER_START + 9)
-#define EL_MM_TELEPORTER_11			(EL_MM_TELEPORTER_START + 10)
-#define EL_MM_TELEPORTER_12			(EL_MM_TELEPORTER_START + 11)
-#define EL_MM_TELEPORTER_13			(EL_MM_TELEPORTER_START + 12)
-#define EL_MM_TELEPORTER_14			(EL_MM_TELEPORTER_START + 13)
-#define EL_MM_TELEPORTER_15			(EL_MM_TELEPORTER_START + 14)
-#define EL_MM_TELEPORTER_16			(EL_MM_TELEPORTER_START + 15)
-#define EL_MM_TELEPORTER_END			EL_MM_TELEPORTER_15
-#define EL_MM_FUSE_ACTIVE			(EL_MM_START + 114)
-#define EL_MM_PACMAN_START			(EL_MM_START + 115)
-#define EL_MM_PACMAN_RIGHT			(EL_MM_PACMAN_START + 0)
-#define EL_MM_PACMAN_UP				(EL_MM_PACMAN_START + 1)
-#define EL_MM_PACMAN_LEFT			(EL_MM_PACMAN_START + 2)
-#define EL_MM_PACMAN_DOWN			(EL_MM_PACMAN_START + 3)
-#define EL_MM_PACMAN_END			EL_MM_PACMAN_DOWN
-#define EL_MM_POLARIZER_START			(EL_MM_START + 119)
-#define EL_MM_POLARIZER_1			(EL_MM_POLARIZER_START + 0)
-#define EL_MM_POLARIZER_2			(EL_MM_POLARIZER_START + 1)
-#define EL_MM_POLARIZER_3			(EL_MM_POLARIZER_START + 2)
-#define EL_MM_POLARIZER_4			(EL_MM_POLARIZER_START + 3)
-#define EL_MM_POLARIZER_5			(EL_MM_POLARIZER_START + 4)
-#define EL_MM_POLARIZER_6			(EL_MM_POLARIZER_START + 5)
-#define EL_MM_POLARIZER_7			(EL_MM_POLARIZER_START + 6)
-#define EL_MM_POLARIZER_8			(EL_MM_POLARIZER_START + 7)
-#define EL_MM_POLARIZER_9			(EL_MM_POLARIZER_START + 8)
-#define EL_MM_POLARIZER_10			(EL_MM_POLARIZER_START + 9)
-#define EL_MM_POLARIZER_11			(EL_MM_POLARIZER_START + 10)
-#define EL_MM_POLARIZER_12			(EL_MM_POLARIZER_START + 11)
-#define EL_MM_POLARIZER_13			(EL_MM_POLARIZER_START + 12)
-#define EL_MM_POLARIZER_14			(EL_MM_POLARIZER_START + 13)
-#define EL_MM_POLARIZER_15			(EL_MM_POLARIZER_START + 14)
-#define EL_MM_POLARIZER_16			(EL_MM_POLARIZER_START + 15)
-#define EL_MM_POLARIZER_END			EL_MM_POLARIZER_15
-#define EL_MM_POLARIZER_CROSS_START		(EL_MM_START + 135)
-#define EL_MM_POLARIZER_CROSS_1			(EL_MM_POLARIZER_CROSS_START + 0)
-#define EL_MM_POLARIZER_CROSS_2			(EL_MM_POLARIZER_CROSS_START + 1)
-#define EL_MM_POLARIZER_CROSS_3			(EL_MM_POLARIZER_CROSS_START + 2)
-#define EL_MM_POLARIZER_CROSS_4			(EL_MM_POLARIZER_CROSS_START + 3)
-#define EL_MM_POLARIZER_CROSS_END		EL_MM_POLARIZER_CROSS_03
-#define EL_MM_MIRROR_FIXED_START		(EL_MM_START + 139)
-#define EL_MM_MIRROR_FIXED_1			(EL_MM_MIRROR_FIXED_START + 0)
-#define EL_MM_MIRROR_FIXED_2			(EL_MM_MIRROR_FIXED_START + 1)
-#define EL_MM_MIRROR_FIXED_3			(EL_MM_MIRROR_FIXED_START + 2)
-#define EL_MM_MIRROR_FIXED_4			(EL_MM_MIRROR_FIXED_START + 3)
-#define EL_MM_MIRROR_FIXED_END			EL_MM_MIRROR_FIXED_03
-#define EL_MM_STEEL_LOCK			(EL_MM_START + 143)
-#define EL_MM_KEY				(EL_MM_START + 144)
-#define EL_MM_LIGHTBULB				(EL_MM_START + 145)
-#define EL_MM_LIGHTBULB_ACTIVE			(EL_MM_START + 146)
-#define EL_MM_LIGHTBALL				(EL_MM_START + 147)
-#define EL_MM_STEEL_BLOCK			(EL_MM_START + 148)
-#define EL_MM_WOODEN_LOCK			(EL_MM_START + 149)
-#define EL_MM_FUEL_FULL				(EL_MM_START + 150)
-#define EL_MM_WOODEN_GRID_FIXED_START		(EL_MM_START + 151)
-#define EL_MM_WOODEN_GRID_FIXED_1		(EL_MM_WOODEN_GRID_FIXED_START + 0)
-#define EL_MM_WOODEN_GRID_FIXED_2		(EL_MM_WOODEN_GRID_FIXED_START + 1)
-#define EL_MM_WOODEN_GRID_FIXED_3		(EL_MM_WOODEN_GRID_FIXED_START + 2)
-#define EL_MM_WOODEN_GRID_FIXED_4		(EL_MM_WOODEN_GRID_FIXED_START + 3)
-#define EL_MM_WOODEN_GRID_FIXED_END		EL_MM_WOODEN_GRID_FIXED_03
-#define EL_MM_FUEL_EMPTY			(EL_MM_START + 155)
-#define EL_MM_ENVELOPE_1			(EL_MM_START + 156)
-#define EL_MM_ENVELOPE_2			(EL_MM_START + 157)
-#define EL_MM_ENVELOPE_3			(EL_MM_START + 158)
-#define EL_MM_ENVELOPE_4			(EL_MM_START + 159)
+#define EL_MM_EMPTY_SPACE				(EL_MM_START + 0)
+#define EL_MM_EMPTY					EL_MM_EMPTY_SPACE
+#define EL_MM_MIRROR_START				(EL_MM_START + 1)
+#define EL_MM_MIRROR_1					(EL_MM_MIRROR_START + 0)
+#define EL_MM_MIRROR_2					(EL_MM_MIRROR_START + 1)
+#define EL_MM_MIRROR_3					(EL_MM_MIRROR_START + 2)
+#define EL_MM_MIRROR_4					(EL_MM_MIRROR_START + 3)
+#define EL_MM_MIRROR_5					(EL_MM_MIRROR_START + 4)
+#define EL_MM_MIRROR_6					(EL_MM_MIRROR_START + 5)
+#define EL_MM_MIRROR_7					(EL_MM_MIRROR_START + 6)
+#define EL_MM_MIRROR_8					(EL_MM_MIRROR_START + 7)
+#define EL_MM_MIRROR_9					(EL_MM_MIRROR_START + 8)
+#define EL_MM_MIRROR_10					(EL_MM_MIRROR_START + 9)
+#define EL_MM_MIRROR_11					(EL_MM_MIRROR_START + 10)
+#define EL_MM_MIRROR_12					(EL_MM_MIRROR_START + 11)
+#define EL_MM_MIRROR_13					(EL_MM_MIRROR_START + 12)
+#define EL_MM_MIRROR_14					(EL_MM_MIRROR_START + 13)
+#define EL_MM_MIRROR_15					(EL_MM_MIRROR_START + 14)
+#define EL_MM_MIRROR_16					(EL_MM_MIRROR_START + 15)
+#define EL_MM_MIRROR_END				EL_MM_MIRROR_15
+#define EL_MM_STEEL_GRID_FIXED_START			(EL_MM_START + 17)
+#define EL_MM_STEEL_GRID_FIXED_1			(EL_MM_STEEL_GRID_FIXED_START + 0)
+#define EL_MM_STEEL_GRID_FIXED_2			(EL_MM_STEEL_GRID_FIXED_START + 1)
+#define EL_MM_STEEL_GRID_FIXED_3			(EL_MM_STEEL_GRID_FIXED_START + 2)
+#define EL_MM_STEEL_GRID_FIXED_4			(EL_MM_STEEL_GRID_FIXED_START + 3)
+#define EL_MM_STEEL_GRID_FIXED_END			EL_MM_STEEL_GRID_FIXED_03
+#define EL_MM_MCDUFFIN_START				(EL_MM_START + 21)
+#define EL_MM_MCDUFFIN_RIGHT				(EL_MM_MCDUFFIN_START + 0)
+#define EL_MM_MCDUFFIN_UP				(EL_MM_MCDUFFIN_START + 1)
+#define EL_MM_MCDUFFIN_LEFT				(EL_MM_MCDUFFIN_START + 2)
+#define EL_MM_MCDUFFIN_DOWN				(EL_MM_MCDUFFIN_START + 3)
+#define EL_MM_MCDUFFIN_END				EL_MM_MCDUFFIN_DOWN
+#define EL_MM_EXIT_CLOSED				(EL_MM_START + 25)
+#define EL_MM_EXIT_OPENING_1				(EL_MM_START + 26)
+#define EL_MM_EXIT_OPENING_2				(EL_MM_START + 27)
+#define EL_MM_EXIT_OPEN					(EL_MM_START + 28)
+#define EL_MM_KETTLE					(EL_MM_START + 29)
+#define EL_MM_BOMB					(EL_MM_START + 30)
+#define EL_MM_PRISM					(EL_MM_START + 31)
+#define EL_MM_WALL_START				(EL_MM_START + 32)
+#define EL_MM_WALL_EMPTY				EL_MM_WALL_START
+#define EL_MM_WALL_00					EL_MM_WALL_START
+#define EL_MM_STEEL_WALL_START				EL_MM_WALL_00
+#define EL_MM_STEEL_WALL_1				EL_MM_STEEL_WALL_START
+#define EL_MM_WALL_15					(EL_MM_START + 47)
+#define EL_MM_STEEL_WALL_END				EL_MM_WALL_15
+#define EL_MM_WALL_16					(EL_MM_START + 48)
+#define EL_MM_WOODEN_WALL_START				EL_MM_WALL_16
+#define EL_MM_WOODEN_WALL_1				EL_MM_WOODEN_WALL_START
+#define EL_MM_WALL_31					(EL_MM_START + 63)
+#define EL_MM_WOODEN_WALL_END				EL_MM_WALL_31
+#define EL_MM_WALL_32					(EL_MM_START + 64)
+#define EL_MM_ICE_WALL_START				EL_MM_WALL_32
+#define EL_MM_ICE_WALL_1				EL_MM_ICE_WALL_START
+#define EL_MM_WALL_47					(EL_MM_START + 79)
+#define EL_MM_ICE_WALL_END				EL_MM_WALL_47
+#define EL_MM_WALL_48					(EL_MM_START + 80)
+#define EL_MM_AMOEBA_WALL_START				EL_MM_WALL_48
+#define EL_MM_AMOEBA_WALL_1				EL_MM_AMOEBA_WALL_START
+#define EL_MM_WALL_63					(EL_MM_START + 95)
+#define EL_MM_AMOEBA_WALL_END				EL_MM_WALL_63
+#define EL_MM_WALL_END					EL_MM_WALL_63
+#define EL_MM_WOODEN_BLOCK				(EL_MM_START + 96)
+#define EL_MM_GRAY_BALL					(EL_MM_START + 97)
+#define EL_MM_TELEPORTER_START				(EL_MM_START + 98)
+#define EL_MM_TELEPORTER_1				(EL_MM_TELEPORTER_START + 0)
+#define EL_MM_TELEPORTER_2				(EL_MM_TELEPORTER_START + 1)
+#define EL_MM_TELEPORTER_3				(EL_MM_TELEPORTER_START + 2)
+#define EL_MM_TELEPORTER_4				(EL_MM_TELEPORTER_START + 3)
+#define EL_MM_TELEPORTER_5				(EL_MM_TELEPORTER_START + 4)
+#define EL_MM_TELEPORTER_6				(EL_MM_TELEPORTER_START + 5)
+#define EL_MM_TELEPORTER_7				(EL_MM_TELEPORTER_START + 6)
+#define EL_MM_TELEPORTER_8				(EL_MM_TELEPORTER_START + 7)
+#define EL_MM_TELEPORTER_9				(EL_MM_TELEPORTER_START + 8)
+#define EL_MM_TELEPORTER_10				(EL_MM_TELEPORTER_START + 9)
+#define EL_MM_TELEPORTER_11				(EL_MM_TELEPORTER_START + 10)
+#define EL_MM_TELEPORTER_12				(EL_MM_TELEPORTER_START + 11)
+#define EL_MM_TELEPORTER_13				(EL_MM_TELEPORTER_START + 12)
+#define EL_MM_TELEPORTER_14				(EL_MM_TELEPORTER_START + 13)
+#define EL_MM_TELEPORTER_15				(EL_MM_TELEPORTER_START + 14)
+#define EL_MM_TELEPORTER_16				(EL_MM_TELEPORTER_START + 15)
+#define EL_MM_TELEPORTER_END				EL_MM_TELEPORTER_15
+#define EL_MM_FUSE_ACTIVE				(EL_MM_START + 114)
+#define EL_MM_PACMAN_START				(EL_MM_START + 115)
+#define EL_MM_PACMAN_RIGHT				(EL_MM_PACMAN_START + 0)
+#define EL_MM_PACMAN_UP					(EL_MM_PACMAN_START + 1)
+#define EL_MM_PACMAN_LEFT				(EL_MM_PACMAN_START + 2)
+#define EL_MM_PACMAN_DOWN				(EL_MM_PACMAN_START + 3)
+#define EL_MM_PACMAN_END				EL_MM_PACMAN_DOWN
+#define EL_MM_POLARIZER_START				(EL_MM_START + 119)
+#define EL_MM_POLARIZER_1				(EL_MM_POLARIZER_START + 0)
+#define EL_MM_POLARIZER_2				(EL_MM_POLARIZER_START + 1)
+#define EL_MM_POLARIZER_3				(EL_MM_POLARIZER_START + 2)
+#define EL_MM_POLARIZER_4				(EL_MM_POLARIZER_START + 3)
+#define EL_MM_POLARIZER_5				(EL_MM_POLARIZER_START + 4)
+#define EL_MM_POLARIZER_6				(EL_MM_POLARIZER_START + 5)
+#define EL_MM_POLARIZER_7				(EL_MM_POLARIZER_START + 6)
+#define EL_MM_POLARIZER_8				(EL_MM_POLARIZER_START + 7)
+#define EL_MM_POLARIZER_9				(EL_MM_POLARIZER_START + 8)
+#define EL_MM_POLARIZER_10				(EL_MM_POLARIZER_START + 9)
+#define EL_MM_POLARIZER_11				(EL_MM_POLARIZER_START + 10)
+#define EL_MM_POLARIZER_12				(EL_MM_POLARIZER_START + 11)
+#define EL_MM_POLARIZER_13				(EL_MM_POLARIZER_START + 12)
+#define EL_MM_POLARIZER_14				(EL_MM_POLARIZER_START + 13)
+#define EL_MM_POLARIZER_15				(EL_MM_POLARIZER_START + 14)
+#define EL_MM_POLARIZER_16				(EL_MM_POLARIZER_START + 15)
+#define EL_MM_POLARIZER_END				EL_MM_POLARIZER_15
+#define EL_MM_POLARIZER_CROSS_START			(EL_MM_START + 135)
+#define EL_MM_POLARIZER_CROSS_1				(EL_MM_POLARIZER_CROSS_START + 0)
+#define EL_MM_POLARIZER_CROSS_2				(EL_MM_POLARIZER_CROSS_START + 1)
+#define EL_MM_POLARIZER_CROSS_3				(EL_MM_POLARIZER_CROSS_START + 2)
+#define EL_MM_POLARIZER_CROSS_4				(EL_MM_POLARIZER_CROSS_START + 3)
+#define EL_MM_POLARIZER_CROSS_END			EL_MM_POLARIZER_CROSS_03
+#define EL_MM_MIRROR_FIXED_START			(EL_MM_START + 139)
+#define EL_MM_MIRROR_FIXED_1				(EL_MM_MIRROR_FIXED_START + 0)
+#define EL_MM_MIRROR_FIXED_2				(EL_MM_MIRROR_FIXED_START + 1)
+#define EL_MM_MIRROR_FIXED_3				(EL_MM_MIRROR_FIXED_START + 2)
+#define EL_MM_MIRROR_FIXED_4				(EL_MM_MIRROR_FIXED_START + 3)
+#define EL_MM_MIRROR_FIXED_END				EL_MM_MIRROR_FIXED_03
+#define EL_MM_STEEL_LOCK				(EL_MM_START + 143)
+#define EL_MM_KEY					(EL_MM_START + 144)
+#define EL_MM_LIGHTBULB					(EL_MM_START + 145)
+#define EL_MM_LIGHTBULB_ACTIVE				(EL_MM_START + 146)
+#define EL_MM_LIGHTBALL					(EL_MM_START + 147)
+#define EL_MM_STEEL_BLOCK				(EL_MM_START + 148)
+#define EL_MM_WOODEN_LOCK				(EL_MM_START + 149)
+#define EL_MM_FUEL_FULL					(EL_MM_START + 150)
+#define EL_MM_WOODEN_GRID_FIXED_START			(EL_MM_START + 151)
+#define EL_MM_WOODEN_GRID_FIXED_1			(EL_MM_WOODEN_GRID_FIXED_START + 0)
+#define EL_MM_WOODEN_GRID_FIXED_2			(EL_MM_WOODEN_GRID_FIXED_START + 1)
+#define EL_MM_WOODEN_GRID_FIXED_3			(EL_MM_WOODEN_GRID_FIXED_START + 2)
+#define EL_MM_WOODEN_GRID_FIXED_4			(EL_MM_WOODEN_GRID_FIXED_START + 3)
+#define EL_MM_WOODEN_GRID_FIXED_END			EL_MM_WOODEN_GRID_FIXED_03
+#define EL_MM_FUEL_EMPTY				(EL_MM_START + 155)
+#define EL_MM_ENVELOPE_1				(EL_MM_START + 156)
+#define EL_MM_ENVELOPE_2				(EL_MM_START + 157)
+#define EL_MM_ENVELOPE_3				(EL_MM_START + 158)
+#define EL_MM_ENVELOPE_4				(EL_MM_START + 159)
 
-#define EL_MM_END_1				(EL_MM_START + 159)
-#define EL_MM_START_2				(EL_MM_START + 160)
+#define EL_MM_END_1					(EL_MM_START + 159)
+#define EL_MM_START_2					(EL_MM_START + 160)
 
 // DF style elements
-#define EL_DF_START				EL_MM_START_2
-#define EL_DF_START_1				EL_MM_START_2
-#define EL_DF_START2				(EL_DF_START - 240)
+#define EL_DF_START					EL_MM_START_2
+#define EL_DF_START_1					EL_MM_START_2
+#define EL_DF_START2					(EL_DF_START - 240)
 
-#define EL_DF_MIRROR_START			EL_DF_START
-#define EL_DF_MIRROR_1				(EL_DF_MIRROR_START + 0)
-#define EL_DF_MIRROR_2				(EL_DF_MIRROR_START + 1)
-#define EL_DF_MIRROR_3				(EL_DF_MIRROR_START + 2)
-#define EL_DF_MIRROR_4				(EL_DF_MIRROR_START + 3)
-#define EL_DF_MIRROR_5				(EL_DF_MIRROR_START + 4)
-#define EL_DF_MIRROR_6				(EL_DF_MIRROR_START + 5)
-#define EL_DF_MIRROR_7				(EL_DF_MIRROR_START + 6)
-#define EL_DF_MIRROR_8				(EL_DF_MIRROR_START + 7)
-#define EL_DF_MIRROR_9				(EL_DF_MIRROR_START + 8)
-#define EL_DF_MIRROR_10				(EL_DF_MIRROR_START + 9)
-#define EL_DF_MIRROR_11				(EL_DF_MIRROR_START + 10)
-#define EL_DF_MIRROR_12				(EL_DF_MIRROR_START + 11)
-#define EL_DF_MIRROR_13				(EL_DF_MIRROR_START + 12)
-#define EL_DF_MIRROR_14				(EL_DF_MIRROR_START + 13)
-#define EL_DF_MIRROR_15				(EL_DF_MIRROR_START + 14)
-#define EL_DF_MIRROR_16				(EL_DF_MIRROR_START + 15)
-#define EL_DF_MIRROR_END			EL_DF_MIRROR_15
+#define EL_DF_MIRROR_START				EL_DF_START
+#define EL_DF_MIRROR_1					(EL_DF_MIRROR_START + 0)
+#define EL_DF_MIRROR_2					(EL_DF_MIRROR_START + 1)
+#define EL_DF_MIRROR_3					(EL_DF_MIRROR_START + 2)
+#define EL_DF_MIRROR_4					(EL_DF_MIRROR_START + 3)
+#define EL_DF_MIRROR_5					(EL_DF_MIRROR_START + 4)
+#define EL_DF_MIRROR_6					(EL_DF_MIRROR_START + 5)
+#define EL_DF_MIRROR_7					(EL_DF_MIRROR_START + 6)
+#define EL_DF_MIRROR_8					(EL_DF_MIRROR_START + 7)
+#define EL_DF_MIRROR_9					(EL_DF_MIRROR_START + 8)
+#define EL_DF_MIRROR_10					(EL_DF_MIRROR_START + 9)
+#define EL_DF_MIRROR_11					(EL_DF_MIRROR_START + 10)
+#define EL_DF_MIRROR_12					(EL_DF_MIRROR_START + 11)
+#define EL_DF_MIRROR_13					(EL_DF_MIRROR_START + 12)
+#define EL_DF_MIRROR_14					(EL_DF_MIRROR_START + 13)
+#define EL_DF_MIRROR_15					(EL_DF_MIRROR_START + 14)
+#define EL_DF_MIRROR_16					(EL_DF_MIRROR_START + 15)
+#define EL_DF_MIRROR_END				EL_DF_MIRROR_15
 
-#define EL_DF_WOODEN_GRID_FIXED_START		(EL_DF_START2 + 256)
-#define EL_DF_WOODEN_GRID_FIXED_1		(EL_DF_WOODEN_GRID_FIXED_START + 0)
-#define EL_DF_WOODEN_GRID_FIXED_2		(EL_DF_WOODEN_GRID_FIXED_START + 1)
-#define EL_DF_WOODEN_GRID_FIXED_3		(EL_DF_WOODEN_GRID_FIXED_START + 2)
-#define EL_DF_WOODEN_GRID_FIXED_4		(EL_DF_WOODEN_GRID_FIXED_START + 3)
-#define EL_DF_WOODEN_GRID_FIXED_5		(EL_DF_WOODEN_GRID_FIXED_START + 4)
-#define EL_DF_WOODEN_GRID_FIXED_6		(EL_DF_WOODEN_GRID_FIXED_START + 5)
-#define EL_DF_WOODEN_GRID_FIXED_7		(EL_DF_WOODEN_GRID_FIXED_START + 6)
-#define EL_DF_WOODEN_GRID_FIXED_8		(EL_DF_WOODEN_GRID_FIXED_START + 7)
-#define EL_DF_WOODEN_GRID_FIXED_END		EL_DF_WOODEN_GRID_FIXED_07
+#define EL_DF_WOODEN_GRID_FIXED_START			(EL_DF_START2 + 256)
+#define EL_DF_WOODEN_GRID_FIXED_1			(EL_DF_WOODEN_GRID_FIXED_START + 0)
+#define EL_DF_WOODEN_GRID_FIXED_2			(EL_DF_WOODEN_GRID_FIXED_START + 1)
+#define EL_DF_WOODEN_GRID_FIXED_3			(EL_DF_WOODEN_GRID_FIXED_START + 2)
+#define EL_DF_WOODEN_GRID_FIXED_4			(EL_DF_WOODEN_GRID_FIXED_START + 3)
+#define EL_DF_WOODEN_GRID_FIXED_5			(EL_DF_WOODEN_GRID_FIXED_START + 4)
+#define EL_DF_WOODEN_GRID_FIXED_6			(EL_DF_WOODEN_GRID_FIXED_START + 5)
+#define EL_DF_WOODEN_GRID_FIXED_7			(EL_DF_WOODEN_GRID_FIXED_START + 6)
+#define EL_DF_WOODEN_GRID_FIXED_8			(EL_DF_WOODEN_GRID_FIXED_START + 7)
+#define EL_DF_WOODEN_GRID_FIXED_END			EL_DF_WOODEN_GRID_FIXED_07
 
-#define EL_DF_STEEL_GRID_FIXED_START		(EL_DF_START2 + 264)
-#define EL_DF_STEEL_GRID_FIXED_1		(EL_DF_STEEL_GRID_FIXED_START + 0)
-#define EL_DF_STEEL_GRID_FIXED_2		(EL_DF_STEEL_GRID_FIXED_START + 1)
-#define EL_DF_STEEL_GRID_FIXED_3		(EL_DF_STEEL_GRID_FIXED_START + 2)
-#define EL_DF_STEEL_GRID_FIXED_4		(EL_DF_STEEL_GRID_FIXED_START + 3)
-#define EL_DF_STEEL_GRID_FIXED_5		(EL_DF_STEEL_GRID_FIXED_START + 4)
-#define EL_DF_STEEL_GRID_FIXED_6		(EL_DF_STEEL_GRID_FIXED_START + 5)
-#define EL_DF_STEEL_GRID_FIXED_7		(EL_DF_STEEL_GRID_FIXED_START + 6)
-#define EL_DF_STEEL_GRID_FIXED_8		(EL_DF_STEEL_GRID_FIXED_START + 7)
-#define EL_DF_STEEL_GRID_FIXED_END		EL_DF_STEEL_GRID_FIXED_07
+#define EL_DF_STEEL_GRID_FIXED_START			(EL_DF_START2 + 264)
+#define EL_DF_STEEL_GRID_FIXED_1			(EL_DF_STEEL_GRID_FIXED_START + 0)
+#define EL_DF_STEEL_GRID_FIXED_2			(EL_DF_STEEL_GRID_FIXED_START + 1)
+#define EL_DF_STEEL_GRID_FIXED_3			(EL_DF_STEEL_GRID_FIXED_START + 2)
+#define EL_DF_STEEL_GRID_FIXED_4			(EL_DF_STEEL_GRID_FIXED_START + 3)
+#define EL_DF_STEEL_GRID_FIXED_5			(EL_DF_STEEL_GRID_FIXED_START + 4)
+#define EL_DF_STEEL_GRID_FIXED_6			(EL_DF_STEEL_GRID_FIXED_START + 5)
+#define EL_DF_STEEL_GRID_FIXED_7			(EL_DF_STEEL_GRID_FIXED_START + 6)
+#define EL_DF_STEEL_GRID_FIXED_8			(EL_DF_STEEL_GRID_FIXED_START + 7)
+#define EL_DF_STEEL_GRID_FIXED_END			EL_DF_STEEL_GRID_FIXED_07
 
-#define EL_DF_WOODEN_WALL_START			(EL_DF_START2 + 272)
-#define EL_DF_WOODEN_WALL_1			(EL_DF_WOODEN_WALL_START + 0)
-#define EL_DF_WOODEN_WALL_END			(EL_DF_WOODEN_WALL_START + 15)
+#define EL_DF_WOODEN_WALL_START				(EL_DF_START2 + 272)
+#define EL_DF_WOODEN_WALL_1				(EL_DF_WOODEN_WALL_START + 0)
+#define EL_DF_WOODEN_WALL_END				(EL_DF_WOODEN_WALL_START + 15)
 
-#define EL_DF_STEEL_WALL_START			(EL_DF_START2 + 288)
-#define EL_DF_STEEL_WALL_1			(EL_DF_STEEL_WALL_START + 0)
-#define EL_DF_STEEL_WALL_END			(EL_DF_STEEL_WALL_START + 15)
+#define EL_DF_STEEL_WALL_START				(EL_DF_START2 + 288)
+#define EL_DF_STEEL_WALL_1				(EL_DF_STEEL_WALL_START + 0)
+#define EL_DF_STEEL_WALL_END				(EL_DF_STEEL_WALL_START + 15)
 
-#define EL_DF_WALL_START			EL_DF_WOODEN_WALL_START
-#define EL_DF_WALL_END				EL_DF_STEEL_WALL_END
+#define EL_DF_WALL_START				EL_DF_WOODEN_WALL_START
+#define EL_DF_WALL_END					EL_DF_STEEL_WALL_END
 
-#define EL_DF_EMPTY_SPACE			(EL_DF_START2 + 304)
-#define EL_DF_EMPTY				EL_DF_EMPTY_SPACE
-#define EL_DF_CELL				(EL_DF_START2 + 305)
-#define EL_DF_MINE				(EL_DF_START2 + 306)
-#define EL_DF_REFRACTOR				(EL_DF_START2 + 307)
+#define EL_DF_EMPTY_SPACE				(EL_DF_START2 + 304)
+#define EL_DF_EMPTY					EL_DF_EMPTY_SPACE
+#define EL_DF_CELL					(EL_DF_START2 + 305)
+#define EL_DF_MINE					(EL_DF_START2 + 306)
+#define EL_DF_REFRACTOR					(EL_DF_START2 + 307)
 
-#define EL_DF_LASER_START			(EL_DF_START2 + 308)
-#define EL_DF_LASER_RIGHT			(EL_DF_LASER_START + 0)
-#define EL_DF_LASER_UP				(EL_DF_LASER_START + 1)
-#define EL_DF_LASER_LEFT			(EL_DF_LASER_START + 2)
-#define EL_DF_LASER_DOWN			(EL_DF_LASER_START + 3)
-#define EL_DF_LASER_END				EL_DF_LASER_DOWN
+#define EL_DF_LASER_START				(EL_DF_START2 + 308)
+#define EL_DF_LASER_RIGHT				(EL_DF_LASER_START + 0)
+#define EL_DF_LASER_UP					(EL_DF_LASER_START + 1)
+#define EL_DF_LASER_LEFT				(EL_DF_LASER_START + 2)
+#define EL_DF_LASER_DOWN				(EL_DF_LASER_START + 3)
+#define EL_DF_LASER_END					EL_DF_LASER_DOWN
 
-#define EL_DF_RECEIVER_START			(EL_DF_START2 + 312)
-#define EL_DF_RECEIVER_RIGHT			(EL_DF_RECEIVER_START + 0)
-#define EL_DF_RECEIVER_UP			(EL_DF_RECEIVER_START + 1)
-#define EL_DF_RECEIVER_LEFT			(EL_DF_RECEIVER_START + 2)
-#define EL_DF_RECEIVER_DOWN			(EL_DF_RECEIVER_START + 3)
-#define EL_DF_RECEIVER_END			EL_DF_RECEIVER_DOWN
+#define EL_DF_RECEIVER_START				(EL_DF_START2 + 312)
+#define EL_DF_RECEIVER_RIGHT				(EL_DF_RECEIVER_START + 0)
+#define EL_DF_RECEIVER_UP				(EL_DF_RECEIVER_START + 1)
+#define EL_DF_RECEIVER_LEFT				(EL_DF_RECEIVER_START + 2)
+#define EL_DF_RECEIVER_DOWN				(EL_DF_RECEIVER_START + 3)
+#define EL_DF_RECEIVER_END				EL_DF_RECEIVER_DOWN
 
-#define EL_DF_FIBRE_OPTIC_START			(EL_DF_START2 + 316)
-#define EL_DF_FIBRE_OPTIC_RED_1			(EL_DF_FIBRE_OPTIC_START + 0)
-#define EL_DF_FIBRE_OPTIC_RED_2			(EL_DF_FIBRE_OPTIC_START + 1)
-#define EL_DF_FIBRE_OPTIC_YELLOW_1		(EL_DF_FIBRE_OPTIC_START + 2)
-#define EL_DF_FIBRE_OPTIC_YELLOW_2		(EL_DF_FIBRE_OPTIC_START + 3)
-#define EL_DF_FIBRE_OPTIC_GREEN_1		(EL_DF_FIBRE_OPTIC_START + 4)
-#define EL_DF_FIBRE_OPTIC_GREEN_2		(EL_DF_FIBRE_OPTIC_START + 5)
-#define EL_DF_FIBRE_OPTIC_BLUE_1		(EL_DF_FIBRE_OPTIC_START + 6)
-#define EL_DF_FIBRE_OPTIC_BLUE_2		(EL_DF_FIBRE_OPTIC_START + 7)
-#define EL_DF_FIBRE_OPTIC_END			EL_DF_FIBRE_OPTIC_07
+#define EL_DF_FIBRE_OPTIC_START				(EL_DF_START2 + 316)
+#define EL_DF_FIBRE_OPTIC_RED_1				(EL_DF_FIBRE_OPTIC_START + 0)
+#define EL_DF_FIBRE_OPTIC_RED_2				(EL_DF_FIBRE_OPTIC_START + 1)
+#define EL_DF_FIBRE_OPTIC_YELLOW_1			(EL_DF_FIBRE_OPTIC_START + 2)
+#define EL_DF_FIBRE_OPTIC_YELLOW_2			(EL_DF_FIBRE_OPTIC_START + 3)
+#define EL_DF_FIBRE_OPTIC_GREEN_1			(EL_DF_FIBRE_OPTIC_START + 4)
+#define EL_DF_FIBRE_OPTIC_GREEN_2			(EL_DF_FIBRE_OPTIC_START + 5)
+#define EL_DF_FIBRE_OPTIC_BLUE_1			(EL_DF_FIBRE_OPTIC_START + 6)
+#define EL_DF_FIBRE_OPTIC_BLUE_2			(EL_DF_FIBRE_OPTIC_START + 7)
+#define EL_DF_FIBRE_OPTIC_END				EL_DF_FIBRE_OPTIC_07
 
-#define EL_DF_MIRROR_ROTATING_START		(EL_DF_START2 + 324)
-#define EL_DF_MIRROR_ROTATING_1			(EL_DF_MIRROR_ROTATING_START + 0)
-#define EL_DF_MIRROR_ROTATING_2			(EL_DF_MIRROR_ROTATING_START + 1)
-#define EL_DF_MIRROR_ROTATING_3			(EL_DF_MIRROR_ROTATING_START + 2)
-#define EL_DF_MIRROR_ROTATING_4			(EL_DF_MIRROR_ROTATING_START + 3)
-#define EL_DF_MIRROR_ROTATING_5			(EL_DF_MIRROR_ROTATING_START + 4)
-#define EL_DF_MIRROR_ROTATING_6			(EL_DF_MIRROR_ROTATING_START + 5)
-#define EL_DF_MIRROR_ROTATING_7			(EL_DF_MIRROR_ROTATING_START + 6)
-#define EL_DF_MIRROR_ROTATING_8			(EL_DF_MIRROR_ROTATING_START + 7)
-#define EL_DF_MIRROR_ROTATING_9			(EL_DF_MIRROR_ROTATING_START + 8)
-#define EL_DF_MIRROR_ROTATING_10		(EL_DF_MIRROR_ROTATING_START + 9)
-#define EL_DF_MIRROR_ROTATING_11		(EL_DF_MIRROR_ROTATING_START + 10)
-#define EL_DF_MIRROR_ROTATING_12		(EL_DF_MIRROR_ROTATING_START + 11)
-#define EL_DF_MIRROR_ROTATING_13		(EL_DF_MIRROR_ROTATING_START + 12)
-#define EL_DF_MIRROR_ROTATING_14		(EL_DF_MIRROR_ROTATING_START + 13)
-#define EL_DF_MIRROR_ROTATING_15		(EL_DF_MIRROR_ROTATING_START + 14)
-#define EL_DF_MIRROR_ROTATING_16		(EL_DF_MIRROR_ROTATING_START + 15)
-#define EL_DF_MIRROR_ROTATING_END		EL_DF_MIRROR_ROTATING_15
+#define EL_DF_MIRROR_ROTATING_START			(EL_DF_START2 + 324)
+#define EL_DF_MIRROR_ROTATING_1				(EL_DF_MIRROR_ROTATING_START + 0)
+#define EL_DF_MIRROR_ROTATING_2				(EL_DF_MIRROR_ROTATING_START + 1)
+#define EL_DF_MIRROR_ROTATING_3				(EL_DF_MIRROR_ROTATING_START + 2)
+#define EL_DF_MIRROR_ROTATING_4				(EL_DF_MIRROR_ROTATING_START + 3)
+#define EL_DF_MIRROR_ROTATING_5				(EL_DF_MIRROR_ROTATING_START + 4)
+#define EL_DF_MIRROR_ROTATING_6				(EL_DF_MIRROR_ROTATING_START + 5)
+#define EL_DF_MIRROR_ROTATING_7				(EL_DF_MIRROR_ROTATING_START + 6)
+#define EL_DF_MIRROR_ROTATING_8				(EL_DF_MIRROR_ROTATING_START + 7)
+#define EL_DF_MIRROR_ROTATING_9				(EL_DF_MIRROR_ROTATING_START + 8)
+#define EL_DF_MIRROR_ROTATING_10			(EL_DF_MIRROR_ROTATING_START + 9)
+#define EL_DF_MIRROR_ROTATING_11			(EL_DF_MIRROR_ROTATING_START + 10)
+#define EL_DF_MIRROR_ROTATING_12			(EL_DF_MIRROR_ROTATING_START + 11)
+#define EL_DF_MIRROR_ROTATING_13			(EL_DF_MIRROR_ROTATING_START + 12)
+#define EL_DF_MIRROR_ROTATING_14			(EL_DF_MIRROR_ROTATING_START + 13)
+#define EL_DF_MIRROR_ROTATING_15			(EL_DF_MIRROR_ROTATING_START + 14)
+#define EL_DF_MIRROR_ROTATING_16			(EL_DF_MIRROR_ROTATING_START + 15)
+#define EL_DF_MIRROR_ROTATING_END			EL_DF_MIRROR_ROTATING_15
 
-#define EL_DF_WOODEN_GRID_ROTATING_START	(EL_DF_START2 + 340)
-#define EL_DF_WOODEN_GRID_ROTATING_1		(EL_DF_WOODEN_GRID_ROTATING_START + 0)
-#define EL_DF_WOODEN_GRID_ROTATING_2		(EL_DF_WOODEN_GRID_ROTATING_START + 1)
-#define EL_DF_WOODEN_GRID_ROTATING_3		(EL_DF_WOODEN_GRID_ROTATING_START + 2)
-#define EL_DF_WOODEN_GRID_ROTATING_4		(EL_DF_WOODEN_GRID_ROTATING_START + 3)
-#define EL_DF_WOODEN_GRID_ROTATING_5		(EL_DF_WOODEN_GRID_ROTATING_START + 4)
-#define EL_DF_WOODEN_GRID_ROTATING_6		(EL_DF_WOODEN_GRID_ROTATING_START + 5)
-#define EL_DF_WOODEN_GRID_ROTATING_7		(EL_DF_WOODEN_GRID_ROTATING_START + 6)
-#define EL_DF_WOODEN_GRID_ROTATING_8		(EL_DF_WOODEN_GRID_ROTATING_START + 7)
-#define EL_DF_WOODEN_GRID_ROTATING_END		EL_DF_WOODEN_GRID_ROTATING_07
+#define EL_DF_WOODEN_GRID_ROTATING_START		(EL_DF_START2 + 340)
+#define EL_DF_WOODEN_GRID_ROTATING_1			(EL_DF_WOODEN_GRID_ROTATING_START + 0)
+#define EL_DF_WOODEN_GRID_ROTATING_2			(EL_DF_WOODEN_GRID_ROTATING_START + 1)
+#define EL_DF_WOODEN_GRID_ROTATING_3			(EL_DF_WOODEN_GRID_ROTATING_START + 2)
+#define EL_DF_WOODEN_GRID_ROTATING_4			(EL_DF_WOODEN_GRID_ROTATING_START + 3)
+#define EL_DF_WOODEN_GRID_ROTATING_5			(EL_DF_WOODEN_GRID_ROTATING_START + 4)
+#define EL_DF_WOODEN_GRID_ROTATING_6			(EL_DF_WOODEN_GRID_ROTATING_START + 5)
+#define EL_DF_WOODEN_GRID_ROTATING_7			(EL_DF_WOODEN_GRID_ROTATING_START + 6)
+#define EL_DF_WOODEN_GRID_ROTATING_8			(EL_DF_WOODEN_GRID_ROTATING_START + 7)
+#define EL_DF_WOODEN_GRID_ROTATING_END			EL_DF_WOODEN_GRID_ROTATING_07
 
-#define EL_DF_STEEL_GRID_ROTATING_START		(EL_DF_START2 + 348)
-#define EL_DF_STEEL_GRID_ROTATING_1		(EL_DF_STEEL_GRID_ROTATING_START + 0)
-#define EL_DF_STEEL_GRID_ROTATING_2		(EL_DF_STEEL_GRID_ROTATING_START + 1)
-#define EL_DF_STEEL_GRID_ROTATING_3		(EL_DF_STEEL_GRID_ROTATING_START + 2)
-#define EL_DF_STEEL_GRID_ROTATING_4		(EL_DF_STEEL_GRID_ROTATING_START + 3)
-#define EL_DF_STEEL_GRID_ROTATING_5		(EL_DF_STEEL_GRID_ROTATING_START + 4)
-#define EL_DF_STEEL_GRID_ROTATING_6		(EL_DF_STEEL_GRID_ROTATING_START + 5)
-#define EL_DF_STEEL_GRID_ROTATING_7		(EL_DF_STEEL_GRID_ROTATING_START + 6)
-#define EL_DF_STEEL_GRID_ROTATING_8		(EL_DF_STEEL_GRID_ROTATING_START + 7)
-#define EL_DF_STEEL_GRID_ROTATING_END		EL_DF_STEEL_GRID_ROTATING_07
+#define EL_DF_STEEL_GRID_ROTATING_START			(EL_DF_START2 + 348)
+#define EL_DF_STEEL_GRID_ROTATING_1			(EL_DF_STEEL_GRID_ROTATING_START + 0)
+#define EL_DF_STEEL_GRID_ROTATING_2			(EL_DF_STEEL_GRID_ROTATING_START + 1)
+#define EL_DF_STEEL_GRID_ROTATING_3			(EL_DF_STEEL_GRID_ROTATING_START + 2)
+#define EL_DF_STEEL_GRID_ROTATING_4			(EL_DF_STEEL_GRID_ROTATING_START + 3)
+#define EL_DF_STEEL_GRID_ROTATING_5			(EL_DF_STEEL_GRID_ROTATING_START + 4)
+#define EL_DF_STEEL_GRID_ROTATING_6			(EL_DF_STEEL_GRID_ROTATING_START + 5)
+#define EL_DF_STEEL_GRID_ROTATING_7			(EL_DF_STEEL_GRID_ROTATING_START + 6)
+#define EL_DF_STEEL_GRID_ROTATING_8			(EL_DF_STEEL_GRID_ROTATING_START + 7)
+#define EL_DF_STEEL_GRID_ROTATING_END			EL_DF_STEEL_GRID_ROTATING_07
 
-#define EL_DF_END_1				(EL_DF_START2 + 355)
+#define EL_DF_END_1					(EL_DF_START2 + 355)
 
 // MM style elements
-#define EL_MM_TELEPORTER_RED_START		(EL_DF_START2 + 356)
-#define EL_MM_TELEPORTER_RED_1			(EL_MM_TELEPORTER_RED_START + 0)
-#define EL_MM_TELEPORTER_RED_2			(EL_MM_TELEPORTER_RED_START + 1)
-#define EL_MM_TELEPORTER_RED_3			(EL_MM_TELEPORTER_RED_START + 2)
-#define EL_MM_TELEPORTER_RED_4			(EL_MM_TELEPORTER_RED_START + 3)
-#define EL_MM_TELEPORTER_RED_5			(EL_MM_TELEPORTER_RED_START + 4)
-#define EL_MM_TELEPORTER_RED_6			(EL_MM_TELEPORTER_RED_START + 5)
-#define EL_MM_TELEPORTER_RED_7			(EL_MM_TELEPORTER_RED_START + 6)
-#define EL_MM_TELEPORTER_RED_8			(EL_MM_TELEPORTER_RED_START + 7)
-#define EL_MM_TELEPORTER_RED_9			(EL_MM_TELEPORTER_RED_START + 8)
-#define EL_MM_TELEPORTER_RED_10			(EL_MM_TELEPORTER_RED_START + 9)
-#define EL_MM_TELEPORTER_RED_11			(EL_MM_TELEPORTER_RED_START + 10)
-#define EL_MM_TELEPORTER_RED_12			(EL_MM_TELEPORTER_RED_START + 11)
-#define EL_MM_TELEPORTER_RED_13			(EL_MM_TELEPORTER_RED_START + 12)
-#define EL_MM_TELEPORTER_RED_14			(EL_MM_TELEPORTER_RED_START + 13)
-#define EL_MM_TELEPORTER_RED_15			(EL_MM_TELEPORTER_RED_START + 14)
-#define EL_MM_TELEPORTER_RED_16			(EL_MM_TELEPORTER_RED_START + 15)
-#define EL_MM_TELEPORTER_RED_END		EL_MM_TELEPORTER_RED_16
-#define EL_MM_TELEPORTER_YELLOW_START		(EL_DF_START2 + 372)
-#define EL_MM_TELEPORTER_YELLOW_1		(EL_MM_TELEPORTER_YELLOW_START + 0)
-#define EL_MM_TELEPORTER_YELLOW_2		(EL_MM_TELEPORTER_YELLOW_START + 1)
-#define EL_MM_TELEPORTER_YELLOW_3		(EL_MM_TELEPORTER_YELLOW_START + 2)
-#define EL_MM_TELEPORTER_YELLOW_4		(EL_MM_TELEPORTER_YELLOW_START + 3)
-#define EL_MM_TELEPORTER_YELLOW_5		(EL_MM_TELEPORTER_YELLOW_START + 4)
-#define EL_MM_TELEPORTER_YELLOW_6		(EL_MM_TELEPORTER_YELLOW_START + 5)
-#define EL_MM_TELEPORTER_YELLOW_7		(EL_MM_TELEPORTER_YELLOW_START + 6)
-#define EL_MM_TELEPORTER_YELLOW_8		(EL_MM_TELEPORTER_YELLOW_START + 7)
-#define EL_MM_TELEPORTER_YELLOW_9		(EL_MM_TELEPORTER_YELLOW_START + 8)
-#define EL_MM_TELEPORTER_YELLOW_10		(EL_MM_TELEPORTER_YELLOW_START + 9)
-#define EL_MM_TELEPORTER_YELLOW_11		(EL_MM_TELEPORTER_YELLOW_START + 10)
-#define EL_MM_TELEPORTER_YELLOW_12		(EL_MM_TELEPORTER_YELLOW_START + 11)
-#define EL_MM_TELEPORTER_YELLOW_13		(EL_MM_TELEPORTER_YELLOW_START + 12)
-#define EL_MM_TELEPORTER_YELLOW_14		(EL_MM_TELEPORTER_YELLOW_START + 13)
-#define EL_MM_TELEPORTER_YELLOW_15		(EL_MM_TELEPORTER_YELLOW_START + 14)
-#define EL_MM_TELEPORTER_YELLOW_16		(EL_MM_TELEPORTER_YELLOW_START + 15)
-#define EL_MM_TELEPORTER_YELLOW_END		EL_MM_TELEPORTER_YELLOW_16
-#define EL_MM_TELEPORTER_GREEN_START		(EL_DF_START2 + 388)
-#define EL_MM_TELEPORTER_GREEN_1		(EL_MM_TELEPORTER_GREEN_START + 0)
-#define EL_MM_TELEPORTER_GREEN_2		(EL_MM_TELEPORTER_GREEN_START + 1)
-#define EL_MM_TELEPORTER_GREEN_3		(EL_MM_TELEPORTER_GREEN_START + 2)
-#define EL_MM_TELEPORTER_GREEN_4		(EL_MM_TELEPORTER_GREEN_START + 3)
-#define EL_MM_TELEPORTER_GREEN_5		(EL_MM_TELEPORTER_GREEN_START + 4)
-#define EL_MM_TELEPORTER_GREEN_6		(EL_MM_TELEPORTER_GREEN_START + 5)
-#define EL_MM_TELEPORTER_GREEN_7		(EL_MM_TELEPORTER_GREEN_START + 6)
-#define EL_MM_TELEPORTER_GREEN_8		(EL_MM_TELEPORTER_GREEN_START + 7)
-#define EL_MM_TELEPORTER_GREEN_9		(EL_MM_TELEPORTER_GREEN_START + 8)
-#define EL_MM_TELEPORTER_GREEN_10		(EL_MM_TELEPORTER_GREEN_START + 9)
-#define EL_MM_TELEPORTER_GREEN_11		(EL_MM_TELEPORTER_GREEN_START + 10)
-#define EL_MM_TELEPORTER_GREEN_12		(EL_MM_TELEPORTER_GREEN_START + 11)
-#define EL_MM_TELEPORTER_GREEN_13		(EL_MM_TELEPORTER_GREEN_START + 12)
-#define EL_MM_TELEPORTER_GREEN_14		(EL_MM_TELEPORTER_GREEN_START + 13)
-#define EL_MM_TELEPORTER_GREEN_15		(EL_MM_TELEPORTER_GREEN_START + 14)
-#define EL_MM_TELEPORTER_GREEN_16		(EL_MM_TELEPORTER_GREEN_START + 15)
-#define EL_MM_TELEPORTER_GREEN_END		EL_MM_TELEPORTER_GREEN_16
-#define EL_MM_TELEPORTER_BLUE_START		(EL_DF_START2 + 404)
-#define EL_MM_TELEPORTER_BLUE_1			(EL_MM_TELEPORTER_BLUE_START + 0)
-#define EL_MM_TELEPORTER_BLUE_2			(EL_MM_TELEPORTER_BLUE_START + 1)
-#define EL_MM_TELEPORTER_BLUE_3			(EL_MM_TELEPORTER_BLUE_START + 2)
-#define EL_MM_TELEPORTER_BLUE_4			(EL_MM_TELEPORTER_BLUE_START + 3)
-#define EL_MM_TELEPORTER_BLUE_5			(EL_MM_TELEPORTER_BLUE_START + 4)
-#define EL_MM_TELEPORTER_BLUE_6			(EL_MM_TELEPORTER_BLUE_START + 5)
-#define EL_MM_TELEPORTER_BLUE_7			(EL_MM_TELEPORTER_BLUE_START + 6)
-#define EL_MM_TELEPORTER_BLUE_8			(EL_MM_TELEPORTER_BLUE_START + 7)
-#define EL_MM_TELEPORTER_BLUE_9			(EL_MM_TELEPORTER_BLUE_START + 8)
-#define EL_MM_TELEPORTER_BLUE_10		(EL_MM_TELEPORTER_BLUE_START + 9)
-#define EL_MM_TELEPORTER_BLUE_11		(EL_MM_TELEPORTER_BLUE_START + 10)
-#define EL_MM_TELEPORTER_BLUE_12		(EL_MM_TELEPORTER_BLUE_START + 11)
-#define EL_MM_TELEPORTER_BLUE_13		(EL_MM_TELEPORTER_BLUE_START + 12)
-#define EL_MM_TELEPORTER_BLUE_14		(EL_MM_TELEPORTER_BLUE_START + 13)
-#define EL_MM_TELEPORTER_BLUE_15		(EL_MM_TELEPORTER_BLUE_START + 14)
-#define EL_MM_TELEPORTER_BLUE_16		(EL_MM_TELEPORTER_BLUE_START + 15)
-#define EL_MM_TELEPORTER_BLUE_END		EL_MM_TELEPORTER_BLUE_16
+#define EL_MM_TELEPORTER_RED_START			(EL_DF_START2 + 356)
+#define EL_MM_TELEPORTER_RED_1				(EL_MM_TELEPORTER_RED_START + 0)
+#define EL_MM_TELEPORTER_RED_2				(EL_MM_TELEPORTER_RED_START + 1)
+#define EL_MM_TELEPORTER_RED_3				(EL_MM_TELEPORTER_RED_START + 2)
+#define EL_MM_TELEPORTER_RED_4				(EL_MM_TELEPORTER_RED_START + 3)
+#define EL_MM_TELEPORTER_RED_5				(EL_MM_TELEPORTER_RED_START + 4)
+#define EL_MM_TELEPORTER_RED_6				(EL_MM_TELEPORTER_RED_START + 5)
+#define EL_MM_TELEPORTER_RED_7				(EL_MM_TELEPORTER_RED_START + 6)
+#define EL_MM_TELEPORTER_RED_8				(EL_MM_TELEPORTER_RED_START + 7)
+#define EL_MM_TELEPORTER_RED_9				(EL_MM_TELEPORTER_RED_START + 8)
+#define EL_MM_TELEPORTER_RED_10				(EL_MM_TELEPORTER_RED_START + 9)
+#define EL_MM_TELEPORTER_RED_11				(EL_MM_TELEPORTER_RED_START + 10)
+#define EL_MM_TELEPORTER_RED_12				(EL_MM_TELEPORTER_RED_START + 11)
+#define EL_MM_TELEPORTER_RED_13				(EL_MM_TELEPORTER_RED_START + 12)
+#define EL_MM_TELEPORTER_RED_14				(EL_MM_TELEPORTER_RED_START + 13)
+#define EL_MM_TELEPORTER_RED_15				(EL_MM_TELEPORTER_RED_START + 14)
+#define EL_MM_TELEPORTER_RED_16				(EL_MM_TELEPORTER_RED_START + 15)
+#define EL_MM_TELEPORTER_RED_END			EL_MM_TELEPORTER_RED_16
+#define EL_MM_TELEPORTER_YELLOW_START			(EL_DF_START2 + 372)
+#define EL_MM_TELEPORTER_YELLOW_1			(EL_MM_TELEPORTER_YELLOW_START + 0)
+#define EL_MM_TELEPORTER_YELLOW_2			(EL_MM_TELEPORTER_YELLOW_START + 1)
+#define EL_MM_TELEPORTER_YELLOW_3			(EL_MM_TELEPORTER_YELLOW_START + 2)
+#define EL_MM_TELEPORTER_YELLOW_4			(EL_MM_TELEPORTER_YELLOW_START + 3)
+#define EL_MM_TELEPORTER_YELLOW_5			(EL_MM_TELEPORTER_YELLOW_START + 4)
+#define EL_MM_TELEPORTER_YELLOW_6			(EL_MM_TELEPORTER_YELLOW_START + 5)
+#define EL_MM_TELEPORTER_YELLOW_7			(EL_MM_TELEPORTER_YELLOW_START + 6)
+#define EL_MM_TELEPORTER_YELLOW_8			(EL_MM_TELEPORTER_YELLOW_START + 7)
+#define EL_MM_TELEPORTER_YELLOW_9			(EL_MM_TELEPORTER_YELLOW_START + 8)
+#define EL_MM_TELEPORTER_YELLOW_10			(EL_MM_TELEPORTER_YELLOW_START + 9)
+#define EL_MM_TELEPORTER_YELLOW_11			(EL_MM_TELEPORTER_YELLOW_START + 10)
+#define EL_MM_TELEPORTER_YELLOW_12			(EL_MM_TELEPORTER_YELLOW_START + 11)
+#define EL_MM_TELEPORTER_YELLOW_13			(EL_MM_TELEPORTER_YELLOW_START + 12)
+#define EL_MM_TELEPORTER_YELLOW_14			(EL_MM_TELEPORTER_YELLOW_START + 13)
+#define EL_MM_TELEPORTER_YELLOW_15			(EL_MM_TELEPORTER_YELLOW_START + 14)
+#define EL_MM_TELEPORTER_YELLOW_16			(EL_MM_TELEPORTER_YELLOW_START + 15)
+#define EL_MM_TELEPORTER_YELLOW_END			EL_MM_TELEPORTER_YELLOW_16
+#define EL_MM_TELEPORTER_GREEN_START			(EL_DF_START2 + 388)
+#define EL_MM_TELEPORTER_GREEN_1			(EL_MM_TELEPORTER_GREEN_START + 0)
+#define EL_MM_TELEPORTER_GREEN_2			(EL_MM_TELEPORTER_GREEN_START + 1)
+#define EL_MM_TELEPORTER_GREEN_3			(EL_MM_TELEPORTER_GREEN_START + 2)
+#define EL_MM_TELEPORTER_GREEN_4			(EL_MM_TELEPORTER_GREEN_START + 3)
+#define EL_MM_TELEPORTER_GREEN_5			(EL_MM_TELEPORTER_GREEN_START + 4)
+#define EL_MM_TELEPORTER_GREEN_6			(EL_MM_TELEPORTER_GREEN_START + 5)
+#define EL_MM_TELEPORTER_GREEN_7			(EL_MM_TELEPORTER_GREEN_START + 6)
+#define EL_MM_TELEPORTER_GREEN_8			(EL_MM_TELEPORTER_GREEN_START + 7)
+#define EL_MM_TELEPORTER_GREEN_9			(EL_MM_TELEPORTER_GREEN_START + 8)
+#define EL_MM_TELEPORTER_GREEN_10			(EL_MM_TELEPORTER_GREEN_START + 9)
+#define EL_MM_TELEPORTER_GREEN_11			(EL_MM_TELEPORTER_GREEN_START + 10)
+#define EL_MM_TELEPORTER_GREEN_12			(EL_MM_TELEPORTER_GREEN_START + 11)
+#define EL_MM_TELEPORTER_GREEN_13			(EL_MM_TELEPORTER_GREEN_START + 12)
+#define EL_MM_TELEPORTER_GREEN_14			(EL_MM_TELEPORTER_GREEN_START + 13)
+#define EL_MM_TELEPORTER_GREEN_15			(EL_MM_TELEPORTER_GREEN_START + 14)
+#define EL_MM_TELEPORTER_GREEN_16			(EL_MM_TELEPORTER_GREEN_START + 15)
+#define EL_MM_TELEPORTER_GREEN_END			EL_MM_TELEPORTER_GREEN_16
+#define EL_MM_TELEPORTER_BLUE_START			(EL_DF_START2 + 404)
+#define EL_MM_TELEPORTER_BLUE_1				(EL_MM_TELEPORTER_BLUE_START + 0)
+#define EL_MM_TELEPORTER_BLUE_2				(EL_MM_TELEPORTER_BLUE_START + 1)
+#define EL_MM_TELEPORTER_BLUE_3				(EL_MM_TELEPORTER_BLUE_START + 2)
+#define EL_MM_TELEPORTER_BLUE_4				(EL_MM_TELEPORTER_BLUE_START + 3)
+#define EL_MM_TELEPORTER_BLUE_5				(EL_MM_TELEPORTER_BLUE_START + 4)
+#define EL_MM_TELEPORTER_BLUE_6				(EL_MM_TELEPORTER_BLUE_START + 5)
+#define EL_MM_TELEPORTER_BLUE_7				(EL_MM_TELEPORTER_BLUE_START + 6)
+#define EL_MM_TELEPORTER_BLUE_8				(EL_MM_TELEPORTER_BLUE_START + 7)
+#define EL_MM_TELEPORTER_BLUE_9				(EL_MM_TELEPORTER_BLUE_START + 8)
+#define EL_MM_TELEPORTER_BLUE_10			(EL_MM_TELEPORTER_BLUE_START + 9)
+#define EL_MM_TELEPORTER_BLUE_11			(EL_MM_TELEPORTER_BLUE_START + 10)
+#define EL_MM_TELEPORTER_BLUE_12			(EL_MM_TELEPORTER_BLUE_START + 11)
+#define EL_MM_TELEPORTER_BLUE_13			(EL_MM_TELEPORTER_BLUE_START + 12)
+#define EL_MM_TELEPORTER_BLUE_14			(EL_MM_TELEPORTER_BLUE_START + 13)
+#define EL_MM_TELEPORTER_BLUE_15			(EL_MM_TELEPORTER_BLUE_START + 14)
+#define EL_MM_TELEPORTER_BLUE_16			(EL_MM_TELEPORTER_BLUE_START + 15)
+#define EL_MM_TELEPORTER_BLUE_END			EL_MM_TELEPORTER_BLUE_16
 
-#define EL_MM_MCDUFFIN				1204
-#define EL_MM_PACMAN				1205
-#define EL_MM_FUSE				1206
-#define EL_MM_STEEL_WALL			1207
-#define EL_MM_WOODEN_WALL			1208
-#define EL_MM_ICE_WALL				1209
-#define EL_MM_AMOEBA_WALL			1210
-#define EL_DF_LASER				1211
-#define EL_DF_RECEIVER				1212
-#define EL_DF_STEEL_WALL			1213
-#define EL_DF_WOODEN_WALL			1214
+#define EL_MM_MCDUFFIN					1204
+#define EL_MM_PACMAN					1205
+#define EL_MM_FUSE					1206
+#define EL_MM_STEEL_WALL				1207
+#define EL_MM_WOODEN_WALL				1208
+#define EL_MM_ICE_WALL					1209
+#define EL_MM_AMOEBA_WALL				1210
+#define EL_DF_LASER					1211
+#define EL_DF_RECEIVER					1212
+#define EL_DF_STEEL_WALL				1213
+#define EL_DF_WOODEN_WALL				1214
 
-#define EL_MM_END_2				(EL_DF_START2 + 430)
+#define EL_MM_END_2					(EL_DF_START2 + 430)
 
 // EMC style elements
-#define EL_SPRING_LEFT				1215
-#define EL_SPRING_RIGHT				1216
+#define EL_SPRING_LEFT					1215
+#define EL_SPRING_RIGHT					1216
 
 // ---------- begin of empty space elements section ---------------------------
-#define EL_EMPTY_SPACE_START			1217
+#define EL_EMPTY_SPACE_START				1217
 
 #include "conf_emp.h"	// include auto-generated data structure definitions
 
-#define NUM_EMPTY_SPACE_ELEMENTS		16
-#define NUM_EMPTY_ELEMENTS_ALL			(NUM_EMPTY_SPACE_ELEMENTS + 1)
-#define EL_EMPTY_SPACE_END			1232
+#define NUM_EMPTY_SPACE_ELEMENTS			16
+#define NUM_EMPTY_ELEMENTS_ALL				(NUM_EMPTY_SPACE_ELEMENTS + 1)
+#define EL_EMPTY_SPACE_END				1232
 // ---------- end of empty space elements section -----------------------------
 
-#define EL_MM_START_3				EL_DF_MIRROR_FIXED_START
-#define EL_DF_START_2				EL_DF_MIRROR_FIXED_START
+#define EL_MM_START_3					EL_DF_MIRROR_FIXED_START
+#define EL_DF_START_2					EL_DF_MIRROR_FIXED_START
 
 // DF style elements
-#define EL_DF_MIRROR_FIXED_START		1233
-#define EL_DF_MIRROR_FIXED_1			(EL_DF_MIRROR_FIXED_START + 0)
-#define EL_DF_MIRROR_FIXED_2			(EL_DF_MIRROR_FIXED_START + 1)
-#define EL_DF_MIRROR_FIXED_3			(EL_DF_MIRROR_FIXED_START + 2)
-#define EL_DF_MIRROR_FIXED_4			(EL_DF_MIRROR_FIXED_START + 3)
-#define EL_DF_MIRROR_FIXED_5			(EL_DF_MIRROR_FIXED_START + 4)
-#define EL_DF_MIRROR_FIXED_6			(EL_DF_MIRROR_FIXED_START + 5)
-#define EL_DF_MIRROR_FIXED_7			(EL_DF_MIRROR_FIXED_START + 6)
-#define EL_DF_MIRROR_FIXED_8			(EL_DF_MIRROR_FIXED_START + 7)
-#define EL_DF_MIRROR_FIXED_9			(EL_DF_MIRROR_FIXED_START + 8)
-#define EL_DF_MIRROR_FIXED_10			(EL_DF_MIRROR_FIXED_START + 9)
-#define EL_DF_MIRROR_FIXED_11			(EL_DF_MIRROR_FIXED_START + 10)
-#define EL_DF_MIRROR_FIXED_12			(EL_DF_MIRROR_FIXED_START + 11)
-#define EL_DF_MIRROR_FIXED_13			(EL_DF_MIRROR_FIXED_START + 12)
-#define EL_DF_MIRROR_FIXED_14			(EL_DF_MIRROR_FIXED_START + 13)
-#define EL_DF_MIRROR_FIXED_15			(EL_DF_MIRROR_FIXED_START + 14)
-#define EL_DF_MIRROR_FIXED_16			(EL_DF_MIRROR_FIXED_START + 15)
-#define EL_DF_MIRROR_FIXED_END			EL_DF_MIRROR_FIXED_16
+#define EL_DF_MIRROR_FIXED_START			1233
+#define EL_DF_MIRROR_FIXED_1				(EL_DF_MIRROR_FIXED_START + 0)
+#define EL_DF_MIRROR_FIXED_2				(EL_DF_MIRROR_FIXED_START + 1)
+#define EL_DF_MIRROR_FIXED_3				(EL_DF_MIRROR_FIXED_START + 2)
+#define EL_DF_MIRROR_FIXED_4				(EL_DF_MIRROR_FIXED_START + 3)
+#define EL_DF_MIRROR_FIXED_5				(EL_DF_MIRROR_FIXED_START + 4)
+#define EL_DF_MIRROR_FIXED_6				(EL_DF_MIRROR_FIXED_START + 5)
+#define EL_DF_MIRROR_FIXED_7				(EL_DF_MIRROR_FIXED_START + 6)
+#define EL_DF_MIRROR_FIXED_8				(EL_DF_MIRROR_FIXED_START + 7)
+#define EL_DF_MIRROR_FIXED_9				(EL_DF_MIRROR_FIXED_START + 8)
+#define EL_DF_MIRROR_FIXED_10				(EL_DF_MIRROR_FIXED_START + 9)
+#define EL_DF_MIRROR_FIXED_11				(EL_DF_MIRROR_FIXED_START + 10)
+#define EL_DF_MIRROR_FIXED_12				(EL_DF_MIRROR_FIXED_START + 11)
+#define EL_DF_MIRROR_FIXED_13				(EL_DF_MIRROR_FIXED_START + 12)
+#define EL_DF_MIRROR_FIXED_14				(EL_DF_MIRROR_FIXED_START + 13)
+#define EL_DF_MIRROR_FIXED_15				(EL_DF_MIRROR_FIXED_START + 14)
+#define EL_DF_MIRROR_FIXED_16				(EL_DF_MIRROR_FIXED_START + 15)
+#define EL_DF_MIRROR_FIXED_END				EL_DF_MIRROR_FIXED_16
 
-#define EL_DF_SLOPE_START			1249
-#define EL_DF_SLOPE_1				(EL_DF_SLOPE_START + 0)
-#define EL_DF_SLOPE_2				(EL_DF_SLOPE_START + 1)
-#define EL_DF_SLOPE_3				(EL_DF_SLOPE_START + 2)
-#define EL_DF_SLOPE_4				(EL_DF_SLOPE_START + 3)
-#define EL_DF_SLOPE_END				EL_DF_SLOPE_4
+#define EL_DF_SLOPE_START				1249
+#define EL_DF_SLOPE_1					(EL_DF_SLOPE_START + 0)
+#define EL_DF_SLOPE_2					(EL_DF_SLOPE_START + 1)
+#define EL_DF_SLOPE_3					(EL_DF_SLOPE_START + 2)
+#define EL_DF_SLOPE_4					(EL_DF_SLOPE_START + 3)
+#define EL_DF_SLOPE_END					EL_DF_SLOPE_4
 
-#define EL_MM_END_3				EL_DF_SLOPE_END
-#define EL_DF_END_2				EL_DF_SLOPE_END
+#define EL_MM_END_3					EL_DF_SLOPE_END
+#define EL_DF_END_2					EL_DF_SLOPE_END
 
 // BD style elements (normal)
-#define EL_BDX_START				1253
-#define EL_BDX_EMPTY_SPACE			EL_BDX_START
-#define EL_BDX_EMPTY				EL_BDX_EMPTY_SPACE
-#define EL_BDX_SAND				1254
-#define EL_BDX_GRASS				1255
-#define EL_BDX_GRASS_BALL			1256
-#define EL_BDX_GRASS_LOOSE			1257
-#define EL_BDX_SAND_SLOPED_UP_RIGHT		1258
-#define EL_BDX_SAND_SLOPED_UP_LEFT		1259
-#define EL_BDX_SAND_SLOPED_DOWN_LEFT		1260
-#define EL_BDX_SAND_SLOPED_DOWN_RIGHT		1261
-#define EL_BDX_SAND_GLUED			1262
-#define EL_BDX_WALL_SLOPED_UP_RIGHT		1263
-#define EL_BDX_WALL_SLOPED_UP_LEFT		1264
-#define EL_BDX_WALL_SLOPED_DOWN_LEFT		1265
-#define EL_BDX_WALL_SLOPED_DOWN_RIGHT		1266
-#define EL_BDX_WALL_NON_SLOPED			1267
-#define EL_BDX_WALL_DIGGABLE			1268
-#define EL_BDX_WALL_DIAMOND			1269
-#define EL_BDX_WALL_KEY_1			1270
-#define EL_BDX_WALL_KEY_2			1271
-#define EL_BDX_WALL_KEY_3			1272
-#define EL_BDX_FALLING_WALL			1273
-#define EL_BDX_STEELWALL			1274
-#define EL_BDX_STEELWALL_SLOPED_UP_RIGHT	1275
-#define EL_BDX_STEELWALL_SLOPED_UP_LEFT		1276
-#define EL_BDX_STEELWALL_SLOPED_DOWN_LEFT	1277
-#define EL_BDX_STEELWALL_SLOPED_DOWN_RIGHT	1278
-#define EL_BDX_STEELWALL_EXPLODABLE		1279
-#define EL_BDX_STEELWALL_DIGGABLE		1280
-#define EL_BDX_EXPANDABLE_WALL_HORIZONTAL	1281
-#define EL_BDX_EXPANDABLE_WALL_VERTICAL		1282
-#define EL_BDX_EXPANDABLE_WALL_ANY		1283
-#define EL_BDX_EXPANDABLE_STEELWALL_HORIZONTAL	1284
-#define EL_BDX_EXPANDABLE_STEELWALL_VERTICAL	1285
-#define EL_BDX_EXPANDABLE_STEELWALL_ANY		1286
-#define EL_BDX_EXPANDABLE_WALL_SWITCH		1287
-#define EL_BDX_EXPANDABLE_WALL_SWITCH_ACTIVE	1288
-#define EL_BDX_INBOX				1289
-#define EL_BDX_EXIT_CLOSED			1290
-#define EL_BDX_EXIT_OPEN			1291
-#define EL_BDX_INVISIBLE_EXIT_CLOSED		1292
-#define EL_BDX_INVISIBLE_EXIT_OPEN		1293
-#define EL_BDX_FLYING_ROCK			1294
-#define EL_BDX_HEAVY_ROCK			1295
-#define EL_BDX_ROCK_GLUED			1296
-#define EL_BDX_FLYING_DIAMOND			1297
-#define EL_BDX_DIAMOND_GLUED			1298
-#define EL_BDX_DIAMOND_KEY			1299
-#define EL_BDX_TRAPPED_DIAMOND			1300
-#define EL_BDX_NUT				1301
-#define EL_BDX_AMOEBA_1				1302
-#define EL_BDX_AMOEBA_2				1303
-#define EL_BDX_BUBBLE				1304
-#define EL_BDX_TRAPPED_BUBBLE			1305
-#define EL_BDX_CREATURE_SWITCH			1306
-#define EL_BDX_CREATURE_SWITCH_ACTIVE		1307
-#define EL_BDX_BITER_SWITCH_1			1308
-#define EL_BDX_BITER_SWITCH_2			1309
-#define EL_BDX_BITER_SWITCH_3			1310
-#define EL_BDX_BITER_SWITCH_4			1311
-#define EL_BDX_REPLICATOR			1312
-#define EL_BDX_REPLICATOR_ACTIVE		1313
-#define EL_BDX_REPLICATOR_SWITCH		1314
-#define EL_BDX_REPLICATOR_SWITCH_ACTIVE		1315
-#define EL_BDX_CONVEYOR_LEFT			1316
-#define EL_BDX_CONVEYOR_LEFT_ACTIVE		1317
-#define EL_BDX_CONVEYOR_RIGHT			1318
-#define EL_BDX_CONVEYOR_RIGHT_ACTIVE		1319
-#define EL_BDX_CONVEYOR_SWITCH			1320
-#define EL_BDX_CONVEYOR_SWITCH_ACTIVE		1321
-#define EL_BDX_CONVEYOR_DIR_SWITCH		1322
-#define EL_BDX_CONVEYOR_DIR_SWITCH_ACTIVE	1323
-#define EL_BDX_GRAVITY_SWITCH			1324
-#define EL_BDX_GRAVITY_SWITCH_ACTIVE		1325
-#define EL_BDX_ACID				1326
-#define EL_BDX_BOX				1327
-#define EL_BDX_TIME_PENALTY			1328
-#define EL_BDX_GRAVESTONE			1329
-#define EL_BDX_CLOCK				1330
-#define EL_BDX_POT				1331
-#define EL_BDX_PNEUMATIC_HAMMER			1332
-#define EL_BDX_TELEPORTER			1333
-#define EL_BDX_SKELETON				1334
-#define EL_BDX_WATER				1335
-#define EL_BDX_KEY_1				1336
-#define EL_BDX_KEY_2				1337
-#define EL_BDX_KEY_3				1338
-#define EL_BDX_GATE_1				1339
-#define EL_BDX_GATE_2				1340
-#define EL_BDX_GATE_3				1341
-#define EL_BDX_LAVA				1342
-#define EL_BDX_SWEET				1343
-#define EL_BDX_VOODOO_DOLL			1344
-#define EL_BDX_SLIME				1345
-#define EL_BDX_WAITING_ROCK			1346
-#define EL_BDX_CHASING_ROCK			1347
-#define EL_BDX_GHOST				1348
-#define EL_BDX_COW				1349
-#define EL_BDX_COW_LEFT				1350
-#define EL_BDX_COW_UP				1351
-#define EL_BDX_COW_RIGHT			1352
-#define EL_BDX_COW_DOWN				1353
-#define EL_BDX_BUTTERFLY_1			1354
-#define EL_BDX_BUTTERFLY_1_RIGHT		1355
-#define EL_BDX_BUTTERFLY_1_UP			1356
-#define EL_BDX_BUTTERFLY_1_LEFT			1357
-#define EL_BDX_BUTTERFLY_1_DOWN			1358
-#define EL_BDX_BUTTERFLY_2			1359
-#define EL_BDX_BUTTERFLY_2_RIGHT		1360
-#define EL_BDX_BUTTERFLY_2_UP			1361
-#define EL_BDX_BUTTERFLY_2_LEFT			1362
-#define EL_BDX_BUTTERFLY_2_DOWN			1363
-#define EL_BDX_FIREFLY_1			1364
-#define EL_BDX_FIREFLY_1_RIGHT			1365
-#define EL_BDX_FIREFLY_1_UP			1366
-#define EL_BDX_FIREFLY_1_LEFT			1367
-#define EL_BDX_FIREFLY_1_DOWN			1368
-#define EL_BDX_FIREFLY_2			1369
-#define EL_BDX_FIREFLY_2_RIGHT			1370
-#define EL_BDX_FIREFLY_2_UP			1371
-#define EL_BDX_FIREFLY_2_LEFT			1372
-#define EL_BDX_FIREFLY_2_DOWN			1373
-#define EL_BDX_STONEFLY				1374
-#define EL_BDX_STONEFLY_RIGHT			1375
-#define EL_BDX_STONEFLY_UP			1376
-#define EL_BDX_STONEFLY_LEFT			1377
-#define EL_BDX_STONEFLY_DOWN			1378
-#define EL_BDX_BITER				1379
-#define EL_BDX_BITER_RIGHT			1380
-#define EL_BDX_BITER_UP				1381
-#define EL_BDX_BITER_LEFT			1382
-#define EL_BDX_BITER_DOWN			1383
-#define EL_BDX_DRAGONFLY			1384
-#define EL_BDX_DRAGONFLY_RIGHT			1385
-#define EL_BDX_DRAGONFLY_UP			1386
-#define EL_BDX_DRAGONFLY_LEFT			1387
-#define EL_BDX_DRAGONFLY_DOWN			1388
-#define EL_BDX_BOMB				1389
-#define EL_BDX_NITRO_PACK			1390
-#define EL_BDX_PLAYER				1391
-#define EL_BDX_PLAYER_WITH_BOMB			1392
-#define EL_BDX_PLAYER_WITH_ROCKET_LAUNCHER	1393
-#define EL_BDX_PLAYER_GLUED			1394
-#define EL_BDX_PLAYER_STIRRING			1395
-#define EL_BDX_ROCKET_LAUNCHER			1396
-#define EL_BDX_ROCKET				1397
-#define EL_BDX_ROCKET_RIGHT			1398
-#define EL_BDX_ROCKET_UP			1399
-#define EL_BDX_ROCKET_LEFT			1400
-#define EL_BDX_ROCKET_DOWN			1401
-#define EL_BDX_FAKE_BONUS			1402
-#define EL_BDX_COVERED				1403
-#define EL_BDX_WALL				1404
-#define EL_BDX_ROCK				1405
-#define EL_BDX_DIAMOND				1406
-#define EL_BDX_MAGIC_WALL			1407
-#define EL_BDX_LIGHT_ROCK			1408
-#define EL_BDX_STEEL_EXIT_CLOSED		1409
-#define EL_BDX_STEEL_EXIT_OPEN			1410
-#define EL_BDX_INVISIBLE_STEEL_EXIT_CLOSED	1411
-#define EL_BDX_INVISIBLE_STEEL_EXIT_OPEN	1412
-#define EL_BDX_UNUSED_1				1413
-#define EL_BDX_UNUSED_2				1414
-#define EL_BDX_UNUSED_3				1415
-#define EL_BDX_UNUSED_4				1416
-#define EL_BDX_UNUSED_5				1417
-#define EL_BDX_UNUSED_6				1418
+#define EL_BDX_START					1253
+#define EL_BDX_EMPTY_SPACE				EL_BDX_START
+#define EL_BDX_EMPTY					EL_BDX_EMPTY_SPACE
+#define EL_BDX_SAND					1254
+#define EL_BDX_GRASS					1255
+#define EL_BDX_GRASS_BALL				1256
+#define EL_BDX_GRASS_LOOSE				1257
+#define EL_BDX_SAND_SLOPED_UP_RIGHT			1258
+#define EL_BDX_SAND_SLOPED_UP_LEFT			1259
+#define EL_BDX_SAND_SLOPED_DOWN_LEFT			1260
+#define EL_BDX_SAND_SLOPED_DOWN_RIGHT			1261
+#define EL_BDX_SAND_GLUED				1262
+#define EL_BDX_WALL_SLOPED_UP_RIGHT			1263
+#define EL_BDX_WALL_SLOPED_UP_LEFT			1264
+#define EL_BDX_WALL_SLOPED_DOWN_LEFT			1265
+#define EL_BDX_WALL_SLOPED_DOWN_RIGHT			1266
+#define EL_BDX_WALL_NON_SLOPED				1267
+#define EL_BDX_WALL_DIGGABLE				1268
+#define EL_BDX_WALL_DIAMOND				1269
+#define EL_BDX_WALL_KEY_1				1270
+#define EL_BDX_WALL_KEY_2				1271
+#define EL_BDX_WALL_KEY_3				1272
+#define EL_BDX_FALLING_WALL				1273
+#define EL_BDX_STEELWALL				1274
+#define EL_BDX_STEELWALL_SLOPED_UP_RIGHT		1275
+#define EL_BDX_STEELWALL_SLOPED_UP_LEFT			1276
+#define EL_BDX_STEELWALL_SLOPED_DOWN_LEFT		1277
+#define EL_BDX_STEELWALL_SLOPED_DOWN_RIGHT		1278
+#define EL_BDX_STEELWALL_EXPLODABLE			1279
+#define EL_BDX_STEELWALL_DIGGABLE			1280
+#define EL_BDX_EXPANDABLE_WALL_HORIZONTAL		1281
+#define EL_BDX_EXPANDABLE_WALL_VERTICAL			1282
+#define EL_BDX_EXPANDABLE_WALL_ANY			1283
+#define EL_BDX_EXPANDABLE_STEELWALL_HORIZONTAL		1284
+#define EL_BDX_EXPANDABLE_STEELWALL_VERTICAL		1285
+#define EL_BDX_EXPANDABLE_STEELWALL_ANY			1286
+#define EL_BDX_EXPANDABLE_WALL_SWITCH			1287
+#define EL_BDX_EXPANDABLE_WALL_SWITCH_ACTIVE		1288
+#define EL_BDX_INBOX					1289
+#define EL_BDX_EXIT_CLOSED				1290
+#define EL_BDX_EXIT_OPEN				1291
+#define EL_BDX_INVISIBLE_EXIT_CLOSED			1292
+#define EL_BDX_INVISIBLE_EXIT_OPEN			1293
+#define EL_BDX_FLYING_ROCK				1294
+#define EL_BDX_HEAVY_ROCK				1295
+#define EL_BDX_ROCK_GLUED				1296
+#define EL_BDX_FLYING_DIAMOND				1297
+#define EL_BDX_DIAMOND_GLUED				1298
+#define EL_BDX_DIAMOND_KEY				1299
+#define EL_BDX_TRAPPED_DIAMOND				1300
+#define EL_BDX_NUT					1301
+#define EL_BDX_AMOEBA_1					1302
+#define EL_BDX_AMOEBA_2					1303
+#define EL_BDX_BUBBLE					1304
+#define EL_BDX_TRAPPED_BUBBLE				1305
+#define EL_BDX_CREATURE_SWITCH				1306
+#define EL_BDX_CREATURE_SWITCH_ACTIVE			1307
+#define EL_BDX_BITER_SWITCH_1				1308
+#define EL_BDX_BITER_SWITCH_2				1309
+#define EL_BDX_BITER_SWITCH_3				1310
+#define EL_BDX_BITER_SWITCH_4				1311
+#define EL_BDX_REPLICATOR				1312
+#define EL_BDX_REPLICATOR_ACTIVE			1313
+#define EL_BDX_REPLICATOR_SWITCH			1314
+#define EL_BDX_REPLICATOR_SWITCH_ACTIVE			1315
+#define EL_BDX_CONVEYOR_LEFT				1316
+#define EL_BDX_CONVEYOR_LEFT_ACTIVE			1317
+#define EL_BDX_CONVEYOR_RIGHT				1318
+#define EL_BDX_CONVEYOR_RIGHT_ACTIVE			1319
+#define EL_BDX_CONVEYOR_SWITCH				1320
+#define EL_BDX_CONVEYOR_SWITCH_ACTIVE			1321
+#define EL_BDX_CONVEYOR_DIR_SWITCH			1322
+#define EL_BDX_CONVEYOR_DIR_SWITCH_ACTIVE		1323
+#define EL_BDX_GRAVITY_SWITCH				1324
+#define EL_BDX_GRAVITY_SWITCH_ACTIVE			1325
+#define EL_BDX_ACID					1326
+#define EL_BDX_BOX					1327
+#define EL_BDX_TIME_PENALTY				1328
+#define EL_BDX_GRAVESTONE				1329
+#define EL_BDX_CLOCK					1330
+#define EL_BDX_POT					1331
+#define EL_BDX_PNEUMATIC_HAMMER				1332
+#define EL_BDX_TELEPORTER				1333
+#define EL_BDX_SKELETON					1334
+#define EL_BDX_WATER					1335
+#define EL_BDX_KEY_1					1336
+#define EL_BDX_KEY_2					1337
+#define EL_BDX_KEY_3					1338
+#define EL_BDX_GATE_1					1339
+#define EL_BDX_GATE_2					1340
+#define EL_BDX_GATE_3					1341
+#define EL_BDX_LAVA					1342
+#define EL_BDX_SWEET					1343
+#define EL_BDX_VOODOO_DOLL				1344
+#define EL_BDX_SLIME					1345
+#define EL_BDX_WAITING_ROCK				1346
+#define EL_BDX_CHASING_ROCK				1347
+#define EL_BDX_GHOST					1348
+#define EL_BDX_COW					1349
+#define EL_BDX_COW_LEFT					1350
+#define EL_BDX_COW_UP					1351
+#define EL_BDX_COW_RIGHT				1352
+#define EL_BDX_COW_DOWN					1353
+#define EL_BDX_BUTTERFLY_1				1354
+#define EL_BDX_BUTTERFLY_1_RIGHT			1355
+#define EL_BDX_BUTTERFLY_1_UP				1356
+#define EL_BDX_BUTTERFLY_1_LEFT				1357
+#define EL_BDX_BUTTERFLY_1_DOWN				1358
+#define EL_BDX_BUTTERFLY_2				1359
+#define EL_BDX_BUTTERFLY_2_RIGHT			1360
+#define EL_BDX_BUTTERFLY_2_UP				1361
+#define EL_BDX_BUTTERFLY_2_LEFT				1362
+#define EL_BDX_BUTTERFLY_2_DOWN				1363
+#define EL_BDX_FIREFLY_1				1364
+#define EL_BDX_FIREFLY_1_RIGHT				1365
+#define EL_BDX_FIREFLY_1_UP				1366
+#define EL_BDX_FIREFLY_1_LEFT				1367
+#define EL_BDX_FIREFLY_1_DOWN				1368
+#define EL_BDX_FIREFLY_2				1369
+#define EL_BDX_FIREFLY_2_RIGHT				1370
+#define EL_BDX_FIREFLY_2_UP				1371
+#define EL_BDX_FIREFLY_2_LEFT				1372
+#define EL_BDX_FIREFLY_2_DOWN				1373
+#define EL_BDX_STONEFLY					1374
+#define EL_BDX_STONEFLY_RIGHT				1375
+#define EL_BDX_STONEFLY_UP				1376
+#define EL_BDX_STONEFLY_LEFT				1377
+#define EL_BDX_STONEFLY_DOWN				1378
+#define EL_BDX_BITER					1379
+#define EL_BDX_BITER_RIGHT				1380
+#define EL_BDX_BITER_UP					1381
+#define EL_BDX_BITER_LEFT				1382
+#define EL_BDX_BITER_DOWN				1383
+#define EL_BDX_DRAGONFLY				1384
+#define EL_BDX_DRAGONFLY_RIGHT				1385
+#define EL_BDX_DRAGONFLY_UP				1386
+#define EL_BDX_DRAGONFLY_LEFT				1387
+#define EL_BDX_DRAGONFLY_DOWN				1388
+#define EL_BDX_BOMB					1389
+#define EL_BDX_NITRO_PACK				1390
+#define EL_BDX_PLAYER					1391
+#define EL_BDX_PLAYER_WITH_BOMB				1392
+#define EL_BDX_PLAYER_WITH_ROCKET_LAUNCHER		1393
+#define EL_BDX_PLAYER_GLUED				1394
+#define EL_BDX_PLAYER_STIRRING				1395
+#define EL_BDX_ROCKET_LAUNCHER				1396
+#define EL_BDX_ROCKET					1397
+#define EL_BDX_ROCKET_RIGHT				1398
+#define EL_BDX_ROCKET_UP				1399
+#define EL_BDX_ROCKET_LEFT				1400
+#define EL_BDX_ROCKET_DOWN				1401
+#define EL_BDX_FAKE_BONUS				1402
+#define EL_BDX_COVERED					1403
+#define EL_BDX_WALL					1404
+#define EL_BDX_ROCK					1405
+#define EL_BDX_DIAMOND					1406
+#define EL_BDX_MAGIC_WALL				1407
+#define EL_BDX_LIGHT_ROCK				1408
+#define EL_BDX_STEEL_EXIT_CLOSED			1409
+#define EL_BDX_STEEL_EXIT_OPEN				1410
+#define EL_BDX_INVISIBLE_STEEL_EXIT_CLOSED		1411
+#define EL_BDX_INVISIBLE_STEEL_EXIT_OPEN		1412
+#define EL_BDX_UNUSED_1					1413
+#define EL_BDX_UNUSED_2					1414
+#define EL_BDX_UNUSED_3					1415
+#define EL_BDX_UNUSED_4					1416
+#define EL_BDX_UNUSED_5					1417
+#define EL_BDX_UNUSED_6					1418
 
 // BD style elements (effects/scanned; runtime elements, but can also be stored in level file)
-#define EL_BDX_RUNTIME_START			1419
+#define EL_BDX_RUNTIME_START				1419
 
-#define EL_BDX_EFFECTS_START			EL_BDX_RUNTIME_START
-#define EL_BDX_GRASS_BALL_FALLING		EL_BDX_EFFECTS_START
-#define EL_BDX_GRASS_LOOSE_FALLING		1420
-#define EL_BDX_ROCK_FALLING			1421
-#define EL_BDX_FLYING_ROCK_FLYING		1422
-#define EL_BDX_HEAVY_ROCK_FALLING		1423
-#define EL_BDX_LIGHT_ROCK_FALLING		1424
-#define EL_BDX_DIAMOND_FALLING			1425
-#define EL_BDX_FLYING_DIAMOND_FLYING		1426
-#define EL_BDX_NUT_FALLING			1427
-#define EL_BDX_FALLING_WALL_FALLING		1428
-#define EL_BDX_NITRO_PACK_FALLING		1429
-#define EL_BDX_WATER_1				1430
-#define EL_BDX_WATER_2				1431
-#define EL_BDX_WATER_3				1432
-#define EL_BDX_WATER_4				1433
-#define EL_BDX_WATER_5				1434
-#define EL_BDX_WATER_6				1435
-#define EL_BDX_WATER_7				1436
-#define EL_BDX_WATER_8				1437
-#define EL_BDX_WATER_9				1438
-#define EL_BDX_WATER_10				1439
-#define EL_BDX_WATER_11				1440
-#define EL_BDX_WATER_12				1441
-#define EL_BDX_WATER_13				1442
-#define EL_BDX_WATER_14				1443
-#define EL_BDX_WATER_15				1444
-#define EL_BDX_WATER_16				1445
-#define EL_BDX_COW_ENCLOSED_1			1446
-#define EL_BDX_COW_ENCLOSED_2			1447
-#define EL_BDX_COW_ENCLOSED_3			1448
-#define EL_BDX_COW_ENCLOSED_4			1449
-#define EL_BDX_COW_ENCLOSED_5			1450
-#define EL_BDX_COW_ENCLOSED_6			1451
-#define EL_BDX_COW_ENCLOSED_7			1452
-#define EL_BDX_BUBBLE_1				1453
-#define EL_BDX_BUBBLE_2				1454
-#define EL_BDX_BUBBLE_3				1455
-#define EL_BDX_BUBBLE_4				1456
-#define EL_BDX_BUBBLE_5				1457
-#define EL_BDX_BUBBLE_6				1458
-#define EL_BDX_BUBBLE_7				1459
-#define EL_BDX_BUBBLE_8				1460
-#define EL_BDX_PLAYER_GROWING_1			1461
-#define EL_BDX_PLAYER_GROWING_2			1462
-#define EL_BDX_PLAYER_GROWING_3			1463
-#define EL_BDX_BOMB_TICKING_1			1464
-#define EL_BDX_BOMB_TICKING_2			1465
-#define EL_BDX_BOMB_TICKING_3			1466
-#define EL_BDX_BOMB_TICKING_4			1467
-#define EL_BDX_BOMB_TICKING_5			1468
-#define EL_BDX_BOMB_TICKING_6			1469
-#define EL_BDX_BOMB_TICKING_7			1470
-#define EL_BDX_CLOCK_GROWING_1			1471
-#define EL_BDX_CLOCK_GROWING_2			1472
-#define EL_BDX_CLOCK_GROWING_3			1473
-#define EL_BDX_CLOCK_GROWING_4			1474
-#define EL_BDX_DIAMOND_GROWING_1		1475
-#define EL_BDX_DIAMOND_GROWING_2		1476
-#define EL_BDX_DIAMOND_GROWING_3		1477
-#define EL_BDX_DIAMOND_GROWING_4		1478
-#define EL_BDX_DIAMOND_GROWING_5		1479
-#define EL_BDX_EXPLODING_1			1480
-#define EL_BDX_EXPLODING_2			1481
-#define EL_BDX_EXPLODING_3			1482
-#define EL_BDX_EXPLODING_4			1483
-#define EL_BDX_EXPLODING_5			1484
-#define EL_BDX_ROCK_GROWING_1			1485
-#define EL_BDX_ROCK_GROWING_2			1486
-#define EL_BDX_ROCK_GROWING_3			1487
-#define EL_BDX_ROCK_GROWING_4			1488
-#define EL_BDX_STEELWALL_GROWING_1		1489
-#define EL_BDX_STEELWALL_GROWING_2		1490
-#define EL_BDX_STEELWALL_GROWING_3		1491
-#define EL_BDX_STEELWALL_GROWING_4		1492
-#define EL_BDX_GHOST_EXPLODING_1		1493
-#define EL_BDX_GHOST_EXPLODING_2		1494
-#define EL_BDX_GHOST_EXPLODING_3		1495
-#define EL_BDX_GHOST_EXPLODING_4		1496
-#define EL_BDX_BOMB_EXPLODING_1			1497
-#define EL_BDX_BOMB_EXPLODING_2			1498
-#define EL_BDX_BOMB_EXPLODING_3			1499
-#define EL_BDX_BOMB_EXPLODING_4			1500
-#define EL_BDX_NITRO_PACK_EXPLODING		1501
-#define EL_BDX_NITRO_PACK_EXPLODING_1		1502
-#define EL_BDX_NITRO_PACK_EXPLODING_2		1503
-#define EL_BDX_NITRO_PACK_EXPLODING_3		1504
-#define EL_BDX_NITRO_PACK_EXPLODING_4		1505
-#define EL_BDX_AMOEBA_2_EXPLODING_1		1506
-#define EL_BDX_AMOEBA_2_EXPLODING_2		1507
-#define EL_BDX_AMOEBA_2_EXPLODING_3		1508
-#define EL_BDX_AMOEBA_2_EXPLODING_4		1509
-#define EL_BDX_NUT_BREAKING_1			1510
-#define EL_BDX_NUT_BREAKING_2			1511
-#define EL_BDX_NUT_BREAKING_3			1512
-#define EL_BDX_NUT_BREAKING_4			1513
-#define EL_BDX_EFFECTS_END			EL_BDX_NUT_BREAKING_4
+#define EL_BDX_EFFECTS_START				EL_BDX_RUNTIME_START
+#define EL_BDX_GRASS_BALL_FALLING			EL_BDX_EFFECTS_START
+#define EL_BDX_GRASS_LOOSE_FALLING			1420
+#define EL_BDX_ROCK_FALLING				1421
+#define EL_BDX_FLYING_ROCK_FLYING			1422
+#define EL_BDX_HEAVY_ROCK_FALLING			1423
+#define EL_BDX_LIGHT_ROCK_FALLING			1424
+#define EL_BDX_DIAMOND_FALLING				1425
+#define EL_BDX_FLYING_DIAMOND_FLYING			1426
+#define EL_BDX_NUT_FALLING				1427
+#define EL_BDX_FALLING_WALL_FALLING			1428
+#define EL_BDX_NITRO_PACK_FALLING			1429
+#define EL_BDX_WATER_1					1430
+#define EL_BDX_WATER_2					1431
+#define EL_BDX_WATER_3					1432
+#define EL_BDX_WATER_4					1433
+#define EL_BDX_WATER_5					1434
+#define EL_BDX_WATER_6					1435
+#define EL_BDX_WATER_7					1436
+#define EL_BDX_WATER_8					1437
+#define EL_BDX_WATER_9					1438
+#define EL_BDX_WATER_10					1439
+#define EL_BDX_WATER_11					1440
+#define EL_BDX_WATER_12					1441
+#define EL_BDX_WATER_13					1442
+#define EL_BDX_WATER_14					1443
+#define EL_BDX_WATER_15					1444
+#define EL_BDX_WATER_16					1445
+#define EL_BDX_COW_ENCLOSED_1				1446
+#define EL_BDX_COW_ENCLOSED_2				1447
+#define EL_BDX_COW_ENCLOSED_3				1448
+#define EL_BDX_COW_ENCLOSED_4				1449
+#define EL_BDX_COW_ENCLOSED_5				1450
+#define EL_BDX_COW_ENCLOSED_6				1451
+#define EL_BDX_COW_ENCLOSED_7				1452
+#define EL_BDX_BUBBLE_1					1453
+#define EL_BDX_BUBBLE_2					1454
+#define EL_BDX_BUBBLE_3					1455
+#define EL_BDX_BUBBLE_4					1456
+#define EL_BDX_BUBBLE_5					1457
+#define EL_BDX_BUBBLE_6					1458
+#define EL_BDX_BUBBLE_7					1459
+#define EL_BDX_BUBBLE_8					1460
+#define EL_BDX_PLAYER_GROWING_1				1461
+#define EL_BDX_PLAYER_GROWING_2				1462
+#define EL_BDX_PLAYER_GROWING_3				1463
+#define EL_BDX_BOMB_TICKING_1				1464
+#define EL_BDX_BOMB_TICKING_2				1465
+#define EL_BDX_BOMB_TICKING_3				1466
+#define EL_BDX_BOMB_TICKING_4				1467
+#define EL_BDX_BOMB_TICKING_5				1468
+#define EL_BDX_BOMB_TICKING_6				1469
+#define EL_BDX_BOMB_TICKING_7				1470
+#define EL_BDX_CLOCK_GROWING_1				1471
+#define EL_BDX_CLOCK_GROWING_2				1472
+#define EL_BDX_CLOCK_GROWING_3				1473
+#define EL_BDX_CLOCK_GROWING_4				1474
+#define EL_BDX_DIAMOND_GROWING_1			1475
+#define EL_BDX_DIAMOND_GROWING_2			1476
+#define EL_BDX_DIAMOND_GROWING_3			1477
+#define EL_BDX_DIAMOND_GROWING_4			1478
+#define EL_BDX_DIAMOND_GROWING_5			1479
+#define EL_BDX_EXPLODING_1				1480
+#define EL_BDX_EXPLODING_2				1481
+#define EL_BDX_EXPLODING_3				1482
+#define EL_BDX_EXPLODING_4				1483
+#define EL_BDX_EXPLODING_5				1484
+#define EL_BDX_ROCK_GROWING_1				1485
+#define EL_BDX_ROCK_GROWING_2				1486
+#define EL_BDX_ROCK_GROWING_3				1487
+#define EL_BDX_ROCK_GROWING_4				1488
+#define EL_BDX_STEELWALL_GROWING_1			1489
+#define EL_BDX_STEELWALL_GROWING_2			1490
+#define EL_BDX_STEELWALL_GROWING_3			1491
+#define EL_BDX_STEELWALL_GROWING_4			1492
+#define EL_BDX_GHOST_EXPLODING_1			1493
+#define EL_BDX_GHOST_EXPLODING_2			1494
+#define EL_BDX_GHOST_EXPLODING_3			1495
+#define EL_BDX_GHOST_EXPLODING_4			1496
+#define EL_BDX_BOMB_EXPLODING_1				1497
+#define EL_BDX_BOMB_EXPLODING_2				1498
+#define EL_BDX_BOMB_EXPLODING_3				1499
+#define EL_BDX_BOMB_EXPLODING_4				1500
+#define EL_BDX_NITRO_PACK_EXPLODING			1501
+#define EL_BDX_NITRO_PACK_EXPLODING_1			1502
+#define EL_BDX_NITRO_PACK_EXPLODING_2			1503
+#define EL_BDX_NITRO_PACK_EXPLODING_3			1504
+#define EL_BDX_NITRO_PACK_EXPLODING_4			1505
+#define EL_BDX_AMOEBA_2_EXPLODING_1			1506
+#define EL_BDX_AMOEBA_2_EXPLODING_2			1507
+#define EL_BDX_AMOEBA_2_EXPLODING_3			1508
+#define EL_BDX_AMOEBA_2_EXPLODING_4			1509
+#define EL_BDX_NUT_BREAKING_1				1510
+#define EL_BDX_NUT_BREAKING_2				1511
+#define EL_BDX_NUT_BREAKING_3				1512
+#define EL_BDX_NUT_BREAKING_4				1513
+#define EL_BDX_EFFECTS_END				EL_BDX_NUT_BREAKING_4
 
-#define EL_BDX_SCANNED_START			1514
-#define EL_BDX_GRASS_BALL_SCANNED		EL_BDX_SCANNED_START
-#define EL_BDX_GRASS_BALL_FALLING_SCANNED	1515
-#define EL_BDX_GRASS_LOOSE_SCANNED		1516
-#define EL_BDX_GRASS_LOOSE_FALLING_SCANNED	1517
-#define EL_BDX_ROCK_SCANNED			1518
-#define EL_BDX_ROCK_FALLING_SCANNED		1519
-#define EL_BDX_FLYING_ROCK_SCANNED		1520
-#define EL_BDX_FLYING_ROCK_FLYING_SCANNED	1521
-#define EL_BDX_HEAVY_ROCK_SCANNED		1522
-#define EL_BDX_HEAVY_ROCK_FALLING_SCANNED	1523
-#define EL_BDX_LIGHT_ROCK_SCANNED		1524
-#define EL_BDX_LIGHT_ROCK_FALLING_SCANNED	1525
-#define EL_BDX_DIAMOND_SCANNED			1526
-#define EL_BDX_DIAMOND_FALLING_SCANNED		1527
-#define EL_BDX_FLYING_DIAMOND_SCANNED		1528
-#define EL_BDX_FLYING_DIAMOND_FLYING_SCANNED	1529
-#define EL_BDX_NUT_SCANNED			1530
-#define EL_BDX_NUT_FALLING_SCANNED		1531
+#define EL_BDX_SCANNED_START				1514
+#define EL_BDX_GRASS_BALL_SCANNED			EL_BDX_SCANNED_START
+#define EL_BDX_GRASS_BALL_FALLING_SCANNED		1515
+#define EL_BDX_GRASS_LOOSE_SCANNED			1516
+#define EL_BDX_GRASS_LOOSE_FALLING_SCANNED		1517
+#define EL_BDX_ROCK_SCANNED				1518
+#define EL_BDX_ROCK_FALLING_SCANNED			1519
+#define EL_BDX_FLYING_ROCK_SCANNED			1520
+#define EL_BDX_FLYING_ROCK_FLYING_SCANNED		1521
+#define EL_BDX_HEAVY_ROCK_SCANNED			1522
+#define EL_BDX_HEAVY_ROCK_FALLING_SCANNED		1523
+#define EL_BDX_LIGHT_ROCK_SCANNED			1524
+#define EL_BDX_LIGHT_ROCK_FALLING_SCANNED		1525
+#define EL_BDX_DIAMOND_SCANNED				1526
+#define EL_BDX_DIAMOND_FALLING_SCANNED			1527
+#define EL_BDX_FLYING_DIAMOND_SCANNED			1528
+#define EL_BDX_FLYING_DIAMOND_FLYING_SCANNED		1529
+#define EL_BDX_NUT_SCANNED				1530
+#define EL_BDX_NUT_FALLING_SCANNED			1531
 #define EL_BDX_EXPANDABLE_WALL_HORIZONTAL_SCANNED	1532
 #define EL_BDX_EXPANDABLE_WALL_VERTICAL_SCANNED		1533
 #define EL_BDX_EXPANDABLE_WALL_ANY_SCANNED		1534
 #define EL_BDX_EXPANDABLE_STEELWALL_HORIZONTAL_SCANNED	1535
 #define EL_BDX_EXPANDABLE_STEELWALL_VERTICAL_SCANNED	1536
 #define EL_BDX_EXPANDABLE_STEELWALL_ANY_SCANNED		1537
-#define EL_BDX_ACID_SCANNED			1538
-#define EL_BDX_FALLING_WALL_FALLING_SCANNED	1539
-#define EL_BDX_COW_LEFT_SCANNED			1540
-#define EL_BDX_COW_UP_SCANNED			1541
-#define EL_BDX_COW_RIGHT_SCANNED		1542
-#define EL_BDX_COW_DOWN_SCANNED			1543
-#define EL_BDX_AMOEBA_1_SCANNED			1544
-#define EL_BDX_AMOEBA_2_SCANNED			1545
-#define EL_BDX_WAITING_ROCK_SCANNED		1546
-#define EL_BDX_CHASING_ROCK_SCANNED		1547
-#define EL_BDX_GHOST_SCANNED			1548
-#define EL_BDX_FIREFLY_1_RIGHT_SCANNED		1549
-#define EL_BDX_FIREFLY_1_UP_SCANNED		1550
-#define EL_BDX_FIREFLY_1_LEFT_SCANNED		1551
-#define EL_BDX_FIREFLY_1_DOWN_SCANNED		1552
-#define EL_BDX_FIREFLY_2_RIGHT_SCANNED		1553
-#define EL_BDX_FIREFLY_2_UP_SCANNED		1554
-#define EL_BDX_FIREFLY_2_LEFT_SCANNED		1555
-#define EL_BDX_FIREFLY_2_DOWN_SCANNED		1556
-#define EL_BDX_BUTTERFLY_1_RIGHT_SCANNED	1557
-#define EL_BDX_BUTTERFLY_1_UP_SCANNED		1558
-#define EL_BDX_BUTTERFLY_1_LEFT_SCANNED		1559
-#define EL_BDX_BUTTERFLY_1_DOWN_SCANNED		1560
-#define EL_BDX_BUTTERFLY_2_RIGHT_SCANNED	1561
-#define EL_BDX_BUTTERFLY_2_UP_SCANNED		1562
-#define EL_BDX_BUTTERFLY_2_LEFT_SCANNED		1563
-#define EL_BDX_BUTTERFLY_2_DOWN_SCANNED		1564
-#define EL_BDX_STONEFLY_RIGHT_SCANNED		1565
-#define EL_BDX_STONEFLY_UP_SCANNED		1566
-#define EL_BDX_STONEFLY_LEFT_SCANNED		1567
-#define EL_BDX_STONEFLY_DOWN_SCANNED		1568
-#define EL_BDX_BITER_RIGHT_SCANNED		1569
-#define EL_BDX_BITER_UP_SCANNED			1570
-#define EL_BDX_BITER_LEFT_SCANNED		1571
-#define EL_BDX_BITER_DOWN_SCANNED		1572
-#define EL_BDX_DRAGONFLY_RIGHT_SCANNED		1573
-#define EL_BDX_DRAGONFLY_UP_SCANNED		1574
-#define EL_BDX_DRAGONFLY_LEFT_SCANNED		1575
-#define EL_BDX_DRAGONFLY_DOWN_SCANNED		1576
-#define EL_BDX_PLAYER_SCANNED			1577
-#define EL_BDX_PLAYER_WITH_BOMB_SCANNED		1578
+#define EL_BDX_ACID_SCANNED				1538
+#define EL_BDX_FALLING_WALL_FALLING_SCANNED		1539
+#define EL_BDX_COW_LEFT_SCANNED				1540
+#define EL_BDX_COW_UP_SCANNED				1541
+#define EL_BDX_COW_RIGHT_SCANNED			1542
+#define EL_BDX_COW_DOWN_SCANNED				1543
+#define EL_BDX_AMOEBA_1_SCANNED				1544
+#define EL_BDX_AMOEBA_2_SCANNED				1545
+#define EL_BDX_WAITING_ROCK_SCANNED			1546
+#define EL_BDX_CHASING_ROCK_SCANNED			1547
+#define EL_BDX_GHOST_SCANNED				1548
+#define EL_BDX_FIREFLY_1_RIGHT_SCANNED			1549
+#define EL_BDX_FIREFLY_1_UP_SCANNED			1550
+#define EL_BDX_FIREFLY_1_LEFT_SCANNED			1551
+#define EL_BDX_FIREFLY_1_DOWN_SCANNED			1552
+#define EL_BDX_FIREFLY_2_RIGHT_SCANNED			1553
+#define EL_BDX_FIREFLY_2_UP_SCANNED			1554
+#define EL_BDX_FIREFLY_2_LEFT_SCANNED			1555
+#define EL_BDX_FIREFLY_2_DOWN_SCANNED			1556
+#define EL_BDX_BUTTERFLY_1_RIGHT_SCANNED		1557
+#define EL_BDX_BUTTERFLY_1_UP_SCANNED			1558
+#define EL_BDX_BUTTERFLY_1_LEFT_SCANNED			1559
+#define EL_BDX_BUTTERFLY_1_DOWN_SCANNED			1560
+#define EL_BDX_BUTTERFLY_2_RIGHT_SCANNED		1561
+#define EL_BDX_BUTTERFLY_2_UP_SCANNED			1562
+#define EL_BDX_BUTTERFLY_2_LEFT_SCANNED			1563
+#define EL_BDX_BUTTERFLY_2_DOWN_SCANNED			1564
+#define EL_BDX_STONEFLY_RIGHT_SCANNED			1565
+#define EL_BDX_STONEFLY_UP_SCANNED			1566
+#define EL_BDX_STONEFLY_LEFT_SCANNED			1567
+#define EL_BDX_STONEFLY_DOWN_SCANNED			1568
+#define EL_BDX_BITER_RIGHT_SCANNED			1569
+#define EL_BDX_BITER_UP_SCANNED				1570
+#define EL_BDX_BITER_LEFT_SCANNED			1571
+#define EL_BDX_BITER_DOWN_SCANNED			1572
+#define EL_BDX_DRAGONFLY_RIGHT_SCANNED			1573
+#define EL_BDX_DRAGONFLY_UP_SCANNED			1574
+#define EL_BDX_DRAGONFLY_LEFT_SCANNED			1575
+#define EL_BDX_DRAGONFLY_DOWN_SCANNED			1576
+#define EL_BDX_PLAYER_SCANNED				1577
+#define EL_BDX_PLAYER_WITH_BOMB_SCANNED			1578
 #define EL_BDX_PLAYER_WITH_ROCKET_LAUNCHER_SCANNED	1579
-#define EL_BDX_ROCKET_RIGHT_SCANNED		1580
-#define EL_BDX_ROCKET_UP_SCANNED		1581
-#define EL_BDX_ROCKET_LEFT_SCANNED		1582
-#define EL_BDX_ROCKET_DOWN_SCANNED		1583
-#define EL_BDX_NITRO_PACK_SCANNED		1584
-#define EL_BDX_NITRO_PACK_FALLING_SCANNED	1585
-#define EL_BDX_NITRO_PACK_EXPLODING_SCANNED	1586
-#define EL_BDX_CLOCK_GROWING_0			1587
-#define EL_BDX_DIAMOND_GROWING_0		1588
-#define EL_BDX_EXPLODING_0			1589
-#define EL_BDX_ROCK_GROWING_0			1590
-#define EL_BDX_STEELWALL_GROWING_0		1591
-#define EL_BDX_GHOST_EXPLODING_0		1592
-#define EL_BDX_BOMB_EXPLODING_0			1593
-#define EL_BDX_NITRO_PACK_EXPLODING_0		1594
-#define EL_BDX_AMOEBA_2_EXPLODING_0		1595
-#define EL_BDX_NUT_BREAKING_0			1596
-#define EL_BDX_SCANNED_END			EL_BDX_NUT_BREAKING_0
+#define EL_BDX_ROCKET_RIGHT_SCANNED			1580
+#define EL_BDX_ROCKET_UP_SCANNED			1581
+#define EL_BDX_ROCKET_LEFT_SCANNED			1582
+#define EL_BDX_ROCKET_DOWN_SCANNED			1583
+#define EL_BDX_NITRO_PACK_SCANNED			1584
+#define EL_BDX_NITRO_PACK_FALLING_SCANNED		1585
+#define EL_BDX_NITRO_PACK_EXPLODING_SCANNED		1586
+#define EL_BDX_CLOCK_GROWING_0				1587
+#define EL_BDX_DIAMOND_GROWING_0			1588
+#define EL_BDX_EXPLODING_0				1589
+#define EL_BDX_ROCK_GROWING_0				1590
+#define EL_BDX_STEELWALL_GROWING_0			1591
+#define EL_BDX_GHOST_EXPLODING_0			1592
+#define EL_BDX_BOMB_EXPLODING_0				1593
+#define EL_BDX_NITRO_PACK_EXPLODING_0			1594
+#define EL_BDX_AMOEBA_2_EXPLODING_0			1595
+#define EL_BDX_NUT_BREAKING_0				1596
+#define EL_BDX_SCANNED_END				EL_BDX_NUT_BREAKING_0
 
-#define EL_BDX_RUNTIME_END			EL_BDX_SCANNED_END
-#define EL_BDX_END				EL_BDX_RUNTIME_END
+#define EL_BDX_RUNTIME_END				EL_BDX_SCANNED_END
+#define EL_BDX_END					EL_BDX_RUNTIME_END
 
-#define NUM_FILE_ELEMENTS			1597
+#define NUM_FILE_ELEMENTS				1597
 
 
 // "real" (and therefore drawable) runtime elements
-#define EL_FIRST_RUNTIME_REAL			NUM_FILE_ELEMENTS
+#define EL_FIRST_RUNTIME_REAL				NUM_FILE_ELEMENTS
 
-#define EL_DYNABOMB_PLAYER_1_ACTIVE		(EL_FIRST_RUNTIME_REAL + 0)
-#define EL_DYNABOMB_PLAYER_2_ACTIVE		(EL_FIRST_RUNTIME_REAL + 1)
-#define EL_DYNABOMB_PLAYER_3_ACTIVE		(EL_FIRST_RUNTIME_REAL + 2)
-#define EL_DYNABOMB_PLAYER_4_ACTIVE		(EL_FIRST_RUNTIME_REAL + 3)
-#define EL_SP_DISK_RED_ACTIVE			(EL_FIRST_RUNTIME_REAL + 4)
-#define EL_SWITCHGATE_OPENING			(EL_FIRST_RUNTIME_REAL + 5)
-#define EL_SWITCHGATE_CLOSING			(EL_FIRST_RUNTIME_REAL + 6)
-#define EL_TIMEGATE_OPENING			(EL_FIRST_RUNTIME_REAL + 7)
-#define EL_TIMEGATE_CLOSING			(EL_FIRST_RUNTIME_REAL + 8)
-#define EL_PEARL_BREAKING			(EL_FIRST_RUNTIME_REAL + 9)
-#define EL_TRAP_ACTIVE				(EL_FIRST_RUNTIME_REAL + 10)
-#define EL_INVISIBLE_STEELWALL_ACTIVE		(EL_FIRST_RUNTIME_REAL + 11)
-#define EL_INVISIBLE_WALL_ACTIVE		(EL_FIRST_RUNTIME_REAL + 12)
-#define EL_INVISIBLE_SAND_ACTIVE		(EL_FIRST_RUNTIME_REAL + 13)
-#define EL_CONVEYOR_BELT_1_LEFT_ACTIVE		(EL_FIRST_RUNTIME_REAL + 14)
-#define EL_CONVEYOR_BELT_1_MIDDLE_ACTIVE	(EL_FIRST_RUNTIME_REAL + 15)
-#define EL_CONVEYOR_BELT_1_RIGHT_ACTIVE		(EL_FIRST_RUNTIME_REAL + 16)
-#define EL_CONVEYOR_BELT_2_LEFT_ACTIVE		(EL_FIRST_RUNTIME_REAL + 17)
-#define EL_CONVEYOR_BELT_2_MIDDLE_ACTIVE	(EL_FIRST_RUNTIME_REAL + 18)
-#define EL_CONVEYOR_BELT_2_RIGHT_ACTIVE		(EL_FIRST_RUNTIME_REAL + 19)
-#define EL_CONVEYOR_BELT_3_LEFT_ACTIVE		(EL_FIRST_RUNTIME_REAL + 20)
-#define EL_CONVEYOR_BELT_3_MIDDLE_ACTIVE	(EL_FIRST_RUNTIME_REAL + 21)
-#define EL_CONVEYOR_BELT_3_RIGHT_ACTIVE		(EL_FIRST_RUNTIME_REAL + 22)
-#define EL_CONVEYOR_BELT_4_LEFT_ACTIVE		(EL_FIRST_RUNTIME_REAL + 23)
-#define EL_CONVEYOR_BELT_4_MIDDLE_ACTIVE	(EL_FIRST_RUNTIME_REAL + 24)
-#define EL_CONVEYOR_BELT_4_RIGHT_ACTIVE		(EL_FIRST_RUNTIME_REAL + 25)
-#define EL_EXIT_OPENING				(EL_FIRST_RUNTIME_REAL + 26)
-#define EL_EXIT_CLOSING				(EL_FIRST_RUNTIME_REAL + 27)
-#define EL_STEEL_EXIT_OPENING			(EL_FIRST_RUNTIME_REAL + 28)
-#define EL_STEEL_EXIT_CLOSING			(EL_FIRST_RUNTIME_REAL + 29)
-#define EL_EM_EXIT_OPENING			(EL_FIRST_RUNTIME_REAL + 30)
-#define EL_EM_EXIT_CLOSING			(EL_FIRST_RUNTIME_REAL + 31)
-#define EL_EM_STEEL_EXIT_OPENING		(EL_FIRST_RUNTIME_REAL + 32)
-#define EL_EM_STEEL_EXIT_CLOSING		(EL_FIRST_RUNTIME_REAL + 33)
-#define EL_SP_EXIT_OPENING			(EL_FIRST_RUNTIME_REAL + 34)
-#define EL_SP_EXIT_CLOSING			(EL_FIRST_RUNTIME_REAL + 35)
-#define EL_SP_EXIT_OPEN				(EL_FIRST_RUNTIME_REAL + 36)
-#define EL_SP_TERMINAL_ACTIVE			(EL_FIRST_RUNTIME_REAL + 37)
-#define EL_SP_BUGGY_BASE_ACTIVATING		(EL_FIRST_RUNTIME_REAL + 38)
-#define EL_SP_BUGGY_BASE_ACTIVE			(EL_FIRST_RUNTIME_REAL + 39)
-#define EL_SP_MURPHY_CLONE			(EL_FIRST_RUNTIME_REAL + 40)
-#define EL_AMOEBA_DROPPING			(EL_FIRST_RUNTIME_REAL + 41)
-#define EL_QUICKSAND_EMPTYING			(EL_FIRST_RUNTIME_REAL + 42)
-#define EL_QUICKSAND_FAST_EMPTYING		(EL_FIRST_RUNTIME_REAL + 43)
-#define EL_MAGIC_WALL_ACTIVE			(EL_FIRST_RUNTIME_REAL + 44)
-#define EL_BD_MAGIC_WALL_ACTIVE			(EL_FIRST_RUNTIME_REAL + 45)
-#define EL_DC_MAGIC_WALL_ACTIVE			(EL_FIRST_RUNTIME_REAL + 46)
-#define EL_MAGIC_WALL_FULL			(EL_FIRST_RUNTIME_REAL + 47)
-#define EL_BD_MAGIC_WALL_FULL			(EL_FIRST_RUNTIME_REAL + 48)
-#define EL_DC_MAGIC_WALL_FULL			(EL_FIRST_RUNTIME_REAL + 49)
-#define EL_MAGIC_WALL_EMPTYING			(EL_FIRST_RUNTIME_REAL + 50)
-#define EL_BD_MAGIC_WALL_EMPTYING		(EL_FIRST_RUNTIME_REAL + 51)
-#define EL_DC_MAGIC_WALL_EMPTYING		(EL_FIRST_RUNTIME_REAL + 52)
-#define EL_MAGIC_WALL_DEAD			(EL_FIRST_RUNTIME_REAL + 53)
-#define EL_BD_MAGIC_WALL_DEAD			(EL_FIRST_RUNTIME_REAL + 54)
-#define EL_DC_MAGIC_WALL_DEAD			(EL_FIRST_RUNTIME_REAL + 55)
-#define EL_EMC_FAKE_GRASS_ACTIVE		(EL_FIRST_RUNTIME_REAL + 56)
-#define EL_GATE_1_GRAY_ACTIVE			(EL_FIRST_RUNTIME_REAL + 57)
-#define EL_GATE_2_GRAY_ACTIVE			(EL_FIRST_RUNTIME_REAL + 58)
-#define EL_GATE_3_GRAY_ACTIVE			(EL_FIRST_RUNTIME_REAL + 59)
-#define EL_GATE_4_GRAY_ACTIVE			(EL_FIRST_RUNTIME_REAL + 60)
-#define EL_EM_GATE_1_GRAY_ACTIVE		(EL_FIRST_RUNTIME_REAL + 61)
-#define EL_EM_GATE_2_GRAY_ACTIVE		(EL_FIRST_RUNTIME_REAL + 62)
-#define EL_EM_GATE_3_GRAY_ACTIVE		(EL_FIRST_RUNTIME_REAL + 63)
-#define EL_EM_GATE_4_GRAY_ACTIVE		(EL_FIRST_RUNTIME_REAL + 64)
-#define EL_EMC_GATE_5_GRAY_ACTIVE		(EL_FIRST_RUNTIME_REAL + 65)
-#define EL_EMC_GATE_6_GRAY_ACTIVE		(EL_FIRST_RUNTIME_REAL + 66)
-#define EL_EMC_GATE_7_GRAY_ACTIVE		(EL_FIRST_RUNTIME_REAL + 67)
-#define EL_EMC_GATE_8_GRAY_ACTIVE		(EL_FIRST_RUNTIME_REAL + 68)
-#define EL_DC_GATE_WHITE_GRAY_ACTIVE		(EL_FIRST_RUNTIME_REAL + 69)
-#define EL_EMC_DRIPPER_ACTIVE			(EL_FIRST_RUNTIME_REAL + 70)
-#define EL_EMC_SPRING_BUMPER_ACTIVE		(EL_FIRST_RUNTIME_REAL + 71)
-#define EL_MM_EXIT_OPENING			(EL_FIRST_RUNTIME_REAL + 72)
-#define EL_MM_EXIT_CLOSING			(EL_FIRST_RUNTIME_REAL + 73)
-#define EL_MM_GRAY_BALL_ACTIVE			(EL_FIRST_RUNTIME_REAL + 74)
-#define EL_MM_GRAY_BALL_OPENING			(EL_FIRST_RUNTIME_REAL + 75)
-#define EL_MM_ICE_WALL_SHRINKING		(EL_FIRST_RUNTIME_REAL + 76)
-#define EL_MM_AMOEBA_WALL_GROWING		(EL_FIRST_RUNTIME_REAL + 77)
-#define EL_MM_PACMAN_EATING_RIGHT		(EL_FIRST_RUNTIME_REAL + 78)
-#define EL_MM_PACMAN_EATING_UP			(EL_FIRST_RUNTIME_REAL + 79)
-#define EL_MM_PACMAN_EATING_LEFT		(EL_FIRST_RUNTIME_REAL + 80)
-#define EL_MM_PACMAN_EATING_DOWN		(EL_FIRST_RUNTIME_REAL + 81)
-#define EL_MM_BOMB_ACTIVE			(EL_FIRST_RUNTIME_REAL + 82)
-#define EL_DF_MINE_ACTIVE			(EL_FIRST_RUNTIME_REAL + 83)
-#define EL_BDX_MAGIC_WALL_ACTIVE		(EL_FIRST_RUNTIME_REAL + 84)
+#define EL_DYNABOMB_PLAYER_1_ACTIVE			(EL_FIRST_RUNTIME_REAL + 0)
+#define EL_DYNABOMB_PLAYER_2_ACTIVE			(EL_FIRST_RUNTIME_REAL + 1)
+#define EL_DYNABOMB_PLAYER_3_ACTIVE			(EL_FIRST_RUNTIME_REAL + 2)
+#define EL_DYNABOMB_PLAYER_4_ACTIVE			(EL_FIRST_RUNTIME_REAL + 3)
+#define EL_SP_DISK_RED_ACTIVE				(EL_FIRST_RUNTIME_REAL + 4)
+#define EL_SWITCHGATE_OPENING				(EL_FIRST_RUNTIME_REAL + 5)
+#define EL_SWITCHGATE_CLOSING				(EL_FIRST_RUNTIME_REAL + 6)
+#define EL_TIMEGATE_OPENING				(EL_FIRST_RUNTIME_REAL + 7)
+#define EL_TIMEGATE_CLOSING				(EL_FIRST_RUNTIME_REAL + 8)
+#define EL_PEARL_BREAKING				(EL_FIRST_RUNTIME_REAL + 9)
+#define EL_TRAP_ACTIVE					(EL_FIRST_RUNTIME_REAL + 10)
+#define EL_INVISIBLE_STEELWALL_ACTIVE			(EL_FIRST_RUNTIME_REAL + 11)
+#define EL_INVISIBLE_WALL_ACTIVE			(EL_FIRST_RUNTIME_REAL + 12)
+#define EL_INVISIBLE_SAND_ACTIVE			(EL_FIRST_RUNTIME_REAL + 13)
+#define EL_CONVEYOR_BELT_1_LEFT_ACTIVE			(EL_FIRST_RUNTIME_REAL + 14)
+#define EL_CONVEYOR_BELT_1_MIDDLE_ACTIVE		(EL_FIRST_RUNTIME_REAL + 15)
+#define EL_CONVEYOR_BELT_1_RIGHT_ACTIVE			(EL_FIRST_RUNTIME_REAL + 16)
+#define EL_CONVEYOR_BELT_2_LEFT_ACTIVE			(EL_FIRST_RUNTIME_REAL + 17)
+#define EL_CONVEYOR_BELT_2_MIDDLE_ACTIVE		(EL_FIRST_RUNTIME_REAL + 18)
+#define EL_CONVEYOR_BELT_2_RIGHT_ACTIVE			(EL_FIRST_RUNTIME_REAL + 19)
+#define EL_CONVEYOR_BELT_3_LEFT_ACTIVE			(EL_FIRST_RUNTIME_REAL + 20)
+#define EL_CONVEYOR_BELT_3_MIDDLE_ACTIVE		(EL_FIRST_RUNTIME_REAL + 21)
+#define EL_CONVEYOR_BELT_3_RIGHT_ACTIVE			(EL_FIRST_RUNTIME_REAL + 22)
+#define EL_CONVEYOR_BELT_4_LEFT_ACTIVE			(EL_FIRST_RUNTIME_REAL + 23)
+#define EL_CONVEYOR_BELT_4_MIDDLE_ACTIVE		(EL_FIRST_RUNTIME_REAL + 24)
+#define EL_CONVEYOR_BELT_4_RIGHT_ACTIVE			(EL_FIRST_RUNTIME_REAL + 25)
+#define EL_EXIT_OPENING					(EL_FIRST_RUNTIME_REAL + 26)
+#define EL_EXIT_CLOSING					(EL_FIRST_RUNTIME_REAL + 27)
+#define EL_STEEL_EXIT_OPENING				(EL_FIRST_RUNTIME_REAL + 28)
+#define EL_STEEL_EXIT_CLOSING				(EL_FIRST_RUNTIME_REAL + 29)
+#define EL_EM_EXIT_OPENING				(EL_FIRST_RUNTIME_REAL + 30)
+#define EL_EM_EXIT_CLOSING				(EL_FIRST_RUNTIME_REAL + 31)
+#define EL_EM_STEEL_EXIT_OPENING			(EL_FIRST_RUNTIME_REAL + 32)
+#define EL_EM_STEEL_EXIT_CLOSING			(EL_FIRST_RUNTIME_REAL + 33)
+#define EL_SP_EXIT_OPENING				(EL_FIRST_RUNTIME_REAL + 34)
+#define EL_SP_EXIT_CLOSING				(EL_FIRST_RUNTIME_REAL + 35)
+#define EL_SP_EXIT_OPEN					(EL_FIRST_RUNTIME_REAL + 36)
+#define EL_SP_TERMINAL_ACTIVE				(EL_FIRST_RUNTIME_REAL + 37)
+#define EL_SP_BUGGY_BASE_ACTIVATING			(EL_FIRST_RUNTIME_REAL + 38)
+#define EL_SP_BUGGY_BASE_ACTIVE				(EL_FIRST_RUNTIME_REAL + 39)
+#define EL_SP_MURPHY_CLONE				(EL_FIRST_RUNTIME_REAL + 40)
+#define EL_AMOEBA_DROPPING				(EL_FIRST_RUNTIME_REAL + 41)
+#define EL_QUICKSAND_EMPTYING				(EL_FIRST_RUNTIME_REAL + 42)
+#define EL_QUICKSAND_FAST_EMPTYING			(EL_FIRST_RUNTIME_REAL + 43)
+#define EL_MAGIC_WALL_ACTIVE				(EL_FIRST_RUNTIME_REAL + 44)
+#define EL_BD_MAGIC_WALL_ACTIVE				(EL_FIRST_RUNTIME_REAL + 45)
+#define EL_DC_MAGIC_WALL_ACTIVE				(EL_FIRST_RUNTIME_REAL + 46)
+#define EL_MAGIC_WALL_FULL				(EL_FIRST_RUNTIME_REAL + 47)
+#define EL_BD_MAGIC_WALL_FULL				(EL_FIRST_RUNTIME_REAL + 48)
+#define EL_DC_MAGIC_WALL_FULL				(EL_FIRST_RUNTIME_REAL + 49)
+#define EL_MAGIC_WALL_EMPTYING				(EL_FIRST_RUNTIME_REAL + 50)
+#define EL_BD_MAGIC_WALL_EMPTYING			(EL_FIRST_RUNTIME_REAL + 51)
+#define EL_DC_MAGIC_WALL_EMPTYING			(EL_FIRST_RUNTIME_REAL + 52)
+#define EL_MAGIC_WALL_DEAD				(EL_FIRST_RUNTIME_REAL + 53)
+#define EL_BD_MAGIC_WALL_DEAD				(EL_FIRST_RUNTIME_REAL + 54)
+#define EL_DC_MAGIC_WALL_DEAD				(EL_FIRST_RUNTIME_REAL + 55)
+#define EL_EMC_FAKE_GRASS_ACTIVE			(EL_FIRST_RUNTIME_REAL + 56)
+#define EL_GATE_1_GRAY_ACTIVE				(EL_FIRST_RUNTIME_REAL + 57)
+#define EL_GATE_2_GRAY_ACTIVE				(EL_FIRST_RUNTIME_REAL + 58)
+#define EL_GATE_3_GRAY_ACTIVE				(EL_FIRST_RUNTIME_REAL + 59)
+#define EL_GATE_4_GRAY_ACTIVE				(EL_FIRST_RUNTIME_REAL + 60)
+#define EL_EM_GATE_1_GRAY_ACTIVE			(EL_FIRST_RUNTIME_REAL + 61)
+#define EL_EM_GATE_2_GRAY_ACTIVE			(EL_FIRST_RUNTIME_REAL + 62)
+#define EL_EM_GATE_3_GRAY_ACTIVE			(EL_FIRST_RUNTIME_REAL + 63)
+#define EL_EM_GATE_4_GRAY_ACTIVE			(EL_FIRST_RUNTIME_REAL + 64)
+#define EL_EMC_GATE_5_GRAY_ACTIVE			(EL_FIRST_RUNTIME_REAL + 65)
+#define EL_EMC_GATE_6_GRAY_ACTIVE			(EL_FIRST_RUNTIME_REAL + 66)
+#define EL_EMC_GATE_7_GRAY_ACTIVE			(EL_FIRST_RUNTIME_REAL + 67)
+#define EL_EMC_GATE_8_GRAY_ACTIVE			(EL_FIRST_RUNTIME_REAL + 68)
+#define EL_DC_GATE_WHITE_GRAY_ACTIVE			(EL_FIRST_RUNTIME_REAL + 69)
+#define EL_EMC_DRIPPER_ACTIVE				(EL_FIRST_RUNTIME_REAL + 70)
+#define EL_EMC_SPRING_BUMPER_ACTIVE			(EL_FIRST_RUNTIME_REAL + 71)
+#define EL_MM_EXIT_OPENING				(EL_FIRST_RUNTIME_REAL + 72)
+#define EL_MM_EXIT_CLOSING				(EL_FIRST_RUNTIME_REAL + 73)
+#define EL_MM_GRAY_BALL_ACTIVE				(EL_FIRST_RUNTIME_REAL + 74)
+#define EL_MM_GRAY_BALL_OPENING				(EL_FIRST_RUNTIME_REAL + 75)
+#define EL_MM_ICE_WALL_SHRINKING			(EL_FIRST_RUNTIME_REAL + 76)
+#define EL_MM_AMOEBA_WALL_GROWING			(EL_FIRST_RUNTIME_REAL + 77)
+#define EL_MM_PACMAN_EATING_RIGHT			(EL_FIRST_RUNTIME_REAL + 78)
+#define EL_MM_PACMAN_EATING_UP				(EL_FIRST_RUNTIME_REAL + 79)
+#define EL_MM_PACMAN_EATING_LEFT			(EL_FIRST_RUNTIME_REAL + 80)
+#define EL_MM_PACMAN_EATING_DOWN			(EL_FIRST_RUNTIME_REAL + 81)
+#define EL_MM_BOMB_ACTIVE				(EL_FIRST_RUNTIME_REAL + 82)
+#define EL_DF_MINE_ACTIVE				(EL_FIRST_RUNTIME_REAL + 83)
+#define EL_BDX_MAGIC_WALL_ACTIVE			(EL_FIRST_RUNTIME_REAL + 84)
 
-#define NUM_DRAWABLE_ELEMENTS			(EL_FIRST_RUNTIME_REAL + 85)
+#define NUM_DRAWABLE_ELEMENTS				(EL_FIRST_RUNTIME_REAL + 85)
 
-#define EL_MM_RUNTIME_START			EL_MM_EXIT_OPENING
-#define EL_MM_RUNTIME_END			EL_MM_AMOEBA_WALL_GROWING
+#define EL_MM_RUNTIME_START				EL_MM_EXIT_OPENING
+#define EL_MM_RUNTIME_END				EL_MM_AMOEBA_WALL_GROWING
 
 // "unreal" (and therefore not drawable) runtime elements
-#define EL_FIRST_RUNTIME_UNREAL			(NUM_DRAWABLE_ELEMENTS)
+#define EL_FIRST_RUNTIME_UNREAL				(NUM_DRAWABLE_ELEMENTS)
 
-#define EL_BLOCKED				(EL_FIRST_RUNTIME_UNREAL + 0)
-#define EL_EXPLOSION				(EL_FIRST_RUNTIME_UNREAL + 1)
-#define EL_NUT_BREAKING				(EL_FIRST_RUNTIME_UNREAL + 2)
-#define EL_DIAMOND_BREAKING			(EL_FIRST_RUNTIME_UNREAL + 3)
-#define EL_ACID_SPLASH_LEFT			(EL_FIRST_RUNTIME_UNREAL + 4)
-#define EL_ACID_SPLASH_RIGHT			(EL_FIRST_RUNTIME_UNREAL + 5)
-#define EL_AMOEBA_GROWING			(EL_FIRST_RUNTIME_UNREAL + 6)
-#define EL_AMOEBA_SHRINKING			(EL_FIRST_RUNTIME_UNREAL + 7)
-#define EL_EXPANDABLE_WALL_GROWING		(EL_FIRST_RUNTIME_UNREAL + 8)
-#define EL_EXPANDABLE_STEELWALL_GROWING		(EL_FIRST_RUNTIME_UNREAL + 9)
-#define EL_FLAMES				(EL_FIRST_RUNTIME_UNREAL + 10)
-#define EL_PLAYER_IS_LEAVING			(EL_FIRST_RUNTIME_UNREAL + 11)
-#define EL_PLAYER_IS_EXPLODING_1		(EL_FIRST_RUNTIME_UNREAL + 12)
-#define EL_PLAYER_IS_EXPLODING_2		(EL_FIRST_RUNTIME_UNREAL + 13)
-#define EL_PLAYER_IS_EXPLODING_3		(EL_FIRST_RUNTIME_UNREAL + 14)
-#define EL_PLAYER_IS_EXPLODING_4		(EL_FIRST_RUNTIME_UNREAL + 15)
-#define EL_QUICKSAND_FILLING			(EL_FIRST_RUNTIME_UNREAL + 16)
-#define EL_QUICKSAND_FAST_FILLING		(EL_FIRST_RUNTIME_UNREAL + 17)
-#define EL_MAGIC_WALL_FILLING			(EL_FIRST_RUNTIME_UNREAL + 18)
-#define EL_BD_MAGIC_WALL_FILLING		(EL_FIRST_RUNTIME_UNREAL + 19)
-#define EL_DC_MAGIC_WALL_FILLING		(EL_FIRST_RUNTIME_UNREAL + 20)
-#define EL_ELEMENT_SNAPPING			(EL_FIRST_RUNTIME_UNREAL + 21)
-#define EL_DIAGONAL_SHRINKING			(EL_FIRST_RUNTIME_UNREAL + 22)
-#define EL_DIAGONAL_GROWING			(EL_FIRST_RUNTIME_UNREAL + 23)
+#define EL_BLOCKED					(EL_FIRST_RUNTIME_UNREAL + 0)
+#define EL_EXPLOSION					(EL_FIRST_RUNTIME_UNREAL + 1)
+#define EL_NUT_BREAKING					(EL_FIRST_RUNTIME_UNREAL + 2)
+#define EL_DIAMOND_BREAKING				(EL_FIRST_RUNTIME_UNREAL + 3)
+#define EL_ACID_SPLASH_LEFT				(EL_FIRST_RUNTIME_UNREAL + 4)
+#define EL_ACID_SPLASH_RIGHT				(EL_FIRST_RUNTIME_UNREAL + 5)
+#define EL_AMOEBA_GROWING				(EL_FIRST_RUNTIME_UNREAL + 6)
+#define EL_AMOEBA_SHRINKING				(EL_FIRST_RUNTIME_UNREAL + 7)
+#define EL_EXPANDABLE_WALL_GROWING			(EL_FIRST_RUNTIME_UNREAL + 8)
+#define EL_EXPANDABLE_STEELWALL_GROWING			(EL_FIRST_RUNTIME_UNREAL + 9)
+#define EL_FLAMES					(EL_FIRST_RUNTIME_UNREAL + 10)
+#define EL_PLAYER_IS_LEAVING				(EL_FIRST_RUNTIME_UNREAL + 11)
+#define EL_PLAYER_IS_EXPLODING_1			(EL_FIRST_RUNTIME_UNREAL + 12)
+#define EL_PLAYER_IS_EXPLODING_2			(EL_FIRST_RUNTIME_UNREAL + 13)
+#define EL_PLAYER_IS_EXPLODING_3			(EL_FIRST_RUNTIME_UNREAL + 14)
+#define EL_PLAYER_IS_EXPLODING_4			(EL_FIRST_RUNTIME_UNREAL + 15)
+#define EL_QUICKSAND_FILLING				(EL_FIRST_RUNTIME_UNREAL + 16)
+#define EL_QUICKSAND_FAST_FILLING			(EL_FIRST_RUNTIME_UNREAL + 17)
+#define EL_MAGIC_WALL_FILLING				(EL_FIRST_RUNTIME_UNREAL + 18)
+#define EL_BD_MAGIC_WALL_FILLING			(EL_FIRST_RUNTIME_UNREAL + 19)
+#define EL_DC_MAGIC_WALL_FILLING			(EL_FIRST_RUNTIME_UNREAL + 20)
+#define EL_ELEMENT_SNAPPING				(EL_FIRST_RUNTIME_UNREAL + 21)
+#define EL_DIAGONAL_SHRINKING				(EL_FIRST_RUNTIME_UNREAL + 22)
+#define EL_DIAGONAL_GROWING				(EL_FIRST_RUNTIME_UNREAL + 23)
 
-#define NUM_RUNTIME_ELEMENTS			(EL_FIRST_RUNTIME_UNREAL + 24)
+#define NUM_RUNTIME_ELEMENTS				(EL_FIRST_RUNTIME_UNREAL + 24)
 
 // dummy elements (never used as game elements, only used as graphics)
-#define EL_FIRST_DUMMY				NUM_RUNTIME_ELEMENTS
+#define EL_FIRST_DUMMY					NUM_RUNTIME_ELEMENTS
 
-#define EL_STEELWALL_TOPLEFT			(EL_FIRST_DUMMY + 0)
-#define EL_STEELWALL_TOPRIGHT			(EL_FIRST_DUMMY + 1)
-#define EL_STEELWALL_BOTTOMLEFT			(EL_FIRST_DUMMY + 2)
-#define EL_STEELWALL_BOTTOMRIGHT		(EL_FIRST_DUMMY + 3)
-#define EL_STEELWALL_HORIZONTAL			(EL_FIRST_DUMMY + 4)
-#define EL_STEELWALL_VERTICAL			(EL_FIRST_DUMMY + 5)
-#define EL_INVISIBLE_STEELWALL_TOPLEFT		(EL_FIRST_DUMMY + 6)
-#define EL_INVISIBLE_STEELWALL_TOPRIGHT		(EL_FIRST_DUMMY + 7)
-#define EL_INVISIBLE_STEELWALL_BOTTOMLEFT	(EL_FIRST_DUMMY + 8)
-#define EL_INVISIBLE_STEELWALL_BOTTOMRIGHT	(EL_FIRST_DUMMY + 9)
-#define EL_INVISIBLE_STEELWALL_HORIZONTAL	(EL_FIRST_DUMMY + 10)
-#define EL_INVISIBLE_STEELWALL_VERTICAL		(EL_FIRST_DUMMY + 11)
-#define EL_DYNABOMB				(EL_FIRST_DUMMY + 12)
-#define EL_DYNABOMB_ACTIVE			(EL_FIRST_DUMMY + 13)
-#define EL_DYNABOMB_PLAYER_1			(EL_FIRST_DUMMY + 14)
-#define EL_DYNABOMB_PLAYER_2			(EL_FIRST_DUMMY + 15)
-#define EL_DYNABOMB_PLAYER_3			(EL_FIRST_DUMMY + 16)
-#define EL_DYNABOMB_PLAYER_4			(EL_FIRST_DUMMY + 17)
-#define EL_SHIELD_NORMAL_ACTIVE			(EL_FIRST_DUMMY + 18)
-#define EL_SHIELD_DEADLY_ACTIVE			(EL_FIRST_DUMMY + 19)
-#define EL_AMOEBA				(EL_FIRST_DUMMY + 20)
-#define EL_MM_LIGHTBALL_RED			(EL_FIRST_DUMMY + 21)
-#define EL_MM_LIGHTBALL_BLUE			(EL_FIRST_DUMMY + 22)
-#define EL_MM_LIGHTBALL_YELLOW			(EL_FIRST_DUMMY + 23)
-#define EL_DEFAULT				(EL_FIRST_DUMMY + 24)
-#define EL_BD_DEFAULT				(EL_FIRST_DUMMY + 25)
-#define EL_BDX_DEFAULT				(EL_FIRST_DUMMY + 26)
-#define EL_SP_DEFAULT				(EL_FIRST_DUMMY + 27)
-#define EL_SB_DEFAULT				(EL_FIRST_DUMMY + 28)
-#define EL_MM_DEFAULT				(EL_FIRST_DUMMY + 29)
-#define EL_GRAPHIC_1				(EL_FIRST_DUMMY + 30)
-#define EL_GRAPHIC_2				(EL_FIRST_DUMMY + 31)
-#define EL_GRAPHIC_3				(EL_FIRST_DUMMY + 32)
-#define EL_GRAPHIC_4				(EL_FIRST_DUMMY + 33)
-#define EL_GRAPHIC_5				(EL_FIRST_DUMMY + 34)
-#define EL_GRAPHIC_6				(EL_FIRST_DUMMY + 35)
-#define EL_GRAPHIC_7				(EL_FIRST_DUMMY + 36)
-#define EL_GRAPHIC_8				(EL_FIRST_DUMMY + 37)
+#define EL_STEELWALL_TOPLEFT				(EL_FIRST_DUMMY + 0)
+#define EL_STEELWALL_TOPRIGHT				(EL_FIRST_DUMMY + 1)
+#define EL_STEELWALL_BOTTOMLEFT				(EL_FIRST_DUMMY + 2)
+#define EL_STEELWALL_BOTTOMRIGHT			(EL_FIRST_DUMMY + 3)
+#define EL_STEELWALL_HORIZONTAL				(EL_FIRST_DUMMY + 4)
+#define EL_STEELWALL_VERTICAL				(EL_FIRST_DUMMY + 5)
+#define EL_INVISIBLE_STEELWALL_TOPLEFT			(EL_FIRST_DUMMY + 6)
+#define EL_INVISIBLE_STEELWALL_TOPRIGHT			(EL_FIRST_DUMMY + 7)
+#define EL_INVISIBLE_STEELWALL_BOTTOMLEFT		(EL_FIRST_DUMMY + 8)
+#define EL_INVISIBLE_STEELWALL_BOTTOMRIGHT		(EL_FIRST_DUMMY + 9)
+#define EL_INVISIBLE_STEELWALL_HORIZONTAL		(EL_FIRST_DUMMY + 10)
+#define EL_INVISIBLE_STEELWALL_VERTICAL			(EL_FIRST_DUMMY + 11)
+#define EL_DYNABOMB					(EL_FIRST_DUMMY + 12)
+#define EL_DYNABOMB_ACTIVE				(EL_FIRST_DUMMY + 13)
+#define EL_DYNABOMB_PLAYER_1				(EL_FIRST_DUMMY + 14)
+#define EL_DYNABOMB_PLAYER_2				(EL_FIRST_DUMMY + 15)
+#define EL_DYNABOMB_PLAYER_3				(EL_FIRST_DUMMY + 16)
+#define EL_DYNABOMB_PLAYER_4				(EL_FIRST_DUMMY + 17)
+#define EL_SHIELD_NORMAL_ACTIVE				(EL_FIRST_DUMMY + 18)
+#define EL_SHIELD_DEADLY_ACTIVE				(EL_FIRST_DUMMY + 19)
+#define EL_AMOEBA					(EL_FIRST_DUMMY + 20)
+#define EL_MM_LIGHTBALL_RED				(EL_FIRST_DUMMY + 21)
+#define EL_MM_LIGHTBALL_BLUE				(EL_FIRST_DUMMY + 22)
+#define EL_MM_LIGHTBALL_YELLOW				(EL_FIRST_DUMMY + 23)
+#define EL_DEFAULT					(EL_FIRST_DUMMY + 24)
+#define EL_BD_DEFAULT					(EL_FIRST_DUMMY + 25)
+#define EL_BDX_DEFAULT					(EL_FIRST_DUMMY + 26)
+#define EL_SP_DEFAULT					(EL_FIRST_DUMMY + 27)
+#define EL_SB_DEFAULT					(EL_FIRST_DUMMY + 28)
+#define EL_MM_DEFAULT					(EL_FIRST_DUMMY + 29)
+#define EL_GRAPHIC_1					(EL_FIRST_DUMMY + 30)
+#define EL_GRAPHIC_2					(EL_FIRST_DUMMY + 31)
+#define EL_GRAPHIC_3					(EL_FIRST_DUMMY + 32)
+#define EL_GRAPHIC_4					(EL_FIRST_DUMMY + 33)
+#define EL_GRAPHIC_5					(EL_FIRST_DUMMY + 34)
+#define EL_GRAPHIC_6					(EL_FIRST_DUMMY + 35)
+#define EL_GRAPHIC_7					(EL_FIRST_DUMMY + 36)
+#define EL_GRAPHIC_8					(EL_FIRST_DUMMY + 37)
 
 // internal elements (only used for internal purposes like copying)
-#define EL_FIRST_INTERNAL			(EL_FIRST_DUMMY + 38)
+#define EL_FIRST_INTERNAL				(EL_FIRST_DUMMY + 38)
 
-#define EL_INTERNAL_CLIPBOARD_CUSTOM		(EL_FIRST_INTERNAL + 0)
-#define EL_INTERNAL_CLIPBOARD_CHANGE		(EL_FIRST_INTERNAL + 1)
-#define EL_INTERNAL_CLIPBOARD_GROUP		(EL_FIRST_INTERNAL + 2)
-#define EL_INTERNAL_DUMMY			(EL_FIRST_INTERNAL + 3)
+#define EL_INTERNAL_CLIPBOARD_CUSTOM			(EL_FIRST_INTERNAL + 0)
+#define EL_INTERNAL_CLIPBOARD_CHANGE			(EL_FIRST_INTERNAL + 1)
+#define EL_INTERNAL_CLIPBOARD_GROUP			(EL_FIRST_INTERNAL + 2)
+#define EL_INTERNAL_DUMMY				(EL_FIRST_INTERNAL + 3)
 
-#define EL_INTERNAL_CASCADE_BD			(EL_FIRST_INTERNAL + 4)
-#define EL_INTERNAL_CASCADE_BD_ACTIVE		(EL_FIRST_INTERNAL + 5)
-#define EL_INTERNAL_CASCADE_BDX			(EL_FIRST_INTERNAL + 6)
-#define EL_INTERNAL_CASCADE_BDX_ACTIVE		(EL_FIRST_INTERNAL + 7)
-#define EL_INTERNAL_CASCADE_BDX_EFFECTS		(EL_FIRST_INTERNAL + 8)
-#define EL_INTERNAL_CASCADE_BDX_EFFECTS_ACTIVE	(EL_FIRST_INTERNAL + 9)
-#define EL_INTERNAL_CASCADE_BDX_SCANNED		(EL_FIRST_INTERNAL + 10)
-#define EL_INTERNAL_CASCADE_BDX_SCANNED_ACTIVE	(EL_FIRST_INTERNAL + 11)
-#define EL_INTERNAL_CASCADE_BDX_KRISSZ		(EL_FIRST_INTERNAL + 12)
-#define EL_INTERNAL_CASCADE_BDX_KRISSZ_ACTIVE	(EL_FIRST_INTERNAL + 13)
-#define EL_INTERNAL_CASCADE_EM			(EL_FIRST_INTERNAL + 14)
-#define EL_INTERNAL_CASCADE_EM_ACTIVE		(EL_FIRST_INTERNAL + 15)
-#define EL_INTERNAL_CASCADE_EMC			(EL_FIRST_INTERNAL + 16)
-#define EL_INTERNAL_CASCADE_EMC_ACTIVE		(EL_FIRST_INTERNAL + 17)
-#define EL_INTERNAL_CASCADE_RND			(EL_FIRST_INTERNAL + 18)
-#define EL_INTERNAL_CASCADE_RND_ACTIVE		(EL_FIRST_INTERNAL + 19)
-#define EL_INTERNAL_CASCADE_SB			(EL_FIRST_INTERNAL + 20)
-#define EL_INTERNAL_CASCADE_SB_ACTIVE		(EL_FIRST_INTERNAL + 21)
-#define EL_INTERNAL_CASCADE_SP			(EL_FIRST_INTERNAL + 22)
-#define EL_INTERNAL_CASCADE_SP_ACTIVE		(EL_FIRST_INTERNAL + 23)
-#define EL_INTERNAL_CASCADE_DC			(EL_FIRST_INTERNAL + 24)
-#define EL_INTERNAL_CASCADE_DC_ACTIVE		(EL_FIRST_INTERNAL + 25)
-#define EL_INTERNAL_CASCADE_DX			(EL_FIRST_INTERNAL + 26)
-#define EL_INTERNAL_CASCADE_DX_ACTIVE		(EL_FIRST_INTERNAL + 27)
-#define EL_INTERNAL_CASCADE_MM			(EL_FIRST_INTERNAL + 28)
-#define EL_INTERNAL_CASCADE_MM_ACTIVE		(EL_FIRST_INTERNAL + 29)
-#define EL_INTERNAL_CASCADE_DF			(EL_FIRST_INTERNAL + 30)
-#define EL_INTERNAL_CASCADE_DF_ACTIVE		(EL_FIRST_INTERNAL + 31)
-#define EL_INTERNAL_CASCADE_CHARS		(EL_FIRST_INTERNAL + 32)
-#define EL_INTERNAL_CASCADE_CHARS_ACTIVE	(EL_FIRST_INTERNAL + 33)
-#define EL_INTERNAL_CASCADE_STEEL_CHARS		(EL_FIRST_INTERNAL + 34)
-#define EL_INTERNAL_CASCADE_STEEL_CHARS_ACTIVE	(EL_FIRST_INTERNAL + 35)
-#define EL_INTERNAL_CASCADE_CE			(EL_FIRST_INTERNAL + 36)
-#define EL_INTERNAL_CASCADE_CE_ACTIVE		(EL_FIRST_INTERNAL + 37)
-#define EL_INTERNAL_CASCADE_GE			(EL_FIRST_INTERNAL + 38)
-#define EL_INTERNAL_CASCADE_GE_ACTIVE		(EL_FIRST_INTERNAL + 39)
-#define EL_INTERNAL_CASCADE_ES			(EL_FIRST_INTERNAL + 40)
-#define EL_INTERNAL_CASCADE_ES_ACTIVE		(EL_FIRST_INTERNAL + 41)
-#define EL_INTERNAL_CASCADE_REF			(EL_FIRST_INTERNAL + 42)
-#define EL_INTERNAL_CASCADE_REF_ACTIVE		(EL_FIRST_INTERNAL + 43)
-#define EL_INTERNAL_CASCADE_USER		(EL_FIRST_INTERNAL + 44)
-#define EL_INTERNAL_CASCADE_USER_ACTIVE		(EL_FIRST_INTERNAL + 45)
-#define EL_INTERNAL_CASCADE_DYNAMIC		(EL_FIRST_INTERNAL + 46)
-#define EL_INTERNAL_CASCADE_DYNAMIC_ACTIVE	(EL_FIRST_INTERNAL + 47)
+#define EL_INTERNAL_CASCADE_BD				(EL_FIRST_INTERNAL + 4)
+#define EL_INTERNAL_CASCADE_BD_ACTIVE			(EL_FIRST_INTERNAL + 5)
+#define EL_INTERNAL_CASCADE_BDX				(EL_FIRST_INTERNAL + 6)
+#define EL_INTERNAL_CASCADE_BDX_ACTIVE			(EL_FIRST_INTERNAL + 7)
+#define EL_INTERNAL_CASCADE_BDX_EFFECTS			(EL_FIRST_INTERNAL + 8)
+#define EL_INTERNAL_CASCADE_BDX_EFFECTS_ACTIVE		(EL_FIRST_INTERNAL + 9)
+#define EL_INTERNAL_CASCADE_BDX_SCANNED			(EL_FIRST_INTERNAL + 10)
+#define EL_INTERNAL_CASCADE_BDX_SCANNED_ACTIVE		(EL_FIRST_INTERNAL + 11)
+#define EL_INTERNAL_CASCADE_BDX_KRISSZ			(EL_FIRST_INTERNAL + 12)
+#define EL_INTERNAL_CASCADE_BDX_KRISSZ_ACTIVE		(EL_FIRST_INTERNAL + 13)
+#define EL_INTERNAL_CASCADE_EM				(EL_FIRST_INTERNAL + 14)
+#define EL_INTERNAL_CASCADE_EM_ACTIVE			(EL_FIRST_INTERNAL + 15)
+#define EL_INTERNAL_CASCADE_EMC				(EL_FIRST_INTERNAL + 16)
+#define EL_INTERNAL_CASCADE_EMC_ACTIVE			(EL_FIRST_INTERNAL + 17)
+#define EL_INTERNAL_CASCADE_RND				(EL_FIRST_INTERNAL + 18)
+#define EL_INTERNAL_CASCADE_RND_ACTIVE			(EL_FIRST_INTERNAL + 19)
+#define EL_INTERNAL_CASCADE_SB				(EL_FIRST_INTERNAL + 20)
+#define EL_INTERNAL_CASCADE_SB_ACTIVE			(EL_FIRST_INTERNAL + 21)
+#define EL_INTERNAL_CASCADE_SP				(EL_FIRST_INTERNAL + 22)
+#define EL_INTERNAL_CASCADE_SP_ACTIVE			(EL_FIRST_INTERNAL + 23)
+#define EL_INTERNAL_CASCADE_DC				(EL_FIRST_INTERNAL + 24)
+#define EL_INTERNAL_CASCADE_DC_ACTIVE			(EL_FIRST_INTERNAL + 25)
+#define EL_INTERNAL_CASCADE_DX				(EL_FIRST_INTERNAL + 26)
+#define EL_INTERNAL_CASCADE_DX_ACTIVE			(EL_FIRST_INTERNAL + 27)
+#define EL_INTERNAL_CASCADE_MM				(EL_FIRST_INTERNAL + 28)
+#define EL_INTERNAL_CASCADE_MM_ACTIVE			(EL_FIRST_INTERNAL + 29)
+#define EL_INTERNAL_CASCADE_DF				(EL_FIRST_INTERNAL + 30)
+#define EL_INTERNAL_CASCADE_DF_ACTIVE			(EL_FIRST_INTERNAL + 31)
+#define EL_INTERNAL_CASCADE_CHARS			(EL_FIRST_INTERNAL + 32)
+#define EL_INTERNAL_CASCADE_CHARS_ACTIVE		(EL_FIRST_INTERNAL + 33)
+#define EL_INTERNAL_CASCADE_STEEL_CHARS			(EL_FIRST_INTERNAL + 34)
+#define EL_INTERNAL_CASCADE_STEEL_CHARS_ACTIVE		(EL_FIRST_INTERNAL + 35)
+#define EL_INTERNAL_CASCADE_CE				(EL_FIRST_INTERNAL + 36)
+#define EL_INTERNAL_CASCADE_CE_ACTIVE			(EL_FIRST_INTERNAL + 37)
+#define EL_INTERNAL_CASCADE_GE				(EL_FIRST_INTERNAL + 38)
+#define EL_INTERNAL_CASCADE_GE_ACTIVE			(EL_FIRST_INTERNAL + 39)
+#define EL_INTERNAL_CASCADE_ES				(EL_FIRST_INTERNAL + 40)
+#define EL_INTERNAL_CASCADE_ES_ACTIVE			(EL_FIRST_INTERNAL + 41)
+#define EL_INTERNAL_CASCADE_REF				(EL_FIRST_INTERNAL + 42)
+#define EL_INTERNAL_CASCADE_REF_ACTIVE			(EL_FIRST_INTERNAL + 43)
+#define EL_INTERNAL_CASCADE_USER			(EL_FIRST_INTERNAL + 44)
+#define EL_INTERNAL_CASCADE_USER_ACTIVE			(EL_FIRST_INTERNAL + 45)
+#define EL_INTERNAL_CASCADE_DYNAMIC			(EL_FIRST_INTERNAL + 46)
+#define EL_INTERNAL_CASCADE_DYNAMIC_ACTIVE		(EL_FIRST_INTERNAL + 47)
 
-#define EL_INTERNAL_CLIPBOARD_START		(EL_FIRST_INTERNAL + 0)
-#define EL_INTERNAL_CLIPBOARD_END		(EL_FIRST_INTERNAL + 2)
+#define EL_INTERNAL_CLIPBOARD_START			(EL_FIRST_INTERNAL + 0)
+#define EL_INTERNAL_CLIPBOARD_END			(EL_FIRST_INTERNAL + 2)
 
-#define EL_INTERNAL_START			(EL_FIRST_INTERNAL + 0)
-#define EL_INTERNAL_END				(EL_FIRST_INTERNAL + 47)
+#define EL_INTERNAL_START				(EL_FIRST_INTERNAL + 0)
+#define EL_INTERNAL_END					(EL_FIRST_INTERNAL + 47)
 
-#define MAX_NUM_ELEMENTS			(EL_FIRST_INTERNAL + 48)
+#define MAX_NUM_ELEMENTS				(EL_FIRST_INTERNAL + 48)
 
 
 // values for graphics/sounds action types
@@ -3678,7 +3679,7 @@ struct ScoreEntry
   char tape_basename[MAX_FILENAME_LEN + 1];
   char name[MAX_PLAYER_NAME_LEN + 1];
   int score;
-  int time;		// time (in frames) or steps played
+  int time;				// time (in frames) or steps played
 
   // additional score information for score info screen
   int id;
