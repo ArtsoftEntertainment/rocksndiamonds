@@ -24,15 +24,15 @@
 #include "config.h"
 
 
-#define	DEBUG_EVENTS		0
+#define	DEBUG_EVENTS			0
 
-#define DEBUG_EVENTS_BUTTON	(DEBUG_EVENTS	* 0)
-#define DEBUG_EVENTS_MOTION	(DEBUG_EVENTS	* 0)
-#define DEBUG_EVENTS_WHEEL	(DEBUG_EVENTS	* 1)
-#define DEBUG_EVENTS_WINDOW	(DEBUG_EVENTS	* 0)
-#define DEBUG_EVENTS_FINGER	(DEBUG_EVENTS	* 0)
-#define DEBUG_EVENTS_TEXT	(DEBUG_EVENTS	* 1)
-#define DEBUG_EVENTS_KEY	(DEBUG_EVENTS	* 1)
+#define DEBUG_EVENTS_BUTTON		(DEBUG_EVENTS	* 0)
+#define DEBUG_EVENTS_MOTION		(DEBUG_EVENTS	* 0)
+#define DEBUG_EVENTS_WHEEL		(DEBUG_EVENTS	* 1)
+#define DEBUG_EVENTS_WINDOW		(DEBUG_EVENTS	* 0)
+#define DEBUG_EVENTS_FINGER		(DEBUG_EVENTS	* 0)
+#define DEBUG_EVENTS_TEXT		(DEBUG_EVENTS	* 1)
+#define DEBUG_EVENTS_KEY		(DEBUG_EVENTS	* 1)
 
 
 static boolean cursor_inside_playfield = FALSE;
@@ -108,10 +108,8 @@ static int FilterEvents(const Event *event)
   {
     // do not reset mouse cursor before all pending events have been processed
     if (gfx.cursor_mode == cursor_mode_last &&
-	((game_status == GAME_MODE_TITLE &&
-	  gfx.cursor_mode == CURSOR_NONE) ||
-	 (game_status == GAME_MODE_PLAYING &&
-	  gfx.cursor_mode == CURSOR_PLAYFIELD)))
+	((game_status == GAME_MODE_TITLE   && gfx.cursor_mode == CURSOR_NONE) ||
+	 (game_status == GAME_MODE_PLAYING && gfx.cursor_mode == CURSOR_PLAYFIELD)))
     {
       SetMouseCursor(CURSOR_DEFAULT);
 
@@ -140,7 +138,8 @@ static int FilterEvents(const Event *event)
 
   // skip mouse motion events without pressed button outside level editor
   if (button_status == MB_RELEASED &&
-      game_status != GAME_MODE_EDITOR && game_status != GAME_MODE_PLAYING)
+      game_status != GAME_MODE_EDITOR &&
+      game_status != GAME_MODE_PLAYING)
     return 0;
 
   return 1;
@@ -335,8 +334,7 @@ static void HandleMouseCursor(void)
       SetMouseCursor(CURSOR_NONE);
     }
   }
-  else if (game_status == GAME_MODE_PLAYING && (!tape.pausing ||
-						tape.single_step))
+  else if (game_status == GAME_MODE_PLAYING && (!tape.pausing || tape.single_step))
   {
     // when playing, display a special mouse pointer inside the playfield
 
@@ -610,22 +608,22 @@ void HandleWindowEvent(WindowEvent *event)
   int subtype = event->event;
 
   char *event_name =
-    (subtype == SDL_WINDOWEVENT_SHOWN ? "SDL_WINDOWEVENT_SHOWN" :
-     subtype == SDL_WINDOWEVENT_HIDDEN ? "SDL_WINDOWEVENT_HIDDEN" :
-     subtype == SDL_WINDOWEVENT_EXPOSED ? "SDL_WINDOWEVENT_EXPOSED" :
-     subtype == SDL_WINDOWEVENT_MOVED ? "SDL_WINDOWEVENT_MOVED" :
-     subtype == SDL_WINDOWEVENT_SIZE_CHANGED ? "SDL_WINDOWEVENT_SIZE_CHANGED" :
-     subtype == SDL_WINDOWEVENT_RESIZED ? "SDL_WINDOWEVENT_RESIZED" :
-     subtype == SDL_WINDOWEVENT_MINIMIZED ? "SDL_WINDOWEVENT_MINIMIZED" :
-     subtype == SDL_WINDOWEVENT_MAXIMIZED ? "SDL_WINDOWEVENT_MAXIMIZED" :
-     subtype == SDL_WINDOWEVENT_RESTORED ? "SDL_WINDOWEVENT_RESTORED" :
-     subtype == SDL_WINDOWEVENT_ENTER ? "SDL_WINDOWEVENT_ENTER" :
-     subtype == SDL_WINDOWEVENT_LEAVE ? "SDL_WINDOWEVENT_LEAVE" :
-     subtype == SDL_WINDOWEVENT_FOCUS_GAINED ? "SDL_WINDOWEVENT_FOCUS_GAINED" :
-     subtype == SDL_WINDOWEVENT_FOCUS_LOST ? "SDL_WINDOWEVENT_FOCUS_LOST" :
-     subtype == SDL_WINDOWEVENT_CLOSE ? "SDL_WINDOWEVENT_CLOSE" :
-     subtype == SDL_WINDOWEVENT_TAKE_FOCUS ? "SDL_WINDOWEVENT_TAKE_FOCUS" :
-     subtype == SDL_WINDOWEVENT_HIT_TEST ? "SDL_WINDOWEVENT_HIT_TEST" :
+    (subtype == SDL_WINDOWEVENT_SHOWN		? "SDL_WINDOWEVENT_SHOWN" :
+     subtype == SDL_WINDOWEVENT_HIDDEN		? "SDL_WINDOWEVENT_HIDDEN" :
+     subtype == SDL_WINDOWEVENT_EXPOSED		? "SDL_WINDOWEVENT_EXPOSED" :
+     subtype == SDL_WINDOWEVENT_MOVED		? "SDL_WINDOWEVENT_MOVED" :
+     subtype == SDL_WINDOWEVENT_SIZE_CHANGED	? "SDL_WINDOWEVENT_SIZE_CHANGED" :
+     subtype == SDL_WINDOWEVENT_RESIZED		? "SDL_WINDOWEVENT_RESIZED" :
+     subtype == SDL_WINDOWEVENT_MINIMIZED	? "SDL_WINDOWEVENT_MINIMIZED" :
+     subtype == SDL_WINDOWEVENT_MAXIMIZED	? "SDL_WINDOWEVENT_MAXIMIZED" :
+     subtype == SDL_WINDOWEVENT_RESTORED	? "SDL_WINDOWEVENT_RESTORED" :
+     subtype == SDL_WINDOWEVENT_ENTER		? "SDL_WINDOWEVENT_ENTER" :
+     subtype == SDL_WINDOWEVENT_LEAVE		? "SDL_WINDOWEVENT_LEAVE" :
+     subtype == SDL_WINDOWEVENT_FOCUS_GAINED	? "SDL_WINDOWEVENT_FOCUS_GAINED" :
+     subtype == SDL_WINDOWEVENT_FOCUS_LOST	? "SDL_WINDOWEVENT_FOCUS_LOST" :
+     subtype == SDL_WINDOWEVENT_CLOSE		? "SDL_WINDOWEVENT_CLOSE" :
+     subtype == SDL_WINDOWEVENT_TAKE_FOCUS	? "SDL_WINDOWEVENT_TAKE_FOCUS" :
+     subtype == SDL_WINDOWEVENT_HIT_TEST	? "SDL_WINDOWEVENT_HIT_TEST" :
      "(UNKNOWN)");
 
   Debug("event:window", "name: '%s', data1: %ld, data2: %ld",
@@ -718,8 +716,7 @@ static struct
   byte action;
 } touch_info[NUM_TOUCH_FINGERS];
 
-static void SetTouchInfo(int pos, SDL_FingerID finger_id, int counter,
-			 Key key, byte action)
+static void SetTouchInfo(int pos, SDL_FingerID finger_id, int counter, Key key, byte action)
 {
   touch_info[pos].touched = (action != JOY_NO_ACTION);
   touch_info[pos].finger_id = finger_id;
@@ -743,10 +740,8 @@ static void HandleFingerEvent_VirtualButtons(FingerEvent *event)
   int grid_button = overlay.grid_button[x][y];
   int grid_button_action = GET_ACTION_FROM_GRID_BUTTON(grid_button);
   Key key = GetKeyFromGridButton(grid_button);
-  int key_status = (event->type == EVENT_FINGERRELEASE ? KEY_RELEASED :
-		    KEY_PRESSED);
-  char *key_status_name = (key_status == KEY_RELEASED ? "KEY_RELEASED" :
-			   "KEY_PRESSED");
+  int key_status = (event->type == EVENT_FINGERRELEASE ? KEY_RELEASED : KEY_PRESSED);
+  char *key_status_name = (key_status == KEY_RELEASED ? "KEY_RELEASED" : "KEY_PRESSED");
   int i;
 
   // for any touch input event, enable overlay buttons (if activated)
@@ -1344,8 +1339,7 @@ static void HandleButtonOrFinger_FollowFinger(int mx, int my, int button)
     }
     else if (dx != 0 || dy != 0)
     {
-      if (player_is_dropping &&
-	  player_drop_count == getPlayerInventorySize(0))
+      if (player_is_dropping && player_drop_count == getPlayerInventorySize(0))
       {
 	Debug("event:finger", "---------- DROP -> SNAP ----------");
 
@@ -1613,8 +1607,7 @@ static int HandleDropFileEvent(char *filename)
   // force restart after adding level collection
   if (getTreeInfoFromIdentifier(TREE_FIRST_NODE(tree_type), top_dir) == NULL)
   {
-    Request("Program must be restarted after adding a new level collection!",
-	    REQ_CONFIRM);
+    Request("Program must be restarted after adding a new level collection!", REQ_CONFIRM);
 
     CloseAllAndExit(0);
   }
@@ -1653,8 +1646,7 @@ static void HandleDropCompleteEvent(int num_level_sets_succeeded,
     sprintf(message_part1, "New %s set%s added",
 	    (num_artwork_sets_succeeded == 0 ? "level" :
 	     num_level_sets_succeeded == 0 ? "artwork" : "level and artwork"),
-	    (num_level_sets_succeeded +
-	     num_artwork_sets_succeeded > 1 ? "s" : ""));
+	    (num_level_sets_succeeded + num_artwork_sets_succeeded > 1 ? "s" : ""));
 
     if (num_files_failed > 0)
       sprintf(message, "%s, but %d dropped file%s failed!",
@@ -1664,8 +1656,7 @@ static void HandleDropCompleteEvent(int num_level_sets_succeeded,
   }
   else if (num_files_failed > 0)
   {
-    sprintf(message, "Failed to process dropped file%s!",
-	    num_files_failed > 1 ? "s" : "");
+    sprintf(message, "Failed to process dropped file%s!", num_files_failed > 1 ? "s" : "");
   }
 
   Request(message, REQ_CONFIRM);
@@ -1890,7 +1881,7 @@ void HandleButton(int mx, int my, int button, int button_nr)
 
 #ifdef DEBUG
       if (button == MB_PRESSED && !motion_status && !button_hold &&
-	  IN_GFX_FIELD_PLAY(mx, my) && GetKeyModState() & KMOD_Control)
+	  IN_GFX_FIELD_PLAY(mx, my) && (GetKeyModState() & KMOD_Control))
 	DumpTileFromScreen(mx, my);
 #endif
 
@@ -2841,8 +2832,7 @@ void HandleJoystick(void)
   else
   {
     // first start with longer delay, then continue with shorter delay
-    joytest_delay.value =
-      (use_delay_value_first ? delay_value_first : delay_value);
+    joytest_delay.value = (use_delay_value_first ? delay_value_first : delay_value);
   }
 
   joytest_last = joytest;
@@ -2976,13 +2966,11 @@ void HandleSpecialGameControllerKeys(Key key, int key_status)
   {
     Event event;
 
-    event.type = (key_status == KEY_PRESSED ? SDL_CONTROLLERBUTTONDOWN :
-		  SDL_CONTROLLERBUTTONUP);
+    event.type = (key_status == KEY_PRESSED ? SDL_CONTROLLERBUTTONDOWN : SDL_CONTROLLERBUTTONUP);
 
     event.cbutton.which = 0;	// first joystick (Amazon Fire TV remote)
     event.cbutton.button = button;
-    event.cbutton.state = (key_status == KEY_PRESSED ? SDL_PRESSED :
-			   SDL_RELEASED);
+    event.cbutton.state = (key_status == KEY_PRESSED ? SDL_PRESSED : SDL_RELEASED);
 
     HandleJoystickEvent(&event);
   }
