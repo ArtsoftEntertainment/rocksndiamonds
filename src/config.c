@@ -92,8 +92,7 @@ char *getProgramInitString(void)
 
 char *getConfigProgramTitleString(void)
 {
-  TreeInfo *graphics_current =
-    getArtworkTreeInfoForUserLevelSet(ARTWORK_TYPE_GRAPHICS);
+  TreeInfo *graphics_current = getArtworkTreeInfoForUserLevelSet(ARTWORK_TYPE_GRAPHICS);
 
   return (leveldir_current->program_title ?
 	  leveldir_current->program_title :
@@ -104,8 +103,7 @@ char *getConfigProgramTitleString(void)
 
 char *getConfigProgramCopyrightString(void)
 {
-  TreeInfo *graphics_current =
-    getArtworkTreeInfoForUserLevelSet(ARTWORK_TYPE_GRAPHICS);
+  TreeInfo *graphics_current = getArtworkTreeInfoForUserLevelSet(ARTWORK_TYPE_GRAPHICS);
 
   return (leveldir_current->program_copyright ?
 	  leveldir_current->program_copyright :
@@ -116,8 +114,7 @@ char *getConfigProgramCopyrightString(void)
 
 char *getConfigProgramCompanyString(void)
 {
-  TreeInfo *graphics_current =
-    getArtworkTreeInfoForUserLevelSet(ARTWORK_TYPE_GRAPHICS);
+  TreeInfo *graphics_current = getArtworkTreeInfoForUserLevelSet(ARTWORK_TYPE_GRAPHICS);
 
   return (leveldir_current->program_company ?
 	  leveldir_current->program_company :
