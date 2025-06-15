@@ -4678,7 +4678,7 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
   else if (button == MB_MENU_CONTINUE)
   {
     // if space key was pressed, show next page of info screen, if available
-    if (wrapped_text->line_visible_last < wrapped_text->num_lines - 1)
+    if (wrapped_text != NULL && wrapped_text->line_visible_last < wrapped_text->num_lines - 1)
       HandleInfoScreen(0, 0, 0, +1 * SCROLL_PAGE, MB_MENU_MARK);
     else
       HandleInfoScreen(0, 0, 0, 0, MB_MENU_CHOICE);
@@ -4710,8 +4710,9 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
       FadeIn(REDRAW_FIELD);
     }
   }
-  else if ((dy < 0 && wrapped_text->line_visible_first > 0) ||
-           (dy > 0 && wrapped_text->line_visible_last < wrapped_text->num_lines - 1))
+  else if (wrapped_text != NULL &&
+           ((dy < 0 && wrapped_text->line_visible_first > 0) ||
+            (dy > 0 && wrapped_text->line_visible_last < wrapped_text->num_lines - 1)))
   {
     if (ABS(dy) == SCROLL_PAGE)
     {
