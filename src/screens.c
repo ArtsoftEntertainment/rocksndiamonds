@@ -2558,6 +2558,10 @@ static void HandleMainMenu_SelectLevel(int step, int direction,
   int old_level_nr = level_nr;
   int new_level_nr;
 
+  // fix step size if level set has more levels than supported by default
+  if (step == MAX_LEVELS)
+    step = leveldir_current->last_level - leveldir_current->first_level + 1;
+
   if (selected_level_nr != NO_DIRECT_LEVEL_SELECT)
     new_level_nr = selected_level_nr;
   else
