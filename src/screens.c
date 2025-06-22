@@ -1514,17 +1514,17 @@ static boolean visibleTextPos(struct TextPosInfo *pos)
 static void InitializeMainControls(void)
 {
   boolean local_team_mode = (!network.enabled && setup.team_mode);
+  int size_first_level  = menu.main.text.first_level.size;
+  int size_last_level   = menu.main.text.last_level.size;
+  int size_level_number = menu.main.text.level_number.size;
   int i;
 
   // set main control text values to dynamically determined values
   sprintf(main_text_name,         "%s",   local_team_mode ? "Team:" : "Name:");
 
-  strcpy(main_text_first_level,  int2str(leveldir_current->first_level,
-					 menu.main.text.first_level.size));
-  strcpy(main_text_last_level,   int2str(leveldir_current->last_level,
-					 menu.main.text.last_level.size));
-  strcpy(main_text_level_number, int2str(level_nr,
-					 menu.main.text.level_number.size));
+  strcpy(main_text_first_level,  int2str(leveldir_current->first_level, size_first_level));
+  strcpy(main_text_last_level,   int2str(leveldir_current->last_level,  size_last_level));
+  strcpy(main_text_level_number, int2str(level_nr,                      size_level_number));
 
   main_text_level_year		= leveldir_current->year;
   main_text_level_imported_from	= leveldir_current->imported_from;
