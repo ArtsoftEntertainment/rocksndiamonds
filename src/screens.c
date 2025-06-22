@@ -1519,6 +1519,10 @@ static void InitializeMainControls(void)
   int size_level_number = menu.main.text.level_number.size;
   int i;
 
+  // special case: align formatting of first and last level number
+  if (size_first_level < 0 && size_last_level < 0)
+    size_first_level = strlen(int2str(leveldir_current->last_level, size_last_level));
+
   // set main control text values to dynamically determined values
   sprintf(main_text_name,         "%s",   local_team_mode ? "Team:" : "Name:");
 
