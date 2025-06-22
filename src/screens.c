@@ -6151,6 +6151,11 @@ void DrawChooseLevelNr(void)
     char identifier[32], name[64];
     int value = i;
 
+    // dynamically determine format for level number size, depending on highest level number
+    int size_last_level = strlen(int2str(leveldir_current->last_level, 0));
+    int size_level_nr = (size_last_level > 3 ? size_last_level : 3);
+    char *text_level_nr = int2str(value, size_level_nr);
+
     // temporarily load level info to get level name
     LoadLevelInfoOnly(i);
 
@@ -6161,7 +6166,7 @@ void DrawChooseLevelNr(void)
 		 LevelStats_getPlayed(i) ? FC_YELLOW : FC_RED);
 
     snprintf(identifier, sizeof(identifier), "%d", value);
-    snprintf(name, sizeof(name), "%03d: %s", value,
+    snprintf(name, sizeof(name), "%s: %s", text_level_nr,
 	     (level.no_level_file ? "(no file)" : level.name));
 
     setString(&ti->identifier, identifier);
