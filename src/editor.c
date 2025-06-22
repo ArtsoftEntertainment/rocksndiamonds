@@ -8471,6 +8471,17 @@ static void ReinitializeElementList_EnableSections(void)
     setup_editor_el_steel_chars		= FALSE;
 
     setup_editor_el_custom		= FALSE;
+
+    if (level.bd_use_krissz_engine)
+    {
+      setup_editor_el_boulderdash_native	= FALSE;
+      setup_editor_el_boulderdash_effects	= FALSE;
+      setup_editor_el_boulderdash_scanned	= FALSE;
+    }
+    else
+    {
+      setup_editor_el_boulderdash_krissz	= FALSE;
+    }
   }
   else if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
   {
@@ -17798,6 +17809,12 @@ static void HandleCheckbuttons(struct GadgetInfo *gi)
   else if (type_id == ED_CHECKBUTTON_ID_AUTO_COUNT_GEMS)
   {
     SetAutomaticNumberOfGemsNeeded();
+  }
+  else if (type_id == ED_CHECKBUTTON_ID_BD_USE_KRISSZ_ENGINE)
+  {
+    // update element selection list depending on using Krissz engine compatibility
+    ReinitializeElementList();
+    ModifyEditorElementList();
   }
 
   // do not mark level as modified for certain non-level-changing gadgets
