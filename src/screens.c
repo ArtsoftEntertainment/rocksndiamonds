@@ -1523,6 +1523,26 @@ static void InitializeMainControls(void)
   if (size_first_level < 0 && size_last_level < 0)
     size_first_level = strlen(int2str(leveldir_current->last_level, size_last_level));
 
+  // special case: adjust formatting of current level number (and align dependent controls)
+  if (size_level_number < 0)
+  {
+    size_level_number = -1 * strlen(int2str(leveldir_current->last_level, size_last_level));
+
+    if (size_level_number != menu.main.text.level_number.size)
+    {
+      int chars_offset = menu.main.text.level_number.size - size_level_number;
+      int font_width = getFontWidth(menu.main.text.level_number.font);
+
+      // adjust screen positions of dependent controls
+      menu.main.button.next_level.x += font_width * chars_offset;
+      menu.main.text.first_level.x  += font_width * chars_offset;
+      menu.main.text.last_level.x   += font_width * chars_offset;
+
+      // finally store changed size of current level number
+      menu.main.text.level_number.size = size_level_number;
+    }
+  }
+
   // set main control text values to dynamically determined values
   sprintf(main_text_name,         "%s",   local_team_mode ? "Team:" : "Name:");
 
