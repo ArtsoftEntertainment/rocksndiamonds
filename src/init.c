@@ -140,15 +140,11 @@ static void SetLoadingBackgroundImage(void)
 static void DrawInitAnim(boolean only_when_loading)
 {
   struct GraphicInfo *graphic_info_last = graphic_info;
-  int graphic = (game_status_last_screen == -1 ?
-		 INITIAL_IMG_GLOBAL_BUSY_INITIAL :
-		 game_status == GAME_MODE_LOADING ?
-		 INITIAL_IMG_GLOBAL_BUSY :
+  int graphic = (game_status_last_screen == -1    ? INITIAL_IMG_GLOBAL_BUSY_INITIAL :
+		 game_status == GAME_MODE_LOADING ? INITIAL_IMG_GLOBAL_BUSY :
 		 INITIAL_IMG_GLOBAL_BUSY_PLAYFIELD);
-  struct MenuPosInfo *busy = (game_status_last_screen == -1 ?
-			      &init_last.busy_initial :
-			      game_status == GAME_MODE_LOADING ?
-			      &init_last.busy :
+  struct MenuPosInfo *busy = (game_status_last_screen == -1    ? &init_last.busy_initial :
+			      game_status == GAME_MODE_LOADING ? &init_last.busy :
 			      &init_last.busy_playfield);
   static DelayCounter action_delay = { 0 };
   int sync_frame = FrameCounter;
@@ -504,8 +500,7 @@ static char *getTokenFromFont(int font_nr)
   checked_free(token);
 
   if (special != -1)
-    token = getStringCat2(font_info[font_nr].token_name,
-                          special_suffix_info[special].suffix);
+    token = getStringCat2(font_info[font_nr].token_name, special_suffix_info[special].suffix);
   else
     token = getStringCopy(font_info[font_nr].token_name);
 
@@ -567,10 +562,8 @@ static void InitFontGraphicInfo(void)
 
     if (IS_SPECIAL_GFX_ARG(special))
     {
-      boolean base_redefined =
-	getImageListEntryFromImageID(base_graphic)->redefined;
-      boolean special_redefined =
-	getImageListEntryFromImageID(graphic)->redefined;
+      boolean base_redefined = getImageListEntryFromImageID(base_graphic)->redefined;
+      boolean special_redefined = getImageListEntryFromImageID(graphic)->redefined;
       boolean special_cloned = (graphic_info[graphic].clone_from != -1);
 
       /* if the base font ("font.title_1", for example) has been redefined,
@@ -584,6 +577,7 @@ static void InitFontGraphicInfo(void)
 
       font_info[font_nr].special_graphic[special] = graphic;
       font_info[font_nr].special_bitmap_id[special] = num_font_bitmaps;
+
       num_font_bitmaps++;
     }
   }
@@ -602,6 +596,7 @@ static void InitFontGraphicInfo(void)
     {
       font_info[font_nr].special_graphic[special] = graphic;
       font_info[font_nr].special_bitmap_id[special] = num_font_bitmaps;
+
       num_font_bitmaps++;
     }
   }
@@ -618,8 +613,7 @@ static void InitFontGraphicInfo(void)
 
     if (IS_SPECIAL_GFX_ARG(special))
     {
-      boolean special_redefined =
-	getImageListEntryFromImageID(graphic)->redefined;
+      boolean special_redefined = getImageListEntryFromImageID(graphic)->redefined;
       boolean special_cloned = (graphic_info[graphic].clone_from != -1);
 
       if (special_cloned && !special_redefined)
@@ -632,8 +626,7 @@ static void InitFontGraphicInfo(void)
 	  int special2 = font_to_graphic[j].special;
 	  int graphic2 = font_to_graphic[j].graphic;
 
-	  if (IS_SPECIAL_GFX_ARG(special2) &&
-	      graphic2 == graphic_info[graphic].clone_from)
+	  if (IS_SPECIAL_GFX_ARG(special2) && graphic2 == graphic_info[graphic].clone_from)
 	  {
 	    font_info[font_nr].special_graphic[special] =
 	      font_info[font_nr2].special_graphic[special2];
@@ -658,10 +651,8 @@ static void InitFontGraphicInfo(void)
     {
       int base_graphic = font_info[font_nr_base].graphic;
       int active_graphic = font_info[font_nr_active].graphic;
-      boolean base_redefined =
-	getImageListEntryFromImageID(base_graphic)->redefined;
-      boolean active_redefined =
-	getImageListEntryFromImageID(active_graphic)->redefined;
+      boolean base_redefined = getImageListEntryFromImageID(base_graphic)->redefined;
+      boolean active_redefined = getImageListEntryFromImageID(active_graphic)->redefined;
 
       /* if the base font ("font.menu_1", for example) has been redefined,
 	 but not the active font ("font.menu_1.active", for example), do not
@@ -675,10 +666,8 @@ static void InitFontGraphicInfo(void)
       {
 	int base_graphic = font_info[font_nr_base].special_graphic[j];
 	int active_graphic = font_info[font_nr_active].special_graphic[j];
-	boolean base_redefined =
-	  getImageListEntryFromImageID(base_graphic)->redefined;
-	boolean active_redefined =
-	  getImageListEntryFromImageID(active_graphic)->redefined;
+	boolean base_redefined = getImageListEntryFromImageID(base_graphic)->redefined;
+	boolean active_redefined = getImageListEntryFromImageID(active_graphic)->redefined;
 
 	// same as above, but check special graphic definitions, for example:
 	// redefined "font.menu_1.MAIN" invalidates "font.menu_1.active.MAIN"
@@ -708,6 +697,7 @@ static void InitFontGraphicInfo(void)
     if (i < NUM_INITIAL_FONTS)
     {
       font_bitmap_info[i] = font_initial[i];
+
       continue;
     }
 
@@ -724,29 +714,22 @@ static void InitFontGraphicInfo(void)
       }
 
       // copy font relevant information from graphics information
-      font_bitmap_info[font_bitmap_id].bitmap = graphic_info[graphic].bitmap;
-      font_bitmap_info[font_bitmap_id].src_x  = graphic_info[graphic].src_x;
-      font_bitmap_info[font_bitmap_id].src_y  = graphic_info[graphic].src_y;
-      font_bitmap_info[font_bitmap_id].width  = graphic_info[graphic].width;
-      font_bitmap_info[font_bitmap_id].height = graphic_info[graphic].height;
+      font_bitmap_info[font_bitmap_id].bitmap             = graphic_info[graphic].bitmap;
+      font_bitmap_info[font_bitmap_id].src_x              = graphic_info[graphic].src_x;
+      font_bitmap_info[font_bitmap_id].src_y              = graphic_info[graphic].src_y;
+      font_bitmap_info[font_bitmap_id].width              = graphic_info[graphic].width;
+      font_bitmap_info[font_bitmap_id].height             = graphic_info[graphic].height;
 
-      font_bitmap_info[font_bitmap_id].offset_x =
-	graphic_info[graphic].offset_x;
-      font_bitmap_info[font_bitmap_id].offset_y =
-	graphic_info[graphic].offset_y;
+      font_bitmap_info[font_bitmap_id].offset_x           = graphic_info[graphic].offset_x;
+      font_bitmap_info[font_bitmap_id].offset_y           = graphic_info[graphic].offset_y;
 
-      font_bitmap_info[font_bitmap_id].draw_xoffset =
-	graphic_info[graphic].draw_xoffset;
-      font_bitmap_info[font_bitmap_id].draw_yoffset =
-	graphic_info[graphic].draw_yoffset;
+      font_bitmap_info[font_bitmap_id].draw_xoffset       = graphic_info[graphic].draw_xoffset;
+      font_bitmap_info[font_bitmap_id].draw_yoffset       = graphic_info[graphic].draw_yoffset;
 
-      font_bitmap_info[font_bitmap_id].num_chars =
-	graphic_info[graphic].anim_frames;
-      font_bitmap_info[font_bitmap_id].num_chars_per_line =
-	graphic_info[graphic].anim_frames_per_line;
+      font_bitmap_info[font_bitmap_id].num_chars          = graphic_info[graphic].anim_frames;
+      font_bitmap_info[font_bitmap_id].num_chars_per_line = graphic_info[graphic].anim_frames_per_line;
 
-      font_bitmap_info[font_bitmap_id].uppercase_only =
-	graphic_info[graphic].uppercase_only;
+      font_bitmap_info[font_bitmap_id].uppercase_only     = graphic_info[graphic].uppercase_only;
     }
   }
 
@@ -964,10 +947,8 @@ static void InitElementGraphicInfo(void)
     if ((action > -1 || direction > -1 || crumbled == TRUE) &&
 	base_graphic != -1)
     {
-      boolean base_redefined =
-	getImageListEntryFromImageID(base_graphic)->redefined;
-      boolean act_dir_redefined =
-	getImageListEntryFromImageID(graphic)->redefined;
+      boolean base_redefined = getImageListEntryFromImageID(base_graphic)->redefined;
+      boolean act_dir_redefined = getImageListEntryFromImageID(graphic)->redefined;
 
       /* if the base graphic ("emerald", for example) has been redefined,
       	 but not the action graphic ("emerald.falling", for example), do not
@@ -1062,6 +1043,7 @@ static void InitElementGraphicInfo(void)
       for (act = 0; act < NUM_ACTIONS; act++)
 	element_info[i].crumbled[act] =
 	  element_info[crumbled_like].crumbled[act];
+
       for (act = 0; act < NUM_ACTIONS; act++)
 	for (dir = 0; dir < NUM_DIRECTIONS_FULL; dir++)
 	  element_info[i].direction_crumbled[act][dir] =
@@ -1072,6 +1054,7 @@ static void InitElementGraphicInfo(void)
     {
       element_info[i].graphic[ACTION_DIGGING] =
 	element_info[diggable_like].graphic[ACTION_DIGGING];
+
       for (dir = 0; dir < NUM_DIRECTIONS_FULL; dir++)
 	element_info[i].direction_graphic[ACTION_DIGGING][dir] =
 	  element_info[diggable_like].direction_graphic[ACTION_DIGGING][dir];
@@ -1195,10 +1178,8 @@ static void InitElementGraphicInfo(void)
 
     for (dir = 0; dir < NUM_DIRECTIONS_FULL; dir++)
     {
-      default_direction_graphic[dir] =
-	element_info[i].direction_graphic[ACTION_DEFAULT][dir];
-      default_direction_crumbled[dir] =
-	element_info[i].direction_crumbled[ACTION_DEFAULT][dir];
+      default_direction_graphic[dir]  = element_info[i].direction_graphic[ACTION_DEFAULT][dir];
+      default_direction_crumbled[dir] = element_info[i].direction_crumbled[ACTION_DEFAULT][dir];
 
       if (default_direction_graphic[dir] == -1)
 	default_direction_graphic[dir] = default_graphic;
@@ -1272,23 +1253,18 @@ static void InitElementGraphicInfo(void)
 	if (default_action_direction_graphic == -1)
 	  default_action_direction_graphic =
 	    (act_remove ? default_remove_graphic :
-	     act_turning ?
-	     element_info[i].direction_graphic[ACTION_TURNING][dir] :
-	     default_action_graphic != default_graphic ?
-	     default_action_graphic :
+	     act_turning ? element_info[i].direction_graphic[ACTION_TURNING][dir] :
+	     default_action_graphic != default_graphic ? default_action_graphic :
 	     default_direction_graphic[dir]);
 
 	if (element_info[i].direction_graphic[act][dir] == -1)
-	  element_info[i].direction_graphic[act][dir] =
-	    default_action_direction_graphic;
+	  element_info[i].direction_graphic[act][dir] = default_action_direction_graphic;
 
 	if (default_action_direction_crumbled == -1)
-	  default_action_direction_crumbled =
-	    element_info[i].direction_graphic[act][dir];
+	  default_action_direction_crumbled = element_info[i].direction_graphic[act][dir];
 
 	if (element_info[i].direction_crumbled[act][dir] == -1)
-	  element_info[i].direction_crumbled[act][dir] =
-	    default_action_direction_crumbled;
+	  element_info[i].direction_crumbled[act][dir] = default_action_direction_crumbled;
       }
 
       // no graphic for this specific action -- use default action graphic
@@ -1315,8 +1291,7 @@ static void InitElementSpecialGraphicInfo(void)
   // always start with reliable default values
   for (i = 0; i < MAX_NUM_ELEMENTS; i++)
     for (j = 0; j < NUM_SPECIAL_GFX_ARGS; j++)
-      element_info[i].special_graphic[j] =
-	element_info[i].graphic[ACTION_DEFAULT];
+      element_info[i].special_graphic[j] = element_info[i].graphic[ACTION_DEFAULT];
 
   // initialize special element/graphic mapping from static configuration
   for (i = 0; element_to_special_graphic[i].element > -1; i++)
@@ -1325,10 +1300,8 @@ static void InitElementSpecialGraphicInfo(void)
     int special = element_to_special_graphic[i].special;
     int graphic = element_to_special_graphic[i].graphic;
     int base_graphic = el2baseimg(element);
-    boolean base_redefined =
-      getImageListEntryFromImageID(base_graphic)->redefined;
-    boolean special_redefined =
-      getImageListEntryFromImageID(graphic)->redefined;
+    boolean base_redefined = getImageListEntryFromImageID(base_graphic)->redefined;
+    boolean special_redefined = getImageListEntryFromImageID(graphic)->redefined;
 
     /* if the base graphic ("emerald", for example) has been redefined,
        but not the special graphic ("emerald.EDITOR", for example), do not
@@ -1384,8 +1357,7 @@ static void InitElementSpecialGraphicInfo(void)
   for (i = 0; i < MAX_NUM_ELEMENTS; i++)
     for (j = 0; j < NUM_SPECIAL_GFX_ARGS; j++)
       if (graphic_info[element_info[i].special_graphic[j]].bitmap == NULL)
-	element_info[i].special_graphic[j] =
-	  element_info[i].graphic[ACTION_DEFAULT];
+	element_info[i].special_graphic[j] = element_info[i].graphic[ACTION_DEFAULT];
 }
 
 static int get_graphic_parameter_value(char *value_raw, char *suffix, int type)
@@ -1459,8 +1431,7 @@ static int get_scaled_graphic_height(Bitmap *src_bitmap, int graphic)
   return original_height * scale_up_factor;
 }
 
-static void set_graphic_parameters_ext(int graphic, int *parameter,
-				       Bitmap **src_bitmaps)
+static void set_graphic_parameters_ext(int graphic, int *parameter, Bitmap **src_bitmaps)
 {
   struct GraphicInfo *g = &graphic_info[graphic];
   Bitmap *src_bitmap = (src_bitmaps ? src_bitmaps[IMG_BITMAP_STANDARD] : NULL);
@@ -1663,9 +1634,8 @@ static void set_graphic_parameters_ext(int graphic, int *parameter,
   if (g->anim_frames < 1)		// frames must be at least 1
     g->anim_frames = 1;
 
-  g->anim_frames_per_line =
-    (parameter[GFX_ARG_FRAMES_PER_LINE] != ARG_UNDEFINED_VALUE ?
-     parameter[GFX_ARG_FRAMES_PER_LINE] : anim_frames_per_line);
+  g->anim_frames_per_line = (parameter[GFX_ARG_FRAMES_PER_LINE] != ARG_UNDEFINED_VALUE ?
+                             parameter[GFX_ARG_FRAMES_PER_LINE] : anim_frames_per_line);
 
   g->anim_delay = parameter[GFX_ARG_DELAY];
   if (g->anim_delay < 1)		// delay must be at least 1
@@ -2057,8 +2027,7 @@ static void InitGraphicInfo(void)
 
 static void InitGraphicCompatibilityInfo(void)
 {
-  struct FileInfo *fi_global_door =
-    getImageListEntryFromImageID(IMG_GLOBAL_DOOR);
+  struct FileInfo *fi_global_door = getImageListEntryFromImageID(IMG_GLOBAL_DOOR);
   int num_images = getImageListSize();
   int i;
 
@@ -2197,12 +2166,15 @@ static void InitElementSoundInfo(void)
       action = ACTION_DEFAULT;
 
     if (!is_class)
+    {
       element_info[element].sound[action] = sound;
+    }
     else
+    {
       for (j = 0; j < MAX_NUM_ELEMENTS; j++)
-	if (strEqual(element_info[j].class_name,
-		     element_info[element].class_name))
+	if (strEqual(element_info[j].class_name, element_info[element].class_name))
 	  element_info[j].sound[action] = sound;
+    }
   }
 
   // initialize element class/sound mapping from dynamic configuration
@@ -2219,8 +2191,7 @@ static void InitElementSoundInfo(void)
       action = ACTION_DEFAULT;
 
     for (j = 0; j < MAX_NUM_ELEMENTS; j++)
-      if (strEqual(element_info[j].class_name,
-		   element_info[element_class].class_name))
+      if (strEqual(element_info[j].class_name, element_info[element_class].class_name))
 	element_info[j].sound[action] = sound;
   }
 
@@ -2313,10 +2284,9 @@ static void set_sound_parameters(int sound, char **parameter_raw)
 
   // get integer values from string parameters
   for (i = 0; i < NUM_SND_ARGS; i++)
-    parameter[i] =
-      get_parameter_value(parameter_raw[i],
-			  sound_config_suffix[i].token,
-			  sound_config_suffix[i].type);
+    parameter[i] = get_parameter_value(parameter_raw[i],
+                                       sound_config_suffix[i].token,
+                                       sound_config_suffix[i].type);
 
   // explicit loop mode setting in configuration overrides default value
   if (parameter[SND_ARG_MODE_LOOP] != ARG_UNDEFINED_VALUE)
@@ -2360,8 +2330,7 @@ static void InitSoundInfo(void)
       int len_action_text = strlen(element_action_info[j].suffix);
 
       if (len_action_text < len_effect_text &&
-	  strEqual(&sound->token[len_effect_text - len_action_text],
-		   element_action_info[j].suffix))
+	  strEqual(&sound->token[len_effect_text - len_action_text], element_action_info[j].suffix))
       {
 	sound_effect_properties[i] = element_action_info[j].value;
 	sound_info[i].loop = element_action_info[j].is_loop_sound;
@@ -2379,8 +2348,7 @@ static void InitSoundInfo(void)
 	int len_class_text = strlen(element_info[j].class_name);
 
 	if (len_class_text + 1 < len_effect_text &&
-	    strncmp(sound->token,
-		    element_info[j].class_name, len_class_text) == 0 &&
+	    strncmp(sound->token, element_info[j].class_name, len_class_text) == 0 &&
 	    sound->token[len_class_text] == '.')
 	{
 	  int sound_action_value = sound_effect_properties[i];
@@ -2474,10 +2442,9 @@ static void set_music_parameters(int music, char **parameter_raw)
 
   // get integer values from string parameters
   for (i = 0; i < NUM_MUS_ARGS; i++)
-    parameter[i] =
-      get_parameter_value(parameter_raw[i],
-			  music_config_suffix[i].token,
-			  music_config_suffix[i].type);
+    parameter[i] = get_parameter_value(parameter_raw[i],
+                                       music_config_suffix[i].token,
+                                       music_config_suffix[i].type);
 
   // explicit loop mode setting in configuration overrides default value
   if (parameter[MUS_ARG_MODE_LOOP] != ARG_UNDEFINED_VALUE)
@@ -2507,8 +2474,7 @@ static void InitMusicInfo(void)
       int len_prefix_text = strlen(music_prefix_info[j].prefix);
 
       if (len_prefix_text < len_music_text &&
-	  strncmp(music->token,
-		  music_prefix_info[j].prefix, len_prefix_text) == 0)
+	  strncmp(music->token, music_prefix_info[j].prefix, len_prefix_text) == 0)
       {
 	music_info[i].loop = music_prefix_info[j].is_loop_music;
 
@@ -2697,8 +2663,7 @@ static int get_special_property_bit(int element, int property_bit_nr)
   return -1;
 }
 
-void setBitfieldProperty(int *bitfield, int property_bit_nr, int element,
-			 boolean property_value)
+void setBitfieldProperty(int *bitfield, int property_bit_nr, int element, boolean property_value)
 {
   int bit_nr = get_special_property_bit(element, property_bit_nr);
 
@@ -2733,8 +2698,7 @@ static void ResolveGroupElementExt(int group_element, int recursion_depth)
 
   if (recursion_depth > NUM_GROUP_ELEMENTS)	// recursion too deep
   {
-    Warn("recursion too deep when resolving group element %d",
-	  group_element - EL_GROUP_START + 1);
+    Warn("recursion too deep when resolving group element %d", group_element - EL_GROUP_START + 1);
 
     // replace element which caused too deep recursion by question mark
     group->element_resolved[group->num_elements_resolved++] = EL_UNKNOWN;
@@ -2762,7 +2726,9 @@ static void ResolveGroupElementExt(int group_element, int recursion_depth)
       break;
 
     if (IS_GROUP_ELEMENT(element))
+    {
       ResolveGroupElementExt(element, recursion_depth + 1);
+    }
     else
     {
       group->element_resolved[group->num_elements_resolved++] = element;
@@ -4849,8 +4815,7 @@ void InitElementPropertiesStatic(void)
   // set all base element properties from above array definitions
   for (i = 0; element_properties[i].elements != NULL; i++)
     for (j = 0; (element_properties[i].elements)[j] != -1; j++)
-      SET_PROPERTY((element_properties[i].elements)[j],
-		   element_properties[i].property, TRUE);
+      SET_PROPERTY((element_properties[i].elements)[j], element_properties[i].property, TRUE);
 
   // copy properties to some elements that are only stored in level file
   for (i = 0; i < NUM_ELEMENT_PROPERTIES; i++)
@@ -5042,13 +5007,11 @@ void InitElementPropertiesEngine(VersionType engine_version)
 
     // ---------- CAN_MOVE_INTO_ACID ------------------------------------------
     if (COULD_MOVE_INTO_ACID(i) && !IS_CUSTOM_ELEMENT(i))
-      SET_PROPERTY(i, EP_CAN_MOVE_INTO_ACID,
-		   getMoveIntoAcidProperty(&level, i));
+      SET_PROPERTY(i, EP_CAN_MOVE_INTO_ACID, getMoveIntoAcidProperty(&level, i));
 
     // ---------- DONT_COLLIDE_WITH -------------------------------------------
     if (MAYBE_DONT_COLLIDE_WITH(i))
-      SET_PROPERTY(i, EP_DONT_COLLIDE_WITH,
-		   getDontCollideWithProperty(&level, i));
+      SET_PROPERTY(i, EP_DONT_COLLIDE_WITH, getDontCollideWithProperty(&level, i));
 
     // ---------- SP_PORT -----------------------------------------------------
     SET_PROPERTY(i, EP_SP_PORT, (IS_SP_ELEMENT(i) &&
@@ -5113,18 +5076,15 @@ void InitElementPropertiesEngine(VersionType engine_version)
 
     // special EM style gems behaviour
     for (i = 0; ep_em_slippery_wall[i] != -1; i++)
-      SET_PROPERTY(ep_em_slippery_wall[i], EP_EM_SLIPPERY_WALL,
-		   level.em_slippery_gems);
+      SET_PROPERTY(ep_em_slippery_wall[i], EP_EM_SLIPPERY_WALL, level.em_slippery_gems);
 
     // "EL_EXPANDABLE_WALL_GROWING" wasn't slippery for EM gems in 2.0.1
     SET_PROPERTY(EL_EXPANDABLE_WALL_GROWING, EP_EM_SLIPPERY_WALL,
-		 (level.em_slippery_gems &&
-		  engine_version > VERSION_IDENT(2,0,1,0)));
+		 (level.em_slippery_gems && engine_version > VERSION_IDENT(2,0,1,0)));
 
     // special EM style explosion behaviour regarding chain reactions
     for (i = 0; ep_em_explodes_by_fire[i] != -1; i++)
-      SET_PROPERTY(ep_em_explodes_by_fire[i], EP_EXPLODES_BY_FIRE,
-		   level.em_explodes_by_fire);
+      SET_PROPERTY(ep_em_explodes_by_fire[i], EP_EXPLODES_BY_FIRE, level.em_explodes_by_fire);
   }
 
   // this is needed because some graphics depend on element properties
@@ -5761,32 +5721,29 @@ static void InitArtworkConfig(void)
   num_ignore_image_tokens = num_ignore_generic_tokens;
   for (i = 0; image_config_vars[i].token != NULL; i++)
     num_ignore_image_tokens++;
-  ignore_image_tokens =
-    checked_malloc((num_ignore_image_tokens + 1) * sizeof(char *));
+
+  ignore_image_tokens = checked_malloc((num_ignore_image_tokens + 1) * sizeof(char *));
   for (i = 0; i < num_ignore_generic_tokens; i++)
     ignore_image_tokens[i] = ignore_generic_tokens[i];
   for (i = 0; i < num_ignore_image_tokens - num_ignore_generic_tokens; i++)
-    ignore_image_tokens[num_ignore_generic_tokens + i] =
-      image_config_vars[i].token;
+    ignore_image_tokens[num_ignore_generic_tokens + i] = image_config_vars[i].token;
   ignore_image_tokens[num_ignore_image_tokens] = NULL;
 
   // dynamically determine list of sound tokens to be ignored
   num_ignore_sound_tokens = num_ignore_generic_tokens;
   for (i = 0; sound_config_vars[i].token != NULL; i++)
     num_ignore_sound_tokens++;
-  ignore_sound_tokens =
-    checked_malloc((num_ignore_sound_tokens + 1) * sizeof(char *));
+
+  ignore_sound_tokens = checked_malloc((num_ignore_sound_tokens + 1) * sizeof(char *));
   for (i = 0; i < num_ignore_generic_tokens; i++)
     ignore_sound_tokens[i] = ignore_generic_tokens[i];
   for (i = 0; i < num_ignore_sound_tokens - num_ignore_generic_tokens; i++)
-    ignore_sound_tokens[num_ignore_generic_tokens + i] =
-      sound_config_vars[i].token;
+    ignore_sound_tokens[num_ignore_generic_tokens + i] = sound_config_vars[i].token;
   ignore_sound_tokens[num_ignore_sound_tokens] = NULL;
 
   // dynamically determine list of music tokens to be ignored
   num_ignore_music_tokens = num_ignore_generic_tokens;
-  ignore_music_tokens =
-    checked_malloc((num_ignore_music_tokens + 1) * sizeof(char *));
+  ignore_music_tokens = checked_malloc((num_ignore_music_tokens + 1) * sizeof(char *));
   for (i = 0; i < num_ignore_generic_tokens; i++)
     ignore_music_tokens[i] = ignore_generic_tokens[i];
   ignore_music_tokens[num_ignore_music_tokens] = NULL;
@@ -5796,25 +5753,21 @@ static void InitArtworkConfig(void)
   for (i = 0; i < NUM_FONTS; i++)
     image_id_prefix[MAX_NUM_ELEMENTS + i] = font_info[i].token_name;
   for (i = 0; i < NUM_GLOBAL_ANIM_TOKENS; i++)
-    image_id_prefix[MAX_NUM_ELEMENTS + NUM_FONTS + i] =
-      global_anim_info[i].token_name;
+    image_id_prefix[MAX_NUM_ELEMENTS + NUM_FONTS + i] = global_anim_info[i].token_name;
   image_id_prefix[MAX_NUM_ELEMENTS + NUM_FONTS + NUM_GLOBAL_ANIM_TOKENS] = NULL;
 
   for (i = 0; i < MAX_NUM_ELEMENTS; i++)
     sound_id_prefix[i] = element_info[i].token_name;
   for (i = 0; i < MAX_NUM_ELEMENTS; i++)
-    sound_id_prefix[MAX_NUM_ELEMENTS + i] =
-      get_string_in_brackets(element_info[i].class_name);
+    sound_id_prefix[MAX_NUM_ELEMENTS + i] = get_string_in_brackets(element_info[i].class_name);
   for (i = 0; i < NUM_GLOBAL_ANIM_TOKENS; i++)
-    sound_id_prefix[2 * MAX_NUM_ELEMENTS + i] =
-      global_anim_info[i].token_name;
+    sound_id_prefix[2 * MAX_NUM_ELEMENTS + i] = global_anim_info[i].token_name;
   sound_id_prefix[2 * MAX_NUM_ELEMENTS + NUM_GLOBAL_ANIM_TOKENS] = NULL;
 
   for (i = 0; i < NUM_MUSIC_PREFIXES; i++)
     music_id_prefix[i] = music_prefix_info[i].prefix;
   for (i = 0; i < NUM_GLOBAL_ANIM_TOKENS; i++)
-    music_id_prefix[NUM_MUSIC_PREFIXES + i] =
-      global_anim_info[i].token_name;
+    music_id_prefix[NUM_MUSIC_PREFIXES + i] = global_anim_info[i].token_name;
   music_id_prefix[NUM_MUSIC_PREFIXES + NUM_GLOBAL_ANIM_TOKENS] = NULL;
 
   for (i = 0; i < NUM_ACTIONS; i++)
@@ -5833,15 +5786,12 @@ static void InitArtworkConfig(void)
     level_id_suffix[i] = get_level_id_suffix(i);
   level_id_suffix[MAX_LEVELS] = NULL;
 
-  InitImageList(image_config, NUM_IMAGE_FILES, image_config_suffix,
-		image_id_prefix, action_id_suffix, direction_id_suffix,
-		special_id_suffix, ignore_image_tokens);
-  InitSoundList(sound_config, NUM_SOUND_FILES, sound_config_suffix,
-		sound_id_prefix, action_id_suffix, dummy,
-		special_id_suffix, ignore_sound_tokens);
-  InitMusicList(music_config, NUM_MUSIC_FILES, music_config_suffix,
-		music_id_prefix, action_id_suffix, special_id_suffix,
-		level_id_suffix, ignore_music_tokens);
+  InitImageList(image_config, NUM_IMAGE_FILES, image_config_suffix, image_id_prefix,
+                action_id_suffix, direction_id_suffix, special_id_suffix, ignore_image_tokens);
+  InitSoundList(sound_config, NUM_SOUND_FILES, sound_config_suffix, sound_id_prefix,
+                action_id_suffix, dummy, special_id_suffix, ignore_sound_tokens);
+  InitMusicList(music_config, NUM_MUSIC_FILES, music_config_suffix, music_id_prefix,
+                action_id_suffix, special_id_suffix, level_id_suffix, ignore_music_tokens);
 }
 
 static void InitMixer(void)
@@ -5885,8 +5835,7 @@ void InitGfxBuffers(void)
   ReCreateBitmap(&bitmap_db_door_2, 3 * VXSIZE, VYSIZE);
 
   // initialize screen properties
-  InitGfxFieldInfo(SX, SY, SXSIZE, SYSIZE,
-		   REAL_SX, REAL_SY, FULL_SXSIZE, FULL_SYSIZE,
+  InitGfxFieldInfo(SX, SY, SXSIZE, SYSIZE, REAL_SX, REAL_SY, FULL_SXSIZE, FULL_SYSIZE,
 		   bitmap_db_field);
   InitGfxDoor1Info(DX, DY, DXSIZE, DYSIZE);
   InitGfxDoor2Info(VX, VY, VXSIZE, VYSIZE);
@@ -5985,10 +5934,9 @@ static void InitGfx(void)
   // initialize settings for initial images with default values
   for (i = 0; i < NUM_INITIAL_IMAGES; i++)
     for (j = 0; j < NUM_GFX_ARGS; j++)
-      parameter[i][j] =
-	get_graphic_parameter_value(image_config_suffix[j].value,
-				    image_config_suffix[j].token,
-				    image_config_suffix[j].type);
+      parameter[i][j] = get_graphic_parameter_value(image_config_suffix[j].value,
+                                                    image_config_suffix[j].token,
+                                                    image_config_suffix[j].type);
 
   // read settings for initial images from default custom artwork config
   char *gfx_config_filename = getPath3(options.graphics_directory,
@@ -6019,8 +5967,7 @@ static void InitGfx(void)
 	    checked_free(token);
 
 	    if (value)
-	      parameter[i][j] =
-		get_graphic_parameter_value(value, suffix, type);
+	      parameter[i][j] = get_graphic_parameter_value(value, suffix, type);
 	  }
 	}
       }
@@ -6050,12 +5997,10 @@ static void InitGfx(void)
 	{
 	  for (k = 0; image_config_suffix[k].token != NULL; k++)
 	  {
-	    if (strEqual(&image_config[j].token[len_token],
-			 image_config_suffix[k].token))
-	      parameter[i][k] =
-		get_graphic_parameter_value(image_config[j].value,
-					    image_config_suffix[k].token,
-					    image_config_suffix[k].type);
+	    if (strEqual(&image_config[j].token[len_token], image_config_suffix[k].token))
+	      parameter[i][k] = get_graphic_parameter_value(image_config[j].value,
+                                                            image_config_suffix[k].token,
+                                                            image_config_suffix[k].type);
 	  }
 	}
       }
@@ -6067,12 +6012,10 @@ static void InitGfx(void)
     if (filename_image_initial[i] == NULL)	// should not happen
       Fail("cannot get filename for '%s'", image_token[i]);
 
-    image_initial[i].bitmaps =
-      checked_calloc(sizeof(Bitmap *) * NUM_IMG_BITMAP_POINTERS);
+    image_initial[i].bitmaps = checked_calloc(sizeof(Bitmap *) * NUM_IMG_BITMAP_POINTERS);
 
     if (!strEqual(filename_image_initial[i], UNDEFINED_FILENAME))
-      image_initial[i].bitmaps[IMG_BITMAP_STANDARD] =
-	LoadCustomImage(filename_image_initial[i]);
+      image_initial[i].bitmaps[IMG_BITMAP_STANDARD] = LoadCustomImage(filename_image_initial[i]);
 
     checked_free(filename_image_initial[i]);
   }
@@ -6156,8 +6099,7 @@ static void InitLevelInfo(void)
   if (global.autoplay_leveldir &&
       global.autoplay_mode != AUTOPLAY_MODE_TEST)
   {
-    leveldir_current = getTreeInfoFromIdentifier(leveldir_first,
-                                                 global.autoplay_leveldir);
+    leveldir_current = getTreeInfoFromIdentifier(leveldir_first, global.autoplay_leveldir);
     if (leveldir_current == NULL)
       leveldir_current = getFirstValidTreeInfoEntry(leveldir_first);
   }
@@ -6417,10 +6359,11 @@ static void InitOverrideArtwork(void)
   if (setup.override_level_graphics == STATE_AUTO ||
       setup.override_level_sounds   == STATE_AUTO ||
       setup.override_level_music    == STATE_AUTO)
-    redefined_ce_found =
-      (CheckArtworkTypeForRedefinedCustomElements(ARTWORK_TYPE_GRAPHICS) |
-       CheckArtworkTypeForRedefinedCustomElements(ARTWORK_TYPE_SOUNDS) |
-       CheckArtworkTypeForRedefinedCustomElements(ARTWORK_TYPE_MUSIC));
+  {
+    redefined_ce_found = (CheckArtworkTypeForRedefinedCustomElements(ARTWORK_TYPE_GRAPHICS) |
+                          CheckArtworkTypeForRedefinedCustomElements(ARTWORK_TYPE_SOUNDS) |
+                          CheckArtworkTypeForRedefinedCustomElements(ARTWORK_TYPE_MUSIC));
+  }
 
 #if 0
   Debug("init:InitOverrideArtwork", "redefined_ce_found == %d",
@@ -6464,8 +6407,7 @@ static char *setNewArtworkIdentifier(int type)
   // !!! setLevelArtworkDir() should be moved to an earlier stage !!!
   char *leveldir_artwork_set = setLevelArtworkDir(artwork_first_node);
   boolean has_level_artwork_set = (leveldir_artwork_set != NULL);
-  TreeInfo *custom_artwork_set =
-    getTreeInfoFromIdentifier(artwork_first_node, leveldir_identifier);
+  TreeInfo *custom_artwork_set = getTreeInfoFromIdentifier(artwork_first_node, leveldir_identifier);
   boolean has_custom_artwork_set = (custom_artwork_set != NULL);
   char *artwork_current_identifier;
   char *artwork_new_identifier = NULL;	// default: nothing has changed
@@ -6666,19 +6608,17 @@ void DisplayExitMessage(char *format, va_list ap)
   DrawTextSCentered(sy, font_1, "Fatal error:");
   sy += 3 * font_height;;
 
-  num_lines_printed =
-    DrawTextBufferVA(sx, sy, format, ap, font_2,
-		     line_length, -1, max_lines, -1, -1, -1,
-		     0, BLIT_ON_BACKGROUND, TRUE, TRUE, FALSE);
+  num_lines_printed = DrawTextBufferVA(sx, sy, format, ap, font_2,
+                                       line_length, -1, max_lines, -1, -1, -1,
+                                       0, BLIT_ON_BACKGROUND, TRUE, TRUE, FALSE);
   sy += (num_lines_printed + 3) * font_height;
 
   DrawTextSCentered(sy, font_1, "For details, see the following error file:");
   sy += 3 * font_height;
 
-  num_lines_printed =
-    DrawTextBuffer(sx, sy, program.log_filename, font_2,
-		   line_length, -1, max_lines, -1, -1, -1,
-		   0, BLIT_ON_BACKGROUND, TRUE, TRUE, FALSE);
+  num_lines_printed = DrawTextBuffer(sx, sy, program.log_filename, font_2,
+                                     line_length, -1, max_lines, -1, -1, -1,
+                                     0, BLIT_ON_BACKGROUND, TRUE, TRUE, FALSE);
 
   DrawTextSCentered(SYSIZE - 20, font_3, "Press any key or button to exit");
 
