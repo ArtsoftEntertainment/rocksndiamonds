@@ -15,39 +15,39 @@
 // (not included here due to collisions with Emerald Mine engine definitions)
 // #include "main.h"
 
-#define MAX_INVENTORY_SIZE		1000
+#define MAX_INVENTORY_SIZE			1000
 
-#define MAX_HEALTH			100
+#define MAX_HEALTH				100
 
-#define STD_NUM_KEYS			4
-#define MAX_NUM_KEYS			8
+#define STD_NUM_KEYS				4
+#define MAX_NUM_KEYS				8
 
-#define NUM_BDX_KEYS			3
+#define NUM_BDX_KEYS				3
 
-#define NUM_BELTS			4
-#define NUM_BELT_PARTS			3
+#define NUM_BELTS				4
+#define NUM_BELT_PARTS				3
 
-#define NUM_PANEL_INVENTORY		8
-#define NUM_PANEL_GRAPHICS		8
-#define NUM_PANEL_ELEMENTS		8
-#define NUM_PANEL_CE_SCORE		8
+#define NUM_PANEL_INVENTORY			8
+#define NUM_PANEL_GRAPHICS			8
+#define NUM_PANEL_ELEMENTS			8
+#define NUM_PANEL_CE_SCORE			8
 
-#define STR_SNAPSHOT_MODE_OFF		"off"
-#define STR_SNAPSHOT_MODE_EVERY_STEP	"every_step"
-#define STR_SNAPSHOT_MODE_EVERY_MOVE	"every_move"
-#define STR_SNAPSHOT_MODE_EVERY_COLLECT	"every_collect"
-#define STR_SNAPSHOT_MODE_DEFAULT	STR_SNAPSHOT_MODE_OFF
+#define STR_SNAPSHOT_MODE_OFF			"off"
+#define STR_SNAPSHOT_MODE_EVERY_STEP		"every_step"
+#define STR_SNAPSHOT_MODE_EVERY_MOVE		"every_move"
+#define STR_SNAPSHOT_MODE_EVERY_COLLECT		"every_collect"
+#define STR_SNAPSHOT_MODE_DEFAULT		STR_SNAPSHOT_MODE_OFF
 
-#define STR_SCORES_TYPE_LOCAL_ONLY	 "local_scores_only"
-#define STR_SCORES_TYPE_SERVER_ONLY	 "server_scores_only"
-#define STR_SCORES_TYPE_LOCAL_AND_SERVER "local_and_server_scores"
-#define STR_SCORES_TYPE_DEFAULT		 STR_SCORES_TYPE_LOCAL_AND_SERVER
+#define STR_SCORES_TYPE_LOCAL_ONLY		"local_scores_only"
+#define STR_SCORES_TYPE_SERVER_ONLY		"server_scores_only"
+#define STR_SCORES_TYPE_LOCAL_AND_SERVER	"local_and_server_scores"
+#define STR_SCORES_TYPE_DEFAULT			STR_SCORES_TYPE_LOCAL_AND_SERVER
 
-#define SNAPSHOT_MODE_OFF		0
-#define SNAPSHOT_MODE_EVERY_STEP	1
-#define SNAPSHOT_MODE_EVERY_MOVE	2
-#define SNAPSHOT_MODE_EVERY_COLLECT	3
-#define SNAPSHOT_MODE_DEFAULT		SNAPSHOT_MODE_OFF
+#define SNAPSHOT_MODE_OFF			0
+#define SNAPSHOT_MODE_EVERY_STEP		1
+#define SNAPSHOT_MODE_EVERY_MOVE		2
+#define SNAPSHOT_MODE_EVERY_COLLECT		3
+#define SNAPSHOT_MODE_DEFAULT			SNAPSHOT_MODE_OFF
 
 
 struct GamePanelInfo
