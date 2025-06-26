@@ -94,33 +94,33 @@ char *getConfigProgramTitleString(void)
 {
   TreeInfo *graphics_current = getArtworkTreeInfoForUserLevelSet(ARTWORK_TYPE_GRAPHICS);
 
-  return (leveldir_current->program_title ?
-	  leveldir_current->program_title :
-	  graphics_current->program_title ?
-	  graphics_current->program_title :
-	  setup.internal.program_title);
+  return (leveldir_current->text[TEXT_ID_PROGRAM_TITLE] ?
+	  leveldir_current->text[TEXT_ID_PROGRAM_TITLE] :
+	  graphics_current->text[TEXT_ID_PROGRAM_TITLE] ?
+	  graphics_current->text[TEXT_ID_PROGRAM_TITLE] :
+	  setup.internal.text[TEXT_ID_PROGRAM_TITLE]);
 }
 
 char *getConfigProgramCopyrightString(void)
 {
   TreeInfo *graphics_current = getArtworkTreeInfoForUserLevelSet(ARTWORK_TYPE_GRAPHICS);
 
-  return (leveldir_current->program_copyright ?
-	  leveldir_current->program_copyright :
-	  graphics_current->program_copyright ?
-	  graphics_current->program_copyright :
-	  setup.internal.program_copyright);
+  return (leveldir_current->text[TEXT_ID_PROGRAM_COPYRIGHT] ?
+	  leveldir_current->text[TEXT_ID_PROGRAM_COPYRIGHT] :
+	  graphics_current->text[TEXT_ID_PROGRAM_COPYRIGHT] ?
+	  graphics_current->text[TEXT_ID_PROGRAM_COPYRIGHT] :
+	  setup.internal.text[TEXT_ID_PROGRAM_COPYRIGHT]);
 }
 
 char *getConfigProgramCompanyString(void)
 {
   TreeInfo *graphics_current = getArtworkTreeInfoForUserLevelSet(ARTWORK_TYPE_GRAPHICS);
 
-  return (leveldir_current->program_company ?
-	  leveldir_current->program_company :
-	  graphics_current->program_company ?
-	  graphics_current->program_company :
-	  setup.internal.program_company);
+  return (leveldir_current->text[TEXT_ID_PROGRAM_COMPANY] ?
+	  leveldir_current->text[TEXT_ID_PROGRAM_COMPANY] :
+	  graphics_current->text[TEXT_ID_PROGRAM_COMPANY] ?
+	  graphics_current->text[TEXT_ID_PROGRAM_COMPANY] :
+	  setup.internal.text[TEXT_ID_PROGRAM_COMPANY]);
 }
 
 char *getWindowTitleString(void)

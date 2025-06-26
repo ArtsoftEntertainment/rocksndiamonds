@@ -11652,31 +11652,31 @@ static struct TokenInfo internal_setup_tokens[] =
 {
   {
     TYPE_STRING,
-    &setup.internal.program_title,		"program_title"
+    &setup.internal.text[TEXT_ID_PROGRAM_TITLE],	"program_title"
   },
   {
     TYPE_STRING,
-    &setup.internal.program_version,		"program_version"
+    &setup.internal.text[TEXT_ID_PROGRAM_VERSION],	"program_version"
   },
   {
     TYPE_STRING,
-    &setup.internal.program_author,		"program_author"
+    &setup.internal.text[TEXT_ID_PROGRAM_AUTHOR],	"program_author"
   },
   {
     TYPE_STRING,
-    &setup.internal.program_email,		"program_email"
+    &setup.internal.text[TEXT_ID_PROGRAM_EMAIL],	"program_email"
   },
   {
     TYPE_STRING,
-    &setup.internal.program_website,		"program_website"
+    &setup.internal.text[TEXT_ID_PROGRAM_WEBSITE],	"program_website"
   },
   {
     TYPE_STRING,
-    &setup.internal.program_copyright,		"program_copyright"
+    &setup.internal.text[TEXT_ID_PROGRAM_COPYRIGHT],	"program_copyright"
   },
   {
     TYPE_STRING,
-    &setup.internal.program_company,		"program_company"
+    &setup.internal.text[TEXT_ID_PROGRAM_COMPANY],	"program_company"
   },
   {
     TYPE_STRING,
@@ -12208,13 +12208,13 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->system.sdl_audiodriver		= getStringCopy(ARG_DEFAULT);
   si->system.audio_fragment_size	= DEFAULT_AUDIO_FRAGMENT_SIZE;
 
-  si->internal.program_title    	= getStringCopy(PROGRAM_TITLE_STRING);
-  si->internal.program_version  	= getStringCopy(getProgramRealVersionString());
-  si->internal.program_author   	= getStringCopy(PROGRAM_AUTHOR_STRING);
-  si->internal.program_email    	= getStringCopy(PROGRAM_EMAIL_STRING);
-  si->internal.program_website  	= getStringCopy(PROGRAM_WEBSITE_STRING);
-  si->internal.program_copyright	= getStringCopy(PROGRAM_COPYRIGHT_STRING);
-  si->internal.program_company  	= getStringCopy(PROGRAM_COMPANY_STRING);
+  si->internal.text[TEXT_ID_PROGRAM_TITLE]    	= getStringCopy(PROGRAM_TITLE_STRING);
+  si->internal.text[TEXT_ID_PROGRAM_VERSION]  	= getStringCopy(getProgramRealVersionString());
+  si->internal.text[TEXT_ID_PROGRAM_AUTHOR]   	= getStringCopy(PROGRAM_AUTHOR_STRING);
+  si->internal.text[TEXT_ID_PROGRAM_EMAIL]    	= getStringCopy(PROGRAM_EMAIL_STRING);
+  si->internal.text[TEXT_ID_PROGRAM_WEBSITE]  	= getStringCopy(PROGRAM_WEBSITE_STRING);
+  si->internal.text[TEXT_ID_PROGRAM_COPYRIGHT]	= getStringCopy(PROGRAM_COPYRIGHT_STRING);
+  si->internal.text[TEXT_ID_PROGRAM_COMPANY]  	= getStringCopy(PROGRAM_COMPANY_STRING);
 
   si->internal.program_icon_file	= getStringCopy(PROGRAM_ICON_FILENAME);
 

@@ -2916,9 +2916,9 @@ static struct TokenInfo levelinfo_tokens[] =
   { TYPE_STRING,	&ldi.name_sorting,		"name_sorting"			},
   { TYPE_STRING,	&ldi.author,			"author"			},
   { TYPE_STRING,	&ldi.year,			"year"				},
-  { TYPE_STRING,	&ldi.program_title,		"program_title"			},
-  { TYPE_STRING,	&ldi.program_copyright,		"program_copyright"		},
-  { TYPE_STRING,	&ldi.program_company,		"program_company"		},
+  { TYPE_STRING,	&ldi.text[TEXT_ID_PROGRAM_TITLE],	"program_title"		},
+  { TYPE_STRING,	&ldi.text[TEXT_ID_PROGRAM_COPYRIGHT],	"program_copyright"	},
+  { TYPE_STRING,	&ldi.text[TEXT_ID_PROGRAM_COMPANY],	"program_company"	},
   { TYPE_STRING,	&ldi.imported_from,		"imported_from"			},
   { TYPE_STRING,	&ldi.imported_by,		"imported_by"			},
   { TYPE_STRING,	&ldi.tested_by,			"tested_by"			},
@@ -2963,9 +2963,9 @@ static struct TokenInfo artworkinfo_tokens[] =
   { TYPE_STRING,	&ldi.name,			"name"				},
   { TYPE_STRING,	&ldi.name_sorting,		"name_sorting"			},
   { TYPE_STRING,	&ldi.author,			"author"			},
-  { TYPE_STRING,	&ldi.program_title,		"program_title"			},
-  { TYPE_STRING,	&ldi.program_copyright,		"program_copyright"		},
-  { TYPE_STRING,	&ldi.program_company,		"program_company"		},
+  { TYPE_STRING,	&ldi.text[TEXT_ID_PROGRAM_TITLE],	"program_title"		},
+  { TYPE_STRING,	&ldi.text[TEXT_ID_PROGRAM_COPYRIGHT],	"program_copyright"	},
+  { TYPE_STRING,	&ldi.text[TEXT_ID_PROGRAM_COMPANY],	"program_company"	},
   { TYPE_INTEGER,	&ldi.sort_priority,		"sort_priority"			},
   { TYPE_STRING,	&ldi.basepath,			"basepath"			},
   { TYPE_STRING,	&ldi.fullpath,			"fullpath"			},
@@ -3008,9 +3008,9 @@ static void setTreeInfoToDefaults(TreeInfo *ti, int type)
   ti->author = getStringCopy(ANONYMOUS_NAME);
   ti->year = NULL;
 
-  ti->program_title = NULL;
-  ti->program_copyright = NULL;
-  ti->program_company = NULL;
+  ti->text[TEXT_ID_PROGRAM_TITLE] = NULL;
+  ti->text[TEXT_ID_PROGRAM_COPYRIGHT] = NULL;
+  ti->text[TEXT_ID_PROGRAM_COMPANY] = NULL;
 
   ti->sort_priority = LEVELCLASS_UNDEFINED;	// default: least priority
   ti->latest_engine = FALSE;			// default: get from level
@@ -3102,9 +3102,9 @@ static void setTreeInfoToDefaultsFromParent(TreeInfo *ti, TreeInfo *parent)
   ti->author = getStringCopy(parent->author);
   ti->year = getStringCopy(parent->year);
 
-  ti->program_title = getStringCopy(parent->program_title);
-  ti->program_copyright = getStringCopy(parent->program_copyright);
-  ti->program_company = getStringCopy(parent->program_company);
+  ti->text[TEXT_ID_PROGRAM_TITLE] = getStringCopy(parent->text[TEXT_ID_PROGRAM_TITLE]);
+  ti->text[TEXT_ID_PROGRAM_COPYRIGHT] = getStringCopy(parent->text[TEXT_ID_PROGRAM_COPYRIGHT]);
+  ti->text[TEXT_ID_PROGRAM_COMPANY] = getStringCopy(parent->text[TEXT_ID_PROGRAM_COMPANY]);
 
   ti->sort_priority = parent->sort_priority;
   ti->latest_engine = parent->latest_engine;
@@ -3189,9 +3189,9 @@ static TreeInfo *getTreeInfoCopy(TreeInfo *ti)
   ti_copy->author		= getStringCopy(ti->author);
   ti_copy->year			= getStringCopy(ti->year);
 
-  ti_copy->program_title	= getStringCopy(ti->program_title);
-  ti_copy->program_copyright	= getStringCopy(ti->program_copyright);
-  ti_copy->program_company	= getStringCopy(ti->program_company);
+  ti_copy->text[TEXT_ID_PROGRAM_TITLE]		= getStringCopy(ti->text[TEXT_ID_PROGRAM_TITLE]);
+  ti_copy->text[TEXT_ID_PROGRAM_COPYRIGHT]	= getStringCopy(ti->text[TEXT_ID_PROGRAM_COPYRIGHT]);
+  ti_copy->text[TEXT_ID_PROGRAM_COMPANY]	= getStringCopy(ti->text[TEXT_ID_PROGRAM_COMPANY]);
 
   ti_copy->imported_from	= getStringCopy(ti->imported_from);
   ti_copy->imported_by		= getStringCopy(ti->imported_by);
@@ -3267,9 +3267,9 @@ void freeTreeInfo(TreeInfo *ti)
   checked_free(ti->author);
   checked_free(ti->year);
 
-  checked_free(ti->program_title);
-  checked_free(ti->program_copyright);
-  checked_free(ti->program_company);
+  checked_free(ti->text[TEXT_ID_PROGRAM_TITLE]);
+  checked_free(ti->text[TEXT_ID_PROGRAM_COPYRIGHT]);
+  checked_free(ti->text[TEXT_ID_PROGRAM_COMPANY]);
 
   checked_free(ti->class_desc);
 

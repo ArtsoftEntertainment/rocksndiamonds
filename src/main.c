@@ -9657,14 +9657,14 @@ static void InitProgramConfig(char *command_filename)
     LoadSetupFromFilename(config_filename);
 
   // set program title from potentially redefined program title
-  if (setup.internal.program_title != NULL &&
-      strlen(setup.internal.program_title) > 0)
-    program_title = getStringCopy(setup.internal.program_title);
+  if (setup.internal.text[TEXT_ID_PROGRAM_TITLE] != NULL &&
+      strlen(setup.internal.text[TEXT_ID_PROGRAM_TITLE]) > 0)
+    program_title = getStringCopy(setup.internal.text[TEXT_ID_PROGRAM_TITLE]);
 
   // set program version from potentially redefined program version
-  if (setup.internal.program_version != NULL &&
-      strlen(setup.internal.program_version) > 0)
-    program_version = getStringCopy(setup.internal.program_version);
+  if (setup.internal.text[TEXT_ID_PROGRAM_VERSION] != NULL &&
+      strlen(setup.internal.text[TEXT_ID_PROGRAM_VERSION]) > 0)
+    program_version = getStringCopy(setup.internal.text[TEXT_ID_PROGRAM_VERSION]);
 
   // set program icon file from potentially redefined program icon file
   if (setup.internal.program_icon_file != NULL &&

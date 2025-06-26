@@ -205,8 +205,8 @@ static void DrawProgramInfo(void)
   int ypos3 = WIN_YSIZE - 20 - font2_height;
 
   DrawInitText(getProgramInitString(),           ypos1, font1_nr);
-  DrawInitText(setup.internal.program_copyright, ypos2, font2_nr);
-  DrawInitText(setup.internal.program_website,   ypos3, font2_nr);
+  DrawInitText(setup.internal.text[TEXT_ID_PROGRAM_COPYRIGHT], ypos2, font2_nr);
+  DrawInitText(setup.internal.text[TEXT_ID_PROGRAM_WEBSITE],   ypos3, font2_nr);
 }
 
 static void FreeGadgets(void)

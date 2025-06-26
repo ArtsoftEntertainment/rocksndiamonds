@@ -884,6 +884,16 @@
 #define BACKLINK_TEXT_BACK		"back"
 #define BACKLINK_TEXT_NEXT		"next"
 
+#define TEXT_ID_PROGRAM_TITLE		0
+#define TEXT_ID_PROGRAM_VERSION		1
+#define TEXT_ID_PROGRAM_AUTHOR		2
+#define TEXT_ID_PROGRAM_EMAIL		3
+#define TEXT_ID_PROGRAM_WEBSITE		4
+#define TEXT_ID_PROGRAM_COPYRIGHT	5
+#define TEXT_ID_PROGRAM_COMPANY		6
+
+#define NUM_TEXT_IDS			7
+
 #define TREE_INFOTEXT(t)									\
 			((t) == TREE_TYPE_SCORE_ENTRY  ? INFOTEXT_SCORE_ENTRY :			\
 			 (t) == TREE_TYPE_PLAYER_NAME  ? INFOTEXT_PLAYER_NAME :			\
@@ -1485,13 +1495,7 @@ struct SetupSystemInfo
 
 struct SetupInternalInfo
 {
-  char *program_title;
-  char *program_version;
-  char *program_author;
-  char *program_email;
-  char *program_website;
-  char *program_copyright;
-  char *program_company;
+  char *text[NUM_TEXT_IDS];	// optional alternative texts for program customization
 
   char *program_icon_file;
 
@@ -1716,9 +1720,7 @@ struct TreeInfo
   char *author;			// level or artwork author name
   char *year;			// optional year of creation for levels or artwork
 
-  char *program_title;		// optional alternative text for program title
-  char *program_copyright;	// optional alternative text for program copyright
-  char *program_company;	// optional alternative text for program company
+  char *text[NUM_TEXT_IDS];	// optional alternative texts for program customization
 
   char *imported_from;		// optional comment for imported levels or artwork
   char *imported_by;		// optional comment for imported levels or artwork
