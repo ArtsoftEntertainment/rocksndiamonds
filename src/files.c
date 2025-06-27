@@ -11117,6 +11117,7 @@ static struct TokenInfo internal_setup_tokens[] =
   { TYPE_STRING,	&setup.internal.text[TEXT_ID_PROGRAM_WEBSITE],	"program_website"	},
   { TYPE_STRING,	&setup.internal.text[TEXT_ID_PROGRAM_COPYRIGHT],"program_copyright"	},
   { TYPE_STRING,	&setup.internal.text[TEXT_ID_PROGRAM_COMPANY],	"program_company"	},
+
   { TYPE_STRING,	&setup.internal.program_icon_file,	"program_icon_file"		},
   { TYPE_STRING,	&setup.internal.default_graphics_set,	"default_graphics_set"		},
   { TYPE_STRING,	&setup.internal.default_sounds_set,	"default_sounds_set"		},
@@ -11195,6 +11196,17 @@ static struct TokenInfo options_setup_tokens[] =
   { TYPE_BOOLEAN,	&setup.options.verbose,			"options.verbose"		},
   { TYPE_BOOLEAN,	&setup.options.debug,			"options.debug"			},
   { TYPE_STRING,	&setup.options.debug_mode,		"options.debug_mode"		},
+};
+
+static char *default_program_texts[] =
+{
+  PROGRAM_TITLE_STRING,
+  NULL,				// program version string dynamically generated
+  PROGRAM_AUTHOR_STRING,
+  PROGRAM_EMAIL_STRING,
+  PROGRAM_WEBSITE_STRING,
+  PROGRAM_COPYRIGHT_STRING,
+  PROGRAM_COMPANY_STRING,
 };
 
 static void setSetupInfoToDefaults(struct SetupInfo *si)
@@ -11438,13 +11450,13 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->system.sdl_audiodriver		= getStringCopy(ARG_DEFAULT);
   si->system.audio_fragment_size	= DEFAULT_AUDIO_FRAGMENT_SIZE;
 
-  si->internal.text[TEXT_ID_PROGRAM_TITLE]    	= getStringCopy(PROGRAM_TITLE_STRING);
-  si->internal.text[TEXT_ID_PROGRAM_VERSION]  	= getStringCopy(getProgramRealVersionString());
-  si->internal.text[TEXT_ID_PROGRAM_AUTHOR]   	= getStringCopy(PROGRAM_AUTHOR_STRING);
-  si->internal.text[TEXT_ID_PROGRAM_EMAIL]    	= getStringCopy(PROGRAM_EMAIL_STRING);
-  si->internal.text[TEXT_ID_PROGRAM_WEBSITE]  	= getStringCopy(PROGRAM_WEBSITE_STRING);
-  si->internal.text[TEXT_ID_PROGRAM_COPYRIGHT]	= getStringCopy(PROGRAM_COPYRIGHT_STRING);
-  si->internal.text[TEXT_ID_PROGRAM_COMPANY]  	= getStringCopy(PROGRAM_COMPANY_STRING);
+  for (i = 0; i < NUM_TEXT_IDS; i++)
+  {
+    if (i == TEXT_ID_PROGRAM_VERSION)
+      si->internal.text[i] = getStringCopy(getProgramRealVersionString());
+    else
+      si->internal.text[i] = getStringCopy(default_program_texts[i]);
+  }
 
   si->internal.program_icon_file	= getStringCopy(PROGRAM_ICON_FILENAME);
 

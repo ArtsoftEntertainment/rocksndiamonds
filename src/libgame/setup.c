@@ -2984,6 +2984,8 @@ static char *optional_tokens[] =
 
 static void setTreeInfoToDefaults(TreeInfo *ti, int type)
 {
+  int i;
+
   ti->type = type;
 
   ti->node_top = (ti->type == TREE_TYPE_LEVEL_DIR    ? &leveldir_first :
@@ -3008,9 +3010,8 @@ static void setTreeInfoToDefaults(TreeInfo *ti, int type)
   ti->author = getStringCopy(ANONYMOUS_NAME);
   ti->year = NULL;
 
-  ti->text[TEXT_ID_PROGRAM_TITLE] = NULL;
-  ti->text[TEXT_ID_PROGRAM_COPYRIGHT] = NULL;
-  ti->text[TEXT_ID_PROGRAM_COMPANY] = NULL;
+  for (i = 0; i < NUM_TEXT_IDS; i++)
+    ti->text[i] = NULL;
 
   ti->sort_priority = LEVELCLASS_UNDEFINED;	// default: least priority
   ti->latest_engine = FALSE;			// default: get from level
@@ -3072,6 +3073,8 @@ static void setTreeInfoToDefaults(TreeInfo *ti, int type)
 
 static void setTreeInfoToDefaultsFromParent(TreeInfo *ti, TreeInfo *parent)
 {
+  int i;
+
   if (parent == NULL)
   {
     Warn("setTreeInfoToDefaultsFromParent(): parent == NULL");
@@ -3102,9 +3105,8 @@ static void setTreeInfoToDefaultsFromParent(TreeInfo *ti, TreeInfo *parent)
   ti->author = getStringCopy(parent->author);
   ti->year = getStringCopy(parent->year);
 
-  ti->text[TEXT_ID_PROGRAM_TITLE] = getStringCopy(parent->text[TEXT_ID_PROGRAM_TITLE]);
-  ti->text[TEXT_ID_PROGRAM_COPYRIGHT] = getStringCopy(parent->text[TEXT_ID_PROGRAM_COPYRIGHT]);
-  ti->text[TEXT_ID_PROGRAM_COMPANY] = getStringCopy(parent->text[TEXT_ID_PROGRAM_COMPANY]);
+  for (i = 0; i < NUM_TEXT_IDS; i++)
+    ti->text[i] = getStringCopy(parent->text[i]);
 
   ti->sort_priority = parent->sort_priority;
   ti->latest_engine = parent->latest_engine;
@@ -3167,6 +3169,7 @@ static void setTreeInfoToDefaultsFromParent(TreeInfo *ti, TreeInfo *parent)
 static TreeInfo *getTreeInfoCopy(TreeInfo *ti)
 {
   TreeInfo *ti_copy = newTreeInfo();
+  int i;
 
   // copy all values from the original structure
 
@@ -3189,9 +3192,8 @@ static TreeInfo *getTreeInfoCopy(TreeInfo *ti)
   ti_copy->author		= getStringCopy(ti->author);
   ti_copy->year			= getStringCopy(ti->year);
 
-  ti_copy->text[TEXT_ID_PROGRAM_TITLE]		= getStringCopy(ti->text[TEXT_ID_PROGRAM_TITLE]);
-  ti_copy->text[TEXT_ID_PROGRAM_COPYRIGHT]	= getStringCopy(ti->text[TEXT_ID_PROGRAM_COPYRIGHT]);
-  ti_copy->text[TEXT_ID_PROGRAM_COMPANY]	= getStringCopy(ti->text[TEXT_ID_PROGRAM_COMPANY]);
+  for (i = 0; i < NUM_TEXT_IDS; i++)
+    ti_copy->text[i] = getStringCopy(ti->text[i]);
 
   ti_copy->imported_from	= getStringCopy(ti->imported_from);
   ti_copy->imported_by		= getStringCopy(ti->imported_by);
@@ -3254,6 +3256,8 @@ static TreeInfo *getTreeInfoCopy(TreeInfo *ti)
 
 void freeTreeInfo(TreeInfo *ti)
 {
+  int i;
+
   if (ti == NULL)
     return;
 
@@ -3267,9 +3271,8 @@ void freeTreeInfo(TreeInfo *ti)
   checked_free(ti->author);
   checked_free(ti->year);
 
-  checked_free(ti->text[TEXT_ID_PROGRAM_TITLE]);
-  checked_free(ti->text[TEXT_ID_PROGRAM_COPYRIGHT]);
-  checked_free(ti->text[TEXT_ID_PROGRAM_COMPANY]);
+  for (i = 0; i < NUM_TEXT_IDS; i++)
+    checked_free(ti->text[i]);
 
   checked_free(ti->class_desc);
 
