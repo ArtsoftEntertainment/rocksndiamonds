@@ -19,7 +19,7 @@
 // values for setup file handling
 #define TYPE_BOOLEAN			(1 << 0)
 #define TYPE_SWITCH			(1 << 1)
-#define TYPE_SWITCH_3_STATES		(1 << 2)
+#define TYPE_SWITCH_3			(1 << 2)
 #define TYPE_YES_NO			(1 << 3)
 #define TYPE_YES_NO_AUTO		(1 << 4)
 #define TYPE_YES_NO_ASK			(1 << 5)
@@ -63,7 +63,7 @@
 
 // derived values for setup screen
 #define TYPE_VALUE			(TYPE_BOOLEAN_STYLE	| \
-					 TYPE_SWITCH_3_STATES	| \
+					 TYPE_SWITCH_3		| \
 					 TYPE_YES_NO_AUTO	| \
 					 TYPE_YES_NO_ASK	| \
 					 TYPE_YES_NO_ONCE	| \
