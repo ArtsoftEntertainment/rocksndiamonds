@@ -2900,77 +2900,77 @@ SetupFileHash *loadSetupFileHash(char *filename)
 // setup file stuff
 // ============================================================================
 
-#define TOKEN_STR_LAST_LEVEL_SERIES			"last_level_series"
-#define TOKEN_STR_LAST_PLAYED_MENU_USED			"last_played_menu_used"
-#define TOKEN_STR_LAST_PLAYED_LEVEL			"last_played_level"
-#define TOKEN_STR_HANDICAP_LEVEL			"handicap_level"
-#define TOKEN_STR_LAST_USER				"last_user"
+#define TOKEN_STR_LAST_LEVEL_SERIES		"last_level_series"
+#define TOKEN_STR_LAST_PLAYED_MENU_USED		"last_played_menu_used"
+#define TOKEN_STR_LAST_PLAYED_LEVEL		"last_played_level"
+#define TOKEN_STR_HANDICAP_LEVEL		"handicap_level"
+#define TOKEN_STR_LAST_USER			"last_user"
 
 static LevelDirTree ldi;
 
 static struct TokenInfo levelinfo_tokens[] =
 {
   // level directory info
-  { TYPE_STRING,	&ldi.identifier,		"identifier"			},
-  { TYPE_STRING,	&ldi.name,			"name"				},
-  { TYPE_STRING,	&ldi.name_sorting,		"name_sorting"			},
-  { TYPE_STRING,	&ldi.author,			"author"			},
-  { TYPE_STRING,	&ldi.year,			"year"				},
-  { TYPE_STRING,	&ldi.text[TEXT_ID_PROGRAM_TITLE],	"program_title"		},
-  { TYPE_STRING,	&ldi.text[TEXT_ID_PROGRAM_COPYRIGHT],	"program_copyright"	},
-  { TYPE_STRING,	&ldi.text[TEXT_ID_PROGRAM_COMPANY],	"program_company"	},
-  { TYPE_STRING,	&ldi.imported_from,		"imported_from"			},
-  { TYPE_STRING,	&ldi.imported_by,		"imported_by"			},
-  { TYPE_STRING,	&ldi.tested_by,			"tested_by"			},
-  { TYPE_INTEGER,	&ldi.levels,			"levels"			},
-  { TYPE_INTEGER,	&ldi.first_level,		"first_level"			},
-  { TYPE_INTEGER,	&ldi.sort_priority,		"sort_priority"			},
-  { TYPE_BOOLEAN,	&ldi.latest_engine,		"latest_engine"			},
-  { TYPE_BOOLEAN,	&ldi.level_group,		"level_group"			},
-  { TYPE_BOOLEAN,	&ldi.level_group_empty,		"level_group_empty"		},
-  { TYPE_BOOLEAN,	&ldi.readonly,			"readonly"			},
-  { TYPE_STRING,	&ldi.graphics_set_ecs,		"graphics_set.old"		},
-  { TYPE_STRING,	&ldi.graphics_set_aga,		"graphics_set.new"		},
-  { TYPE_STRING,	&ldi.graphics_set_ecs,		"graphics_set.ecs"		},
-  { TYPE_STRING,	&ldi.graphics_set_aga,		"graphics_set.aga"		},
-  { TYPE_STRING,	&ldi.graphics_set,		"graphics_set"			},
-  { TYPE_STRING,	&ldi.sounds_set_default,	"sounds_set.default"		},
-  { TYPE_STRING,	&ldi.sounds_set_lowpass,	"sounds_set.lowpass"		},
-  { TYPE_STRING,	&ldi.sounds_set,		"sounds_set"			},
-  { TYPE_STRING,	&ldi.music_set,			"music_set"			},
-  { TYPE_STRING,	&ldi.level_filename,		"filename"			},
-  { TYPE_STRING,	&ldi.level_filetype,		"filetype"			},
-  { TYPE_STRING,	&ldi.special_flags,		"special_flags"			},
-  { TYPE_STRING,	&ldi.empty_level_name,		"empty_level_name"		},
-  { TYPE_BOOLEAN,	&ldi.force_level_name,		"force_level_name"		},
-  { TYPE_BOOLEAN,	&ldi.handicap,			"handicap"			},
-  { TYPE_BOOLEAN,	&ldi.time_limit,		"time_limit"			},
-  { TYPE_BOOLEAN,	&ldi.skip_levels,		"skip_levels"			},
-  { TYPE_BOOLEAN,	&ldi.use_emc_tiles,		"use_emc_tiles"			},
-  { TYPE_BOOLEAN,	&ldi.info_screens_from_main,	"info_screens_from_main"	},
-  { TYPE_BOOLEAN,	&ldi.replay_with_old_engine,	"replay_with_old_engine"	},
-  { TYPE_BOOLEAN,	&ldi.bd_use_krissz_engine,	"bd_use_krissz_engine"		},
-  { TYPE_INTEGER,	&ldi.bd_initial_lives,		"bd_initial_lives"		},
-  { TYPE_INTEGER,	&ldi.bd_maximum_lives,		"bd_maximum_lives"		},
-  { TYPE_INTEGER,	&ldi.bd_bonus_life_score,	"bd_bonus_life_score"		},
+  { TYPE_STRING,	&ldi.identifier,			"identifier"			},
+  { TYPE_STRING,	&ldi.name,				"name"				},
+  { TYPE_STRING,	&ldi.name_sorting,			"name_sorting"			},
+  { TYPE_STRING,	&ldi.author,				"author"			},
+  { TYPE_STRING,	&ldi.year,				"year"				},
+  { TYPE_STRING,	&ldi.text[TEXT_ID_PROGRAM_TITLE],	"program_title"			},
+  { TYPE_STRING,	&ldi.text[TEXT_ID_PROGRAM_COPYRIGHT],	"program_copyright"		},
+  { TYPE_STRING,	&ldi.text[TEXT_ID_PROGRAM_COMPANY],	"program_company"		},
+  { TYPE_STRING,	&ldi.imported_from,			"imported_from"			},
+  { TYPE_STRING,	&ldi.imported_by,			"imported_by"			},
+  { TYPE_STRING,	&ldi.tested_by,				"tested_by"			},
+  { TYPE_INTEGER,	&ldi.levels,				"levels"			},
+  { TYPE_INTEGER,	&ldi.first_level,			"first_level"			},
+  { TYPE_INTEGER,	&ldi.sort_priority,			"sort_priority"			},
+  { TYPE_BOOLEAN,	&ldi.latest_engine,			"latest_engine"			},
+  { TYPE_BOOLEAN,	&ldi.level_group,			"level_group"			},
+  { TYPE_BOOLEAN,	&ldi.level_group_empty,			"level_group_empty"		},
+  { TYPE_BOOLEAN,	&ldi.readonly,				"readonly"			},
+  { TYPE_STRING,	&ldi.graphics_set_ecs,			"graphics_set.old"		},
+  { TYPE_STRING,	&ldi.graphics_set_aga,			"graphics_set.new"		},
+  { TYPE_STRING,	&ldi.graphics_set_ecs,			"graphics_set.ecs"		},
+  { TYPE_STRING,	&ldi.graphics_set_aga,			"graphics_set.aga"		},
+  { TYPE_STRING,	&ldi.graphics_set,			"graphics_set"			},
+  { TYPE_STRING,	&ldi.sounds_set_default,		"sounds_set.default"		},
+  { TYPE_STRING,	&ldi.sounds_set_lowpass,		"sounds_set.lowpass"		},
+  { TYPE_STRING,	&ldi.sounds_set,			"sounds_set"			},
+  { TYPE_STRING,	&ldi.music_set,				"music_set"			},
+  { TYPE_STRING,	&ldi.level_filename,			"filename"			},
+  { TYPE_STRING,	&ldi.level_filetype,			"filetype"			},
+  { TYPE_STRING,	&ldi.special_flags,			"special_flags"			},
+  { TYPE_STRING,	&ldi.empty_level_name,			"empty_level_name"		},
+  { TYPE_BOOLEAN,	&ldi.force_level_name,			"force_level_name"		},
+  { TYPE_BOOLEAN,	&ldi.handicap,				"handicap"			},
+  { TYPE_BOOLEAN,	&ldi.time_limit,			"time_limit"			},
+  { TYPE_BOOLEAN,	&ldi.skip_levels,			"skip_levels"			},
+  { TYPE_BOOLEAN,	&ldi.use_emc_tiles,			"use_emc_tiles"			},
+  { TYPE_BOOLEAN,	&ldi.info_screens_from_main,		"info_screens_from_main"	},
+  { TYPE_BOOLEAN,	&ldi.replay_with_old_engine,		"replay_with_old_engine"	},
+  { TYPE_BOOLEAN,	&ldi.bd_use_krissz_engine,		"bd_use_krissz_engine"		},
+  { TYPE_INTEGER,	&ldi.bd_initial_lives,			"bd_initial_lives"		},
+  { TYPE_INTEGER,	&ldi.bd_maximum_lives,			"bd_maximum_lives"		},
+  { TYPE_INTEGER,	&ldi.bd_bonus_life_score,		"bd_bonus_life_score"		},
 };
 
 static struct TokenInfo artworkinfo_tokens[] =
 {
   // artwork directory info
-  { TYPE_STRING,	&ldi.identifier,		"identifier"			},
-  { TYPE_STRING,	&ldi.subdir,			"subdir"			},
-  { TYPE_STRING,	&ldi.name,			"name"				},
-  { TYPE_STRING,	&ldi.name_sorting,		"name_sorting"			},
-  { TYPE_STRING,	&ldi.author,			"author"			},
-  { TYPE_STRING,	&ldi.text[TEXT_ID_PROGRAM_TITLE],	"program_title"		},
-  { TYPE_STRING,	&ldi.text[TEXT_ID_PROGRAM_COPYRIGHT],	"program_copyright"	},
-  { TYPE_STRING,	&ldi.text[TEXT_ID_PROGRAM_COMPANY],	"program_company"	},
-  { TYPE_INTEGER,	&ldi.sort_priority,		"sort_priority"			},
-  { TYPE_STRING,	&ldi.basepath,			"basepath"			},
-  { TYPE_STRING,	&ldi.fullpath,			"fullpath"			},
-  { TYPE_BOOLEAN,	&ldi.in_user_dir,		"in_user_dir"			},
-  { TYPE_STRING,	&ldi.class_desc,		"class_desc"			},
+  { TYPE_STRING,	&ldi.identifier,			"identifier"			},
+  { TYPE_STRING,	&ldi.subdir,				"subdir"			},
+  { TYPE_STRING,	&ldi.name,				"name"				},
+  { TYPE_STRING,	&ldi.name_sorting,			"name_sorting"			},
+  { TYPE_STRING,	&ldi.author,				"author"			},
+  { TYPE_STRING,	&ldi.text[TEXT_ID_PROGRAM_TITLE],	"program_title"			},
+  { TYPE_STRING,	&ldi.text[TEXT_ID_PROGRAM_COPYRIGHT],	"program_copyright"		},
+  { TYPE_STRING,	&ldi.text[TEXT_ID_PROGRAM_COMPANY],	"program_company"		},
+  { TYPE_INTEGER,	&ldi.sort_priority,			"sort_priority"			},
+  { TYPE_STRING,	&ldi.basepath,				"basepath"			},
+  { TYPE_STRING,	&ldi.fullpath,				"fullpath"			},
+  { TYPE_BOOLEAN,	&ldi.in_user_dir,			"in_user_dir"			},
+  { TYPE_STRING,	&ldi.class_desc,			"class_desc"			},
 };
 
 static char *optional_tokens[] =

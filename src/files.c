@@ -10897,1074 +10897,304 @@ void LoadLocalAndServerScore(int nr, boolean download_score)
 
 static struct TokenInfo global_setup_tokens[] =
 {
-  {
-    TYPE_STRING,
-    &setup.player_name,				"player_name"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.multiple_users,			"multiple_users"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.sound,				"sound"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.sound_loops,				"repeating_sound_loops"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.sound_music,				"background_music"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.sound_simple,			"simple_sound_effects"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.toons,				"toons"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.global_animations,			"global_animations"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.scroll_delay,			"scroll_delay"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.forced_scroll_delay,			"forced_scroll_delay"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.scroll_delay_value,			"scroll_delay_value"
-  },
-  {
-    TYPE_STRING,
-    &setup.engine_snapshot_mode,		"engine_snapshot_mode"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.engine_snapshot_memory,		"engine_snapshot_memory"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.fade_screens,			"fade_screens"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.autorecord,				"automatic_tape_recording"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.autorecord_after_replay,		"autorecord_after_replay"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.auto_pause_on_start,			"auto_pause_on_start"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.show_titlescreen,			"show_titlescreen"
-  },
-  {
-    TYPE_SWITCH_3_STATES,
-    &setup.show_level_story,			"show_level_story"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.quick_doors,				"quick_doors"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.team_mode,				"team_mode"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.handicap,				"handicap"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.skip_levels,				"skip_levels"
-  },
-  {
-    TYPE_SWITCH_3_STATES,
-    &setup.allow_skipping_levels,		"allow_skipping_levels"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.increment_levels,			"increment_levels"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.auto_play_next_level,		"auto_play_next_level"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.count_score_after_game,		"count_score_after_game"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.show_scores_after_game,		"show_scores_after_game"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.time_limit,				"time_limit"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.fullscreen,				"fullscreen"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.window_scaling_percent,		"window_scaling_percent"
-  },
-  {
-    TYPE_STRING,
-    &setup.window_scaling_quality,		"window_scaling_quality"
-  },
-  {
-    TYPE_STRING,
-    &setup.screen_rendering_mode,		"screen_rendering_mode"
-  },
-  {
-    TYPE_STRING,
-    &setup.vsync_mode,				"vsync_mode"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.ask_on_escape,			"ask_on_escape"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.ask_on_escape_editor,		"ask_on_escape_editor"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.ask_on_save_tape,			"ask_on_save_tape"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.ask_on_game_over,			"ask_on_game_over"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.ask_on_quit_game,			"ask_on_quit_game"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.ask_on_quit_program,			"ask_on_quit_program"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.quick_switch,			"quick_player_switch"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.input_on_focus,			"input_on_focus"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.prefer_aga_graphics,			"prefer_aga_graphics"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.prefer_lowpass_sounds,		"prefer_lowpass_sounds"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.show_extra_panel_items,		"show_extra_panel_items"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.game_speed_extended,			"game_speed_extended"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.game_frame_delay,			"game_frame_delay"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.default_game_engine_type,		"default_game_engine_type"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.bd_multiple_lives,			"bd_multiple_lives"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.bd_skip_uncovering,			"bd_skip_uncovering"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.bd_skip_hatching,			"bd_skip_hatching"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.bd_scroll_delay,			"bd_scroll_delay"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.bd_show_invisible_outbox,		"bd_show_invisible_outbox"
-  },
-  {
-    TYPE_SWITCH_3_STATES,
-    &setup.bd_smooth_movements,			"bd_smooth_movements"
-  },
-  {
-    TYPE_SWITCH_3_STATES,
-    &setup.bd_pushing_graphics,			"bd_pushing_graphics"
-  },
-  {
-    TYPE_SWITCH_3_STATES,
-    &setup.bd_up_down_graphics,			"bd_up_down_graphics"
-  },
-  {
-    TYPE_SWITCH_3_STATES,
-    &setup.bd_falling_sounds,			"bd_falling_sounds"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.bd_palette_c64,			"bd_palette_c64"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.bd_palette_c64dtv,			"bd_palette_c64dtv"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.bd_palette_atari,			"bd_palette_atari"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.bd_default_color_type,		"bd_default_color_type"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.bd_random_colors,			"bd_random_colors"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.sp_show_border_elements,		"sp_show_border_elements"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.small_game_graphics,			"small_game_graphics"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.show_load_save_buttons,		"show_load_save_buttons"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.show_undo_redo_buttons,		"show_undo_redo_buttons"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.show_menu_to_save_setup,		"show_menu_to_save_setup"
-  },
-  {
-    TYPE_STRING,
-    &setup.scores_in_highscore_list,		"scores_in_highscore_list"
-  },
-  {
-    TYPE_STRING,
-    &setup.graphics_set,			"graphics_set"
-  },
-  {
-    TYPE_STRING,
-    &setup.sounds_set,				"sounds_set"
-  },
-  {
-    TYPE_STRING,
-    &setup.music_set,				"music_set"
-  },
-  {
-    TYPE_SWITCH_3_STATES,
-    &setup.override_level_graphics,		"override_level_graphics"
-  },
-  {
-    TYPE_SWITCH_3_STATES,
-    &setup.override_level_sounds,		"override_level_sounds"
-  },
-  {
-    TYPE_SWITCH_3_STATES,
-    &setup.override_level_music,		"override_level_music"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.volume_simple,			"volume_simple"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.volume_loops,			"volume_loops"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.volume_music,			"volume_music"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.audio_sample_rate_44100,		"audio_sample_rate_44100"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.network_mode,			"network_mode"
-  },
-  {
-    TYPE_PLAYER,
-    &setup.network_player_nr,			"network_player"
-  },
-  {
-    TYPE_STRING,
-    &setup.network_server_hostname,		"network_server_hostname"
-  },
-  {
-    TYPE_STRING,
-    &setup.touch.control_type,			"touch.control_type"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.touch.move_distance,			"touch.move_distance"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.touch.drop_distance,			"touch.drop_distance"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.touch.transparency,			"touch.transparency"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.touch.draw_outlined,			"touch.draw_outlined"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.touch.draw_pressed,			"touch.draw_pressed"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.touch.grid_xsize[0],			"touch.virtual_buttons.0.xsize"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.touch.grid_ysize[0],			"touch.virtual_buttons.0.ysize"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.touch.grid_xsize[1],			"touch.virtual_buttons.1.xsize"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.touch.grid_ysize[1],			"touch.virtual_buttons.1.ysize"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.touch.overlay_buttons,		"touch.overlay_buttons"
-  },
+  { TYPE_STRING,	&setup.player_name,			"player_name"			},
+  { TYPE_SWITCH,	&setup.multiple_users,			"multiple_users"		},
+  { TYPE_SWITCH,	&setup.sound,				"sound"				},
+  { TYPE_SWITCH,	&setup.sound_loops,			"repeating_sound_loops"		},
+  { TYPE_SWITCH,	&setup.sound_music,			"background_music"		},
+  { TYPE_SWITCH,	&setup.sound_simple,			"simple_sound_effects"		},
+  { TYPE_SWITCH,	&setup.toons,				"toons"				},
+  { TYPE_SWITCH,	&setup.global_animations,		"global_animations"		},
+  { TYPE_SWITCH,	&setup.scroll_delay,			"scroll_delay"			},
+  { TYPE_SWITCH,	&setup.forced_scroll_delay,		"forced_scroll_delay"		},
+  { TYPE_INTEGER,	&setup.scroll_delay_value,		"scroll_delay_value"		},
+  { TYPE_STRING,	&setup.engine_snapshot_mode,		"engine_snapshot_mode"		},
+  { TYPE_INTEGER,	&setup.engine_snapshot_memory,		"engine_snapshot_memory"	},
+  { TYPE_SWITCH,	&setup.fade_screens,			"fade_screens"			},
+  { TYPE_SWITCH,	&setup.autorecord,			"automatic_tape_recording"	},
+  { TYPE_SWITCH,	&setup.autorecord_after_replay,		"autorecord_after_replay"	},
+  { TYPE_SWITCH,	&setup.auto_pause_on_start,		"auto_pause_on_start"		},
+  { TYPE_SWITCH,	&setup.show_titlescreen,		"show_titlescreen"		},
+  { TYPE_SWITCH_3_STATES,	&setup.show_level_story,	"show_level_story"		},
+  { TYPE_SWITCH,	&setup.quick_doors,			"quick_doors"			},
+  { TYPE_SWITCH,	&setup.team_mode,			"team_mode"			},
+  { TYPE_SWITCH,	&setup.handicap,			"handicap"			},
+  { TYPE_SWITCH,	&setup.skip_levels,			"skip_levels"			},
+  { TYPE_SWITCH_3_STATES,	&setup.allow_skipping_levels,	"allow_skipping_levels"		},
+  { TYPE_SWITCH,	&setup.increment_levels,		"increment_levels"		},
+  { TYPE_SWITCH,	&setup.auto_play_next_level,		"auto_play_next_level"		},
+  { TYPE_SWITCH,	&setup.count_score_after_game,		"count_score_after_game"	},
+  { TYPE_SWITCH,	&setup.show_scores_after_game,		"show_scores_after_game"	},
+  { TYPE_SWITCH,	&setup.time_limit,			"time_limit"			},
+  { TYPE_SWITCH,	&setup.fullscreen,			"fullscreen"			},
+  { TYPE_INTEGER,	&setup.window_scaling_percent,		"window_scaling_percent"	},
+  { TYPE_STRING,	&setup.window_scaling_quality,		"window_scaling_quality"	},
+  { TYPE_STRING,	&setup.screen_rendering_mode,		"screen_rendering_mode"		},
+  { TYPE_STRING,	&setup.vsync_mode,			"vsync_mode"			},
+  { TYPE_SWITCH,	&setup.ask_on_escape,			"ask_on_escape"			},
+  { TYPE_SWITCH,	&setup.ask_on_escape_editor,		"ask_on_escape_editor"		},
+  { TYPE_SWITCH,	&setup.ask_on_save_tape,		"ask_on_save_tape"		},
+  { TYPE_SWITCH,	&setup.ask_on_game_over,		"ask_on_game_over"		},
+  { TYPE_SWITCH,	&setup.ask_on_quit_game,		"ask_on_quit_game"		},
+  { TYPE_SWITCH,	&setup.ask_on_quit_program,		"ask_on_quit_program"		},
+  { TYPE_SWITCH,	&setup.quick_switch,			"quick_player_switch"		},
+  { TYPE_SWITCH,	&setup.input_on_focus,			"input_on_focus"		},
+  { TYPE_SWITCH,	&setup.prefer_aga_graphics,		"prefer_aga_graphics"		},
+  { TYPE_SWITCH,	&setup.prefer_lowpass_sounds,		"prefer_lowpass_sounds"		},
+  { TYPE_SWITCH,	&setup.show_extra_panel_items,		"show_extra_panel_items"	},
+  { TYPE_SWITCH,	&setup.game_speed_extended,		"game_speed_extended"		},
+  { TYPE_INTEGER,	&setup.game_frame_delay,		"game_frame_delay"		},
+  { TYPE_INTEGER,	&setup.default_game_engine_type,	"default_game_engine_type"	},
+  { TYPE_SWITCH,	&setup.bd_multiple_lives,		"bd_multiple_lives"		},
+  { TYPE_SWITCH,	&setup.bd_skip_uncovering,		"bd_skip_uncovering"		},
+  { TYPE_SWITCH,	&setup.bd_skip_hatching,		"bd_skip_hatching"		},
+  { TYPE_SWITCH,	&setup.bd_scroll_delay,			"bd_scroll_delay"		},
+  { TYPE_SWITCH,	&setup.bd_show_invisible_outbox,	"bd_show_invisible_outbox"	},
+  { TYPE_SWITCH_3_STATES,	&setup.bd_smooth_movements,	"bd_smooth_movements"		},
+  { TYPE_SWITCH_3_STATES,	&setup.bd_pushing_graphics,	"bd_pushing_graphics"		},
+  { TYPE_SWITCH_3_STATES,	&setup.bd_up_down_graphics,	"bd_up_down_graphics"		},
+  { TYPE_SWITCH_3_STATES,	&setup.bd_falling_sounds,	"bd_falling_sounds"		},
+  { TYPE_INTEGER,	&setup.bd_palette_c64,			"bd_palette_c64"		},
+  { TYPE_INTEGER,	&setup.bd_palette_c64dtv,		"bd_palette_c64dtv"		},
+  { TYPE_INTEGER,	&setup.bd_palette_atari,		"bd_palette_atari"		},
+  { TYPE_INTEGER,	&setup.bd_default_color_type,		"bd_default_color_type"		},
+  { TYPE_SWITCH,	&setup.bd_random_colors,		"bd_random_colors"		},
+  { TYPE_SWITCH,	&setup.sp_show_border_elements,		"sp_show_border_elements"	},
+  { TYPE_SWITCH,	&setup.small_game_graphics,		"small_game_graphics"		},
+  { TYPE_SWITCH,	&setup.show_load_save_buttons,		"show_load_save_buttons"	},
+  { TYPE_SWITCH,	&setup.show_undo_redo_buttons,		"show_undo_redo_buttons"	},
+  { TYPE_SWITCH,	&setup.show_menu_to_save_setup,		"show_menu_to_save_setup"	},
+  { TYPE_STRING,	&setup.scores_in_highscore_list,	"scores_in_highscore_list"	},
+  { TYPE_STRING,	&setup.graphics_set,			"graphics_set"			},
+  { TYPE_STRING,	&setup.sounds_set,			"sounds_set"			},
+  { TYPE_STRING,	&setup.music_set,			"music_set"			},
+  { TYPE_SWITCH_3_STATES,	&setup.override_level_graphics,	"override_level_graphics"	},
+  { TYPE_SWITCH_3_STATES,	&setup.override_level_sounds,	"override_level_sounds"		},
+  { TYPE_SWITCH_3_STATES,	&setup.override_level_music,	"override_level_music"		},
+  { TYPE_INTEGER,	&setup.volume_simple,			"volume_simple"			},
+  { TYPE_INTEGER,	&setup.volume_loops,			"volume_loops"			},
+  { TYPE_INTEGER,	&setup.volume_music,			"volume_music"			},
+  { TYPE_SWITCH,	&setup.audio_sample_rate_44100,		"audio_sample_rate_44100"	},
+  { TYPE_SWITCH,	&setup.network_mode,			"network_mode"			},
+  { TYPE_PLAYER,	&setup.network_player_nr,		"network_player"		},
+  { TYPE_STRING,	&setup.network_server_hostname,		"network_server_hostname"	},
+  { TYPE_STRING,	&setup.touch.control_type,		"touch.control_type"		},
+  { TYPE_INTEGER,	&setup.touch.move_distance,		"touch.move_distance"		},
+  { TYPE_INTEGER,	&setup.touch.drop_distance,		"touch.drop_distance"		},
+  { TYPE_INTEGER,	&setup.touch.transparency,		"touch.transparency"		},
+  { TYPE_INTEGER,	&setup.touch.draw_outlined,		"touch.draw_outlined"		},
+  { TYPE_INTEGER,	&setup.touch.draw_pressed,		"touch.draw_pressed"		},
+  { TYPE_INTEGER,	&setup.touch.grid_xsize[0],		"touch.virtual_buttons.0.xsize"	},
+  { TYPE_INTEGER,	&setup.touch.grid_ysize[0],		"touch.virtual_buttons.0.ysize"	},
+  { TYPE_INTEGER,	&setup.touch.grid_xsize[1],		"touch.virtual_buttons.1.xsize"	},
+  { TYPE_INTEGER,	&setup.touch.grid_ysize[1],		"touch.virtual_buttons.1.ysize"	},
+  { TYPE_SWITCH,	&setup.touch.overlay_buttons,		"touch.overlay_buttons"		},
 };
 
 static struct TokenInfo auto_setup_tokens[] =
 {
-  {
-    TYPE_INTEGER,
-    &setup.auto_setup.editor_zoom_tilesize,	"editor.zoom_tilesize"
-  },
+  { TYPE_INTEGER,	&setup.auto_setup.editor_zoom_tilesize,	"editor.zoom_tilesize"		},
 };
 
 static struct TokenInfo server_setup_tokens[] =
 {
-  {
-    TYPE_STRING,
-    &setup.player_uuid,				"player_uuid"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.player_version,			"player_version"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.use_api_server,          TEST_PREFIX	"use_api_server"
-  },
-  {
-    TYPE_STRING,
-    &setup.api_server_hostname,     TEST_PREFIX	"api_server_hostname"
-  },
-  {
-    TYPE_STRING,
-    &setup.api_server_password,     TEST_PREFIX	"api_server_password"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.ask_for_uploading_tapes, TEST_PREFIX	"ask_for_uploading_tapes"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.ask_for_remaining_tapes, TEST_PREFIX	"ask_for_remaining_tapes"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.provide_uploading_tapes, TEST_PREFIX	"provide_uploading_tapes"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.ask_for_using_api_server,TEST_PREFIX	"ask_for_using_api_server"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.has_remaining_tapes,     TEST_PREFIX	"has_remaining_tapes"
-  },
+  { TYPE_STRING,	&setup.player_uuid,			"player_uuid"			},
+  { TYPE_INTEGER,	&setup.player_version,			"player_version"		},
+  { TYPE_SWITCH,	&setup.use_api_server,          TEST_PREFIX	"use_api_server"	},
+  { TYPE_STRING,	&setup.api_server_hostname,     TEST_PREFIX	"api_server_hostname"	},
+  { TYPE_STRING,	&setup.api_server_password,     TEST_PREFIX	"api_server_password"	},
+  { TYPE_SWITCH,	&setup.ask_for_uploading_tapes, TEST_PREFIX	"ask_for_uploading_tapes"		},
+  { TYPE_SWITCH,	&setup.ask_for_remaining_tapes, TEST_PREFIX	"ask_for_remaining_tapes"		},
+  { TYPE_SWITCH,	&setup.provide_uploading_tapes, TEST_PREFIX	"provide_uploading_tapes"		},
+  { TYPE_SWITCH,	&setup.ask_for_using_api_server,TEST_PREFIX	"ask_for_using_api_server"		},
+  { TYPE_SWITCH,	&setup.has_remaining_tapes,     TEST_PREFIX	"has_remaining_tapes"	},
 };
 
 static struct TokenInfo editor_setup_tokens[] =
 {
-  {
-    TYPE_SWITCH,
-    &setup.editor.el_classic,			"editor.el_classic"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.editor.el_custom,			"editor.el_custom"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.editor.el_user_defined,		"editor.el_user_defined"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.editor.el_dynamic,			"editor.el_dynamic"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.editor.el_headlines,			"editor.el_headlines"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.editor.show_element_token,		"editor.show_element_token"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.editor.fast_game_start,		"editor.fast_game_start"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.editor.show_read_only_warning,	"editor.show_read_only_warning"
-  },
+  { TYPE_SWITCH,	&setup.editor.el_classic,		"editor.el_classic"		},
+  { TYPE_SWITCH,	&setup.editor.el_custom,		"editor.el_custom"		},
+  { TYPE_SWITCH,	&setup.editor.el_user_defined,		"editor.el_user_defined"	},
+  { TYPE_SWITCH,	&setup.editor.el_dynamic,		"editor.el_dynamic"		},
+  { TYPE_SWITCH,	&setup.editor.el_headlines,		"editor.el_headlines"		},
+  { TYPE_SWITCH,	&setup.editor.show_element_token,	"editor.show_element_token"	},
+  { TYPE_SWITCH,	&setup.editor.fast_game_start,		"editor.fast_game_start"	},
+  { TYPE_SWITCH,	&setup.editor.show_read_only_warning,	"editor.show_read_only_warning"	},
 };
 
 static struct TokenInfo editor_cascade_setup_tokens[] =
 {
-  {
-    TYPE_SWITCH,
-    &setup.editor_cascade.el_bd,		"editor.cascade.el_bd"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.editor_cascade.el_bdx,		"editor.cascade.el_bdx"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.editor_cascade.el_bdx_effects,	"editor.cascade.el_bdx_effects"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.editor_cascade.el_bdx_scanned,	"editor.cascade.el_bdx_scanned"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.editor_cascade.el_bdx_krissz,	"editor.cascade.el_bdx_krissz"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.editor_cascade.el_em,		"editor.cascade.el_em"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.editor_cascade.el_emc,		"editor.cascade.el_emc"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.editor_cascade.el_rnd,		"editor.cascade.el_rnd"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.editor_cascade.el_sb,		"editor.cascade.el_sb"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.editor_cascade.el_sp,		"editor.cascade.el_sp"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.editor_cascade.el_dc,		"editor.cascade.el_dc"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.editor_cascade.el_dx,		"editor.cascade.el_dx"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.editor_cascade.el_mm,		"editor.cascade.el_mm"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.editor_cascade.el_df,		"editor.cascade.el_df"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.editor_cascade.el_chars,		"editor.cascade.el_chars"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.editor_cascade.el_steel_chars,	"editor.cascade.el_steel_chars"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.editor_cascade.el_ce,		"editor.cascade.el_ce"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.editor_cascade.el_ge,		"editor.cascade.el_ge"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.editor_cascade.el_es,		"editor.cascade.el_es"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.editor_cascade.el_ref,		"editor.cascade.el_ref"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.editor_cascade.el_user,		"editor.cascade.el_user"
-  },
-  {
-    TYPE_SWITCH,
-    &setup.editor_cascade.el_dynamic,		"editor.cascade.el_dynamic"
-  },
+  { TYPE_SWITCH,	&setup.editor_cascade.el_bd,		"editor.cascade.el_bd"		},
+  { TYPE_SWITCH,	&setup.editor_cascade.el_bdx,		"editor.cascade.el_bdx"		},
+  { TYPE_SWITCH,	&setup.editor_cascade.el_bdx_effects,	"editor.cascade.el_bdx_effects"	},
+  { TYPE_SWITCH,	&setup.editor_cascade.el_bdx_scanned,	"editor.cascade.el_bdx_scanned"	},
+  { TYPE_SWITCH,	&setup.editor_cascade.el_bdx_krissz,	"editor.cascade.el_bdx_krissz"	},
+  { TYPE_SWITCH,	&setup.editor_cascade.el_em,		"editor.cascade.el_em"		},
+  { TYPE_SWITCH,	&setup.editor_cascade.el_emc,		"editor.cascade.el_emc"		},
+  { TYPE_SWITCH,	&setup.editor_cascade.el_rnd,		"editor.cascade.el_rnd"		},
+  { TYPE_SWITCH,	&setup.editor_cascade.el_sb,		"editor.cascade.el_sb"		},
+  { TYPE_SWITCH,	&setup.editor_cascade.el_sp,		"editor.cascade.el_sp"		},
+  { TYPE_SWITCH,	&setup.editor_cascade.el_dc,		"editor.cascade.el_dc"		},
+  { TYPE_SWITCH,	&setup.editor_cascade.el_dx,		"editor.cascade.el_dx"		},
+  { TYPE_SWITCH,	&setup.editor_cascade.el_mm,		"editor.cascade.el_mm"		},
+  { TYPE_SWITCH,	&setup.editor_cascade.el_df,		"editor.cascade.el_df"		},
+  { TYPE_SWITCH,	&setup.editor_cascade.el_chars,		"editor.cascade.el_chars"	},
+  { TYPE_SWITCH,	&setup.editor_cascade.el_steel_chars,	"editor.cascade.el_steel_chars"	},
+  { TYPE_SWITCH,	&setup.editor_cascade.el_ce,		"editor.cascade.el_ce"		},
+  { TYPE_SWITCH,	&setup.editor_cascade.el_ge,		"editor.cascade.el_ge"		},
+  { TYPE_SWITCH,	&setup.editor_cascade.el_es,		"editor.cascade.el_es"		},
+  { TYPE_SWITCH,	&setup.editor_cascade.el_ref,		"editor.cascade.el_ref"		},
+  { TYPE_SWITCH,	&setup.editor_cascade.el_user,		"editor.cascade.el_user"	},
+  { TYPE_SWITCH,	&setup.editor_cascade.el_dynamic,	"editor.cascade.el_dynamic"	},
 };
 
 static struct TokenInfo shortcut_setup_tokens[] =
 {
-  {
-    TYPE_KEY_X11,
-    &setup.shortcut.save_game,			"shortcut.save_game"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.shortcut.load_game,			"shortcut.load_game"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.shortcut.restart_game,		"shortcut.restart_game"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.shortcut.pause_before_end,		"shortcut.pause_before_end"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.shortcut.toggle_pause,		"shortcut.toggle_pause"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.shortcut.focus_player[0],		"shortcut.focus_player_1"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.shortcut.focus_player[1],		"shortcut.focus_player_2"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.shortcut.focus_player[2],		"shortcut.focus_player_3"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.shortcut.focus_player[3],		"shortcut.focus_player_4"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.shortcut.focus_player_all,		"shortcut.focus_player_all"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.shortcut.tape_eject,			"shortcut.tape_eject"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.shortcut.tape_extra,			"shortcut.tape_extra"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.shortcut.tape_stop,			"shortcut.tape_stop"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.shortcut.tape_pause,			"shortcut.tape_pause"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.shortcut.tape_record,		"shortcut.tape_record"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.shortcut.tape_play,			"shortcut.tape_play"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.shortcut.sound_simple,		"shortcut.sound_simple"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.shortcut.sound_loops,		"shortcut.sound_loops"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.shortcut.sound_music,		"shortcut.sound_music"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.shortcut.snap_left,			"shortcut.snap_left"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.shortcut.snap_right,			"shortcut.snap_right"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.shortcut.snap_up,			"shortcut.snap_up"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.shortcut.snap_down,			"shortcut.snap_down"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.shortcut.speed_fast,			"shortcut.speed_fast"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.shortcut.speed_slow,			"shortcut.speed_slow"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.shortcut.suicide,			"shortcut.suicide"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.shortcut.toggle_panel,		"shortcut.toggle_panel"
-  },
+  { TYPE_KEY_X11,	&setup.shortcut.save_game,		"shortcut.save_game"		},
+  { TYPE_KEY_X11,	&setup.shortcut.load_game,		"shortcut.load_game"		},
+  { TYPE_KEY_X11,	&setup.shortcut.restart_game,		"shortcut.restart_game"		},
+  { TYPE_KEY_X11,	&setup.shortcut.pause_before_end,	"shortcut.pause_before_end"	},
+  { TYPE_KEY_X11,	&setup.shortcut.toggle_pause,		"shortcut.toggle_pause"		},
+  { TYPE_KEY_X11,	&setup.shortcut.focus_player[0],	"shortcut.focus_player_1"	},
+  { TYPE_KEY_X11,	&setup.shortcut.focus_player[1],	"shortcut.focus_player_2"	},
+  { TYPE_KEY_X11,	&setup.shortcut.focus_player[2],	"shortcut.focus_player_3"	},
+  { TYPE_KEY_X11,	&setup.shortcut.focus_player[3],	"shortcut.focus_player_4"	},
+  { TYPE_KEY_X11,	&setup.shortcut.focus_player_all,	"shortcut.focus_player_all"	},
+  { TYPE_KEY_X11,	&setup.shortcut.tape_eject,		"shortcut.tape_eject"		},
+  { TYPE_KEY_X11,	&setup.shortcut.tape_extra,		"shortcut.tape_extra"		},
+  { TYPE_KEY_X11,	&setup.shortcut.tape_stop,		"shortcut.tape_stop"		},
+  { TYPE_KEY_X11,	&setup.shortcut.tape_pause,		"shortcut.tape_pause"		},
+  { TYPE_KEY_X11,	&setup.shortcut.tape_record,		"shortcut.tape_record"		},
+  { TYPE_KEY_X11,	&setup.shortcut.tape_play,		"shortcut.tape_play"		},
+  { TYPE_KEY_X11,	&setup.shortcut.sound_simple,		"shortcut.sound_simple"		},
+  { TYPE_KEY_X11,	&setup.shortcut.sound_loops,		"shortcut.sound_loops"		},
+  { TYPE_KEY_X11,	&setup.shortcut.sound_music,		"shortcut.sound_music"		},
+  { TYPE_KEY_X11,	&setup.shortcut.snap_left,		"shortcut.snap_left"		},
+  { TYPE_KEY_X11,	&setup.shortcut.snap_right,		"shortcut.snap_right"		},
+  { TYPE_KEY_X11,	&setup.shortcut.snap_up,		"shortcut.snap_up"		},
+  { TYPE_KEY_X11,	&setup.shortcut.snap_down,		"shortcut.snap_down"		},
+  { TYPE_KEY_X11,	&setup.shortcut.speed_fast,		"shortcut.speed_fast"		},
+  { TYPE_KEY_X11,	&setup.shortcut.speed_slow,		"shortcut.speed_slow"		},
+  { TYPE_KEY_X11,	&setup.shortcut.suicide,		"shortcut.suicide"		},
+  { TYPE_KEY_X11,	&setup.shortcut.toggle_panel,		"shortcut.toggle_panel"		},
 };
 
 static struct SetupInputInfo setup_input;
 static struct TokenInfo player_setup_tokens[] =
 {
-  {
-    TYPE_BOOLEAN,
-    &setup_input.use_joystick,			".use_joystick"
-  },
-  {
-    TYPE_STRING,
-    &setup_input.joy.device_name,		".joy.device_name"
-  },
-  {
-    TYPE_INTEGER,
-    &setup_input.joy.xleft,			".joy.xleft"
-  },
-  {
-    TYPE_INTEGER,
-    &setup_input.joy.xmiddle,			".joy.xmiddle"
-  },
-  {
-    TYPE_INTEGER,
-    &setup_input.joy.xright,			".joy.xright"
-  },
-  {
-    TYPE_INTEGER,
-    &setup_input.joy.yupper,			".joy.yupper"
-  },
-  {
-    TYPE_INTEGER,
-    &setup_input.joy.ymiddle,			".joy.ymiddle"
-  },
-  {
-    TYPE_INTEGER,
-    &setup_input.joy.ylower,			".joy.ylower"
-  },
-  {
-    TYPE_INTEGER,
-    &setup_input.joy.snap,			".joy.snap_field"
-  },
-  {
-    TYPE_INTEGER,
-    &setup_input.joy.drop,			".joy.place_bomb"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup_input.key.left,			".key.move_left"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup_input.key.right,			".key.move_right"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup_input.key.up,			".key.move_up"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup_input.key.down,			".key.move_down"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup_input.key.snap,			".key.snap_field"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup_input.key.drop,			".key.place_bomb"
-  },
+  { TYPE_BOOLEAN,	&setup_input.use_joystick,		".use_joystick"			},
+  { TYPE_STRING,	&setup_input.joy.device_name,		".joy.device_name"		},
+  { TYPE_INTEGER,	&setup_input.joy.xleft,			".joy.xleft"			},
+  { TYPE_INTEGER,	&setup_input.joy.xmiddle,		".joy.xmiddle"			},
+  { TYPE_INTEGER,	&setup_input.joy.xright,		".joy.xright"			},
+  { TYPE_INTEGER,	&setup_input.joy.yupper,		".joy.yupper"			},
+  { TYPE_INTEGER,	&setup_input.joy.ymiddle,		".joy.ymiddle"			},
+  { TYPE_INTEGER,	&setup_input.joy.ylower,		".joy.ylower"			},
+  { TYPE_INTEGER,	&setup_input.joy.snap,			".joy.snap_field"		},
+  { TYPE_INTEGER,	&setup_input.joy.drop,			".joy.place_bomb"		},
+  { TYPE_KEY_X11,	&setup_input.key.left,			".key.move_left"		},
+  { TYPE_KEY_X11,	&setup_input.key.right,			".key.move_right"		},
+  { TYPE_KEY_X11,	&setup_input.key.up,			".key.move_up"			},
+  { TYPE_KEY_X11,	&setup_input.key.down,			".key.move_down"		},
+  { TYPE_KEY_X11,	&setup_input.key.snap,			".key.snap_field"		},
+  { TYPE_KEY_X11,	&setup_input.key.drop,			".key.place_bomb"		},
 };
 
 static struct TokenInfo system_setup_tokens[] =
 {
-  {
-    TYPE_STRING,
-    &setup.system.sdl_renderdriver,		"system.sdl_renderdriver"
-  },
-  {
-    TYPE_STRING,
-    &setup.system.sdl_videodriver,		"system.sdl_videodriver"
-  },
-  {
-    TYPE_STRING,
-    &setup.system.sdl_audiodriver,		"system.sdl_audiodriver"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.system.audio_fragment_size,		"system.audio_fragment_size"
-  },
+  { TYPE_STRING,	&setup.system.sdl_renderdriver,		"system.sdl_renderdriver"	},
+  { TYPE_STRING,	&setup.system.sdl_videodriver,		"system.sdl_videodriver"	},
+  { TYPE_STRING,	&setup.system.sdl_audiodriver,		"system.sdl_audiodriver"	},
+  { TYPE_INTEGER,	&setup.system.audio_fragment_size,	"system.audio_fragment_size"	},
 };
 
 static struct TokenInfo internal_setup_tokens[] =
 {
-  {
-    TYPE_STRING,
-    &setup.internal.text[TEXT_ID_PROGRAM_TITLE],	"program_title"
-  },
-  {
-    TYPE_STRING,
-    &setup.internal.text[TEXT_ID_PROGRAM_VERSION],	"program_version"
-  },
-  {
-    TYPE_STRING,
-    &setup.internal.text[TEXT_ID_PROGRAM_AUTHOR],	"program_author"
-  },
-  {
-    TYPE_STRING,
-    &setup.internal.text[TEXT_ID_PROGRAM_EMAIL],	"program_email"
-  },
-  {
-    TYPE_STRING,
-    &setup.internal.text[TEXT_ID_PROGRAM_WEBSITE],	"program_website"
-  },
-  {
-    TYPE_STRING,
-    &setup.internal.text[TEXT_ID_PROGRAM_COPYRIGHT],	"program_copyright"
-  },
-  {
-    TYPE_STRING,
-    &setup.internal.text[TEXT_ID_PROGRAM_COMPANY],	"program_company"
-  },
-  {
-    TYPE_STRING,
-    &setup.internal.program_icon_file,		"program_icon_file"
-  },
-  {
-    TYPE_STRING,
-    &setup.internal.default_graphics_set,	"default_graphics_set"
-  },
-  {
-    TYPE_STRING,
-    &setup.internal.default_sounds_set,		"default_sounds_set"
-  },
-  {
-    TYPE_STRING,
-    &setup.internal.default_music_set,		"default_music_set"
-  },
-  {
-    TYPE_STRING,
-    &setup.internal.fallback_graphics_file,	"fallback_graphics_file"
-  },
-  {
-    TYPE_STRING,
-    &setup.internal.fallback_sounds_file,	"fallback_sounds_file"
-  },
-  {
-    TYPE_STRING,
-    &setup.internal.fallback_music_file,	"fallback_music_file"
-  },
-  {
-    TYPE_STRING,
-    &setup.internal.default_level_series,	"default_level_series"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.internal.default_window_width,	"default_window_width"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.internal.default_window_height,	"default_window_height"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.choose_from_top_leveldir,	"choose_from_top_leveldir"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.show_scaling_in_title,	"show_scaling_in_title"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.create_user_levelset,	"create_user_levelset"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.info_screens_from_main,	"info_screens_from_main"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.menu_game,			"menu_game"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.menu_engines,		"menu_engines"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.menu_editor,		"menu_editor"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.menu_graphics,		"menu_graphics"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.menu_sound,			"menu_sound"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.menu_artwork,		"menu_artwork"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.menu_input,			"menu_input"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.menu_touch,			"menu_touch"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.menu_shortcuts,		"menu_shortcuts"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.menu_exit,			"menu_exit"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.menu_save_and_exit,		"menu_save_and_exit"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.menu_shortcuts_various,	"menu_shortcuts_various"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.menu_shortcuts_focus,	"menu_shortcuts_focus"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.menu_shortcuts_tape,	"menu_shortcuts_tape"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.menu_shortcuts_sound,	"menu_shortcuts_sound"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.menu_shortcuts_snap,	"menu_shortcuts_snap"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.menu_shortcuts_speed,	"menu_shortcuts_speed"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.menu_shortcuts_engine,	"menu_shortcuts_engine"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.info_title,			"info_title"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.info_elements,		"info_elements"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.info_music,			"info_music"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.info_credits,		"info_credits"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.info_program,		"info_program"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.info_version,		"info_version"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.info_levelset,		"info_levelset"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.info_level,			"info_level"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.info_story,			"info_story"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.internal.info_exit,			"info_exit"
-  },
+  { TYPE_STRING,	&setup.internal.text[TEXT_ID_PROGRAM_TITLE],	"program_title"		},
+  { TYPE_STRING,	&setup.internal.text[TEXT_ID_PROGRAM_VERSION],	"program_version"	},
+  { TYPE_STRING,	&setup.internal.text[TEXT_ID_PROGRAM_AUTHOR],	"program_author"	},
+  { TYPE_STRING,	&setup.internal.text[TEXT_ID_PROGRAM_EMAIL],	"program_email"		},
+  { TYPE_STRING,	&setup.internal.text[TEXT_ID_PROGRAM_WEBSITE],	"program_website"	},
+  { TYPE_STRING,	&setup.internal.text[TEXT_ID_PROGRAM_COPYRIGHT],"program_copyright"	},
+  { TYPE_STRING,	&setup.internal.text[TEXT_ID_PROGRAM_COMPANY],	"program_company"	},
+  { TYPE_STRING,	&setup.internal.program_icon_file,	"program_icon_file"		},
+  { TYPE_STRING,	&setup.internal.default_graphics_set,	"default_graphics_set"		},
+  { TYPE_STRING,	&setup.internal.default_sounds_set,	"default_sounds_set"		},
+  { TYPE_STRING,	&setup.internal.default_music_set,	"default_music_set"		},
+  { TYPE_STRING,	&setup.internal.fallback_graphics_file,	"fallback_graphics_file"	},
+  { TYPE_STRING,	&setup.internal.fallback_sounds_file,	"fallback_sounds_file"		},
+  { TYPE_STRING,	&setup.internal.fallback_music_file,	"fallback_music_file"		},
+  { TYPE_STRING,	&setup.internal.default_level_series,	"default_level_series"		},
+  { TYPE_INTEGER,	&setup.internal.default_window_width,	"default_window_width"		},
+  { TYPE_INTEGER,	&setup.internal.default_window_height,	"default_window_height"		},
+  { TYPE_BOOLEAN,	&setup.internal.choose_from_top_leveldir, "choose_from_top_leveldir"	},
+  { TYPE_BOOLEAN,	&setup.internal.show_scaling_in_title,	"show_scaling_in_title"		},
+  { TYPE_BOOLEAN,	&setup.internal.create_user_levelset,	"create_user_levelset"		},
+  { TYPE_BOOLEAN,	&setup.internal.info_screens_from_main,	"info_screens_from_main"	},
+  { TYPE_BOOLEAN,	&setup.internal.menu_game,		"menu_game"			},
+  { TYPE_BOOLEAN,	&setup.internal.menu_engines,		"menu_engines"			},
+  { TYPE_BOOLEAN,	&setup.internal.menu_editor,		"menu_editor"			},
+  { TYPE_BOOLEAN,	&setup.internal.menu_graphics,		"menu_graphics"			},
+  { TYPE_BOOLEAN,	&setup.internal.menu_sound,		"menu_sound"			},
+  { TYPE_BOOLEAN,	&setup.internal.menu_artwork,		"menu_artwork"			},
+  { TYPE_BOOLEAN,	&setup.internal.menu_input,		"menu_input"			},
+  { TYPE_BOOLEAN,	&setup.internal.menu_touch,		"menu_touch"			},
+  { TYPE_BOOLEAN,	&setup.internal.menu_shortcuts,		"menu_shortcuts"		},
+  { TYPE_BOOLEAN,	&setup.internal.menu_exit,		"menu_exit"			},
+  { TYPE_BOOLEAN,	&setup.internal.menu_save_and_exit,	"menu_save_and_exit"		},
+  { TYPE_BOOLEAN,	&setup.internal.menu_shortcuts_various,	"menu_shortcuts_various"	},
+  { TYPE_BOOLEAN,	&setup.internal.menu_shortcuts_focus,	"menu_shortcuts_focus"		},
+  { TYPE_BOOLEAN,	&setup.internal.menu_shortcuts_tape,	"menu_shortcuts_tape"		},
+  { TYPE_BOOLEAN,	&setup.internal.menu_shortcuts_sound,	"menu_shortcuts_sound"		},
+  { TYPE_BOOLEAN,	&setup.internal.menu_shortcuts_snap,	"menu_shortcuts_snap"		},
+  { TYPE_BOOLEAN,	&setup.internal.menu_shortcuts_speed,	"menu_shortcuts_speed"		},
+  { TYPE_BOOLEAN,	&setup.internal.menu_shortcuts_engine,	"menu_shortcuts_engine"		},
+  { TYPE_BOOLEAN,	&setup.internal.info_title,		"info_title"			},
+  { TYPE_BOOLEAN,	&setup.internal.info_elements,		"info_elements"			},
+  { TYPE_BOOLEAN,	&setup.internal.info_music,		"info_music"			},
+  { TYPE_BOOLEAN,	&setup.internal.info_credits,		"info_credits"			},
+  { TYPE_BOOLEAN,	&setup.internal.info_program,		"info_program"			},
+  { TYPE_BOOLEAN,	&setup.internal.info_version,		"info_version"			},
+  { TYPE_BOOLEAN,	&setup.internal.info_levelset,		"info_levelset"			},
+  { TYPE_BOOLEAN,	&setup.internal.info_level,		"info_level"			},
+  { TYPE_BOOLEAN,	&setup.internal.info_story,		"info_story"			},
+  { TYPE_BOOLEAN,	&setup.internal.info_exit,		"info_exit"			},
 };
 
 static struct TokenInfo debug_setup_tokens[] =
 {
-  {
-    TYPE_INTEGER,
-    &setup.debug.frame_delay[0],		"debug.frame_delay_0"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.debug.frame_delay[1],		"debug.frame_delay_1"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.debug.frame_delay[2],		"debug.frame_delay_2"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.debug.frame_delay[3],		"debug.frame_delay_3"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.debug.frame_delay[4],		"debug.frame_delay_4"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.debug.frame_delay[5],		"debug.frame_delay_5"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.debug.frame_delay[6],		"debug.frame_delay_6"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.debug.frame_delay[7],		"debug.frame_delay_7"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.debug.frame_delay[8],		"debug.frame_delay_8"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.debug.frame_delay[9],		"debug.frame_delay_9"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.debug.frame_delay_key[0],		"debug.key.frame_delay_0"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.debug.frame_delay_key[1],		"debug.key.frame_delay_1"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.debug.frame_delay_key[2],		"debug.key.frame_delay_2"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.debug.frame_delay_key[3],		"debug.key.frame_delay_3"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.debug.frame_delay_key[4],		"debug.key.frame_delay_4"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.debug.frame_delay_key[5],		"debug.key.frame_delay_5"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.debug.frame_delay_key[6],		"debug.key.frame_delay_6"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.debug.frame_delay_key[7],		"debug.key.frame_delay_7"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.debug.frame_delay_key[8],		"debug.key.frame_delay_8"
-  },
-  {
-    TYPE_KEY_X11,
-    &setup.debug.frame_delay_key[9],		"debug.key.frame_delay_9"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.debug.frame_delay_use_mod_key,	"debug.frame_delay.use_mod_key"},
-  {
-    TYPE_BOOLEAN,
-    &setup.debug.frame_delay_game_only,		"debug.frame_delay.game_only"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.debug.show_frames_per_second,	"debug.show_frames_per_second"
-  },
-  {
-    TYPE_SWITCH_3_STATES,
-    &setup.debug.xsn_mode,			"debug.xsn_mode"
-  },
-  {
-    TYPE_INTEGER,
-    &setup.debug.xsn_percent,			"debug.xsn_percent"
-  },
+  { TYPE_INTEGER,	&setup.debug.frame_delay[0],		"debug.frame_delay_0"		},
+  { TYPE_INTEGER,	&setup.debug.frame_delay[1],		"debug.frame_delay_1"		},
+  { TYPE_INTEGER,	&setup.debug.frame_delay[2],		"debug.frame_delay_2"		},
+  { TYPE_INTEGER,	&setup.debug.frame_delay[3],		"debug.frame_delay_3"		},
+  { TYPE_INTEGER,	&setup.debug.frame_delay[4],		"debug.frame_delay_4"		},
+  { TYPE_INTEGER,	&setup.debug.frame_delay[5],		"debug.frame_delay_5"		},
+  { TYPE_INTEGER,	&setup.debug.frame_delay[6],		"debug.frame_delay_6"		},
+  { TYPE_INTEGER,	&setup.debug.frame_delay[7],		"debug.frame_delay_7"		},
+  { TYPE_INTEGER,	&setup.debug.frame_delay[8],		"debug.frame_delay_8"		},
+  { TYPE_INTEGER,	&setup.debug.frame_delay[9],		"debug.frame_delay_9"		},
+  { TYPE_KEY_X11,	&setup.debug.frame_delay_key[0],	"debug.key.frame_delay_0"	},
+  { TYPE_KEY_X11,	&setup.debug.frame_delay_key[1],	"debug.key.frame_delay_1"	},
+  { TYPE_KEY_X11,	&setup.debug.frame_delay_key[2],	"debug.key.frame_delay_2"	},
+  { TYPE_KEY_X11,	&setup.debug.frame_delay_key[3],	"debug.key.frame_delay_3"	},
+  { TYPE_KEY_X11,	&setup.debug.frame_delay_key[4],	"debug.key.frame_delay_4"	},
+  { TYPE_KEY_X11,	&setup.debug.frame_delay_key[5],	"debug.key.frame_delay_5"	},
+  { TYPE_KEY_X11,	&setup.debug.frame_delay_key[6],	"debug.key.frame_delay_6"	},
+  { TYPE_KEY_X11,	&setup.debug.frame_delay_key[7],	"debug.key.frame_delay_7"	},
+  { TYPE_KEY_X11,	&setup.debug.frame_delay_key[8],	"debug.key.frame_delay_8"	},
+  { TYPE_KEY_X11,	&setup.debug.frame_delay_key[9],	"debug.key.frame_delay_9"	},
+  { TYPE_BOOLEAN,	&setup.debug.frame_delay_use_mod_key,	"debug.frame_delay.use_mod_key"	},
+  { TYPE_BOOLEAN,	&setup.debug.frame_delay_game_only,	"debug.frame_delay.game_only"	},
+  { TYPE_BOOLEAN,	&setup.debug.show_frames_per_second,	"debug.show_frames_per_second"	},
+  { TYPE_SWITCH_3_STATES,	&setup.debug.xsn_mode,		"debug.xsn_mode"		},
+  { TYPE_INTEGER,	&setup.debug.xsn_percent,		"debug.xsn_percent"		},
 };
 
 static struct TokenInfo options_setup_tokens[] =
 {
-  {
-    TYPE_BOOLEAN,
-    &setup.options.verbose,			"options.verbose"
-  },
-  {
-    TYPE_BOOLEAN,
-    &setup.options.debug,			"options.debug"
-  },
-  {
-    TYPE_STRING,
-    &setup.options.debug_mode,			"options.debug_mode"
-  },
+  { TYPE_BOOLEAN,	&setup.options.verbose,			"options.verbose"		},
+  { TYPE_BOOLEAN,	&setup.options.debug,			"options.debug"			},
+  { TYPE_STRING,	&setup.options.debug_mode,		"options.debug_mode"		},
 };
 
 static void setSetupInfoToDefaults(struct SetupInfo *si)
