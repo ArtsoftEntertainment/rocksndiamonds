@@ -5697,9 +5697,27 @@ static void InitArtworkConfig(void)
   {
     "name",
     "sort_priority",
+
     "program_title",
     "program_copyright",
     "program_company",
+
+    "text.main.name",
+    "text.main.team",
+    "text.main.levels",
+    "text.main.scores",
+    "text.main.editor",
+    "text.main.info",
+    "text.main.game",
+    "text.main.setup",
+    "text.main.quit",
+
+    "text.title.names",
+    "text.title.levels",
+    "text.title.levelnr",
+    "text.title.scores",
+    "text.title.info",
+    "text.title.setup",
 
     NULL
   };

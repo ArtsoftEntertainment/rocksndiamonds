@@ -11118,6 +11118,23 @@ static struct TokenInfo internal_setup_tokens[] =
   { TYPE_STRING,	&setup.internal.text[TEXT_ID_PROGRAM_COPYRIGHT],"program_copyright"	},
   { TYPE_STRING,	&setup.internal.text[TEXT_ID_PROGRAM_COMPANY],	"program_company"	},
 
+  { TYPE_STRING,	&setup.internal.text[TEXT_ID_MAIN_NAME],	"text.main.name"	},
+  { TYPE_STRING,	&setup.internal.text[TEXT_ID_MAIN_TEAM],	"text.main.team"	},
+  { TYPE_STRING,	&setup.internal.text[TEXT_ID_MAIN_LEVELS],	"text.main.levels"	},
+  { TYPE_STRING,	&setup.internal.text[TEXT_ID_MAIN_SCORES],	"text.main.scores"	},
+  { TYPE_STRING,	&setup.internal.text[TEXT_ID_MAIN_EDITOR],	"text.main.editor"	},
+  { TYPE_STRING,	&setup.internal.text[TEXT_ID_MAIN_INFO],	"text.main.info"	},
+  { TYPE_STRING,	&setup.internal.text[TEXT_ID_MAIN_GAME],	"text.main.game"	},
+  { TYPE_STRING,	&setup.internal.text[TEXT_ID_MAIN_SETUP],	"text.main.setup"	},
+  { TYPE_STRING,	&setup.internal.text[TEXT_ID_MAIN_QUIT],	"text.main.quit"	},
+
+  { TYPE_STRING,	&setup.internal.text[TEXT_ID_TITLE_NAMES],	"text.title.names"	},
+  { TYPE_STRING,	&setup.internal.text[TEXT_ID_TITLE_LEVELS],	"text.title.levels"	},
+  { TYPE_STRING,	&setup.internal.text[TEXT_ID_TITLE_LEVELNR],	"text.title.levelnr"	},
+  { TYPE_STRING,	&setup.internal.text[TEXT_ID_TITLE_SCORES],	"text.title.scores"	},
+  { TYPE_STRING,	&setup.internal.text[TEXT_ID_TITLE_INFO],	"text.title.info"	},
+  { TYPE_STRING,	&setup.internal.text[TEXT_ID_TITLE_SETUP],	"text.title.setup"	},
+
   { TYPE_STRING,	&setup.internal.program_icon_file,	"program_icon_file"		},
   { TYPE_STRING,	&setup.internal.default_graphics_set,	"default_graphics_set"		},
   { TYPE_STRING,	&setup.internal.default_sounds_set,	"default_sounds_set"		},
@@ -11207,6 +11224,23 @@ static char *default_program_texts[] =
   PROGRAM_WEBSITE_STRING,
   PROGRAM_COPYRIGHT_STRING,
   PROGRAM_COMPANY_STRING,
+
+  TEXT_MAIN_NAME,
+  TEXT_MAIN_TEAM,
+  TEXT_MAIN_LEVELS,
+  TEXT_MAIN_SCORES,
+  TEXT_MAIN_EDITOR,
+  TEXT_MAIN_INFO,
+  TEXT_MAIN_GAME,
+  TEXT_MAIN_SETUP,
+  TEXT_MAIN_QUIT,
+
+  TEXT_TITLE_NAMES,
+  TEXT_TITLE_LEVELS,
+  TEXT_TITLE_LEVELNR,
+  TEXT_TITLE_SCORES,
+  TEXT_TITLE_INFO,
+  TEXT_TITLE_SETUP,
 };
 
 static void setSetupInfoToDefaults(struct SetupInfo *si)

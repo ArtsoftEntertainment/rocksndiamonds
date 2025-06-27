@@ -881,6 +881,23 @@
 #define BACKLINK_TEXT_BACK		"back"
 #define BACKLINK_TEXT_NEXT		"next"
 
+#define TEXT_MAIN_NAME			"Name:"
+#define TEXT_MAIN_TEAM			"Team:"
+#define TEXT_MAIN_LEVELS		"Levelset"
+#define TEXT_MAIN_SCORES		"Hall Of Fame"
+#define TEXT_MAIN_EDITOR		"Level Creator"
+#define TEXT_MAIN_INFO			"Info Screen"
+#define TEXT_MAIN_GAME			"Start Game"
+#define TEXT_MAIN_SETUP			"Setup"
+#define TEXT_MAIN_QUIT			"Quit"
+
+#define TEXT_TITLE_NAMES		"Players & Teams"
+#define TEXT_TITLE_LEVELS		"Level Sets"
+#define TEXT_TITLE_LEVELNR		"Levels"
+#define TEXT_TITLE_SCORES		"Hall of Fame"
+#define TEXT_TITLE_INFO			"Info Screen"
+#define TEXT_TITLE_SETUP		"Setup"
+
 #define TEXT_ID_PROGRAM_TITLE		0
 #define TEXT_ID_PROGRAM_VERSION		1
 #define TEXT_ID_PROGRAM_AUTHOR		2
@@ -889,7 +906,24 @@
 #define TEXT_ID_PROGRAM_COPYRIGHT	5
 #define TEXT_ID_PROGRAM_COMPANY		6
 
-#define NUM_TEXT_IDS			7
+#define TEXT_ID_MAIN_NAME		7
+#define TEXT_ID_MAIN_TEAM		8
+#define TEXT_ID_MAIN_LEVELS		9
+#define TEXT_ID_MAIN_SCORES		10
+#define TEXT_ID_MAIN_EDITOR		11
+#define TEXT_ID_MAIN_INFO		12
+#define TEXT_ID_MAIN_GAME		13
+#define TEXT_ID_MAIN_SETUP		14
+#define TEXT_ID_MAIN_QUIT		15
+
+#define TEXT_ID_TITLE_NAMES		16
+#define TEXT_ID_TITLE_LEVELS		17
+#define TEXT_ID_TITLE_LEVELNR		18
+#define TEXT_ID_TITLE_SCORES		19
+#define TEXT_ID_TITLE_INFO		20
+#define TEXT_ID_TITLE_SETUP		21
+
+#define NUM_TEXT_IDS			22
 
 #define TREE_INFOTEXT(t)									\
 			((t) == TREE_TYPE_SCORE_ENTRY  ? INFOTEXT_SCORE_ENTRY :			\
