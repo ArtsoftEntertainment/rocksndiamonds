@@ -11000,14 +11000,14 @@ static struct TokenInfo server_setup_tokens[] =
 {
   { TYPE_STRING,	&setup.player_uuid,			"player_uuid"			},
   { TYPE_INTEGER,	&setup.player_version,			"player_version"		},
-  { TYPE_SWITCH,	&setup.use_api_server,          TEST_PREFIX	"use_api_server"	},
-  { TYPE_STRING,	&setup.api_server_hostname,     TEST_PREFIX	"api_server_hostname"	},
-  { TYPE_STRING,	&setup.api_server_password,     TEST_PREFIX	"api_server_password"	},
-  { TYPE_SWITCH,	&setup.ask_for_uploading_tapes, TEST_PREFIX	"ask_for_uploading_tapes"		},
-  { TYPE_SWITCH,	&setup.ask_for_remaining_tapes, TEST_PREFIX	"ask_for_remaining_tapes"		},
-  { TYPE_SWITCH,	&setup.provide_uploading_tapes, TEST_PREFIX	"provide_uploading_tapes"		},
-  { TYPE_SWITCH,	&setup.ask_for_using_api_server,TEST_PREFIX	"ask_for_using_api_server"		},
-  { TYPE_SWITCH,	&setup.has_remaining_tapes,     TEST_PREFIX	"has_remaining_tapes"	},
+  { TYPE_SWITCH,	&setup.use_api_server,			"use_api_server"		},
+  { TYPE_STRING,	&setup.api_server_hostname,		"api_server_hostname"		},
+  { TYPE_STRING,	&setup.api_server_password,		"api_server_password"		},
+  { TYPE_SWITCH,	&setup.ask_for_uploading_tapes,		"ask_for_uploading_tapes"	},
+  { TYPE_SWITCH,	&setup.ask_for_remaining_tapes,		"ask_for_remaining_tapes"	},
+  { TYPE_SWITCH,	&setup.provide_uploading_tapes,		"provide_uploading_tapes"	},
+  { TYPE_SWITCH,	&setup.ask_for_using_api_server,	"ask_for_using_api_server"	},
+  { TYPE_SWITCH,	&setup.has_remaining_tapes,		"has_remaining_tapes"		},
 };
 
 static struct TokenInfo editor_setup_tokens[] =

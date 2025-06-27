@@ -118,9 +118,6 @@
 #if defined(TESTING)
 #undef API_SERVER_HOSTNAME
 #define API_SERVER_HOSTNAME		"api-test.artsoft.org"
-#define TEST_PREFIX			"test."
-#else
-#define TEST_PREFIX			""
 #endif
 
 // values for touch control
