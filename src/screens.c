@@ -856,24 +856,23 @@ struct TitleControlInfo title_controls[MAX_NUM_TITLE_SCREENS];
 #define MAIN_CONTROL_TITLE_2			22
 #define MAIN_CONTROL_TITLE_3			23
 
-static char str_main_text_name[10];
 static char str_main_text_first_level[10];
 static char str_main_text_last_level[10];
 static char str_main_text_level_number[10];
 
 static char network_server_hostname[MAX_SETUP_TEXT_INPUT_LEN + 1];
 
-static char *main_text_name			= str_main_text_name;
 static char *main_text_first_level		= str_main_text_first_level;
 static char *main_text_last_level		= str_main_text_last_level;
 static char *main_text_level_number		= str_main_text_level_number;
-static char *main_text_levels			= "Levelset";
-static char *main_text_scores			= "Hall Of Fame";
-static char *main_text_editor			= "Level Creator";
-static char *main_text_info			= "Info Screen";
-static char *main_text_game			= "Start Game";
-static char *main_text_setup			= "Setup";
-static char *main_text_quit			= "Quit";
+static char *main_text_name			= NULL;
+static char *main_text_levels			= NULL;
+static char *main_text_scores			= NULL;
+static char *main_text_editor			= NULL;
+static char *main_text_info			= NULL;
+static char *main_text_game			= NULL;
+static char *main_text_setup			= NULL;
+static char *main_text_quit			= NULL;
 static char *main_text_level_name		= level.name;
 static char *main_text_level_author		= level.author;
 static char *main_text_level_year		= NULL;
@@ -1544,7 +1543,6 @@ static void InitializeMainControls(void)
   }
 
   // set main control text values to dynamically determined values
-  sprintf(main_text_name,         "%s",   local_team_mode ? "Team:" : "Name:");
 
   strcpy(main_text_first_level,  int2str(leveldir_current->first_level, size_first_level));
   strcpy(main_text_last_level,   int2str(leveldir_current->last_level,  size_last_level));
@@ -1558,6 +1556,16 @@ static void InitializeMainControls(void)
   main_text_title_1 = getConfigProgramTitleString();
   main_text_title_2 = getConfigProgramCopyrightString();
   main_text_title_3 = getConfigProgramCompanyString();
+
+  main_text_name = getConfigProgramString(local_team_mode ? TEXT_ID_MAIN_TEAM : TEXT_ID_MAIN_NAME);
+
+  main_text_levels = getConfigProgramString(TEXT_ID_MAIN_LEVELS);
+  main_text_scores = getConfigProgramString(TEXT_ID_MAIN_SCORES);
+  main_text_editor = getConfigProgramString(TEXT_ID_MAIN_EDITOR);
+  main_text_info   = getConfigProgramString(TEXT_ID_MAIN_INFO);
+  main_text_game   = getConfigProgramString(TEXT_ID_MAIN_GAME);
+  main_text_setup  = getConfigProgramString(TEXT_ID_MAIN_SETUP);
+  main_text_quit   = getConfigProgramString(TEXT_ID_MAIN_QUIT);
 
   // set main control screen positions to dynamically determined values
   for (i = 0; main_controls[i].nr != -1; i++)
