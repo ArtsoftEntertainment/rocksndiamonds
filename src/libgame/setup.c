@@ -58,6 +58,21 @@ static char *levelclass_desc[NUM_LEVELCLASS_DESC] =
 				 ti->is_copy     ? TREE_NODE_TYPE_COPY   : \
 				 TREE_NODE_TYPE_DEFAULT)
 
+#define TREE_INFOTEXT(t)									\
+			((t) == TREE_TYPE_SCORE_ENTRY  ? INFOTEXT_SCORE_ENTRY :			\
+			 (t) == TREE_TYPE_PLAYER_NAME  ? INFOTEXT_PLAYER_NAME :			\
+			 (t) == TREE_TYPE_LEVEL_NR     ? INFOTEXT_LEVEL_NR :			\
+			 (t) == TREE_TYPE_LEVEL_DIR    ? INFOTEXT_LEVEL_DIR :			\
+			 (t) == TREE_TYPE_GRAPHICS_DIR ? INFOTEXT_GRAPHICS_DIR :		\
+			 (t) == TREE_TYPE_SOUNDS_DIR   ? INFOTEXT_SOUNDS_DIR :			\
+			 (t) == TREE_TYPE_MUSIC_DIR    ? INFOTEXT_MUSIC_DIR :			\
+			 INFOTEXT_UNDEFINED)
+
+#define TREE_BACKLINK_TEXT(t)									\
+			((t) == TREE_TYPE_SCORE_ENTRY  ? BACKLINK_TEXT_BACK :			\
+			 (t) == TREE_TYPE_LEVEL_DIR    ? BACKLINK_TEXT_MAIN :			\
+			 BACKLINK_TEXT_SETUP)
+
 
 static void setTreeInfoToDefaults(TreeInfo *, int);
 static TreeInfo *getTreeInfoCopy(TreeInfo *ti);

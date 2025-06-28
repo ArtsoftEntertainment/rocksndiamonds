@@ -925,21 +925,6 @@
 
 #define NUM_TEXT_IDS			22
 
-#define TREE_INFOTEXT(t)									\
-			((t) == TREE_TYPE_SCORE_ENTRY  ? INFOTEXT_SCORE_ENTRY :			\
-			 (t) == TREE_TYPE_PLAYER_NAME  ? INFOTEXT_PLAYER_NAME :			\
-			 (t) == TREE_TYPE_LEVEL_NR     ? INFOTEXT_LEVEL_NR :			\
-			 (t) == TREE_TYPE_LEVEL_DIR    ? INFOTEXT_LEVEL_DIR :			\
-			 (t) == TREE_TYPE_GRAPHICS_DIR ? INFOTEXT_GRAPHICS_DIR :		\
-			 (t) == TREE_TYPE_SOUNDS_DIR   ? INFOTEXT_SOUNDS_DIR :			\
-			 (t) == TREE_TYPE_MUSIC_DIR    ? INFOTEXT_MUSIC_DIR :			\
-			 INFOTEXT_UNDEFINED)
-
-#define TREE_BACKLINK_TEXT(t)									\
-			((t) == TREE_TYPE_SCORE_ENTRY  ? BACKLINK_TEXT_BACK :			\
-			 (t) == TREE_TYPE_LEVEL_DIR    ? BACKLINK_TEXT_MAIN :			\
-			 BACKLINK_TEXT_SETUP)
-
 #define TREE_USERDIR(t)										\
 			((t) == TREE_TYPE_LEVEL_DIR    ? getUserLevelDir(NULL) :		\
 			 (t) == TREE_TYPE_GRAPHICS_DIR ? getUserGraphicsDir() :			\
