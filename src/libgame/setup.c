@@ -75,6 +75,20 @@ static boolean update_artworkinfo_cache = FALSE;
 
 
 // ----------------------------------------------------------------------------
+// text functions
+// ----------------------------------------------------------------------------
+
+char *getConfigProgramString(int text_id)
+{
+  TreeInfo *graphics_current = getArtworkTreeInfoForUserLevelSet(ARTWORK_TYPE_GRAPHICS);
+
+  return (leveldir_current->text[text_id] ? leveldir_current->text[text_id] :
+	  graphics_current->text[text_id] ? graphics_current->text[text_id] :
+	  setup.internal.text[text_id]);
+}
+
+
+// ----------------------------------------------------------------------------
 // file functions
 // ----------------------------------------------------------------------------
 

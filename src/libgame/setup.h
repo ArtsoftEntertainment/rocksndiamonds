@@ -261,6 +261,8 @@ typedef struct hashtable     SetupFileHash;
 	 (ti)->color)
 
 
+char *getConfigProgramString(int);
+
 char *getUserGraphicsDir(void);
 char *getUserSoundsDir(void);
 char *getUserMusicDir(void);
