@@ -58,21 +58,6 @@ static char *levelclass_desc[NUM_LEVELCLASS_DESC] =
 				 ti->is_copy     ? TREE_NODE_TYPE_COPY   : \
 				 TREE_NODE_TYPE_DEFAULT)
 
-#define TREE_INFOTEXT(t)									\
-			((t) == TREE_TYPE_SCORE_ENTRY  ? INFOTEXT_SCORE_ENTRY :			\
-			 (t) == TREE_TYPE_PLAYER_NAME  ? INFOTEXT_PLAYER_NAME :			\
-			 (t) == TREE_TYPE_LEVEL_NR     ? INFOTEXT_LEVEL_NR :			\
-			 (t) == TREE_TYPE_LEVEL_DIR    ? INFOTEXT_LEVEL_DIR :			\
-			 (t) == TREE_TYPE_GRAPHICS_DIR ? INFOTEXT_GRAPHICS_DIR :		\
-			 (t) == TREE_TYPE_SOUNDS_DIR   ? INFOTEXT_SOUNDS_DIR :			\
-			 (t) == TREE_TYPE_MUSIC_DIR    ? INFOTEXT_MUSIC_DIR :			\
-			 INFOTEXT_UNDEFINED)
-
-#define TREE_BACKLINK_TEXT(t)									\
-			((t) == TREE_TYPE_SCORE_ENTRY  ? BACKLINK_TEXT_BACK :			\
-			 (t) == TREE_TYPE_LEVEL_DIR    ? BACKLINK_TEXT_MAIN :			\
-			 BACKLINK_TEXT_SETUP)
-
 
 static void setTreeInfoToDefaults(TreeInfo *, int);
 static TreeInfo *getTreeInfoCopy(TreeInfo *ti);
@@ -100,6 +85,25 @@ char *getConfigProgramString(int text_id)
   return (leveldir_current->text[text_id] ? leveldir_current->text[text_id] :
 	  graphics_current->text[text_id] ? graphics_current->text[text_id] :
 	  setup.internal.text[text_id]);
+}
+
+static char *getTreeInfoText(int type)
+{
+  return (type == TREE_TYPE_SCORE_ENTRY  ? INFOTEXT_SCORE_ENTRY :
+          type == TREE_TYPE_PLAYER_NAME  ? INFOTEXT_PLAYER_NAME :
+          type == TREE_TYPE_LEVEL_NR     ? INFOTEXT_LEVEL_NR :
+          type == TREE_TYPE_LEVEL_DIR    ? INFOTEXT_LEVEL_DIR :
+          type == TREE_TYPE_GRAPHICS_DIR ? INFOTEXT_GRAPHICS_DIR :
+          type == TREE_TYPE_SOUNDS_DIR   ? INFOTEXT_SOUNDS_DIR :
+          type == TREE_TYPE_MUSIC_DIR    ? INFOTEXT_MUSIC_DIR :
+          INFOTEXT_UNDEFINED);
+}
+
+static char *getTreeBacklinkText(int type)
+{
+  return (type == TREE_TYPE_SCORE_ENTRY  ? BACKLINK_TEXT_BACK :
+          type == TREE_TYPE_LEVEL_DIR    ? BACKLINK_TEXT_MAIN :
+          BACKLINK_TEXT_SETUP);
 }
 
 
@@ -3098,7 +3102,7 @@ static void setTreeInfoToDefaults(TreeInfo *ti, int type)
   ti->color = 0;
   ti->class_desc = NULL;
 
-  ti->infotext = getStringCopy(TREE_INFOTEXT(ti->type));
+  ti->infotext = getStringCopy(getTreeInfoText(ti->type));
 
   if (ti->type == TREE_TYPE_LEVEL_DIR)
   {
@@ -3493,7 +3497,7 @@ static TreeInfo *createTopTreeInfoNode(TreeInfo *node_first)
   ti_new->parent_link = FALSE;
 
   setString(&ti_new->identifier, "top_tree_node");
-  setString(&ti_new->name, TREE_INFOTEXT(type));
+  setString(&ti_new->name, getTreeInfoText(type));
   setString(&ti_new->name_sorting, ti_new->name);
 
   setString(&ti_new->subdir, STRING_TOP_DIRECTORY);
@@ -3502,14 +3506,14 @@ static TreeInfo *createTopTreeInfoNode(TreeInfo *node_first)
   ti_new->sort_priority = LEVELCLASS_TOP;
   ti_new->latest_engine = node_first->latest_engine;
 
-  setString(&ti_new->class_desc, TREE_INFOTEXT(type));
+  setString(&ti_new->class_desc, getTreeInfoText(type));
 
   ti_new->node_group = node_first;
   ti_new->level_group = TRUE;
 
   TreeInfo *ti_new2 = createParentTreeInfoNode(ti_new);
 
-  setString(&ti_new2->name, TREE_BACKLINK_TEXT(type));
+  setString(&ti_new2->name, getTreeBacklinkText(type));
   setString(&ti_new2->name_sorting, ti_new2->name);
 
   return ti_new;
