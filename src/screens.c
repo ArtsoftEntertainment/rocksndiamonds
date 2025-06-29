@@ -3218,7 +3218,7 @@ static void DrawInfoScreen_Main(void)
 
   OpenDoor(GetDoorState() | DOOR_NO_DELAY | DOOR_FORCE_REDRAW);
 
-  DrawTextSCentered(MENU_TITLE_YPOS, FONT_TITLE_1, STR_INFO_MAIN);
+  DrawTextSCentered(MENU_TITLE_YPOS, FONT_TITLE_1, getConfigProgramString(TEXT_ID_TITLE_INFO));
 
   info_info = info_info_main;
 
@@ -5490,7 +5490,8 @@ static void drawChooseTreeHeadExt(int type, char *title_string)
 
 static void drawChooseTreeHead(TreeInfo *ti)
 {
-  drawChooseTreeHeadExt(ti->type, ti->infotext);
+  // (using "ti->infotext" here does not support custom screen titles)
+  drawChooseTreeHeadExt(ti->type, getTreeInfoText(ti->type));
 }
 
 static void drawChooseTreeList(TreeInfo *ti)
@@ -9355,7 +9356,7 @@ static void DrawSetupScreen_Generic(void)
   if (setup_mode == SETUP_MODE_MAIN)
   {
     setup_info = setup_info_main;
-    title_string = STR_SETUP_MAIN;
+    title_string = getConfigProgramString(TEXT_ID_TITLE_SETUP);
 
     if (!setup.show_menu_to_save_setup)
       setHideSetupEntry(execSaveAndExitSetup);
@@ -11249,12 +11250,14 @@ static void CreateScreenMenubuttons(void)
 
     if (is_score_button)
     {
+      char *title_text = getConfigProgramString(TEXT_ID_TITLE_SCORES);
+
       // if x/y set to -1, dynamically place buttons next to title text
-      int title_width = getTextWidth(INFOTEXT_SCORE_ENTRY, FONT_TITLE_1);
+      int title_width = getTextWidth(title_text, FONT_TITLE_1);
 
       // special compatibility handling for "Snake Bite" graphics set
       if (strPrefix(leveldir_current->identifier, "snake_bite"))
-	title_width = strlen(INFOTEXT_SCORE_ENTRY) * 32;
+	title_width = strlen(title_text) * 32;
 
       // use "SX" here to center buttons (ignore horizontal draw offset)
       if (pos->x == -1)

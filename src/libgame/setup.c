@@ -80,6 +80,10 @@ static boolean update_artworkinfo_cache = FALSE;
 
 char *getConfigProgramString(int text_id)
 {
+  // use internal static default values before level set directory is scanned
+  if (leveldir_current == NULL)
+    return setup.internal.text[text_id];
+
   TreeInfo *graphics_current = getArtworkTreeInfoForUserLevelSet(ARTWORK_TYPE_GRAPHICS);
 
   return (leveldir_current->text[text_id] ? leveldir_current->text[text_id] :
@@ -87,12 +91,12 @@ char *getConfigProgramString(int text_id)
 	  setup.internal.text[text_id]);
 }
 
-static char *getTreeInfoText(int type)
+char *getTreeInfoText(int type)
 {
-  return (type == TREE_TYPE_SCORE_ENTRY  ? INFOTEXT_SCORE_ENTRY :
-          type == TREE_TYPE_PLAYER_NAME  ? INFOTEXT_PLAYER_NAME :
-          type == TREE_TYPE_LEVEL_NR     ? INFOTEXT_LEVEL_NR :
-          type == TREE_TYPE_LEVEL_DIR    ? INFOTEXT_LEVEL_DIR :
+  return (type == TREE_TYPE_SCORE_ENTRY  ? getConfigProgramString(TEXT_ID_TITLE_SCORES) :
+          type == TREE_TYPE_PLAYER_NAME  ? getConfigProgramString(TEXT_ID_TITLE_NAMES) :
+          type == TREE_TYPE_LEVEL_NR     ? getConfigProgramString(TEXT_ID_TITLE_LEVELNR) :
+          type == TREE_TYPE_LEVEL_DIR    ? getConfigProgramString(TEXT_ID_TITLE_LEVELS) :
           type == TREE_TYPE_GRAPHICS_DIR ? INFOTEXT_GRAPHICS_DIR :
           type == TREE_TYPE_SOUNDS_DIR   ? INFOTEXT_SOUNDS_DIR :
           type == TREE_TYPE_MUSIC_DIR    ? INFOTEXT_MUSIC_DIR :

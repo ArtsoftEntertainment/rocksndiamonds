@@ -262,6 +262,7 @@ typedef struct hashtable     SetupFileHash;
 
 
 char *getConfigProgramString(int);
+char *getTreeInfoText(int);
 
 char *getUserGraphicsDir(void);
 char *getUserSoundsDir(void);

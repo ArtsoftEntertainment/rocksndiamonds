@@ -870,10 +870,6 @@
 #define INFOTEXT_GRAPHICS_DIR		"Custom Graphics"
 #define INFOTEXT_SOUNDS_DIR		"Custom Sounds"
 #define INFOTEXT_MUSIC_DIR		"Custom Music"
-#define INFOTEXT_LEVEL_DIR		"Level Sets"
-#define INFOTEXT_LEVEL_NR		"Levels"
-#define INFOTEXT_PLAYER_NAME		"Players & Teams"
-#define INFOTEXT_SCORE_ENTRY		"Hall of Fame"
 
 #define BACKLINK_TEXT_MAIN		".. (main menu)"
 #define BACKLINK_TEXT_SETUP		".. (setup menu)"
