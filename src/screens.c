@@ -5490,8 +5490,10 @@ static void drawChooseTreeHeadExt(int type, char *title_string)
 
 static void drawChooseTreeHead(TreeInfo *ti)
 {
-  // (using "ti->infotext" here does not support custom screen titles)
-  drawChooseTreeHeadExt(ti->type, getTreeInfoText(ti->type));
+  // use custom screen title, if supported and if defined, else use default (static) screen title
+  char *title = (ti->type != TREE_TYPE_UNDEFINED ? getTreeInfoText(ti->type) : ti->infotext);
+
+  drawChooseTreeHeadExt(ti->type, title);
 }
 
 static void drawChooseTreeList(TreeInfo *ti)
