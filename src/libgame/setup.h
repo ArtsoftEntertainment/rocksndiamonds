@@ -258,6 +258,7 @@ typedef struct hashtable     SetupFileHash;
 
 #define TREE_COLOR(ti, active)						\
 	(TREE_TYPE_IS_DIR((ti)->type) ? TREE_COLOR_DIR(ti, active) :	\
+	 (ti)->type != TREE_TYPE_LEVEL_NR && (active) ? FC_YELLOW :	\
 	 (ti)->color)
 
 
