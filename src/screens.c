@@ -5477,6 +5477,19 @@ static void drawChooseTreeText(TreeInfo *ti, int y, boolean active)
 
     DrawText(startx, starty, buffer, font_nr);
   }
+
+  if (game_status == GAME_MODE_LEVELNR && !node->parent_link)
+  {
+    char *s = strchr(buffer, ' ');
+
+    if (s != NULL)
+    {
+      font_nr = MENU_CHOOSE_TREE_FONT(active ? FC_RED : FC_YELLOW);
+      *s = '\0';
+
+      DrawText(startx, starty, buffer, font_nr);
+    }
+  }
 }
 
 static void drawChooseTreeHeadExt(int type, char *title_string)
