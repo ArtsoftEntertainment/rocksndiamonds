@@ -176,10 +176,6 @@ static void load_cave(GdGame *game)
 
   game->cave = gd_get_prepared_cave(game->original_cave, game->level_num);
 
-  // if requested, recolor cave (cave is a copy only, so no worries)
-  if (setup.bd_random_colors)
-    gd_cave_set_random_colors(game->cave, setup.bd_default_color_type);
-
   if (game->cave->intermission && game->cave->intermission_instantlife)
     add_bonus_life(game, FALSE);
 

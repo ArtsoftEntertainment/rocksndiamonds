@@ -7990,6 +7990,10 @@ static void LoadLevel_InitColorSettings(struct LevelInfo *level)
     cave->base_color[i]	= level->bd_base_color[i];
   }
 
+  // set random colors for BD style levels according to preferred color type, if requested
+  if (setup.bd_random_colors)
+    SetRandomLevelColors_BD(setup.bd_default_color_type);
+
   // set default color type and colors for BD style level colors
   SetDefaultLevelColorType_BD();
   SetDefaultLevelColors_BD();
