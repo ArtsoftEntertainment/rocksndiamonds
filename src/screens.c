@@ -101,6 +101,12 @@
 
 #define MAX_MENU_MODES				MAX(MAX_INFO_MODES, MAX_SETUP_MODES)
 
+#define SETUP_MODE_CHOOSE_FIRST			SETUP_MODE_CHOOSE_SCORES_TYPE
+#define SETUP_MODE_CHOOSE_LAST			SETUP_MODE_CHOOSE_GRID_YSIZE_1
+
+#define IS_SETUP_MODE_CHOOSE(x)			((x) >= SETUP_MODE_CHOOSE_FIRST &&	\
+						 (x) <= SETUP_MODE_CHOOSE_LAST)
+
 // info screen titles
 #define STR_INFO_MAIN				"Info Screen"
 #define STR_INFO_TITLE				"Title Screen"
@@ -5680,6 +5686,13 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
     else if (ti->cl_first == -1)
     {
       // only on initialization
+      ti->cl_first = MAX(0, entry_pos - num_page_entries + 1);
+      ti->cl_cursor = entry_pos - ti->cl_first;
+
+    }
+    else if (game_status == GAME_MODE_SETUP && IS_SETUP_MODE_CHOOSE(setup_mode))
+    {
+      // only for selectbox style setup values
       ti->cl_first = MAX(0, entry_pos - num_page_entries + 1);
       ti->cl_cursor = entry_pos - ti->cl_first;
 
