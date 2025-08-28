@@ -144,8 +144,7 @@ void initNetworkBufferForReading(struct NetworkBuffer *nb)
   getNetworkBuffer32BitInteger(nb);
 }
 
-void initNetworkBufferForWriting(struct NetworkBuffer *nb, int message_type,
-				 int player_nr)
+void initNetworkBufferForWriting(struct NetworkBuffer *nb, int message_type, int player_nr)
 {
   resetNetworkBufferForWriting(nb);
 
@@ -184,13 +183,11 @@ static void increaseNetworkBuffer(struct NetworkBuffer *nb, int additional_size)
   nb->buffer = checked_realloc(nb->buffer, nb->max_size);
 }
 
-int receiveNetworkBufferBytes(struct NetworkBuffer *nb, TCPsocket socket,
-			     int num_bytes)
+int receiveNetworkBufferBytes(struct NetworkBuffer *nb, TCPsocket socket, int num_bytes)
 {
   if (num_bytes > MAX_PACKET_SIZE)
   {
-    Debug("network:server", "protocol error: invalid packet size %d",
-	  num_bytes);
+    Debug("network:server", "protocol error: invalid packet size %d", num_bytes);
 
     return -1;
   }
@@ -462,8 +459,7 @@ static void RemovePlayer(struct NetworkServerPlayerInfo *player)
 
   if (player->introduced)
   {
-    initNetworkBufferForWriting(write_buffer, OP_PLAYER_DISCONNECTED,
-				player->number);
+    initNetworkBufferForWriting(write_buffer, OP_PLAYER_DISCONNECTED, player->number);
 
     SendNetworkBufferToAllButOne(write_buffer, player);
   }
@@ -633,8 +629,7 @@ static void Handle_OP_PLAYER_NAME(struct NetworkServerPlayerInfo *player)
 
   if (!player->introduced)
   {
-    initNetworkBufferForWriting(write_buffer, OP_PLAYER_CONNECTED,
-				player->number);
+    initNetworkBufferForWriting(write_buffer, OP_PLAYER_CONNECTED, player->number);
 
     SendNetworkBufferToAllButOne(write_buffer, player);
   }
@@ -654,8 +649,7 @@ static void Handle_OP_PLAYER_NAME(struct NetworkServerPlayerInfo *player)
     {
       if (p != player && p->introduced)
       {
-	initNetworkBufferForWriting(write_buffer, OP_PLAYER_CONNECTED,
-				    p->number);
+	initNetworkBufferForWriting(write_buffer, OP_PLAYER_CONNECTED, p->number);
 
 	SendNetworkBufferToClient(write_buffer, player);
 

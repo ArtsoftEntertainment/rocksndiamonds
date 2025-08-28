@@ -188,8 +188,7 @@ static void StartNetworkServer(int port)
 
   p = port;
 
-  network.server_thread = SDL_CreateThread(NetworkServerThread,
-					   "NetworkServerThread", &p);
+  network.server_thread = SDL_CreateThread(NetworkServerThread, "NetworkServerThread", &p);
 }
 
 boolean ConnectToServer(char *hostname, int port)
@@ -294,8 +293,7 @@ boolean ConnectToServer(char *hostname, int port)
 
     if (ip.host == INADDR_NONE)
     {
-      sprintf(message, "Failed to resolve network server hostname '%s'!",
-	      hostname);
+      sprintf(message, "Failed to resolve network server hostname '%s'!", hostname);
 
       DrawNetworkText_Failed(message);
 
@@ -571,8 +569,7 @@ static void Handle_OP_NUMBER_WANTED(void)
     struct NetworkClientPlayerInfo *player;
 
     if (old_client_nr != client_nr_wanted)	// client's nr has changed
-      Debug("network:client", "client %d switches to # %d",
-	    old_client_nr, new_client_nr);
+      Debug("network:client", "client %d switches to # %d", old_client_nr, new_client_nr);
     else if (old_client_nr == first_player.nr)	// local player keeps his nr
       Debug("network:client", "keeping client # %d", new_client_nr);
 
@@ -677,8 +674,7 @@ static void Handle_OP_PLAYER_DISCONNECTED(void)
   {
     char message[100];
 
-    sprintf(message, "Player %d left network server! Network game stopped!",
-	    player_nr);
+    sprintf(message, "Player %d left network server! Network game stopped!", player_nr);
 
     Request(message, REQ_CONFIRM | REQ_STAY_CLOSED);
 
@@ -820,8 +816,7 @@ static void Handle_OP_MOVE_PLAYER(void)
 
   // copy valid player actions (will be set to 0 for not connected players)
   for (i = 0; i < MAX_PLAYERS; i++)
-    stored_player[i].effective_action =
-      getNetworkBuffer8BitInteger(read_buffer);
+    stored_player[i].effective_action = getNetworkBuffer8BitInteger(read_buffer);
 
   network_player_action_received = TRUE;
 }
