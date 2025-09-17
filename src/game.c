@@ -12368,7 +12368,7 @@ static void CheckLevelTime(void)
       }
     }
 
-    if (!game.LevelSolved && !level.use_step_counter)
+    if (!level.use_step_counter)
     {
       TimePlayed++;
 
@@ -12376,29 +12376,32 @@ static void CheckLevelTime(void)
       {
 	TimeLeft--;
 
-	if (TimeLeft <= 10 && game.time_limit)
-	  PlayTimeoutSound(TimeLeft);
+        if (!game.LevelSolved)
+        {
+	  if (TimeLeft <= 10 && game.time_limit)
+	    PlayTimeoutSound(TimeLeft);
 
-	/* this does not make sense: game_panel_controls[GAME_PANEL_TIME].value
-	   is reset from other values in UpdateGameDoorValues() -- FIX THIS */
+	  /* this does not make sense: game_panel_controls[GAME_PANEL_TIME].value
+	     is reset from other values in UpdateGameDoorValues() -- FIX THIS */
 
-	game_panel_controls[GAME_PANEL_TIME].value = TimeLeft;
+	  game_panel_controls[GAME_PANEL_TIME].value = TimeLeft;
 
-	if (!TimeLeft && game.time_limit)
-	{
-	  if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+	  if (!TimeLeft && game.time_limit)
 	  {
-	    if (game_bd.game->cave->player_state == GD_PL_LIVING)
-	      game_bd.game->cave->player_state = GD_PL_TIMEOUT;
-	  }
-	  else if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
-	  {
-	    game_em.lev->killed_out_of_time = TRUE;
-	  }
-	  else
-	  {
-	    for (i = 0; i < MAX_PLAYERS; i++)
-	      KillPlayer(&stored_player[i]);
+	    if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+	    {
+	      if (game_bd.game->cave->player_state == GD_PL_LIVING)
+	        game_bd.game->cave->player_state = GD_PL_TIMEOUT;
+	    }
+	    else if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
+	    {
+	      game_em.lev->killed_out_of_time = TRUE;
+	    }
+	    else
+	    {
+	      for (i = 0; i < MAX_PLAYERS; i++)
+	        KillPlayer(&stored_player[i]);
+	    }
 	  }
 	}
       }
