@@ -2837,8 +2837,6 @@ static char *getLevelFilenameFromBasename(char *basename)
 
 static int getFileTypeFromBasename(char *basename)
 {
-  // !!! ALSO SEE COMMENT IN checkForPackageFromBasename() !!!
-
   static char *filename = NULL;
   struct stat file_status;
 
@@ -2895,14 +2893,6 @@ static int getFileTypeFromMagicBytes(char *filename, int type)
   }
 
   return type;
-}
-
-static boolean checkForPackageFromBasename(char *basename)
-{
-  // !!! WON'T WORK ANYMORE IF getFileTypeFromBasename() ALSO DETECTS !!!
-  // !!! SINGLE LEVELS (CURRENTLY ONLY DETECTS LEVEL PACKAGES         !!!
-
-  return (getFileTypeFromBasename(basename) != LEVEL_FILE_TYPE_UNKNOWN);
 }
 
 static char *getSingleLevelBasenameExt(int nr, char *extension)
@@ -3076,7 +3066,9 @@ static void determineLevelFileInfo_Filename(struct LevelFileInfo *lfi)
 
     setLevelFileInfo_FormatLevelFilename(lfi, filetype, leveldir_current->level_filename, nr);
 
-    lfi->packed = checkForPackageFromBasename(leveldir_current->level_filename);
+    // if level file name contains no format pattern character "%", assume packed level file
+    if (strchr(leveldir_current->level_filename, '%') == NULL)
+      lfi->packed = TRUE;
 
     if (fileExists(lfi->filename))
       return;
