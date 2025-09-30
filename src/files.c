@@ -3070,6 +3070,10 @@ static void determineLevelFileInfo_Filename(struct LevelFileInfo *lfi)
     if (strchr(leveldir_current->level_filename, '%') == NULL)
       lfi->packed = TRUE;
 
+    // but assume single level file if level set contains only a single level
+    if (leveldir_current->levels == 1)
+      lfi->packed = FALSE;
+
     if (fileExists(lfi->filename))
       return;
   }
