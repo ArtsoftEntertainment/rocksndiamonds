@@ -2800,28 +2800,11 @@ static void ActivateLevelTemplate(void)
 
 boolean isLevelsetFilename_BD(char *filename)
 {
+  // check for native BD level file extensions
   return (strSuffixLower(filename, ".bd") ||
 	  strSuffixLower(filename, ".bdr") ||
 	  strSuffixLower(filename, ".brc") ||
 	  strSuffixLower(filename, ".gds"));
-}
-
-static boolean checkForPackageFromBasename_BD(char *basename)
-{
-  // check for native BD level file extensions
-  if (!isLevelsetFilename_BD(basename))
-    return FALSE;
-
-  // check for standard single-level BD files (like "001.bd")
-  if (strSuffixLower(basename, ".bd") &&
-      strlen(basename) == 6 &&
-      basename[0] >= '0' && basename[0] <= '9' &&
-      basename[1] >= '0' && basename[1] <= '9' &&
-      basename[2] >= '0' && basename[2] <= '9')
-    return FALSE;
-
-  // this is a level package in native BD file format
-  return TRUE;
 }
 
 static char *getLevelFilenameFromBasename(char *basename)
@@ -2856,8 +2839,8 @@ static int getFileTypeFromBasename(char *basename)
       strchr(basename, '%') == NULL)
     return LEVEL_FILE_TYPE_SB;
 
-  // check for typical filename of a Boulder Dash (GDash) level package file
-  if (checkForPackageFromBasename_BD(basename))
+  // check for typical filename of a Boulder Dash (GDash) level file (single or package)
+  if (isLevelsetFilename_BD(basename))
     return LEVEL_FILE_TYPE_BD;
 
   // ---------- try to determine file type from filesize ----------
