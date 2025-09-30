@@ -2943,6 +2943,9 @@ static char *getPackedLevelBasename(int type)
     char *entry_basename = dir_entry->basename;
     int entry_type = getFileTypeFromBasename(entry_basename);
 
+    // !!! WON'T WORK ANYMORE IF getFileTypeFromBasename() ALSO DETECTS !!!
+    // !!! SINGLE LEVELS (CURRENTLY ONLY DETECTS LEVEL PACKAGES         !!!
+
     if (entry_type != LEVEL_FILE_TYPE_UNKNOWN)	// found valid level package
     {
       if (type == LEVEL_FILE_TYPE_UNKNOWN ||
