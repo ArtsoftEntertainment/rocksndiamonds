@@ -3083,6 +3083,7 @@ static void determineLevelFileInfo_Filename(struct LevelFileInfo *lfi)
 
     // check for specified native level file with standard file name
     setLevelFileInfo_FormatLevelFilename(lfi, filetype, "%03d.%s", nr, LEVELFILE_EXTENSION);
+
     if (fileExists(lfi->filename))
       return;
   }
