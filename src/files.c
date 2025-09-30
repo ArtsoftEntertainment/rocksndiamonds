@@ -2922,7 +2922,7 @@ static char *getSingleLevelBasename(int nr)
   return getSingleLevelBasenameExt(nr, LEVELFILE_EXTENSION);
 }
 
-static char *getPackedLevelBasename(int type)
+static char *getKnownLevelBasename(int type)
 {
   static char basename[MAX_FILENAME_LEN];
   char *directory = getCurrentLevelDir();
@@ -2943,10 +2943,7 @@ static char *getPackedLevelBasename(int type)
     char *entry_basename = dir_entry->basename;
     int entry_type = getFileTypeFromBasename(entry_basename);
 
-    // !!! WON'T WORK ANYMORE IF getFileTypeFromBasename() ALSO DETECTS !!!
-    // !!! SINGLE LEVELS (CURRENTLY ONLY DETECTS LEVEL PACKAGES         !!!
-
-    if (entry_type != LEVEL_FILE_TYPE_UNKNOWN)	// found valid level package
+    if (entry_type != LEVEL_FILE_TYPE_UNKNOWN)	// found known level file (single or package)
     {
       if (type == LEVEL_FILE_TYPE_UNKNOWN ||
 	  type == entry_type)
@@ -2969,9 +2966,9 @@ static char *getSingleLevelFilename(int nr)
 }
 
 #if ENABLE_UNUSED_CODE
-static char *getPackedLevelFilename(int type)
+static char *getKnownLevelFilename(int type)
 {
-  return getLevelFilenameFromBasename(getPackedLevelBasename(type));
+  return getLevelFilenameFromBasename(getKnownLevelBasename(type));
 }
 #endif
 
@@ -3008,12 +3005,12 @@ static void setLevelFileInfo_FormatLevelFilename(struct LevelFileInfo *lfi, int 
   setString(&lfi->filename, getLevelFilenameFromBasename(lfi->basename));
 }
 
-static void setLevelFileInfo_PackedLevelFilename(struct LevelFileInfo *lfi, int type)
+static void setLevelFileInfo_KnownLevelFilename(struct LevelFileInfo *lfi, int type)
 {
   lfi->type = type;
   lfi->packed = TRUE;
 
-  setString(&lfi->basename, getPackedLevelBasename(lfi->type));
+  setString(&lfi->basename, getKnownLevelBasename(lfi->type));
   setString(&lfi->filename, getLevelFilenameFromBasename(lfi->basename));
 }
 
@@ -3135,8 +3132,8 @@ static void determineLevelFileInfo_Filename(struct LevelFileInfo *lfi)
   if (fileExists(lfi->filename))
     return;
 
-  // check for various packed level file formats
-  setLevelFileInfo_PackedLevelFilename(lfi, LEVEL_FILE_TYPE_UNKNOWN);
+  // check for various known level file formats
+  setLevelFileInfo_KnownLevelFilename(lfi, LEVEL_FILE_TYPE_UNKNOWN);
   if (fileExists(lfi->filename))
     return;
 
