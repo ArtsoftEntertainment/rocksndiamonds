@@ -12126,6 +12126,13 @@ struct ConfigInfo image_config[] =
   { "tape.text.frame.font",				"font.tape_recorder"		},
   { "tape.text.frame.draw_masked",			"false"				},
 
+  { "tape.text.engine.x",				"-1"				},
+  { "tape.text.engine.y",				"-1"				},
+  { "tape.text.engine.align",				"left"				},
+  { "tape.text.engine.valign",				"top"				},
+  { "tape.text.engine.font",				"font.tape_recorder"		},
+  { "tape.text.engine.draw_masked",			"false"				},
+
   { "tape.show_game_buttons",				"false"				},
 
   { "editor.button.prev_level.x",			"5"				},

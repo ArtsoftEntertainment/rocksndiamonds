@@ -231,9 +231,10 @@ static void DrawVideoDisplay_Graphics(unsigned int state, unsigned int value)
 #define DATETIME_TIME_SS		(1 << 8)
 
 #define DATETIME_FRAME			(1 << 9)
+#define DATETIME_ENGINE			(1 << 10)
 
-#define DATETIME_XOFFSET_1		(1 << 10)
-#define DATETIME_XOFFSET_2		(1 << 11)
+#define DATETIME_XOFFSET_1		(1 << 11)
+#define DATETIME_XOFFSET_2		(1 << 12)
 
 #define DATETIME_DATE			(DATETIME_DATE_YYYY	|	\
 					 DATETIME_DATE_YY	|	\
@@ -291,6 +292,7 @@ static void DrawVideoDisplay_DateTime(unsigned int state, unsigned int value)
     { &tape.text.time_ss,	DATETIME_TIME_SS			},
 
     { &tape.text.frame,		DATETIME_FRAME				},
+    { &tape.text.engine,	DATETIME_ENGINE				},
 
     { NULL,			DATETIME_NONE				},
   };
@@ -345,6 +347,12 @@ static void DrawVideoDisplay_DateTime(unsigned int state, unsigned int value)
     else if ((type & DATETIME_FRAME) && (state & VIDEO_STATE_FRAME_ON))
     {
       DrawText(xpos, ypos, int2str(value, pos->size), pos->font);
+    }
+    else if ((type & DATETIME_ENGINE))
+    {
+      // Krissz engine: show if level is using old engine
+      if (level.bd_use_krissz_engine && !level.bd_new_krissz_engine)
+	DrawText(xpos, ypos, "old engine", pos->font);
     }
   }
 }

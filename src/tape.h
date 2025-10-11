@@ -188,6 +188,7 @@ struct TapeTextInfo
   struct TextPosInfo time_ss;
 
   struct TextPosInfo frame;
+  struct TextPosInfo engine;
 };
 
 struct TapeInfo
