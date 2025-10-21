@@ -10093,6 +10093,8 @@ void DumpTape(struct TapeInfo *tape)
     Print("[small_graphics]");
   Print("\n");
 
+  Print("- random seed: %d\n", tape->random_seed);
+
   PrintLine("-", 79);
 
   tape_frame_counter = 0;
