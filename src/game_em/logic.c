@@ -1454,7 +1454,7 @@ static void check_player(struct PLAYER *ply)
 
   if (dx == 0 && dy == 0)
   {
-    ply->joy_stick = FALSE;
+    ply->joy_stick = TRUE;
 
     if (ply->joy_drop)
     {
@@ -1476,7 +1476,7 @@ static void check_player(struct PLAYER *ply)
     return;
   }
 
-  ply->joy_stick = TRUE;
+  ply->joy_stick = FALSE;
   ply->joy_n = FALSE;
   ply->joy_e = FALSE;
   ply->joy_s = FALSE;

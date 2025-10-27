@@ -47,7 +47,7 @@ static void readjoy(byte action, struct PLAYER *ply)
   /* always update drop action */
   ply->joy_drop = drop;
 
-  if (ply->joy_stick || (north | east | south | west))	/* (no "| snap"!) */
+  if (!ply->joy_stick || (north | east | south | west))	/* (no "| snap"!) */
   {
     ply->joy_n = north;
     ply->joy_e = east;

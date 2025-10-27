@@ -273,10 +273,10 @@ GdGame *gd_game_new(const int cave, const int level)
   game->player_score = game_bd.global_score;
 
   game->player_move = GD_MV_STILL;
-  game->player_move_stick = FALSE;
+  game->player_move_stick = TRUE;
   game->player_fire = FALSE;
   game->player_suicide = FALSE;
-  game->player_suicide_stick = FALSE;
+  game->player_suicide_stick = TRUE;
 
   game->state_counter = GAME_INT_LOAD_CAVE;
 
@@ -516,21 +516,21 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
 
       if (game->player_move == GD_MV_STILL)
       {
-	game->player_move_stick = FALSE;
+	game->player_move_stick = TRUE;
       }
       else
       {
-	game->player_move_stick = TRUE;
+	game->player_move_stick = FALSE;
 	game->player_move = GD_MV_STILL;
       }
 
       if (game->player_suicide == FALSE)
       {
-	game->player_suicide_stick = FALSE;
+	game->player_suicide_stick = TRUE;
       }
       else
       {
-	game->player_suicide_stick = TRUE;
+	game->player_suicide_stick = FALSE;
 	game->player_suicide = FALSE;
       }
 
@@ -716,7 +716,7 @@ void play_game_func(GdGame *game, int action)
   boolean fire       = ((action & JOY_BUTTON)  != 0);
   boolean suicide    = ((action & KEY_SUICIDE) != 0);
 
-  if (game->player_move_stick || move_up || move_down || move_left || move_right) // no "fire"!
+  if (!game->player_move_stick || move_up || move_down || move_left || move_right) // no "fire"!
   {
     // get movement
     game->player_move = gd_direction_from_keypress(move_up, move_down, move_left, move_right);
@@ -730,7 +730,7 @@ void play_game_func(GdGame *game, int action)
   if (game->player_move == GD_MV_STILL)
     game->player_fire = fire;
 
-  if (game->player_suicide_stick || suicide)
+  if (!game->player_suicide_stick || suicide)
     game->player_suicide = suicide;
 
   // tell the interrupt "20ms has passed"
