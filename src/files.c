@@ -9339,7 +9339,17 @@ static void setTapeInfoToDefaults(void)
   tape.scr_fieldx = SCR_FIELDX_DEFAULT;
   tape.scr_fieldy = SCR_FIELDY_DEFAULT;
 
+  // set flag for sticky movement input to default (may be overwritten by "MOVE" chunk)
   tape.sticky_movement_input = TRUE;
+
+  if (tape.game_version < VERSION_IDENT(4,4,1,0))
+  {
+    // set flag for sticky movement input for old tapes without "MOVE" chunk
+    if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
+      tape.sticky_movement_input = FALSE;
+    else if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
+      tape.sticky_movement_input = TRUE;
+  }
 
   tape.no_info_chunk = TRUE;
   tape.no_valid_file = FALSE;

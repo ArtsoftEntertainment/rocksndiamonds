@@ -764,9 +764,6 @@ void TapeErase(void)
   // set flags for game actions to default values (may be overwritten later)
   tape.use_key_actions = TRUE;
   tape.use_mouse_actions = FALSE;
-
-  // set flag for sticky movement input to default values (may be overwritten later)
-  tape.sticky_movement_input = TRUE;
 }
 
 static void TapeRewind(void)
