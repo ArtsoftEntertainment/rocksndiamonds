@@ -8689,6 +8689,9 @@ static struct TokenInfo setup_info_engines[] =
   { TYPE_SWITCH,	&setup.bd_skip_hatching,	"Skip hatching player:"		},
   { TYPE_SWITCH,	&setup.bd_scroll_delay,		"Scroll Delay:"			},
   { TYPE_SWITCH,	&setup.bd_sticky_movement_input,"Sticky Movement Input:"	},
+#if 0
+  { TYPE_SWITCH,	&setup.bd_zigzag_movement,	"Zigzag Diagonal Movement:"	},
+#endif
   { TYPE_YES_NO_AUTO,	&setup.bd_smooth_movements,	"Smooth Element Movement:"	},
   { TYPE_YES_NO_AUTO,	&setup.bd_pushing_graphics,	"Player Pushing Graphics:"	},
   { TYPE_YES_NO_AUTO,	&setup.bd_up_down_graphics,	"Player Up/Down Graphics:"	},
@@ -8706,9 +8709,15 @@ static struct TokenInfo setup_info_engines[] =
   { TYPE_EMPTY,		NULL,				""				},
   { TYPE_HEADLINE,	NULL,				"Emerald Mine"			},
   { TYPE_SWITCH,	&setup.forced_scroll_delay,	"Scroll Delay:"			},
+#if 0
+  { TYPE_SWITCH,	&setup.em_zigzag_movement,	"Zigzag Diagonal Movement:"	},
+#endif
   { TYPE_SWITCH,	&setup.prefer_lowpass_sounds,	"Low-Pass Filter Sounds:"	},
   { TYPE_EMPTY,		NULL,				""				},
   { TYPE_HEADLINE,	NULL,				"Supaplex"			},
+#if 0
+  { TYPE_SWITCH,	&setup.sp_zigzag_movement,	"Zigzag Diagonal Movement:"	},
+#endif
   { TYPE_SWITCH,	&setup.sp_show_border_elements, "Border Elements:"		},
   { TYPE_EMPTY,		NULL,				""				},
   { TYPE_LEAVE_MENU,	execSetupMain, 			"Back"				},

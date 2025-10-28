@@ -48,6 +48,7 @@ struct GameInfo_BD
   boolean player_snapping;
 
   boolean sticky_movement_input;
+  boolean zigzag_movement;
 
   // needed for updating panel
   int time_left;

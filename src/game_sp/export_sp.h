@@ -101,6 +101,8 @@ struct GameInfo_SP
   boolean level_solved;
   boolean game_over;
 
+  boolean zigzag_movement;
+
   // needed for updating panel
   int time_played;
   int infotrons_still_needed;

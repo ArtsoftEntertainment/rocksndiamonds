@@ -47,6 +47,8 @@ struct GameInfo_EM
   boolean any_player_moving;
   boolean any_player_snapping;
 
+  boolean zigzag_movement;
+
   int last_moving_player;
   int last_player_direction[MAX_PLAYERS];
 

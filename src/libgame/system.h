@@ -1641,6 +1641,9 @@ struct SetupInfo
   int bd_default_color_type;
   int bd_random_colors;
   boolean bd_sticky_movement_input;
+  boolean bd_zigzag_movement;
+  boolean em_zigzag_movement;
+  boolean sp_zigzag_movement;
   boolean sp_show_border_elements;
   boolean small_game_graphics;
   boolean show_load_save_buttons;

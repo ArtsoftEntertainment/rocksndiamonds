@@ -64,7 +64,7 @@
 #define TAPE_CHUNK_HEAD_SIZE		20	// size of tape file header
 #define TAPE_CHUNK_SCRN_SIZE		2	// size of screen size chunk
 #define TAPE_CHUNK_MOVE_SIZE		4	// size of movement flags chunk
-#define TAPE_CHUNK_MOVE_UNUSED		3	// unused movement flags chunk bytes
+#define TAPE_CHUNK_MOVE_UNUSED		2	// unused movement flags chunk bytes
 
 #define SCORE_CHUNK_VERS_SIZE		8	// size of file version chunk
 
@@ -4823,6 +4823,9 @@ static void CopyNativeTape_BD_to_RND(struct LevelInfo *level)
   // do not use sticky movement input for native BD replays
   tape.sticky_movement_input = FALSE;
 
+  // do not use zigzag diagonal movement for native BD replays
+  tape.zigzag_movement = FALSE;
+
   // all time calculations only used to display approximate tape time
   int cave_speed = cave->speed;
   int milliseconds_game = 0;
@@ -5343,6 +5346,9 @@ static void CopyNativeTape_SP_to_RND(struct LevelInfo *level)
 
   tape.counter = 0;
   tape.pos[tape.counter].delay = 0;
+
+  // do not use zigzag diagonal movement for native SP demos
+  tape.zigzag_movement = FALSE;
 
   for (i = 0; i < demo->length; i++)
   {
@@ -9345,11 +9351,19 @@ static void setTapeInfoToDefaults(void)
   // set flag for sticky movement input to default (may be overwritten by "MOVE" chunk)
   tape.sticky_movement_input = TRUE;
 
+  // set flag for zigzag diagonal movement to default (may be overwritten by "MOVE" chunk)
+  tape.zigzag_movement = TRUE;
+
   if (tape.game_version < VERSION_IDENT(4,4,1,0))
   {
     // set flag for sticky movement input for old tapes without "MOVE" chunk
     if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
       tape.sticky_movement_input = FALSE;
+
+    // set flag for zigzag diagonal movement for old tapes without "MOVE" chunk
+    if (level.game_engine_type == GAME_ENGINE_TYPE_BD ||
+	level.game_engine_type == GAME_ENGINE_TYPE_SP)
+      tape.zigzag_movement = FALSE;
   }
 
   tape.no_info_chunk = TRUE;
@@ -9467,6 +9481,7 @@ static int LoadTape_SCRN(File *file, int chunk_size, struct TapeInfo *tape)
 static int LoadTape_MOVE(File *file, int chunk_size, struct TapeInfo *tape)
 {
   tape->sticky_movement_input = getFile8Bit(file);
+  tape->zigzag_movement       = getFile8Bit(file);
 
   ReadUnusedBytesFromFile(file, TAPE_CHUNK_MOVE_UNUSED);
 
@@ -9929,6 +9944,7 @@ static void SaveTape_SCRN(FILE *file, struct TapeInfo *tape)
 static void SaveTape_MOVE(FILE *file, struct TapeInfo *tape)
 {
   putFile8Bit(file, tape->sticky_movement_input);
+  putFile8Bit(file, tape->zigzag_movement);
 
   WriteUnusedBytesToFile(file, TAPE_CHUNK_MOVE_UNUSED);
 }
@@ -10979,6 +10995,9 @@ static struct TokenInfo global_setup_tokens[] =
   { TYPE_INTEGER,	&setup.bd_default_color_type,		"bd_default_color_type"		},
   { TYPE_SWITCH,	&setup.bd_random_colors,		"bd_random_colors"		},
   { TYPE_SWITCH,	&setup.bd_sticky_movement_input,	"bd_sticky_movement_input"	},
+  { TYPE_SWITCH,	&setup.bd_zigzag_movement,		"bd_zigzag_movement"		},
+  { TYPE_SWITCH,	&setup.em_zigzag_movement,		"em_zigzag_movement"		},
+  { TYPE_SWITCH,	&setup.sp_zigzag_movement,		"sp_zigzag_movement"		},
   { TYPE_SWITCH,	&setup.sp_show_border_elements,		"sp_show_border_elements"	},
   { TYPE_SWITCH,	&setup.small_game_graphics,		"small_game_graphics"		},
   { TYPE_SWITCH,	&setup.show_load_save_buttons,		"show_load_save_buttons"	},
@@ -11332,6 +11351,9 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->bd_default_color_type		= GD_DEFAULT_COLOR_TYPE;
   si->bd_random_colors			= FALSE;
   si->bd_sticky_movement_input		= TRUE;
+  si->bd_zigzag_movement		= TRUE;
+  si->em_zigzag_movement		= TRUE;
+  si->sp_zigzag_movement		= TRUE;
   si->sp_show_border_elements		= FALSE;
   si->small_game_graphics		= FALSE;
   si->show_load_save_buttons		= FALSE;

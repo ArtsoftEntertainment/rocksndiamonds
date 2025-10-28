@@ -3355,6 +3355,20 @@ static void InitGameEngine(void)
 
   game_bd.sticky_movement_input = game.sticky_movement_input;
 
+  // set flag if zigzag diagonal movement should be used (BD/EM/SP engine only)
+  game.zigzag_movement = (tape.playing ? tape.zigzag_movement :
+			  level.game_engine_type == GAME_ENGINE_TYPE_BD ?
+			  setup.bd_zigzag_movement :
+			  level.game_engine_type == GAME_ENGINE_TYPE_EM ?
+			  setup.em_zigzag_movement :
+			  level.game_engine_type == GAME_ENGINE_TYPE_SP ?
+			  setup.sp_zigzag_movement :
+			  TRUE);
+
+  game_bd.zigzag_movement = game.zigzag_movement;
+  game_em.zigzag_movement = game.zigzag_movement;
+  game_sp.zigzag_movement = game.zigzag_movement;
+
 #if 0
   Debug("game:init:level", "level %d: level.game_version  == %s", level_nr,
 	getVersionString(level.game_version));
@@ -4173,6 +4187,9 @@ void InitGame(void)
 
     // initialize flag to set if sticky movement input should be used (BD engine only)
     tape.sticky_movement_input = game.sticky_movement_input;
+
+    // initialize flag to set if zigzag movement should be used (BD/EM/SP engine only)
+    tape.zigzag_movement = game.zigzag_movement;
   }
 
   // don't play tapes over network

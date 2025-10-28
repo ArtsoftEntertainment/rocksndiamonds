@@ -239,6 +239,9 @@ struct GameInfo
   // flag to set if sticky movement input should be used (BD engine only)
   boolean sticky_movement_input;
 
+  // flag to set if zigzag movement should be used (BD/EM/SP engine only)
+  boolean zigzag_movement;
+
   // variable within running game
   int yamyam_content_nr;
   boolean robot_wheel_active;

@@ -244,6 +244,9 @@ struct TapeInfo
   // flag to set if sticky movement input should be used (BD engine only)
   boolean sticky_movement_input;
 
+  // flag to set if zigzag movement should be used (BD/EM/SP engine only)
+  boolean zigzag_movement;
+
   struct
   {
     byte action[MAX_TAPE_ACTIONS];
