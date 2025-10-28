@@ -236,7 +236,7 @@ struct GameInfo
   boolean use_key_actions;
   boolean use_mouse_actions;
 
-  // flag to set if sticky movement input should be used (BD/EM engine only)
+  // flag to set if sticky movement input should be used (BD engine only)
   boolean sticky_movement_input;
 
   // variable within running game

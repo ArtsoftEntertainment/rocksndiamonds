@@ -241,7 +241,7 @@ struct TapeInfo
   int scr_fieldx;
   int scr_fieldy;
 
-  // flag to set if sticky movement input should be used (BD/EM engine only)
+  // flag to set if sticky movement input should be used (BD engine only)
   boolean sticky_movement_input;
 
   struct

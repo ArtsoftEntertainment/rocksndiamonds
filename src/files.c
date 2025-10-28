@@ -9350,8 +9350,6 @@ static void setTapeInfoToDefaults(void)
     // set flag for sticky movement input for old tapes without "MOVE" chunk
     if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
       tape.sticky_movement_input = FALSE;
-    else if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
-      tape.sticky_movement_input = TRUE;
   }
 
   tape.no_info_chunk = TRUE;
@@ -10981,7 +10979,6 @@ static struct TokenInfo global_setup_tokens[] =
   { TYPE_INTEGER,	&setup.bd_default_color_type,		"bd_default_color_type"		},
   { TYPE_SWITCH,	&setup.bd_random_colors,		"bd_random_colors"		},
   { TYPE_SWITCH,	&setup.bd_sticky_movement_input,	"bd_sticky_movement_input"	},
-  { TYPE_SWITCH,	&setup.em_sticky_movement_input,	"em_sticky_movement_input"	},
   { TYPE_SWITCH,	&setup.sp_show_border_elements,		"sp_show_border_elements"	},
   { TYPE_SWITCH,	&setup.small_game_graphics,		"small_game_graphics"		},
   { TYPE_SWITCH,	&setup.show_load_save_buttons,		"show_load_save_buttons"	},
@@ -11335,7 +11332,6 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->bd_default_color_type		= GD_DEFAULT_COLOR_TYPE;
   si->bd_random_colors			= FALSE;
   si->bd_sticky_movement_input		= TRUE;
-  si->em_sticky_movement_input		= TRUE;
   si->sp_show_border_elements		= FALSE;
   si->small_game_graphics		= FALSE;
   si->show_load_save_buttons		= FALSE;

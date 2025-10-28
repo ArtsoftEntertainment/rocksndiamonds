@@ -3347,16 +3347,13 @@ static void InitGameEngine(void)
     game.team_mode = (num_players > 1);
   }
 
-  // set flag if sticky movement input should be used (BD/EM engine only)
+  // set flag if sticky movement input should be used (BD engine only)
   game.sticky_movement_input = (tape.playing ? tape.sticky_movement_input :
 				level.game_engine_type == GAME_ENGINE_TYPE_BD ?
 				setup.bd_sticky_movement_input :
-				level.game_engine_type == GAME_ENGINE_TYPE_EM ?
-				setup.em_sticky_movement_input :
 				TRUE);
 
   game_bd.sticky_movement_input = game.sticky_movement_input;
-  game_em.sticky_movement_input = game.sticky_movement_input;
 
 #if 0
   Debug("game:init:level", "level %d: level.game_version  == %s", level_nr,
@@ -4174,7 +4171,7 @@ void InitGame(void)
     tape.scr_fieldx = SCR_FIELDX;
     tape.scr_fieldy = SCR_FIELDY;
 
-    // initialize flag to set if sticky movement input should be used (BD/EM engine only)
+    // initialize flag to set if sticky movement input should be used (BD engine only)
     tape.sticky_movement_input = game.sticky_movement_input;
   }
 

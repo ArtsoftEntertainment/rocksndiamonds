@@ -1454,7 +1454,7 @@ static void check_player(struct PLAYER *ply)
 
   if (dx == 0 && dy == 0)
   {
-    ply->joy_stick = game_em.sticky_movement_input;
+    ply->joy_stick = TRUE;
 
     if (ply->joy_drop)
     {

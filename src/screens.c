@@ -8706,7 +8706,6 @@ static struct TokenInfo setup_info_engines[] =
   { TYPE_EMPTY,		NULL,				""				},
   { TYPE_HEADLINE,	NULL,				"Emerald Mine"			},
   { TYPE_SWITCH,	&setup.forced_scroll_delay,	"Scroll Delay:"			},
-  { TYPE_SWITCH,	&setup.em_sticky_movement_input,"Sticky Movement Input:"	},
   { TYPE_SWITCH,	&setup.prefer_lowpass_sounds,	"Low-Pass Filter Sounds:"	},
   { TYPE_EMPTY,		NULL,				""				},
   { TYPE_HEADLINE,	NULL,				"Supaplex"			},
