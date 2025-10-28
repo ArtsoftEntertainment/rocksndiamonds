@@ -273,10 +273,10 @@ GdGame *gd_game_new(const int cave, const int level)
   game->player_score = game_bd.global_score;
 
   game->player_move = GD_MV_STILL;
-  game->player_move_stick = TRUE;
+  game->player_move_stick = game_bd.sticky_movement_input;
   game->player_fire = FALSE;
   game->player_suicide = FALSE;
-  game->player_suicide_stick = TRUE;
+  game->player_suicide_stick = game_bd.sticky_movement_input;
 
   game->state_counter = GAME_INT_LOAD_CAVE;
 
@@ -516,7 +516,7 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
 
       if (game->player_move == GD_MV_STILL)
       {
-	game->player_move_stick = TRUE;
+	game->player_move_stick = game_bd.sticky_movement_input;
       }
       else
       {
@@ -526,7 +526,7 @@ static GdGameState gd_game_main_int(GdGame *game, boolean allow_iterate, boolean
 
       if (game->player_suicide == FALSE)
       {
-	game->player_suicide_stick = TRUE;
+	game->player_suicide_stick = game_bd.sticky_movement_input;
       }
       else
       {

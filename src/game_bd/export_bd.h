@@ -47,6 +47,8 @@ struct GameInfo_BD
   boolean player_moving;
   boolean player_snapping;
 
+  boolean sticky_movement_input;
+
   // needed for updating panel
   int time_left;
   int gems_still_needed;

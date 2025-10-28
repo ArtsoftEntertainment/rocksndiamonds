@@ -1640,6 +1640,8 @@ struct SetupInfo
   int bd_palette_atari;
   int bd_default_color_type;
   int bd_random_colors;
+  boolean bd_sticky_movement_input;
+  boolean em_sticky_movement_input;
   boolean sp_show_border_elements;
   boolean small_game_graphics;
   boolean show_load_save_buttons;

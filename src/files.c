@@ -63,6 +63,8 @@
 #define TAPE_CHUNK_VERX_SIZE		8	// size of extended tape versions chunk
 #define TAPE_CHUNK_HEAD_SIZE		20	// size of tape file header
 #define TAPE_CHUNK_SCRN_SIZE		2	// size of screen size chunk
+#define TAPE_CHUNK_MOVE_SIZE		4	// size of movement flags chunk
+#define TAPE_CHUNK_MOVE_UNUSED		3	// unused movement flags chunk bytes
 
 #define SCORE_CHUNK_VERS_SIZE		8	// size of file version chunk
 
@@ -9337,6 +9339,8 @@ static void setTapeInfoToDefaults(void)
   tape.scr_fieldx = SCR_FIELDX_DEFAULT;
   tape.scr_fieldy = SCR_FIELDY_DEFAULT;
 
+  tape.sticky_movement_input = TRUE;
+
   tape.no_info_chunk = TRUE;
   tape.no_valid_file = FALSE;
 }
@@ -9445,6 +9449,15 @@ static int LoadTape_SCRN(File *file, int chunk_size, struct TapeInfo *tape)
 {
   tape->scr_fieldx = getFile8Bit(file);
   tape->scr_fieldy = getFile8Bit(file);
+
+  return chunk_size;
+}
+
+static int LoadTape_MOVE(File *file, int chunk_size, struct TapeInfo *tape)
+{
+  tape->sticky_movement_input = getFile8Bit(file);
+
+  ReadUnusedBytesFromFile(file, TAPE_CHUNK_MOVE_UNUSED);
 
   return chunk_size;
 }
@@ -9749,6 +9762,7 @@ void LoadTapeFromFilename(char *filename)
       { "HEAD", TAPE_CHUNK_HEAD_SIZE,	LoadTape_HEAD },
       { "VERX", TAPE_CHUNK_VERX_SIZE,	LoadTape_VERX },
       { "SCRN", TAPE_CHUNK_SCRN_SIZE,	LoadTape_SCRN },
+      { "MOVE", TAPE_CHUNK_MOVE_SIZE,	LoadTape_MOVE },
       { "INFO", -1,			LoadTape_INFO },
       { "BODY", -1,			LoadTape_BODY },
       {  NULL,  0,			NULL }
@@ -9901,6 +9915,13 @@ static void SaveTape_SCRN(FILE *file, struct TapeInfo *tape)
   putFile8Bit(file, tape->scr_fieldy);
 }
 
+static void SaveTape_MOVE(FILE *file, struct TapeInfo *tape)
+{
+  putFile8Bit(file, tape->sticky_movement_input);
+
+  WriteUnusedBytesToFile(file, TAPE_CHUNK_MOVE_UNUSED);
+}
+
 static void SaveTape_INFO(FILE *file, struct TapeInfo *tape)
 {
   int level_identifier_size = strlen(tape->level_identifier) + 1;
@@ -9974,6 +9995,9 @@ void SaveTapeToFilename(char *filename)
     putFileChunkBE(file, "SCRN", TAPE_CHUNK_SCRN_SIZE);
     SaveTape_SCRN(file, &tape);
   }
+
+  putFileChunkBE(file, "MOVE", TAPE_CHUNK_MOVE_SIZE);
+  SaveTape_MOVE(file, &tape);
 
   putFileChunkBE(file, "INFO", info_chunk_size);
   SaveTape_INFO(file, &tape);
@@ -10943,6 +10967,8 @@ static struct TokenInfo global_setup_tokens[] =
   { TYPE_INTEGER,	&setup.bd_palette_atari,		"bd_palette_atari"		},
   { TYPE_INTEGER,	&setup.bd_default_color_type,		"bd_default_color_type"		},
   { TYPE_SWITCH,	&setup.bd_random_colors,		"bd_random_colors"		},
+  { TYPE_SWITCH,	&setup.bd_sticky_movement_input,	"bd_sticky_movement_input"	},
+  { TYPE_SWITCH,	&setup.em_sticky_movement_input,	"em_sticky_movement_input"	},
   { TYPE_SWITCH,	&setup.sp_show_border_elements,		"sp_show_border_elements"	},
   { TYPE_SWITCH,	&setup.small_game_graphics,		"small_game_graphics"		},
   { TYPE_SWITCH,	&setup.show_load_save_buttons,		"show_load_save_buttons"	},
@@ -11295,6 +11321,8 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->bd_palette_atari			= GD_DEFAULT_PALETTE_ATARI;
   si->bd_default_color_type		= GD_DEFAULT_COLOR_TYPE;
   si->bd_random_colors			= FALSE;
+  si->bd_sticky_movement_input		= TRUE;
+  si->em_sticky_movement_input		= TRUE;
   si->sp_show_border_elements		= FALSE;
   si->small_game_graphics		= FALSE;
   si->show_load_save_buttons		= FALSE;
