@@ -1411,6 +1411,10 @@ static void check_player(struct PLAYER *ply)
     dy = 1;
   }
 
+  // if no zigzag diagonal movement allowed, prefer horizontal directions
+  if (dx && !game_em.zigzag_movement)
+    dy = 0;
+
   if (dx || dy)
   {
     int oldx = ply->x;
