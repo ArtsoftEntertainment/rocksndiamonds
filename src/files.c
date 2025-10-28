@@ -4820,6 +4820,9 @@ static void CopyNativeTape_BD_to_RND(struct LevelInfo *level)
   if (leveldir_current->replay_with_old_engine)
     tape.property_bits |= TAPE_PROPERTY_BD_OLD_ENGINE;
 
+  // do not use sticky movement input for native BD replays
+  tape.sticky_movement_input = FALSE;
+
   // all time calculations only used to display approximate tape time
   int cave_speed = cave->speed;
   int milliseconds_game = 0;
