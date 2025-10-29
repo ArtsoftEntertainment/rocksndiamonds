@@ -109,6 +109,9 @@ struct GameInfo_SP
   int red_disk_count;
   int score;
 
+  // needed for zigzag movement
+  int last_move_dir;
+
   // needed for engine snapshots
   char **preceding_buffer;
   int preceding_buffer_size;

@@ -36,7 +36,7 @@ void subMainGameLoop_Main(byte action)
   // ---------------------------------------------------------------------------
   //
 
-  subDoGameStuff();			// do all game stuff
+  subDoGameStuff(action);		// do all game stuff
 
   //
   // ---------------------------------------------------------------------------

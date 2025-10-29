@@ -17,12 +17,51 @@ byte AnimationSubTable[SP_MAX_PLAYFIELD_SIZE];
 // Do game stuff
 // ==========================================================================
 
-void subDoGameStuff(void)
+void subDoGameStuff(byte action)
 {
   int si, cx, dx, bl;
   int InfotronsNeeded_last = InfotronsNeeded;
 
-  subAnimateMurphy(&MurphyPosIndex);       // move Murphy in any direction
+  if (game_sp.zigzag_movement &&
+      action & MV_ANY_DIRECTION &&
+      PlayField16[MurphyPosIndex] == fiMurphy)
+  {
+    int move_dir = MV_NONE;
+
+    if (game_sp.last_move_dir & MV_HORIZONTAL)
+    {
+      move_dir = MV_VERTICAL;
+      subProcessKeyboardInput(action & move_dir);
+      subAnimateMurphy(&MurphyPosIndex);	// move Murphy in vertical direction
+
+      if (PlayField16[MurphyPosIndex] == fiMurphy)
+      {
+	move_dir = MV_HORIZONTAL;
+	subProcessKeyboardInput(action & move_dir);
+	subAnimateMurphy(&MurphyPosIndex);	// move Murphy in horizontal direction
+      }
+    }
+    else
+    {
+      move_dir = MV_HORIZONTAL;
+      subProcessKeyboardInput(action & move_dir);
+      subAnimateMurphy(&MurphyPosIndex);	// move Murphy in horizontal direction
+
+      if (PlayField16[MurphyPosIndex] == fiMurphy)
+      {
+	move_dir = MV_VERTICAL;
+	subProcessKeyboardInput(action & move_dir);
+	subAnimateMurphy(&MurphyPosIndex);	// move Murphy in vertical direction
+      }
+    }
+
+    if (PlayField16[MurphyPosIndex] != fiMurphy)
+      game_sp.last_move_dir = action & move_dir;
+  }
+  else
+  {
+    subAnimateMurphy(&MurphyPosIndex);		// move Murphy (or snap) in any direction
+  }
 
   if (InfotronsNeeded != InfotronsNeeded_last)
     game.snapshot.collected_item = TRUE;

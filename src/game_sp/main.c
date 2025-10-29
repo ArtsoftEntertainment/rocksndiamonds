@@ -26,6 +26,8 @@ void InitGameEngine_SP(void)
   game_sp.red_disk_count = 0;
   game_sp.score = 0;
 
+  game_sp.last_move_dir = MV_NONE;
+
   menBorder = setup.sp_show_border_elements;
 
   game_sp.scroll_xoffset = (EVEN(SCR_FIELDX) ? TILEX / 2 : 0);

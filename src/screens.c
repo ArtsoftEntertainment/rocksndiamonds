@@ -8713,9 +8713,7 @@ static struct TokenInfo setup_info_engines[] =
   { TYPE_SWITCH,	&setup.prefer_lowpass_sounds,	"Low-Pass Filter Sounds:"	},
   { TYPE_EMPTY,		NULL,				""				},
   { TYPE_HEADLINE,	NULL,				"Supaplex"			},
-#if 0
   { TYPE_SWITCH,	&setup.sp_zigzag_movement,	"Zigzag Diagonal Movement:"	},
-#endif
   { TYPE_SWITCH,	&setup.sp_show_border_elements, "Border Elements:"		},
   { TYPE_EMPTY,		NULL,				""				},
   { TYPE_LEAVE_MENU,	execSetupMain, 			"Back"				},
