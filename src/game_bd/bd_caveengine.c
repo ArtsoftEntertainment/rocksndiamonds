@@ -1681,6 +1681,334 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
   return result;
 }
 
+// Handle player movement.
+static void do_player(GdCave *cave, int x, int y, GdDirection player_move, boolean player_fire)
+{
+  switch (get(cave, x, y))
+  {
+    case O_PLAYER_START:
+      store(cave, x, y, O_PLAYER);
+      // FALL THROUGH
+
+    case O_PLAYER:
+      if (cave->kill_player)
+      {
+	explode(cave, x, y);
+
+	break;
+      }
+
+      cave->player_seen_ago = 0;
+
+      // bd4 intermission caves have many players. so if one of them has exited,
+      // do not change the flag anymore. so this if () is needed
+      if (cave->player_state != GD_PL_EXITED)
+	cave->player_state = GD_PL_LIVING;
+
+      // check for pneumatic hammer things
+      // 1) press fire, 2) have pneumatic hammer 4) space on left or right for hammer
+      // 5) stand on something
+      if (player_fire && cave->got_pneumatic_hammer &&
+	  is_like_space(cave, x, y, player_move) &&
+	  !is_like_space(cave, x, y, GD_MV_DOWN))
+      {
+	if (player_move == GD_MV_LEFT &&
+	    can_be_hammered(cave, x, y, GD_MV_DOWN_LEFT))
+	{
+	  cave->pneumatic_hammer_active_delay = cave->pneumatic_hammer_frame;
+	  store_dir(cave, x, y, GD_MV_LEFT, O_PNEUMATIC_ACTIVE_LEFT);
+	  store(cave, x, y, O_PLAYER_PNEUMATIC_LEFT);
+
+	  break;    // finished.
+	}
+
+	if (player_move == GD_MV_RIGHT &&
+	    can_be_hammered(cave, x, y, GD_MV_DOWN_RIGHT))
+	{
+	  cave->pneumatic_hammer_active_delay = cave->pneumatic_hammer_frame;
+	  store_dir(cave, x, y, GD_MV_RIGHT, O_PNEUMATIC_ACTIVE_RIGHT);
+	  store(cave, x, y, O_PLAYER_PNEUMATIC_RIGHT);
+
+	  break;    // finished.
+	}
+      }
+
+      if (player_move != GD_MV_STILL)
+      {
+	// only do every check if he is not moving
+	GdElement what = get_dir(cave, x, y, player_move);
+	// O_NONE in this variable will mean that there is no change.
+	GdElement remains = O_NONE;
+
+	// if we are 'eating' a teleporter, and the function returns true
+	// (teleporting worked), break here
+	if (what == O_TELEPORTER && do_teleporter(cave, x, y, player_move))
+	  break;
+
+	// try to push element; if successful, break
+	boolean push = do_push(cave, x, y, player_move, player_fire);
+
+	if (push)
+	{
+	  remains = O_SPACE;
+	}
+	else
+	{
+	  switch (what)
+	  {
+	    case O_BOMB:
+	      // if its a bomb, remember he now has one.
+	      // we do not change the "remains" and "what" variables,
+	      // so that part of the code will be ineffective
+	      gd_sound_play(cave, GD_S_BOMB_COLLECTING, what, x, y);
+	      store_dir(cave, x, y, player_move, O_SPACE);
+
+	      if (player_fire)
+		store(cave, x, y, O_PLAYER_BOMB);
+	      else
+		move(cave, x, y, player_move, O_PLAYER_BOMB);
+
+	      break;
+
+	    case O_ROCKET_LAUNCHER:
+	      // if its a rocket launcher, remember he now has one.
+	      // we do not change the "remains" and "what" variables,
+	      // so that part of the code will be ineffective
+	      gd_sound_play(cave, GD_S_BOMB_COLLECTING, what, x, y);
+	      store_dir(cave, x, y, player_move, O_SPACE);
+
+	      if (player_fire)
+		store(cave, x, y, O_PLAYER_ROCKET_LAUNCHER);
+	      else
+		move(cave, x, y, player_move, O_PLAYER_ROCKET_LAUNCHER);
+
+	      break;
+
+	    case O_POT:
+	      // we do not change the "remains" and "what" variables,
+	      // so that part of the code will be ineffective
+	      if (!player_fire && !cave->gravity_switch_active &&
+		  cave->skeletons_collected >= cave->skeletons_needed_for_pot)
+	      {
+		cave->skeletons_collected -= cave->skeletons_needed_for_pot;
+		move(cave, x, y, player_move, O_PLAYER_STIRRING);
+		cave->gravity_disabled = TRUE;
+	      }
+	      break;
+
+	    default:
+	      // get element - process others.
+	      // if cannot get, player_eat_element will return the same
+	      remains = player_eat_element(cave, what, x, y, player_move);
+
+	      break;
+	  }
+	}
+
+	// if anything changed, apply the change.
+	if (remains != O_NONE)
+	{
+	  // if snapping anything and we have snapping explosions set.
+	  // but these is not true for pushing.
+	  if (remains == O_SPACE && player_fire && !push)
+	  {
+	    remains = cave->snap_element;
+
+	    game_bd.player_snapping = TRUE;
+	  }
+
+	  if (remains != O_SPACE || player_fire)
+	  {
+	    // if any other element than space, player cannot move.
+	    // also if pressing fire, will not move.
+	    store_dir(cave, x, y, player_move, remains);
+	  }
+	  else
+	  {
+	    // if space remains there, the player moves.
+	    move(cave, x, y, player_move, O_PLAYER);
+
+	    game_bd.player_moving = TRUE;
+	  }
+	}
+      }
+      break;
+
+    case O_PLAYER_BOMB:
+      // much simpler; cannot snap-push stones
+      if (cave->kill_player)
+      {
+	explode(cave, x, y);
+
+	break;
+      }
+
+      cave->player_seen_ago = 0;
+
+      // bd4 intermission caves have many players. so if one of them has exited,
+      // do not change the flag anymore. so this if () is needed
+      if (cave->player_state != GD_PL_EXITED)
+	cave->player_state = GD_PL_LIVING;
+
+      if (player_move != GD_MV_STILL)
+      {
+	// if the player does not move, nothing to do
+	GdElement what = get_dir(cave, x, y, player_move);
+	GdElement remains = O_NONE;
+
+	if (player_fire)
+	{
+	  // placing a bomb into empty space or dirt
+	  if (is_like_space(cave, x, y, player_move) ||
+	      is_like_dirt(cave, x, y, player_move))
+	  {
+	    store_dir(cave, x, y, player_move, O_BOMB_TICK_1);
+
+	    // placed bomb, he is normal player again
+	    store(cave, x, y, O_PLAYER);
+	    gd_sound_play(cave, GD_S_BOMB_PLACING, O_BOMB, x, y);
+	  }
+
+	  break;
+	}
+
+	// pushing and collecting
+	// if we are 'eating' a teleporter, and the function returns true
+	// (teleporting worked), break here
+	if (what == O_TELEPORTER && do_teleporter(cave, x, y, player_move))
+	  break;
+
+	// player fire is false...
+	if (do_push(cave, x, y, player_move, FALSE))
+	{
+	  remains = O_SPACE;
+	}
+	else
+	{
+	  // get element. if cannot get, player_eat_element will return the same
+	  remains = player_eat_element(cave, what, x, y, player_move);
+	}
+
+	// if element changed, OR there is space, move.
+	if (remains != O_NONE)
+	{
+	  // if anything changed, apply the change.
+	  move(cave, x, y, player_move, O_PLAYER_BOMB);
+	}
+      }
+      break;
+
+    case O_PLAYER_ROCKET_LAUNCHER:
+      // much simpler; cannot snap-push stones
+      if (cave->kill_player)
+      {
+	explode(cave, x, y);
+
+	break;
+      }
+
+      cave->player_seen_ago = 0;
+
+      // bd4 intermission caves have many players. so if one of them has exited,
+      // do not change the flag anymore. so this if () is needed
+      if (cave->player_state != GD_PL_EXITED)
+	cave->player_state = GD_PL_LIVING;
+
+      // firing a rocket?
+      if (player_move != GD_MV_STILL)
+      {
+	// if the player does not move, nothing to do
+	GdElement what = get_dir(cave, x, y, player_move);
+	GdElement remains = O_NONE;
+
+	// to fire a rocket, diagonal movement should not be allowed.
+	// so either x or y must be zero
+	if (player_fire)
+	{
+	  // placing a rocket into empty space
+	  if (is_like_space(cave, x, y, player_move))
+	  {
+	    boolean rocket_launched = TRUE;
+
+	    switch (player_move)
+	    {
+	      case GD_MV_RIGHT:
+		store_dir(cave, x, y, player_move, O_ROCKET_1);
+		if (cave->rockets_collected > 0)
+		  cave->rockets_collected--;
+		else if (!cave->infinite_rockets)
+		  store(cave, x, y, O_PLAYER);
+		break;
+
+	      case GD_MV_UP:
+		store_dir(cave, x, y, player_move, O_ROCKET_2);
+		if (cave->rockets_collected > 0)
+		  cave->rockets_collected--;
+		else if (!cave->infinite_rockets)
+		  store(cave, x, y, O_PLAYER);
+		break;
+
+	      case GD_MV_LEFT:
+		store_dir(cave, x, y, player_move, O_ROCKET_3);
+		if (cave->rockets_collected > 0)
+		  cave->rockets_collected--;
+		else if (!cave->infinite_rockets)
+		  store(cave, x, y, O_PLAYER);
+		break;
+
+	      case GD_MV_DOWN:
+		store_dir(cave, x, y, player_move, O_ROCKET_4);
+		if (cave->rockets_collected > 0)
+		  cave->rockets_collected--;
+		else if (!cave->infinite_rockets)
+		  store(cave, x, y, O_PLAYER);
+		break;
+
+	      default:
+		// cannot fire in other directions
+		rocket_launched = FALSE;
+		break;
+	    }
+
+	    if (rocket_launched)
+	      gd_sound_play(cave, GD_S_BOMB_PLACING, O_BOMB, x, y);
+	  }
+
+	  // a player with rocket launcher cannot snap elements, so stop here
+	  break;
+	}
+
+	// pushing and collecting
+	// if we are 'eating' a teleporter, and the function returns true
+	// (teleporting worked), break here
+	if (what == O_TELEPORTER && do_teleporter(cave, x, y, player_move))
+	  break;
+
+	// player fire is false...
+	if (do_push(cave, x, y, player_move, FALSE))
+	{
+	  remains = O_SPACE;
+	}
+	else
+	{
+	  // get element. if cannot get, player_eat_element will return the same
+	  remains = player_eat_element(cave, what, x, y, player_move);
+	}
+
+	// if something changed, OR there is space, move.
+	if (remains != O_NONE)
+	{
+	  // if anything changed, apply the change.
+	  move(cave, x, y, player_move, O_PLAYER_ROCKET_LAUNCHER);
+	}
+      }
+      break;
+
+    default:
+      break;
+  }
+}
+
 // from the key press booleans, create a direction
 GdDirection gd_direction_from_keypress(boolean up, boolean down, boolean left, boolean right)
 {
@@ -2183,321 +2511,10 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	// ======================================================================================
 
 	case O_PLAYER_START:
-	  store(cave, x, y, O_PLAYER);
-          // FALL THROUGH
-
 	case O_PLAYER:
-	  if (cave->kill_player)
-	  {
-	    explode (cave, x, y);
-
-	    break;
-	  }
-
-	  cave->player_seen_ago = 0;
-
-	  // bd4 intermission caves have many players. so if one of them has exited,
-	  // do not change the flag anymore. so this if () is needed
-	  if (cave->player_state != GD_PL_EXITED)
-	    cave->player_state = GD_PL_LIVING;
-
-	  // check for pneumatic hammer things
-	  // 1) press fire, 2) have pneumatic hammer 4) space on left or right for hammer
-          // 5) stand on something
-	  if (player_fire && cave->got_pneumatic_hammer &&
-	      is_like_space(cave, x, y, player_move) &&
-	      !is_like_space(cave, x, y, GD_MV_DOWN))
-	  {
-	    if (player_move == GD_MV_LEFT &&
-		can_be_hammered(cave, x, y, GD_MV_DOWN_LEFT))
-	    {
-	      cave->pneumatic_hammer_active_delay = cave->pneumatic_hammer_frame;
-	      store_dir(cave, x, y, GD_MV_LEFT, O_PNEUMATIC_ACTIVE_LEFT);
-	      store(cave, x, y, O_PLAYER_PNEUMATIC_LEFT);
-
-	      break;    // finished.
-	    }
-
-	    if (player_move == GD_MV_RIGHT &&
-		can_be_hammered(cave, x, y, GD_MV_DOWN_RIGHT))
-	    {
-	      cave->pneumatic_hammer_active_delay = cave->pneumatic_hammer_frame;
-	      store_dir(cave, x, y, GD_MV_RIGHT, O_PNEUMATIC_ACTIVE_RIGHT);
-	      store(cave, x, y, O_PLAYER_PNEUMATIC_RIGHT);
-
-	      break;    // finished.
-	    }
-	  }
-
-	  if (player_move != GD_MV_STILL)
-	  {
-	    // only do every check if he is not moving
-	    GdElement what = get_dir(cave, x, y, player_move);
-	    // O_NONE in this variable will mean that there is no change.
-	    GdElement remains = O_NONE;
-
-	    // if we are 'eating' a teleporter, and the function returns true
-	    // (teleporting worked), break here
-	    if (what == O_TELEPORTER && do_teleporter(cave, x, y, player_move))
-	      break;
-
-	    // try to push element; if successful, break
-	    boolean push = do_push(cave, x, y, player_move, player_fire);
-
-	    if (push)
-	    {
-	      remains = O_SPACE;
-	    }
-	    else
-	    {
-	      switch (what)
-	      {
-		case O_BOMB:
-		  // if its a bomb, remember he now has one.
-		  // we do not change the "remains" and "what" variables,
-		  // so that part of the code will be ineffective
-		  gd_sound_play(cave, GD_S_BOMB_COLLECTING, what, x, y);
-		  store_dir(cave, x, y, player_move, O_SPACE);
-
-		  if (player_fire)
-		    store(cave, x, y, O_PLAYER_BOMB);
-		  else
-		    move(cave, x, y, player_move, O_PLAYER_BOMB);
-
-		  break;
-
-		case O_ROCKET_LAUNCHER:
-		  // if its a rocket launcher, remember he now has one.
-		  // we do not change the "remains" and "what" variables,
-		  // so that part of the code will be ineffective
-		  gd_sound_play(cave, GD_S_BOMB_COLLECTING, what, x, y);
-		  store_dir(cave, x, y, player_move, O_SPACE);
-
-		  if (player_fire)
-		    store(cave, x, y, O_PLAYER_ROCKET_LAUNCHER);
-		  else
-		    move(cave, x, y, player_move, O_PLAYER_ROCKET_LAUNCHER);
-
-		  break;
-
-		case O_POT:
-		  // we do not change the "remains" and "what" variables,
-		  // so that part of the code will be ineffective
-		  if (!player_fire && !cave->gravity_switch_active &&
-		      cave->skeletons_collected >= cave->skeletons_needed_for_pot)
-		  {
-		    cave->skeletons_collected -= cave->skeletons_needed_for_pot;
-		    move(cave, x, y, player_move, O_PLAYER_STIRRING);
-		    cave->gravity_disabled = TRUE;
-		  }
-		  break;
-
-		default:
-		  // get element - process others.
-		  // if cannot get, player_eat_element will return the same
-		  remains = player_eat_element(cave, what, x, y, player_move);
-
-		  break;
-	      }
-	    }
-
-	    // if anything changed, apply the change.
-	    if (remains != O_NONE)
-	    {
-	      // if snapping anything and we have snapping explosions set.
-	      // but these is not true for pushing.
-	      if (remains == O_SPACE && player_fire && !push)
-              {
-		remains = cave->snap_element;
-
-		game_bd.player_snapping = TRUE;
-              }
-
-	      if (remains != O_SPACE || player_fire)
-              {
-		// if any other element than space, player cannot move.
-		// also if pressing fire, will not move.
-		store_dir(cave, x, y, player_move, remains);
-              }
-	      else
-              {
-		// if space remains there, the player moves.
-		move(cave, x, y, player_move, O_PLAYER);
-
-		game_bd.player_moving = TRUE;
-              }
-	    }
-	  }
-	  break;
-
 	case O_PLAYER_BOMB:
-          // much simpler; cannot snap-push stones
-	  if (cave->kill_player)
-	  {
-	    explode(cave, x, y);
-
-	    break;
-	  }
-
-	  cave->player_seen_ago = 0;
-
-	  // bd4 intermission caves have many players. so if one of them has exited,
-	  // do not change the flag anymore. so this if () is needed
-	  if (cave->player_state != GD_PL_EXITED)
-	    cave->player_state = GD_PL_LIVING;
-
-	  if (player_move != GD_MV_STILL)
-	  {
-	    // if the player does not move, nothing to do
-	    GdElement what = get_dir(cave, x, y, player_move);
-	    GdElement remains = O_NONE;
-
-	    if (player_fire)
-	    {
-	      // placing a bomb into empty space or dirt
-	      if (is_like_space(cave, x, y, player_move) ||
-		  is_like_dirt(cave, x, y, player_move))
-	      {
-		store_dir(cave, x, y, player_move, O_BOMB_TICK_1);
-
-		// placed bomb, he is normal player again
-		store(cave, x, y, O_PLAYER);
-		gd_sound_play(cave, GD_S_BOMB_PLACING, O_BOMB, x, y);
-	      }
-
-	      break;
-	    }
-
-	    // pushing and collecting
-	    // if we are 'eating' a teleporter, and the function returns true
-	    // (teleporting worked), break here
-	    if (what == O_TELEPORTER && do_teleporter(cave, x, y, player_move))
-	      break;
-
-	    // player fire is false...
-	    if (do_push(cave, x, y, player_move, FALSE))
-	    {
-	      remains = O_SPACE;
-	    }
-	    else
-	    {
-              // get element. if cannot get, player_eat_element will return the same
-              remains = player_eat_element(cave, what, x, y, player_move);
-	    }
-
-	    // if element changed, OR there is space, move.
-	    if (remains != O_NONE)
-	    {
-	      // if anything changed, apply the change.
-	      move(cave, x, y, player_move, O_PLAYER_BOMB);
-	    }
-	  }
-	  break;
-
 	case O_PLAYER_ROCKET_LAUNCHER:
-	  // much simpler; cannot snap-push stones
-	  if (cave->kill_player)
-	  {
-	    explode(cave, x, y);
-
-	    break;
-	  }
-
-	  cave->player_seen_ago = 0;
-
-	  // bd4 intermission caves have many players. so if one of them has exited,
-	  // do not change the flag anymore. so this if () is needed
-	  if (cave->player_state != GD_PL_EXITED)
-	    cave->player_state = GD_PL_LIVING;
-
-	  // firing a rocket?
-	  if (player_move != GD_MV_STILL)
-	  {
-	    // if the player does not move, nothing to do
-	    GdElement what = get_dir(cave, x, y, player_move);
-	    GdElement remains = O_NONE;
-
-	    // to fire a rocket, diagonal movement should not be allowed.
-	    // so either x or y must be zero
-	    if (player_fire)
-	    {
-	      // placing a rocket into empty space
-	      if (is_like_space(cave, x, y, player_move))
-	      {
-                boolean rocket_launched = TRUE;
-
-		switch (player_move)
-		{
-		  case GD_MV_RIGHT:
-		    store_dir(cave, x, y, player_move, O_ROCKET_1);
-                    if (cave->rockets_collected > 0)
-                      cave->rockets_collected--;
-		    else if (!cave->infinite_rockets)
-		      store(cave, x, y, O_PLAYER);
-		    break;
-
-		  case GD_MV_UP:
-		    store_dir(cave, x, y, player_move, O_ROCKET_2);
-                    if (cave->rockets_collected > 0)
-                      cave->rockets_collected--;
-		    else if (!cave->infinite_rockets)
-		      store(cave, x, y, O_PLAYER);
-		    break;
-
-		  case GD_MV_LEFT:
-		    store_dir(cave, x, y, player_move, O_ROCKET_3);
-                    if (cave->rockets_collected > 0)
-                      cave->rockets_collected--;
-		    else if (!cave->infinite_rockets)
-		      store(cave, x, y, O_PLAYER);
-		    break;
-
-		  case GD_MV_DOWN:
-		    store_dir(cave, x, y, player_move, O_ROCKET_4);
-                    if (cave->rockets_collected > 0)
-                      cave->rockets_collected--;
-		    else if (!cave->infinite_rockets)
-		      store(cave, x, y, O_PLAYER);
-		    break;
-
-		  default:
-		    // cannot fire in other directions
-                    rocket_launched = FALSE;
-		    break;
-		}
-
-                if (rocket_launched)
-                  gd_sound_play(cave, GD_S_BOMB_PLACING, O_BOMB, x, y);
-	      }
-
-	      // a player with rocket launcher cannot snap elements, so stop here
-	      break;
-	    }
-
-	    // pushing and collecting
-	    // if we are 'eating' a teleporter, and the function returns true
-	    // (teleporting worked), break here
-	    if (what == O_TELEPORTER && do_teleporter(cave, x, y, player_move))
-	      break;
-
-	    // player fire is false...
-	    if (do_push(cave, x, y, player_move, FALSE))
-	    {
-	      remains = O_SPACE;
-	    }
-	    else
-	    {
-	      // get element. if cannot get, player_eat_element will return the same
-	      remains = player_eat_element(cave, what, x, y, player_move);
-	    }
-
-	    // if something changed, OR there is space, move.
-	    if (remains != O_NONE)
-	    {
-	      // if anything changed, apply the change.
-	      move(cave, x, y, player_move, O_PLAYER_ROCKET_LAUNCHER);
-	    }
-	  }
+	  do_player(cave, x, y, player_move, player_fire);
 	  break;
 
 	case O_PLAYER_STIRRING:
