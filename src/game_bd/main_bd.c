@@ -350,6 +350,8 @@ void InitGameEngine_BD(void)
   game_bd.player_moving = FALSE;
   game_bd.player_snapping = FALSE;
 
+  game_bd.last_move_dir = MV_NONE;
+
   // only needed for replays with random values
   if (native_bd_level.replay != NULL)
     native_bd_level.replay->current_playing_pos = 0;

@@ -50,6 +50,9 @@ struct GameInfo_BD
   boolean sticky_movement_input;
   boolean zigzag_movement;
 
+  // needed for zigzag movement
+  int last_move_dir;
+
   // needed for updating panel
   int time_left;
   int gems_still_needed;

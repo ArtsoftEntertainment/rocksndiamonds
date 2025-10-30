@@ -1682,7 +1682,7 @@ static boolean do_push(GdCave *cave, int x, int y, GdDirection player_move, bool
 }
 
 // Handle player movement.
-static void do_player(GdCave *cave, int x, int y, GdDirection player_move, boolean player_fire)
+static void do_player_ext(GdCave *cave, int x, int y, GdDirection player_move, boolean player_fire)
 {
   switch (get(cave, x, y))
   {
@@ -2007,6 +2007,55 @@ static void do_player(GdCave *cave, int x, int y, GdDirection player_move, boole
     default:
       break;
   }
+}
+
+// Handle player movement, with zigzag movement support.
+static GdDirection do_player(GdCave *cave, int x, int y, GdDirection player_move, boolean player_fire)
+{
+  if (game_bd.zigzag_movement && !cave->diagonal_movements && !player_fire)
+  {
+    int action = map_action_BD_to_RND(player_move);
+    int move_dir = MV_NONE;
+    GdDirection player_move_horizontal = (action & MV_LEFT  ? GD_MV_LEFT :
+					  action & MV_RIGHT ? GD_MV_RIGHT : GD_MV_STILL);
+    GdDirection player_move_vertical   = (action & MV_UP    ? GD_MV_UP :
+					  action & MV_DOWN  ? GD_MV_DOWN  : GD_MV_STILL);
+
+    if (game_bd.last_move_dir & MV_HORIZONTAL)
+    {
+      move_dir = MV_VERTICAL;
+      do_player_ext(cave, x, y, player_move_vertical, player_fire);
+
+      if (is_player(cave, x, y))
+      {
+	move_dir = MV_HORIZONTAL;
+	do_player_ext(cave, x, y, player_move_horizontal, player_fire);
+      }
+    }
+    else
+    {
+      move_dir = MV_HORIZONTAL;
+      do_player_ext(cave, x, y, player_move_horizontal, player_fire);
+
+      if (is_player(cave, x, y))
+      {
+	move_dir = MV_VERTICAL;
+	do_player_ext(cave, x, y, player_move_vertical, player_fire);
+      }
+    }
+
+    if (!is_player(cave, x, y))
+    {
+      game_bd.last_move_dir = action & move_dir;
+      player_move = map_action_RND_to_BD(game_bd.last_move_dir);
+    }
+  }
+  else
+  {
+    do_player_ext(cave, x, y, player_move, player_fire);
+  }
+
+  return player_move;
 }
 
 // from the key press booleans, create a direction
@@ -2344,7 +2393,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
   // if diagonal movements not allowed,
   // horizontal movements have precedence. [BROADRIBB]
-  if (!cave->diagonal_movements)
+  if (!cave->diagonal_movements && !game_bd.zigzag_movement)
   {
     switch (player_move)
     {
@@ -2514,7 +2563,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	case O_PLAYER:
 	case O_PLAYER_BOMB:
 	case O_PLAYER_ROCKET_LAUNCHER:
-	  do_player(cave, x, y, player_move, player_fire);
+	  player_move = do_player(cave, x, y, player_move, player_fire);
 	  break;
 
 	case O_PLAYER_STIRRING:
