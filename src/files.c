@@ -9356,10 +9356,6 @@ static void setTapeInfoToDefaults(void)
 
   if (tape.game_version < VERSION_IDENT(4,4,1,0))
   {
-    // set flag for sticky movement input for old tapes without "MOVE" chunk
-    if (level.game_engine_type == GAME_ENGINE_TYPE_BD)
-      tape.sticky_movement_input = FALSE;
-
     // set flag for zigzag diagonal movement for old tapes without "MOVE" chunk
     if (level.game_engine_type == GAME_ENGINE_TYPE_BD ||
 	level.game_engine_type == GAME_ENGINE_TYPE_SP)
