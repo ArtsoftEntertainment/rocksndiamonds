@@ -9354,14 +9354,6 @@ static void setTapeInfoToDefaults(void)
   // set flag for zigzag diagonal movement to default (may be overwritten by "MOVE" chunk)
   tape.zigzag_movement = TRUE;
 
-  if (tape.game_version < VERSION_IDENT(4,4,1,0))
-  {
-    // set flag for zigzag diagonal movement for old tapes without "MOVE" chunk
-    if (level.game_engine_type == GAME_ENGINE_TYPE_BD ||
-	level.game_engine_type == GAME_ENGINE_TYPE_SP)
-      tape.zigzag_movement = FALSE;
-  }
-
   tape.no_info_chunk = TRUE;
   tape.no_valid_file = FALSE;
 }

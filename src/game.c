@@ -3355,6 +3355,14 @@ static void InitGameEngine(void)
 
   game_bd.sticky_movement_input = game.sticky_movement_input;
 
+  // set flag for zigzag diagonal movement for old tapes (BD/SP engine only)
+  if (tape.playing && tape.game_version < VERSION_IDENT(4,4,1,0))
+  {
+    if (level.game_engine_type == GAME_ENGINE_TYPE_BD ||
+	level.game_engine_type == GAME_ENGINE_TYPE_SP)
+      tape.zigzag_movement = FALSE;
+  }
+
   // set flag if zigzag diagonal movement should be used (BD/EM/SP engine only)
   game.zigzag_movement = (tape.playing ? tape.zigzag_movement :
 			  level.game_engine_type == GAME_ENGINE_TYPE_BD ?
