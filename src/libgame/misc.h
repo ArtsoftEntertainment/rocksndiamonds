@@ -50,10 +50,6 @@
 #define TEXT_ENCODING_ASCII		1
 #define TEXT_ENCODING_UTF_8		2
 
-// values for createDirectory()
-#define PERMS_PRIVATE			0
-#define PERMS_PUBLIC			1
-
 // values for general file handling stuff
 #define MAX_FILENAME_LEN		256
 #define MAX_LINE_LEN			1024
