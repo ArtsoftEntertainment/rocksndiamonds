@@ -458,7 +458,7 @@ void prepare_em_level(void)
     ply[i].joy_w	= FALSE;
     ply[i].joy_snap	= FALSE;
     ply[i].joy_drop	= FALSE;
-    ply[i].joy_stick	= TRUE;
+    ply[i].joy_sticky	= TRUE;
   }
 
   // the following engine variables are initialized to version-specific values

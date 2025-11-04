@@ -60,10 +60,10 @@ typedef struct _gd_game
   int player_lives;             // Remaining lives of player
 
   GdDirection player_move;
-  boolean player_move_stick;
+  boolean player_move_sticky;
   boolean player_fire;
   boolean player_suicide;
-  boolean player_suicide_stick;
+  boolean player_suicide_sticky;
 
   GdCave *cave;                 // Copy of the cave. This is the iterated, changed (ruined...) one
   GdCave *original_cave;        // original cave from caveset. used to record highscore

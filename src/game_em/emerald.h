@@ -652,7 +652,7 @@ struct PLAYER
   boolean joy_w;
   boolean joy_snap;
   boolean joy_drop;
-  boolean joy_stick;
+  boolean joy_sticky;
 };
 
 struct LOGIC
