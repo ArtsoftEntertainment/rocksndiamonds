@@ -475,6 +475,4 @@ void SaveNativeLevel_MM(char *filename)
   SaveLevel_MM_BODY(file, &native_mm_level);
 
   fclose(file);
-
-  SetFilePermissions(filename, PERMS_PRIVATE);
 }

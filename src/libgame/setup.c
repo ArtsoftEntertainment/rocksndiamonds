@@ -2067,16 +2067,11 @@ void sortTreeInfo(TreeInfo **node_first)
 #define MODE_X_ALL		(S_IXUSR | S_IXGRP | S_IXOTH)
 
 #define MODE_W_PRIVATE		(S_IWUSR)
-#define MODE_W_PUBLIC_FILE	(S_IWUSR | S_IWGRP)
 #define MODE_W_PUBLIC_DIR	(S_IWUSR | S_IWGRP | S_ISGID)
 
 #define DIR_PERMS_PRIVATE	(MODE_R_ALL | MODE_X_ALL | MODE_W_PRIVATE)
 #define DIR_PERMS_PUBLIC	(MODE_R_ALL | MODE_X_ALL | MODE_W_PUBLIC_DIR)
 #define DIR_PERMS_PUBLIC_ALL	(MODE_R_ALL | MODE_X_ALL | MODE_W_ALL)
-
-#define FILE_PERMS_PRIVATE	(MODE_R_ALL | MODE_W_PRIVATE)
-#define FILE_PERMS_PUBLIC	(MODE_R_ALL | MODE_W_PUBLIC_FILE)
-#define FILE_PERMS_PUBLIC_ALL	(MODE_R_ALL | MODE_W_ALL)
 
 
 char *getHomeDir(void)
@@ -2235,18 +2230,6 @@ void InitUserDataDirectory(void)
     createDirectory(getUserDir(-1), "users");
     createDirectory(getUserDir(user.nr), "user data");
   }
-}
-
-void SetFilePermissions(char *filename, int permission_class)
-{
-  int running_setgid = posix_process_running_setgid();
-  int perms = (permission_class == PERMS_PRIVATE ?
-	       FILE_PERMS_PRIVATE : FILE_PERMS_PUBLIC);
-
-  if (permission_class == PERMS_PUBLIC && !running_setgid)
-    perms = FILE_PERMS_PUBLIC_ALL;
-
-  chmod(filename, perms);
 }
 
 void fprintFileHeader(FILE *file, char *basename)
@@ -5025,8 +5008,6 @@ boolean CreateUserLevelSet(char *level_subdir, char *level_name,
 
   fclose(file);
 
-  SetFilePermissions(filename, PERMS_PRIVATE);
-
   freeTreeInfo(level_info);
   free(filename);
 
@@ -5419,8 +5400,6 @@ static void SaveLevelSetup_LastSeries_Ext(boolean deactivate_last_level_series)
 
   fclose(file);
 
-  SetFilePermissions(filename, PERMS_PRIVATE);
-
   free(filename);
 }
 
@@ -5643,8 +5622,6 @@ void SaveLevelSetup_SeriesInfo(void)
 
   fclose(file);
 
-  SetFilePermissions(filename, PERMS_PRIVATE);
-
   free(filename);
 }
 
@@ -5739,8 +5716,6 @@ void SaveUserSetup(void)
   fprintf(file, "%s\n", getFormattedSetupEntry(TOKEN_STR_LAST_USER,
 					       i_to_a(user.nr)));
   fclose(file);
-
-  SetFilePermissions(filename, PERMS_PRIVATE);
 
   free(filename);
 }

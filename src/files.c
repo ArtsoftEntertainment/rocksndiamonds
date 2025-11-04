@@ -9153,8 +9153,6 @@ static void SaveLevelFromFilename(struct LevelInfo *level, char *filename,
   }
 
   fclose(file);
-
-  SetFilePermissions(filename, PERMS_PRIVATE);
 }
 
 void SaveLevel(int nr)
@@ -10021,8 +10019,6 @@ void SaveTapeToFilename(char *filename)
   SaveTape_BODY(file, &tape);
 
   fclose(file);
-
-  SetFilePermissions(filename, PERMS_PRIVATE);
 }
 
 static void SaveTapeExt(char *filename)
@@ -10587,8 +10583,6 @@ void SaveScore_OLD(int nr)
     fprintf(file, "%d %s\n", scores.entry[i].score, scores.entry[i].name);
 
   fclose(file);
-
-  SetFilePermissions(filename, PERMS_PRIVATE);
 }
 #endif
 
@@ -10723,8 +10717,6 @@ static void SaveScoreToFilename(char *filename)
   SaveScore_TAPE(file, &scores);
 
   fclose(file);
-
-  SetFilePermissions(filename, PERMS_PRIVATE);
 }
 
 void SaveScore(int nr)
@@ -12145,8 +12137,6 @@ void SaveSetup_Default(void)
     fprintf(file, "%s\n", getSetupLine(options_setup_tokens, "", i));
 
   fclose(file);
-
-  SetFilePermissions(filename, PERMS_PRIVATE);
 }
 
 void SaveSetup_AutoSetup(void)
@@ -12172,8 +12162,6 @@ void SaveSetup_AutoSetup(void)
     fprintf(file, "%s\n", getSetupLine(auto_setup_tokens, "", i));
 
   fclose(file);
-
-  SetFilePermissions(filename, PERMS_PRIVATE);
 
   free(filename);
 }
@@ -12208,8 +12196,6 @@ void SaveSetup_ServerSetup(void)
 
   fclose(file);
 
-  SetFilePermissions(filename, PERMS_PRIVATE);
-
   free(filename);
 }
 
@@ -12236,8 +12222,6 @@ void SaveSetup_EditorCascade(void)
     fprintf(file, "%s\n", getSetupLine(editor_cascade_setup_tokens, "", i));
 
   fclose(file);
-
-  SetFilePermissions(filename, PERMS_PRIVATE);
 
   free(filename);
 }

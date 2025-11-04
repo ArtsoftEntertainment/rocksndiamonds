@@ -494,8 +494,6 @@ static void HandleResponse_ApiGetScore(struct HttpResponse *response, void *data
 
   fclose(file);
 
-  SetFilePermissions(filename, PERMS_PRIVATE);
-
   server_scores.updated = TRUE;
 }
 
@@ -716,8 +714,6 @@ static void HandleResponse_ApiGetScoreTape(struct HttpResponse *response, void *
     fputc(response->body[i], file);
 
   fclose(file);
-
-  SetFilePermissions(filename, PERMS_PRIVATE);
 
   server_scores.tape_downloaded = TRUE;
 }

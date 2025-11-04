@@ -355,7 +355,6 @@ char *getTapeDir(char *);
 void createDirectory(char *, char *);
 void InitMainUserDataDirectory(void);
 void InitUserDataDirectory(void);
-void SetFilePermissions(char *, int);
 
 void fprintFileHeader(FILE *, char *);
 VersionType getFileVersionFromCookieString(const char *);
