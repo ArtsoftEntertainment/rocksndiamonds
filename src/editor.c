@@ -18535,7 +18535,8 @@ void HandleLevelEditorKeyInput(Key key)
 	if (!anyTextGadgetActive())
 	  ClickOnGadget(level_editor_gadget[i], button);
 
-  if (draw_with_brush)
+  // flip or rotate brush (if no modifier keys pressed, which may be used for undo/redo etc.)
+  if (draw_with_brush && !(GetKeyModState() & (KMOD_Control | KMOD_Meta)))
   {
     if (letter == 'x')
       FlipBrushX();
