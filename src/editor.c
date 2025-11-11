@@ -16585,6 +16585,12 @@ static int DrawLevelText(int sx, int sy, char letter, int mode)
 	    new_element1 <= EL_STEEL_CHAR_END)
 	  letter_element = letter_element - EL_CHAR_START + EL_STEEL_CHAR_START;
 
+	// if Shift key pressed, change normal to steel characters and vice versa
+	if (GetKeyModState() & KMOD_Shift)
+	  letter_element = (letter_element >= EL_CHAR_START && letter_element <= EL_CHAR_END ?
+			    letter_element - EL_CHAR_START + EL_STEEL_CHAR_START :
+			    letter_element - EL_STEEL_CHAR_START + EL_CHAR_START);
+
 	delete_buffer[sx - start_sx] = Tile[lx][ly];
 	Tile[lx][ly] = letter_element;
 
