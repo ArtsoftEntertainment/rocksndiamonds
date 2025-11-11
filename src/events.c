@@ -2025,6 +2025,10 @@ static void HandleKeysSpecial(Key key)
       {
 	CopyClipboardToBrush();
       }
+      else if (letter == 'y')	// redo last operation
+      {
+	RedoLevelEditorOperation();
+      }
       else if (letter == 'z')	// undo or redo last operation
       {
 	if (GetKeyModState() & KMOD_Shift)
