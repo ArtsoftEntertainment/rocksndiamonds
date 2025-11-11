@@ -29,13 +29,6 @@ void PrintEditorElementList(void);
 void DumpBrush(void);
 void DumpBrush_Small(void);
 
-void CopyClipboardToBrush(void);
-void CopyBrushToClipboard(void);
-void CopyBrushToClipboard_Small(void);
-
-void UndoLevelEditorOperation(void);
-void RedoLevelEditorOperation(void);
-
 void SetDefaultLevelColorType_BD(void);
 void SetDefaultLevelColors_BD(void);
 void SetCurrentLevelColors_BD(void);

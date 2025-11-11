@@ -16458,27 +16458,27 @@ void DumpBrush_Small(void)
   CopyBrushExt(0, 0, 0, 0, 0, CB_DUMP_BRUSH_SMALL);
 }
 
-void CopyClipboardToBrush(void)
+static void CopyClipboardToBrush(void)
 {
   CopyBrushExt(0, 0, 0, 0, 0, CB_CLIPBOARD_TO_BRUSH);
 }
 
-void CopyBrushToClipboard(void)
+static void CopyBrushToClipboard(void)
 {
   CopyBrushExt(0, 0, 0, 0, 0, CB_BRUSH_TO_CLIPBOARD);
 }
 
-void CopyBrushToClipboard_Small(void)
+static void CopyBrushToClipboard_Small(void)
 {
   CopyBrushExt(0, 0, 0, 0, 0, CB_BRUSH_TO_CLIPBOARD_SMALL);
 }
 
-void UndoLevelEditorOperation(void)
+static void UndoLevelEditorOperation(void)
 {
   ClickOnGadget(level_editor_gadget[GADGET_ID_UNDO], -1);
 }
 
-void RedoLevelEditorOperation(void)
+static void RedoLevelEditorOperation(void)
 {
   ClickOnGadget(level_editor_gadget[GADGET_ID_UNDO], 3);
 }
@@ -18535,15 +18535,47 @@ void HandleLevelEditorKeyInput(Key key)
 	if (!anyTextGadgetActive())
 	  ClickOnGadget(level_editor_gadget[i], button);
 
-  // flip or rotate brush (if no modifier keys pressed, which may be used for undo/redo etc.)
-  if (draw_with_brush && !(GetKeyModState() & (KMOD_Control | KMOD_Meta)))
+  if (GetKeyModState() & (KMOD_Control | KMOD_Meta))
   {
-    if (letter == 'x')
-      FlipBrushX();
-    else if (letter == 'y')
-      FlipBrushY();
-    else if (letter == 'z')
-      RotateBrush();
+    // handle special key shortcuts with control or command key pressed
+
+    if (letter == 'x')	// copy brush to clipboard (small size)
+    {
+      CopyBrushToClipboard_Small();
+    }
+    else if (letter == 'c')	// copy brush to clipboard (normal size)
+    {
+      CopyBrushToClipboard();
+    }
+    else if (letter == 'v')	// paste brush from Clipboard
+    {
+      CopyClipboardToBrush();
+    }
+    else if (letter == 'y')	// redo last operation
+    {
+      RedoLevelEditorOperation();
+    }
+    else if (letter == 'z')	// undo or redo last operation
+    {
+      if (GetKeyModState() & KMOD_Shift)
+	RedoLevelEditorOperation();
+      else
+	UndoLevelEditorOperation();
+    }
+  }
+  else
+  {
+    // handle special key shortcuts with control or command key NOT pressed
+
+    if (draw_with_brush)
+    {
+      if (letter == 'x')
+	FlipBrushX();
+      else if (letter == 'y')
+	FlipBrushY();
+      else if (letter == 'z')
+	RotateBrush();
+    }
   }
 }
 
