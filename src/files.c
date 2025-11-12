@@ -2464,6 +2464,11 @@ static void setLevelInfoToDefaults_Level(struct LevelInfo *level, boolean prepar
   int y2 = STD_LEV_FIELDY - 1;
   int i, x, y;
 
+  // set level namespace and level identfication code to default values
+  // (should be part of LevelInfo structure, but is accessed from libgame, too)
+  strcpy(levelobj.namespace, "");
+  strcpy(levelobj.identcode, "");
+
   li = *level;		// copy level data into temporary buffer
   setConfigToDefaultsFromConfigList(chunk_config_INFO);
   *level = li;		// copy temporary buffer back to level data
@@ -7519,6 +7524,12 @@ static void LoadLevelFromFileInfo_BD(struct LevelInfo *level,
 
   if (!LoadNativeLevel_BD(level_file_info->filename, pos, level_info_only))
     level->no_valid_file = TRUE;
+
+  if (!strEqual(level->native_bd_level->cave->krissz_engine_cave_code, ""))
+  {
+    strcpy(levelobj.namespace, "KBD");
+    strcpy(levelobj.identcode, level->native_bd_level->cave->krissz_engine_cave_code);
+  }
 }
 
 static void LoadLevelFromFileInfo_EM(struct LevelInfo *level,

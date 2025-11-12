@@ -49,6 +49,7 @@ LevelDirTree	       *leveldir_current = NULL;
 int			level_nr;
 
 struct LevelSetInfo	levelset;
+struct LevelObjectInfo	levelobj;
 struct LevelStats	level_stats[MAX_LEVELS];
 
 DrawWindow	       *window = NULL;

@@ -2028,6 +2028,12 @@ struct LevelSetInfo
   int level_nr;
 };
 
+struct LevelObjectInfo
+{
+  char namespace[MAX_LINE_LEN];
+  char identcode[MAX_LINE_LEN];
+};
+
 struct LevelStats
 {
   int played;
@@ -2060,6 +2066,7 @@ extern LevelDirTree	       *leveldir_current;
 extern int			level_nr;
 
 extern struct LevelSetInfo	levelset;
+extern struct LevelObjectInfo	levelobj;
 extern struct LevelStats	level_stats[];
 
 extern DrawWindow	       *window;
