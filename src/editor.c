@@ -16513,11 +16513,12 @@ static void FloodFillWall_MM(int from_sx2, int from_sy2, int fill_element)
 // values for DrawLevelText() modes
 #define TEXT_INIT		0
 #define TEXT_SETCURSOR		1
-#define TEXT_WRITECHAR		2
-#define TEXT_BACKSPACE		3
-#define TEXT_NEWLINE		4
-#define TEXT_END		5
-#define TEXT_QUERY_TYPING	6
+#define TEXT_MOVECURSOR		2
+#define TEXT_WRITECHAR		3
+#define TEXT_BACKSPACE		4
+#define TEXT_NEWLINE		5
+#define TEXT_END		6
+#define TEXT_QUERY_TYPING	7
 
 static int DrawLevelText(int sx, int sy, char letter, int mode)
 {
@@ -16547,7 +16548,13 @@ static int DrawLevelText(int sx, int sy, char letter, int mode)
     if (!typing)
       return FALSE;
 
-    if (mode != TEXT_SETCURSOR)
+    if (mode == TEXT_MOVECURSOR)
+    {
+      // apply relative changes to last position to move cursor
+      sx = last_sx + sx;
+      sy = last_sy + sy;
+    }
+    else if (mode != TEXT_SETCURSOR)
     {
       sx = last_sx;
       sy = last_sy;
@@ -16576,6 +16583,16 @@ static int DrawLevelText(int sx, int sy, char letter, int mode)
       StartTextInput(SX + sx * ed_tilesize, SY + sy * ed_tilesize, ed_tilesize, ed_tilesize);
       last_sx = sx;
       last_sy = sy;
+      break;
+
+    case TEXT_MOVECURSOR:
+      if (IN_LEV_FIELD(sx + level_xpos, sy + level_ypos))
+      {
+	if (sx >= start_sx && sy == last_sy)
+	  DrawLevelText(sx, sy, 0, TEXT_SETCURSOR);	// move cursor in same line
+	else
+	  DrawLevelText(sx, sy, 0, TEXT_INIT);		// start with new line
+      }
       break;
 
     case TEXT_WRITECHAR:
@@ -18400,6 +18417,14 @@ void HandleLevelEditorKeyInput(Key key)
       DrawLevelText(0, 0, 0, TEXT_NEWLINE);
     else if (key == KSYM_Escape)
       DrawLevelText(0, 0, 0, TEXT_END);
+    else if (key == KSYM_Left)
+      DrawLevelText(-1, 0, 0, TEXT_MOVECURSOR);
+    else if (key == KSYM_Right)
+      DrawLevelText(+1, 0, 0, TEXT_MOVECURSOR);
+    else if (key == KSYM_Up)
+      DrawLevelText(0, -1, 0, TEXT_MOVECURSOR);
+    else if (key == KSYM_Down)
+      DrawLevelText(0, +1, 0, TEXT_MOVECURSOR);
 
     return;
   }
