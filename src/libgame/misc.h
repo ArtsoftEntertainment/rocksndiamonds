@@ -50,10 +50,6 @@
 #define TEXT_ENCODING_ASCII		1
 #define TEXT_ENCODING_UTF_8		2
 
-// values for general file handling stuff
-#define MAX_FILENAME_LEN		256
-#define MAX_LINE_LEN			1024
-
 // values for general username handling stuff
 #define MAX_USERNAME_LEN		1024
 

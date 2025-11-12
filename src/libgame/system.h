@@ -554,6 +554,10 @@
 #define CURSOR_NONE			1
 #define CURSOR_PLAYFIELD		2
 
+// values for general file and line handling stuff
+#define MAX_FILENAME_LEN		256
+#define MAX_LINE_LEN			1024
+
 // fundamental game speed values
 #define ONE_SECOND_DELAY		1000	// delay value for one second
 #define MENU_FRAME_DELAY		20	// frame delay in milliseconds
