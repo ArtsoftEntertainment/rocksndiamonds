@@ -189,6 +189,8 @@ static boolean SetRequest_ApiAddScore(struct HttpRequest *request, void *data_ra
   char *levelset_author     = getEscapedJSON(leveldir_current->author);
   char *level_name          = getEscapedJSON(level.name);
   char *level_author        = getEscapedJSON(level.author);
+  char *level_namespace     = getEscapedJSON(levelobj.namespace);
+  char *level_identcode     = getEscapedJSON(levelobj.identcode);
   char *player_name         = getEscapedJSON(player_name_raw);
   char *player_uuid         = getEscapedJSON(player_uuid_raw);
 
@@ -206,6 +208,8 @@ static boolean SetRequest_ApiAddScore(struct HttpRequest *request, void *data_ra
 	   "  \"level_nr\":             \"%d\",\n"
 	   "  \"level_name\":           \"%s\",\n"
 	   "  \"level_author\":         \"%s\",\n"
+	   "  \"level_namespace\":      \"%s\",\n"
+	   "  \"level_identcode\":      \"%s\",\n"
 	   "  \"use_step_counter\":     \"%d\",\n"
 	   "  \"rate_time_over_score\": \"%d\",\n"
 	   "  \"player_name\":          \"%s\",\n"
@@ -228,6 +232,8 @@ static boolean SetRequest_ApiAddScore(struct HttpRequest *request, void *data_ra
 	   level_nr,
 	   level_name,
 	   level_author,
+	   level_namespace,
+	   level_identcode,
 	   level.use_step_counter,
 	   level.rate_time_over_score,
 	   player_name,
@@ -245,6 +251,8 @@ static boolean SetRequest_ApiAddScore(struct HttpRequest *request, void *data_ra
   checked_free(levelset_author);
   checked_free(level_name);
   checked_free(level_author);
+  checked_free(level_namespace);
+  checked_free(level_identcode);
   checked_free(player_name);
   checked_free(player_uuid);
 
@@ -437,6 +445,8 @@ static boolean SetRequest_ApiGetScore(struct HttpRequest *request, void *data_ra
 
   char *levelset_identifier = getEscapedJSON(leveldir_current->identifier);
   char *levelset_name       = getEscapedJSON(leveldir_current->name);
+  char *level_namespace     = getEscapedJSON(levelobj.namespace);
+  char *level_identcode     = getEscapedJSON(levelobj.identcode);
 
   snprintf(request->body, MAX_HTTP_BODY_SIZE,
 	   "{\n"
@@ -445,17 +455,23 @@ static boolean SetRequest_ApiGetScore(struct HttpRequest *request, void *data_ra
 	   "  \"game_platform\":        \"%s\",\n"
 	   "  \"levelset_identifier\":  \"%s\",\n"
 	   "  \"levelset_name\":        \"%s\",\n"
-	   "  \"level_nr\":             \"%d\"\n"
+	   "  \"level_nr\":             \"%d\",\n"
+	   "  \"level_namespace\":      \"%s\",\n"
+	   "  \"level_identcode\":      \"%s\"\n"
 	   "}\n",
 	   getPasswordJSON(setup.api_server_password),
 	   getProgramRealVersionString(),
 	   getProgramPlatformString(),
 	   levelset_identifier,
 	   levelset_name,
-	   level_nr);
+	   level_nr,
+	   level_namespace,
+	   level_identcode);
 
   checked_free(levelset_identifier);
   checked_free(levelset_name);
+  checked_free(level_namespace);
+  checked_free(level_identcode);
 
   ConvertHttpRequestBodyToServerEncoding(request);
 
