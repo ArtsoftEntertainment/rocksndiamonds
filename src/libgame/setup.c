@@ -1590,16 +1590,13 @@ static void SaveUserLevelInfo(void);
 
 void InitUserLevelDirectory(char *level_subdir)
 {
-  if (!directoryExists(getUserLevelDir(level_subdir)))
+  createDirectoryPath(getUserLevelDir(NULL), "main user level");
+
+  if (!directoryExists(getUserLevelDir(level_subdir)) && setup.internal.create_user_levelset)
   {
-    createDirectoryPath(getUserLevelDir(NULL), "main user level");
+    createDirectory(getUserLevelDir(level_subdir), "user level");
 
-    if (setup.internal.create_user_levelset)
-    {
-      createDirectory(getUserLevelDir(level_subdir), "user level");
-
-      SaveUserLevelInfo();
-    }
+    SaveUserLevelInfo();
   }
 }
 
