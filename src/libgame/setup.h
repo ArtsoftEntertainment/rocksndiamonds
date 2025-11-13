@@ -353,6 +353,8 @@ char *getNewUserLevelSubdir(void);
 char *getTapeDir(char *);
 
 void createDirectory(char *, char *);
+void createDirectoryPath(char *, char *);
+
 void InitMainUserDataDirectory(void);
 void InitUserDataDirectory(void);
 

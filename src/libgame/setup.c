@@ -2137,6 +2137,39 @@ void createDirectory(char *dir, char *text)
     Warn("cannot create %s directory '%s': %s", text, dir, strerror(errno));
 }
 
+void createDirectoryPath(char *dir, char *text)
+{
+  if (directoryExists(dir))
+    return;
+
+  char *dir_copy = getStringCopy(dir);
+  char *dir_ptr = dir_copy;
+
+  // skip checking for leading "/" (would result in empty directory string)
+  if (*dir_ptr == '/')
+    dir_ptr++;
+
+  // create all intermediate (parent) directories of the final directory
+  while (*dir_ptr)
+  {
+    if (*dir_ptr == '/')
+    {
+      *dir_ptr = '\0';		// temporarily terminate directory string at path separator
+
+      createDirectory(dir_copy, text);
+
+      *dir_ptr = '/';		// restore directory string
+    }
+
+    dir_ptr++;
+  }
+
+  // create the final directory
+  createDirectory(dir_copy, text);
+
+  checked_free(dir_copy);
+}
+
 void InitMainUserDataDirectory(void)
 {
   createDirectory(getMainUserGameDataDir(), "main user data");
