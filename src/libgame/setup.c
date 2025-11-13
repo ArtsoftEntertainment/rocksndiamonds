@@ -1605,8 +1605,7 @@ void InitUserLevelDirectory(char *level_subdir)
 
 void InitNetworkLevelDirectory(char *level_subdir)
 {
-  if (!directoryExists(getNetworkLevelDir(level_subdir)))
-    createDirectoryPath(getNetworkLevelDir(level_subdir), "network level");
+  createDirectoryPath(getNetworkLevelDir(level_subdir), "network level");
 }
 
 void InitLevelSetupDirectory(char *level_subdir)
