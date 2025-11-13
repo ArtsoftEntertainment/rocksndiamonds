@@ -115,6 +115,48 @@ static char *getTreeBacklinkText(int type)
 // file functions
 // ----------------------------------------------------------------------------
 
+static boolean isValidNamespaceString(char *subdir)
+{
+  const int max_subdir_len = 32;
+  char *s = subdir;
+
+  if (s == NULL)
+    return FALSE;
+
+  if (strlen(s) > max_subdir_len)
+    return FALSE;
+
+  while (*s)
+  {
+    boolean valid = ((*s >= 'a' && *s <= 'z') ||
+		     (*s >= 'A' && *s <= 'Z') ||
+		     (*s >= '0' && *s <= '9'));
+    if (!valid)
+      return FALSE;
+
+    s++;
+  }
+
+  return TRUE;
+}
+
+static boolean hasValidNamespaceInfo(struct LevelObjectInfo *obj)
+{
+  if (strEqual(obj->namespace, ""))
+    return FALSE;
+
+  if (strlen(obj->identcode) < 3)
+    return FALSE;
+
+  if (!isValidNamespaceString(obj->namespace))
+    return FALSE;
+
+  if (!isValidNamespaceString(obj->identcode))
+    return FALSE;
+
+  return TRUE;
+}
+
 static void WarnUsingFallback(char *filename)
 {
   if (getHashEntry(missing_file_hash, filename) == NULL)
@@ -145,13 +187,30 @@ static char *getCacheDir(void)
   return cache_dir;
 }
 
+static char *getLevelNamespaceSubdir(struct LevelObjectInfo *obj)
+{
+  static char *level_namespace_subdir = NULL;
+  char subdir[MAX_FILENAME_LEN];
+
+  sprintf(subdir, "%c%s%c", obj->identcode[0], STRING_PATH_SEPARATOR, obj->identcode[1]);
+
+  checked_free(level_namespace_subdir);
+
+  level_namespace_subdir = getPath3(NAMESPACES_DIRECTORY, obj->namespace, subdir);
+
+  return level_namespace_subdir;
+}
+
 static char *getPathWithLevelSubdir(char *path, char *level_subdir)
 {
   static char *path_with_level_subdir = NULL;
 
   checked_free(path_with_level_subdir);
 
-  path_with_level_subdir = getPath2(path, level_subdir);
+  if (hasValidNamespaceInfo(&levelobj))
+    path_with_level_subdir = getPath2(path, getLevelNamespaceSubdir(&levelobj));
+  else
+    path_with_level_subdir = getPath2(path, level_subdir);
 
   return path_with_level_subdir;
 }
@@ -188,7 +247,10 @@ static char *getTapeSubdir(int nr)
 {
   static char tape_subdir[MAX_FILENAME_LEN];
 
-  sprintf(tape_subdir, "%03d", nr);
+  if (hasValidNamespaceInfo(&levelobj))
+    sprintf(tape_subdir, "%s", levelobj.identcode);
+  else
+    sprintf(tape_subdir, "%03d", nr);
 
   return tape_subdir;
 }
@@ -306,6 +368,7 @@ char *getNetworkLevelDir(char *level_subdir)
 
   checked_free(network_level_dir);
 
+  // (do not use level namespace sub-directories for network levels)
   if (level_subdir != NULL)
     network_level_dir = getPath3(data_dir, networklevel_subdir, level_subdir);
   else
@@ -666,7 +729,11 @@ char *getTapeFilename(int nr)
 
   checked_free(filename);
 
-  sprintf(basename, "%03d.%s", nr, TAPEFILE_EXTENSION);
+  if (hasValidNamespaceInfo(&levelobj))
+    sprintf(basename, "%s.%s", levelobj.identcode, TAPEFILE_EXTENSION);
+  else
+    sprintf(basename, "%03d.%s", nr, TAPEFILE_EXTENSION);
+
   filename = getPath2(getTapeDir(leveldir_current->subdir), basename);
 
   return filename;
@@ -733,7 +800,10 @@ char *getScoreFilename(int nr)
 
   checked_free(filename);
 
-  sprintf(basename, "%03d.%s", nr, SCOREFILE_EXTENSION);
+  if (hasValidNamespaceInfo(&levelobj))
+    sprintf(basename, "%s.%s", levelobj.identcode, SCOREFILE_EXTENSION);
+  else
+    sprintf(basename, "%03d.%s", nr, SCOREFILE_EXTENSION);
 
   // used instead of "leveldir_current->subdir" (for network games)
   filename = getPath2(getScoreDir(levelset.identifier), basename);
@@ -748,7 +818,10 @@ char *getScoreCacheFilename(int nr)
 
   checked_free(filename);
 
-  sprintf(basename, "%03d.%s", nr, SCOREFILE_EXTENSION);
+  if (hasValidNamespaceInfo(&levelobj))
+    sprintf(basename, "%s.%s", levelobj.identcode, SCOREFILE_EXTENSION);
+  else
+    sprintf(basename, "%03d.%s", nr, SCOREFILE_EXTENSION);
 
   // used instead of "leveldir_current->subdir" (for network games)
   filename = getPath2(getScoreCacheDir(levelset.identifier), basename);

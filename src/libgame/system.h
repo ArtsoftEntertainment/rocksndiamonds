@@ -715,6 +715,7 @@
 #define NETWORK_DIRECTORY		"network"
 #define USERS_DIRECTORY			"users"
 #define PERSISTENT_DIRECTORY		"/persistent"
+#define NAMESPACES_DIRECTORY		"NAMESPACES"
 
 #define GFX_CLASSIC_SUBDIR		"gfx_classic"
 #define SND_CLASSIC_SUBDIR		"snd_classic"
