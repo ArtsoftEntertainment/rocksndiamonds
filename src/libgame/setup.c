@@ -145,23 +145,27 @@ static char *getCacheDir(void)
   return cache_dir;
 }
 
+static char *getPathWithLevelSubdir(char *path, char *level_subdir)
+{
+  static char *path_with_level_subdir = NULL;
+
+  checked_free(path_with_level_subdir);
+
+  path_with_level_subdir = getPath2(path, level_subdir);
+
+  return path_with_level_subdir;
+}
+
 static char *getScoreDir(char *level_subdir)
 {
   static char *score_dir = NULL;
-  static char *score_level_dir = NULL;
   char *score_subdir = SCORES_DIRECTORY;
 
   if (score_dir == NULL)
     score_dir = getPath2(getMainUserGameDataDir(), score_subdir);
 
   if (level_subdir != NULL)
-  {
-    checked_free(score_level_dir);
-
-    score_level_dir = getPath2(score_dir, level_subdir);
-
-    return score_level_dir;
-  }
+    return getPathWithLevelSubdir(score_dir, level_subdir);
 
   return score_dir;
 }
@@ -169,20 +173,13 @@ static char *getScoreDir(char *level_subdir)
 static char *getScoreCacheDir(char *level_subdir)
 {
   static char *score_dir = NULL;
-  static char *score_level_dir = NULL;
   char *score_subdir = SCORES_DIRECTORY;
 
   if (score_dir == NULL)
     score_dir = getPath2(getCacheDir(), score_subdir);
 
   if (level_subdir != NULL)
-  {
-    checked_free(score_level_dir);
-
-    score_level_dir = getPath2(score_dir, level_subdir);
-
-    return score_level_dir;
-  }
+    return getPathWithLevelSubdir(score_dir, level_subdir);
 
   return score_dir;
 }
@@ -347,10 +344,10 @@ char *getTapeDir(char *level_subdir)
 
   checked_free(tape_dir);
 
+  tape_dir = getPath2(data_dir, tape_subdir);
+
   if (level_subdir != NULL)
-    tape_dir = getPath3(data_dir, tape_subdir, level_subdir);
-  else
-    tape_dir = getPath2(data_dir, tape_subdir);
+    return getPathWithLevelSubdir(tape_dir, level_subdir);
 
   return tape_dir;
 }
