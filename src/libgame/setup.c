@@ -1560,9 +1560,7 @@ void InitTapeDirectory(char *level_subdir)
 {
   boolean new_tape_dir = !directoryExists(getTapeDir(level_subdir));
 
-  createDirectory(getUserGameDataDir(), "user data");
-  createDirectory(getTapeDir(NULL), "main tape");
-  createDirectory(getTapeDir(level_subdir), "level tape");
+  createDirectoryPath(getTapeDir(level_subdir), "tape");
 
   if (new_tape_dir)
     MarkTapeDirectoryUploadsAsComplete(level_subdir);
@@ -1570,31 +1568,22 @@ void InitTapeDirectory(char *level_subdir)
 
 void InitScoreDirectory(char *level_subdir)
 {
-  createDirectory(getMainUserGameDataDir(), "main user data");
-  createDirectory(getScoreDir(NULL), "main score");
-  createDirectory(getScoreDir(level_subdir), "level score");
+  createDirectoryPath(getScoreDir(level_subdir), "score");
 }
 
 void InitScoreCacheDirectory(char *level_subdir)
 {
-  createDirectory(getMainUserGameDataDir(), "main user data");
-  createDirectory(getCacheDir(), "cache data");
-  createDirectory(getScoreCacheDir(NULL), "main score");
-  createDirectory(getScoreCacheDir(level_subdir), "level score");
+  createDirectoryPath(getScoreCacheDir(level_subdir), "score cache");
 }
 
 void InitScoreTapeDirectory(char *level_subdir, int nr)
 {
-  InitScoreDirectory(level_subdir);
-
-  createDirectory(getScoreTapeDir(level_subdir, nr), "score tape");
+  createDirectoryPath(getScoreTapeDir(level_subdir, nr), "score tape");
 }
 
 void InitScoreCacheTapeDirectory(char *level_subdir, int nr)
 {
-  InitScoreCacheDirectory(level_subdir);
-
-  createDirectory(getScoreCacheTapeDir(level_subdir, nr), "score tape");
+  createDirectoryPath(getScoreCacheTapeDir(level_subdir, nr), "score cache tape");
 }
 
 static void SaveUserLevelInfo(void);
@@ -1603,8 +1592,7 @@ void InitUserLevelDirectory(char *level_subdir)
 {
   if (!directoryExists(getUserLevelDir(level_subdir)))
   {
-    createDirectory(getMainUserGameDataDir(), "main user data");
-    createDirectory(getUserLevelDir(NULL), "main user level");
+    createDirectoryPath(getUserLevelDir(NULL), "main user level");
 
     if (setup.internal.create_user_levelset)
     {
@@ -1618,25 +1606,17 @@ void InitUserLevelDirectory(char *level_subdir)
 void InitNetworkLevelDirectory(char *level_subdir)
 {
   if (!directoryExists(getNetworkLevelDir(level_subdir)))
-  {
-    createDirectory(getMainUserGameDataDir(), "main user data");
-    createDirectory(getNetworkDir(), "network data");
-    createDirectory(getNetworkLevelDir(NULL), "main network level");
-    createDirectory(getNetworkLevelDir(level_subdir), "network level");
-  }
+    createDirectoryPath(getNetworkLevelDir(level_subdir), "network level");
 }
 
 void InitLevelSetupDirectory(char *level_subdir)
 {
-  createDirectory(getUserGameDataDir(), "user data");
-  createDirectory(getLevelSetupDir(NULL), "main level setup");
-  createDirectory(getLevelSetupDir(level_subdir), "level setup");
+  createDirectoryPath(getLevelSetupDir(level_subdir), "level setup");
 }
 
 static void InitCacheDirectory(void)
 {
-  createDirectory(getMainUserGameDataDir(), "main user data");
-  createDirectory(getCacheDir(), "cache data");
+  createDirectoryPath(getCacheDir(), "cache");
 }
 
 
@@ -2180,10 +2160,7 @@ void InitUserDataDirectory(void)
   createDirectory(getMainUserGameDataDir(), "main user data");
 
   if (user.nr != 0)
-  {
-    createDirectory(getUserDir(-1), "users");
-    createDirectory(getUserDir(user.nr), "user data");
-  }
+    createDirectoryPath(getUserDir(user.nr), "user data");
 }
 
 void fprintFileHeader(FILE *file, char *basename)
