@@ -184,15 +184,22 @@ static char *getScoreCacheDir(char *level_subdir)
   return score_dir;
 }
 
+static char *getTapeSubdir(int nr)
+{
+  static char tape_subdir[MAX_FILENAME_LEN];
+
+  sprintf(tape_subdir, "%03d", nr);
+
+  return tape_subdir;
+}
+
 static char *getScoreTapeDir(char *level_subdir, int nr)
 {
   static char *score_tape_dir = NULL;
-  char tape_subdir[MAX_FILENAME_LEN];
 
   checked_free(score_tape_dir);
 
-  sprintf(tape_subdir, "%03d", nr);
-  score_tape_dir = getPath2(getScoreDir(level_subdir), tape_subdir);
+  score_tape_dir = getPath2(getScoreDir(level_subdir), getTapeSubdir(nr));
 
   return score_tape_dir;
 }
@@ -200,12 +207,10 @@ static char *getScoreTapeDir(char *level_subdir, int nr)
 static char *getScoreCacheTapeDir(char *level_subdir, int nr)
 {
   static char *score_cache_tape_dir = NULL;
-  char tape_subdir[MAX_FILENAME_LEN];
 
   checked_free(score_cache_tape_dir);
 
-  sprintf(tape_subdir, "%03d", nr);
-  score_cache_tape_dir = getPath2(getScoreCacheDir(level_subdir), tape_subdir);
+  score_cache_tape_dir = getPath2(getScoreCacheDir(level_subdir), getTapeSubdir(nr));
 
   return score_cache_tape_dir;
 }
