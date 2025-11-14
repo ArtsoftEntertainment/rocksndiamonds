@@ -1529,7 +1529,7 @@ static int HandleDropFileEvent(char *filename)
     return TREE_TYPE_UNDEFINED;
   }
 
-  if (tree_type == TREE_TYPE_LEVEL_DIR &&
+  if (tree_type == TREE_TYPE_LEVELSET_DIR &&
       game_status == GAME_MODE_LEVELS &&
       leveldir_current->node_parent != NULL)
   {
@@ -1552,7 +1552,7 @@ static int HandleDropFileEvent(char *filename)
     char message[100];
 
     sprintf(message, "%s set already exists! Replace with new set?",
-            (tree_type == TREE_TYPE_LEVEL_DIR ? "Level" : "Artwork"));
+            (tree_type == TREE_TYPE_LEVELSET_DIR ? "Level" : "Artwork"));
 
     // ask if level or artwork set directory should be replaced (and fail if not)
     if (!Request(message, REQ_ASK))
@@ -1691,7 +1691,7 @@ void HandleDropEvent(Event *event)
     {
       int tree_type = HandleDropFileEvent(event->drop.file);
 
-      if (tree_type == TREE_TYPE_LEVEL_DIR)
+      if (tree_type == TREE_TYPE_LEVELSET_DIR)
 	num_level_sets_succeeded++;
       else if (tree_type == TREE_TYPE_GRAPHICS_DIR ||
 	       tree_type == TREE_TYPE_SOUNDS_DIR ||

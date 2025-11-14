@@ -5501,7 +5501,7 @@ static void drawChooseTreeText(TreeInfo *ti, int y, boolean active)
 static void drawChooseTreeHeadExt(int type, char *title_string)
 {
   int y = (type == TREE_TYPE_SCORE_ENTRY ||
-	   type == TREE_TYPE_LEVEL_DIR ||
+	   type == TREE_TYPE_LEVELSET_DIR ||
 	   type == TREE_TYPE_LEVEL_NR ? MENU_TITLE1_YPOS : MENU_TITLE_YPOS);
 
   DrawTextSCentered(y, FONT_TITLE_1, title_string);
@@ -5566,7 +5566,7 @@ static void drawChooseTreeInfo(TreeInfo *ti)
     DrawTextFCentered(ypos, font_nr, "HighScores of Level %d",
 		      scores.last_level_nr);
 
-  if (ti->type != TREE_TYPE_LEVEL_DIR)
+  if (ti->type != TREE_TYPE_LEVELSET_DIR)
     return;
 
   TreeInfo *node_first = getTreeInfoFirstGroupEntry(ti);
@@ -5580,7 +5580,7 @@ static void drawChooseTreeInfo(TreeInfo *ti)
   else if (node->level_group)
     DrawTextFCentered(ypos, font_nr, "enter \"%s\"",
 		      node->name);
-  else if (ti->type == TREE_TYPE_LEVEL_DIR)
+  else if (ti->type == TREE_TYPE_LEVELSET_DIR)
     DrawTextFCentered(ypos, font_nr, "%3d %s (%s)",
 		      node->levels, (node->levels > 1 ? "levels" : "level"),
 		      node->class_desc);
@@ -6001,7 +6001,7 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 
 	*ti_ptr = node_cursor;
 
-	if (ti->type == TREE_TYPE_LEVEL_DIR)
+	if (ti->type == TREE_TYPE_LEVELSET_DIR)
 	{
 	  LoadLevelSetup_SeriesInfo();
 
@@ -11954,7 +11954,7 @@ void DrawScreenBeforeAddingSet(int tree_type)
   int ypos_2 = 150;
   char message_1[100];
   char message_2[100];
-  char *set_type_text = (tree_type == TREE_TYPE_LEVEL_DIR ? "level" : "artwork");
+  char *set_type_text = (tree_type == TREE_TYPE_LEVELSET_DIR ? "level" : "artwork");
 
   sprintf(message_1, "Adding new %s set!", set_type_text);
   sprintf(message_2, "Please wait!");
@@ -11981,7 +11981,7 @@ void DrawScreenAfterAddingSet(char *tree_subdir_new, int tree_type)
     return;
 
   if (game_status == GAME_MODE_MAIN &&
-      tree_type == TREE_TYPE_LEVEL_DIR)
+      tree_type == TREE_TYPE_LEVELSET_DIR)
   {
     // when adding new level set in main menu, select it as current level set
 
@@ -11999,7 +11999,7 @@ void DrawScreenAfterAddingSet(char *tree_subdir_new, int tree_type)
     SaveLevelSetup_SeriesInfo();
   }
   else if (game_status == GAME_MODE_LEVELS &&
-	   tree_type == TREE_TYPE_LEVEL_DIR)
+	   tree_type == TREE_TYPE_LEVELSET_DIR)
   {
     // when adding new level set in level set menu, set cursor and update screen
 

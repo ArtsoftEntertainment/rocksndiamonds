@@ -96,7 +96,7 @@ char *getTreeInfoText(int type)
   return (type == TREE_TYPE_SCORE_ENTRY  ? getConfigProgramString(TEXT_ID_TITLE_SCORES) :
           type == TREE_TYPE_PLAYER_NAME  ? getConfigProgramString(TEXT_ID_TITLE_NAMES) :
           type == TREE_TYPE_LEVEL_NR     ? getConfigProgramString(TEXT_ID_TITLE_LEVELNR) :
-          type == TREE_TYPE_LEVEL_DIR    ? getConfigProgramString(TEXT_ID_TITLE_LEVELS) :
+          type == TREE_TYPE_LEVELSET_DIR ? getConfigProgramString(TEXT_ID_TITLE_LEVELS) :
           type == TREE_TYPE_GRAPHICS_DIR ? INFOTEXT_GRAPHICS_DIR :
           type == TREE_TYPE_SOUNDS_DIR   ? INFOTEXT_SOUNDS_DIR :
           type == TREE_TYPE_MUSIC_DIR    ? INFOTEXT_MUSIC_DIR :
@@ -106,7 +106,7 @@ char *getTreeInfoText(int type)
 static char *getTreeBacklinkText(int type)
 {
   return (type == TREE_TYPE_SCORE_ENTRY  ? BACKLINK_TEXT_BACK :
-          type == TREE_TYPE_LEVEL_DIR    ? BACKLINK_TEXT_MAIN :
+          type == TREE_TYPE_LEVELSET_DIR ? BACKLINK_TEXT_MAIN :
           BACKLINK_TEXT_SETUP);
 }
 
@@ -3055,7 +3055,7 @@ static void setTreeInfoToDefaults(TreeInfo *ti, int type)
 
   ti->type = type;
 
-  ti->node_top = (ti->type == TREE_TYPE_LEVEL_DIR    ? &leveldir_first :
+  ti->node_top = (ti->type == TREE_TYPE_LEVELSET_DIR ? &leveldir_first :
 		  ti->type == TREE_TYPE_GRAPHICS_DIR ? &artwork.gfx_first :
 		  ti->type == TREE_TYPE_SOUNDS_DIR   ? &artwork.snd_first :
 		  ti->type == TREE_TYPE_MUSIC_DIR    ? &artwork.mus_first :
@@ -3091,7 +3091,7 @@ static void setTreeInfoToDefaults(TreeInfo *ti, int type)
 
   ti->infotext = getStringCopy(getTreeInfoText(ti->type));
 
-  if (ti->type == TREE_TYPE_LEVEL_DIR)
+  if (ti->type == TREE_TYPE_LEVELSET_DIR)
   {
     ti->imported_from = NULL;
     ti->imported_by = NULL;
@@ -3186,7 +3186,7 @@ static void setTreeInfoToDefaultsFromParent(TreeInfo *ti, TreeInfo *parent)
 
   ti->infotext = getStringCopy(parent->infotext);
 
-  if (ti->type == TREE_TYPE_LEVEL_DIR)
+  if (ti->type == TREE_TYPE_LEVELSET_DIR)
   {
     ti->imported_from = getStringCopy(parent->imported_from);
     ti->imported_by = getStringCopy(parent->imported_by);
@@ -3345,7 +3345,7 @@ void freeTreeInfo(TreeInfo *ti)
 
   checked_free(ti->infotext);
 
-  if (ti->type == TREE_TYPE_LEVEL_DIR)
+  if (ti->type == TREE_TYPE_LEVELSET_DIR)
   {
     checked_free(ti->imported_from);
     checked_free(ti->imported_by);
@@ -3845,7 +3845,7 @@ static int CheckZipFileForDirectoryExt(char *zip_filename, char *directory, int 
   zip_file.top_dir_path = NULL;
   zip_file.top_dir_conf_filename = NULL;
 
-  char *conf_basename = (tree_type == TREE_TYPE_LEVEL_DIR ? LEVELINFO_FILENAME :
+  char *conf_basename = (tree_type == TREE_TYPE_LEVELSET_DIR ? LEVELINFO_FILENAME :
 			 ARTWORKINFO_FILENAME(tree_type));
 
   // check if valid configuration filename determined
@@ -3955,7 +3955,7 @@ static void ProcessZipFilesInDirectory(char *directory, int tree_type)
   if ((dir = openDirectory(directory)) == NULL)
   {
     // display error if directory is main "options.graphics_directory" etc.
-    if (tree_type == TREE_TYPE_LEVEL_DIR ||
+    if (tree_type == TREE_TYPE_LEVELSET_DIR ||
 	directory == OPTIONS_ARTWORK_DIRECTORY(tree_type))
       Warn("cannot read directory '%s'", directory);
 
@@ -4037,7 +4037,7 @@ static boolean LoadLevelInfoFromLevelConf(TreeInfo **node_first,
   if (node_parent)
     setTreeInfoToDefaultsFromParent(leveldir_new, node_parent);
   else
-    setTreeInfoToDefaults(leveldir_new, TREE_TYPE_LEVEL_DIR);
+    setTreeInfoToDefaults(leveldir_new, TREE_TYPE_LEVELSET_DIR);
 
   leveldir_new->subdir = getStringCopy(directory_name);
 
@@ -4122,7 +4122,7 @@ static void LoadLevelInfoFromLevelDir(TreeInfo **node_first,
 {
   // ---------- 1st stage: process any level set zip files ----------
 
-  ProcessZipFilesInDirectory(level_directory, TREE_TYPE_LEVEL_DIR);
+  ProcessZipFilesInDirectory(level_directory, TREE_TYPE_LEVELSET_DIR);
 
   // ---------- 2nd stage: check for level set directories ----------
 
@@ -4730,7 +4730,7 @@ static boolean AddTreeSetToTreeInfoExt(TreeInfo *tree_node_old, char *tree_dir,
 {
   if (tree_node_old == NULL)
   {
-    if (type == TREE_TYPE_LEVEL_DIR)
+    if (type == TREE_TYPE_LEVELSET_DIR)
     {
       // get level info tree node of personal user level set
       tree_node_old = getTreeInfoFromIdentifier(leveldir_first, getLoginName());
@@ -4760,7 +4760,7 @@ static boolean AddTreeSetToTreeInfoExt(TreeInfo *tree_node_old, char *tree_dir,
   // override draw deactivation mask (temporarily disable drawing)
   SetDrawDeactivationMask(REDRAW_ALL);
 
-  if (type == TREE_TYPE_LEVEL_DIR)
+  if (type == TREE_TYPE_LEVELSET_DIR)
   {
     // load new level set config and add it next to first user level set
     LoadLevelInfoFromLevelConf(&tree_node_old->next,
@@ -4813,7 +4813,7 @@ void AddTreeSetToTreeInfo(TreeInfo *tree_node, char *tree_dir,
 
 void AddUserLevelSetToLevelInfo(char *levelset_subdir_new)
 {
-  AddTreeSetToTreeInfo(NULL, NULL, levelset_subdir_new, TREE_TYPE_LEVEL_DIR);
+  AddTreeSetToTreeInfo(NULL, NULL, levelset_subdir_new, TREE_TYPE_LEVELSET_DIR);
 }
 
 char *getArtworkIdentifierForUserLevelSet(int type)
@@ -4960,7 +4960,7 @@ boolean CreateUserLevelSet(char *levelset_subdir, char *level_name,
   level_info = newTreeInfo();
 
   // always start with reliable default values
-  setTreeInfoToDefaults(level_info, TREE_TYPE_LEVEL_DIR);
+  setTreeInfoToDefaults(level_info, TREE_TYPE_LEVELSET_DIR);
 
   setString(&level_info->name, level_name);
   setString(&level_info->author, level_author);

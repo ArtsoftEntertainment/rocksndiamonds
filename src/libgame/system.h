@@ -858,7 +858,7 @@
 #define TREE_TYPE_GRAPHICS_DIR		ARTWORK_TYPE_GRAPHICS
 #define TREE_TYPE_SOUNDS_DIR		ARTWORK_TYPE_SOUNDS
 #define TREE_TYPE_MUSIC_DIR		ARTWORK_TYPE_MUSIC
-#define TREE_TYPE_LEVEL_DIR		3
+#define TREE_TYPE_LEVELSET_DIR		3
 #define TREE_TYPE_LEVEL_NR		4
 #define TREE_TYPE_PLAYER_NAME		5
 #define TREE_TYPE_SCORE_ENTRY		6
@@ -869,7 +869,7 @@
 #define TREE_TYPE_IS_DIR(type)		((type) == TREE_TYPE_GRAPHICS_DIR ||	\
 					 (type) == TREE_TYPE_SOUNDS_DIR ||	\
 					 (type) == TREE_TYPE_MUSIC_DIR ||	\
-					 (type) == TREE_TYPE_LEVEL_DIR)
+					 (type) == TREE_TYPE_LEVELSET_DIR)
 
 #define INFOTEXT_UNDEFINED		""
 #define INFOTEXT_GRAPHICS_DIR		"Custom Graphics"
@@ -927,21 +927,21 @@
 #define NUM_TEXT_IDS			22
 
 #define TREE_USERDIR(t)										\
-			((t) == TREE_TYPE_LEVEL_DIR    ? getUserLevelsetDir(NULL) :		\
+			((t) == TREE_TYPE_LEVELSET_DIR ? getUserLevelsetDir(NULL) :		\
 			 (t) == TREE_TYPE_GRAPHICS_DIR ? getUserGraphicsDir() :			\
 			 (t) == TREE_TYPE_SOUNDS_DIR   ? getUserSoundsDir() :			\
 			 (t) == TREE_TYPE_MUSIC_DIR    ? getUserMusicDir() :			\
 			 NULL)
 
 #define TREE_FIRST_NODE_PTR(t)									\
-			((t) == TREE_TYPE_LEVEL_DIR    ? &leveldir_first :			\
+			((t) == TREE_TYPE_LEVELSET_DIR ? &leveldir_first :			\
 			 (t) == TREE_TYPE_GRAPHICS_DIR ? &artwork.gfx_first :			\
 			 (t) == TREE_TYPE_SOUNDS_DIR   ? &artwork.snd_first :			\
 			 (t) == TREE_TYPE_MUSIC_DIR    ? &artwork.mus_first :			\
 			 NULL)
 
 #define TREE_FIRST_NODE(t)									\
-			((t) == TREE_TYPE_LEVEL_DIR    ? leveldir_first :			\
+			((t) == TREE_TYPE_LEVELSET_DIR ? leveldir_first :			\
 			 (t) == TREE_TYPE_GRAPHICS_DIR ? artwork.gfx_first :			\
 			 (t) == TREE_TYPE_SOUNDS_DIR   ? artwork.snd_first :			\
 			 (t) == TREE_TYPE_MUSIC_DIR    ? artwork.mus_first :			\
@@ -1730,7 +1730,7 @@ struct TreeInfo
 
   int type;			// type of tree content
 
-  // fields for "type == TREE_TYPE_LEVEL_DIR"
+  // fields for "type == TREE_TYPE_LEVELSET_DIR"
 
   char *subdir;			// tree info sub-directory basename (may be ".")
   char *fullpath;		// complete path relative to tree base directory
