@@ -201,7 +201,7 @@ static char *getLevelNamespaceSubdir(struct LevelObjectInfo *obj)
   return level_namespace_subdir;
 }
 
-static char *getPathWithLevelSubdir(char *path, char *levelset_subdir)
+static char *getPathWithLevelsetSubdir(char *path, char *levelset_subdir)
 {
   static char *path_with_levelset_subdir = NULL;
 
@@ -224,7 +224,7 @@ static char *getScoreDir(char *levelset_subdir)
     score_dir = getPath2(getMainUserGameDataDir(), score_subdir);
 
   if (levelset_subdir != NULL)
-    return getPathWithLevelSubdir(score_dir, levelset_subdir);
+    return getPathWithLevelsetSubdir(score_dir, levelset_subdir);
 
   return score_dir;
 }
@@ -238,7 +238,7 @@ static char *getScoreCacheDir(char *levelset_subdir)
     score_dir = getPath2(getCacheDir(), score_subdir);
 
   if (levelset_subdir != NULL)
-    return getPathWithLevelSubdir(score_dir, levelset_subdir);
+    return getPathWithLevelsetSubdir(score_dir, levelset_subdir);
 
   return score_dir;
 }
@@ -338,13 +338,13 @@ char *getLevelDirFromTreeInfo(TreeInfo *node)
 
   checked_free(level_dir);
 
-  level_dir = getPath2((node->in_user_dir ? getUserLevelDir(NULL) :
+  level_dir = getPath2((node->in_user_dir ? getUserLevelsetDir(NULL) :
 			options.level_directory), node->fullpath);
 
   return level_dir;
 }
 
-char *getUserLevelDir(char *levelset_subdir)
+char *getUserLevelsetDir(char *levelset_subdir)
 {
   static char *userlevel_dir = NULL;
   char *data_dir = getMainUserGameDataDir();
@@ -382,7 +382,7 @@ char *getCurrentLevelDir(void)
   return getLevelDirFromTreeInfo(leveldir_current);
 }
 
-char *getNewUserLevelSubdir(void)
+char *getNewUserLevelsetSubdir(void)
 {
   static char *new_levelset_subdir = NULL;
   char *subdir_prefix = getLoginName();
@@ -397,7 +397,7 @@ char *getNewUserLevelSubdir(void)
     checked_free(new_levelset_subdir);
     new_levelset_subdir = getStringCat2(subdir_prefix, subdir_suffix);
 
-    if (!directoryExists(getUserLevelDir(new_levelset_subdir)))
+    if (!directoryExists(getUserLevelsetDir(new_levelset_subdir)))
       break;
   }
 
@@ -415,7 +415,7 @@ char *getTapeDir(char *levelset_subdir)
   tape_dir = getPath2(data_dir, tape_subdir);
 
   if (levelset_subdir != NULL)
-    return getPathWithLevelSubdir(tape_dir, levelset_subdir);
+    return getPathWithLevelsetSubdir(tape_dir, levelset_subdir);
 
   return tape_dir;
 }
@@ -1663,11 +1663,11 @@ static void SaveUserLevelInfo(void);
 
 void InitUserLevelDirectory(char *levelset_subdir)
 {
-  createDirectoryPath(getUserLevelDir(NULL), "main user level");
+  createDirectoryPath(getUserLevelsetDir(NULL), "main user level");
 
-  if (!directoryExists(getUserLevelDir(levelset_subdir)) && setup.internal.create_user_levelset)
+  if (!directoryExists(getUserLevelsetDir(levelset_subdir)) && setup.internal.create_user_levelset)
   {
-    createDirectory(getUserLevelDir(levelset_subdir), "user level");
+    createDirectory(getUserLevelsetDir(levelset_subdir), "user level");
 
     SaveUserLevelInfo();
   }
@@ -4217,7 +4217,7 @@ void LoadLevelInfo(void)
   DrawInitTextHead("Loading level series");
 
   LoadLevelInfoFromLevelDir(&leveldir_first, NULL, options.level_directory);
-  LoadLevelInfoFromLevelDir(&leveldir_first, NULL, getUserLevelDir(NULL));
+  LoadLevelInfoFromLevelDir(&leveldir_first, NULL, getUserLevelsetDir(NULL));
 
   leveldir_first = createTopTreeInfoNode(leveldir_first);
 
@@ -4873,7 +4873,7 @@ boolean checkIfCustomArtworkExistsForCurrentLevelSet(void)
 boolean UpdateUserLevelSet(char *levelset_subdir, char *level_name,
 			   char *level_author, int num_levels)
 {
-  char *filename = getPath2(getUserLevelDir(levelset_subdir), LEVELINFO_FILENAME);
+  char *filename = getPath2(getUserLevelsetDir(levelset_subdir), LEVELINFO_FILENAME);
   char *filename_tmp = getStringCat2(filename, ".tmp");
   FILE *file = NULL;
   FILE *file_tmp = NULL;
@@ -4944,9 +4944,9 @@ boolean CreateUserLevelSet(char *levelset_subdir, char *level_name,
   int i;
 
   // create user level sub-directory, if needed
-  createDirectory(getUserLevelDir(levelset_subdir), "user level");
+  createDirectory(getUserLevelsetDir(levelset_subdir), "user level");
 
-  filename = getPath2(getUserLevelDir(levelset_subdir), LEVELINFO_FILENAME);
+  filename = getPath2(getUserLevelsetDir(levelset_subdir), LEVELINFO_FILENAME);
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {
@@ -5426,7 +5426,7 @@ static void checkSeriesInfo(void)
   // check for more levels besides the 'levels' field of 'levelinfo.conf'
 
   level_directory = getPath2((leveldir_current->in_user_dir ?
-			      getUserLevelDir(NULL) :
+			      getUserLevelsetDir(NULL) :
 			      options.level_directory),
 			     leveldir_current->fullpath);
 

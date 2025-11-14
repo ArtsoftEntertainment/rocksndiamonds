@@ -346,10 +346,10 @@ char *getMainUserGameDataDir(void);
 char *getUserGameDataDir(void);
 char *getSetupDir(void);
 char *getLevelDirFromTreeInfo(TreeInfo *);
-char *getUserLevelDir(char *);
+char *getUserLevelsetDir(char *);
 char *getNetworkLevelDir(char *);
 char *getCurrentLevelDir(void);
-char *getNewUserLevelSubdir(void);
+char *getNewUserLevelsetSubdir(void);
 char *getTapeDir(char *);
 
 void createDirectory(char *, char *);

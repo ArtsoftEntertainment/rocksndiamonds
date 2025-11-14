@@ -12238,10 +12238,10 @@ static void DrawLevelConfigLevel(void)
     MapTextInputGadget(i);
 }
 
-static char *getLevelSubdirFromSaveMode(int save_mode)
+static char *getLevelsetSubdirFromSaveMode(int save_mode)
 {
   if (save_mode == LEVELSET_SAVE_MODE_CREATE)
-    return getNewUserLevelSubdir();
+    return getNewUserLevelsetSubdir();
 
   return leveldir_current->subdir;
 }
@@ -12249,7 +12249,7 @@ static char *getLevelSubdirFromSaveMode(int save_mode)
 static void DrawLevelConfigLevelSet_DirectoryInfo(void)
 {
   char *directory_text = "Level set directory:";
-  char *directory_name = getLevelSubdirFromSaveMode(levelset_save_mode);
+  char *directory_name = getLevelsetSubdirFromSaveMode(levelset_save_mode);
   int font1_nr = FONT_TEXT_1;
   int font2_nr = FONT_TEXT_2;
   int font1_height = getFontHeight(font1_nr);
@@ -16878,7 +16878,7 @@ static void DrawAreaElementHighlight(boolean highlighted, boolean highlighted_si
 static void CopyLevelTemplateToUserLevelSet(char *levelset_subdir)
 {
   char *template_filename_old = getLocalLevelTemplateFilename();
-  char *template_filename_new = getPath2(getUserLevelDir(levelset_subdir), LEVELTEMPLATE_FILENAME);
+  char *template_filename_new = getPath2(getUserLevelsetDir(levelset_subdir), LEVELTEMPLATE_FILENAME);
 
   if (copyFile(template_filename_old, template_filename_new) != 0)
     Request("Cannot copy level template!", REQ_CONFIRM);
@@ -17547,7 +17547,7 @@ static void HandleTextbuttonGadgets(struct GadgetInfo *gi)
   }
   else if (type_id == ED_TEXTBUTTON_ID_SAVE_LEVELSET)
   {
-    char *levelset_subdir = getLevelSubdirFromSaveMode(levelset_save_mode);
+    char *levelset_subdir = getLevelsetSubdirFromSaveMode(levelset_save_mode);
 
     if (levelset_save_mode == LEVELSET_SAVE_MODE_UPDATE && leveldir_current->readonly)
     {

@@ -1542,7 +1542,7 @@ static int HandleDropFileEvent(char *filename)
     // use private level directory instead of top-level package level directory
     if (strPrefix(directory, options.level_directory) &&
 	strEqual(leveldir_current->node_parent->fullpath, "."))
-      directory = getUserLevelDir(NULL);
+      directory = getUserLevelsetDir(NULL);
   }
 
   // check if level or artwork set directory already exists in target directory

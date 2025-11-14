@@ -5170,7 +5170,7 @@ static void setTypeNameValues(char *name, struct TextPosInfo *pos,
     {
       if (Request("Create empty level set for the new player?", REQ_ASK))
       {
-	char *levelset_subdir = getNewUserLevelSubdir();
+	char *levelset_subdir = getNewUserLevelsetSubdir();
 
 	if (CreateUserLevelSet(levelset_subdir, name, name, 100, FALSE))
 	{

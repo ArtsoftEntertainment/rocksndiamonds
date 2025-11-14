@@ -927,7 +927,7 @@
 #define NUM_TEXT_IDS			22
 
 #define TREE_USERDIR(t)										\
-			((t) == TREE_TYPE_LEVEL_DIR    ? getUserLevelDir(NULL) :		\
+			((t) == TREE_TYPE_LEVEL_DIR    ? getUserLevelsetDir(NULL) :		\
 			 (t) == TREE_TYPE_GRAPHICS_DIR ? getUserGraphicsDir() :			\
 			 (t) == TREE_TYPE_SOUNDS_DIR   ? getUserSoundsDir() :			\
 			 (t) == TREE_TYPE_MUSIC_DIR    ? getUserMusicDir() :			\
