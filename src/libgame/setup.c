@@ -201,21 +201,21 @@ static char *getLevelNamespaceSubdir(struct LevelObjectInfo *obj)
   return level_namespace_subdir;
 }
 
-static char *getPathWithLevelSubdir(char *path, char *level_subdir)
+static char *getPathWithLevelSubdir(char *path, char *levelset_subdir)
 {
-  static char *path_with_level_subdir = NULL;
+  static char *path_with_levelset_subdir = NULL;
 
-  checked_free(path_with_level_subdir);
+  checked_free(path_with_levelset_subdir);
 
   if (hasValidNamespaceInfo(&levelobj))
-    path_with_level_subdir = getPath2(path, getLevelNamespaceSubdir(&levelobj));
+    path_with_levelset_subdir = getPath2(path, getLevelNamespaceSubdir(&levelobj));
   else
-    path_with_level_subdir = getPath2(path, level_subdir);
+    path_with_levelset_subdir = getPath2(path, levelset_subdir);
 
-  return path_with_level_subdir;
+  return path_with_levelset_subdir;
 }
 
-static char *getScoreDir(char *level_subdir)
+static char *getScoreDir(char *levelset_subdir)
 {
   static char *score_dir = NULL;
   char *score_subdir = SCORES_DIRECTORY;
@@ -223,13 +223,13 @@ static char *getScoreDir(char *level_subdir)
   if (score_dir == NULL)
     score_dir = getPath2(getMainUserGameDataDir(), score_subdir);
 
-  if (level_subdir != NULL)
-    return getPathWithLevelSubdir(score_dir, level_subdir);
+  if (levelset_subdir != NULL)
+    return getPathWithLevelSubdir(score_dir, levelset_subdir);
 
   return score_dir;
 }
 
-static char *getScoreCacheDir(char *level_subdir)
+static char *getScoreCacheDir(char *levelset_subdir)
 {
   static char *score_dir = NULL;
   char *score_subdir = SCORES_DIRECTORY;
@@ -237,8 +237,8 @@ static char *getScoreCacheDir(char *level_subdir)
   if (score_dir == NULL)
     score_dir = getPath2(getCacheDir(), score_subdir);
 
-  if (level_subdir != NULL)
-    return getPathWithLevelSubdir(score_dir, level_subdir);
+  if (levelset_subdir != NULL)
+    return getPathWithLevelSubdir(score_dir, levelset_subdir);
 
   return score_dir;
 }
@@ -255,24 +255,24 @@ static char *getTapeSubdir(int nr)
   return tape_subdir;
 }
 
-static char *getScoreTapeDir(char *level_subdir, int nr)
+static char *getScoreTapeDir(char *levelset_subdir, int nr)
 {
   static char *score_tape_dir = NULL;
 
   checked_free(score_tape_dir);
 
-  score_tape_dir = getPath2(getScoreDir(level_subdir), getTapeSubdir(nr));
+  score_tape_dir = getPath2(getScoreDir(levelset_subdir), getTapeSubdir(nr));
 
   return score_tape_dir;
 }
 
-static char *getScoreCacheTapeDir(char *level_subdir, int nr)
+static char *getScoreCacheTapeDir(char *levelset_subdir, int nr)
 {
   static char *score_cache_tape_dir = NULL;
 
   checked_free(score_cache_tape_dir);
 
-  score_cache_tape_dir = getPath2(getScoreCacheDir(level_subdir), getTapeSubdir(nr));
+  score_cache_tape_dir = getPath2(getScoreCacheDir(levelset_subdir), getTapeSubdir(nr));
 
   return score_cache_tape_dir;
 }
@@ -303,7 +303,7 @@ static char *getUserDir(int nr)
   return user_dir;
 }
 
-static char *getLevelSetupDir(char *level_subdir)
+static char *getLevelSetupDir(char *levelset_subdir)
 {
   static char *levelsetup_dir = NULL;
   char *data_dir = getUserGameDataDir();
@@ -311,8 +311,8 @@ static char *getLevelSetupDir(char *level_subdir)
 
   checked_free(levelsetup_dir);
 
-  if (level_subdir != NULL)
-    levelsetup_dir = getPath3(data_dir, levelsetup_subdir, level_subdir);
+  if (levelset_subdir != NULL)
+    levelsetup_dir = getPath3(data_dir, levelsetup_subdir, levelset_subdir);
   else
     levelsetup_dir = getPath2(data_dir, levelsetup_subdir);
 
@@ -344,35 +344,35 @@ char *getLevelDirFromTreeInfo(TreeInfo *node)
   return level_dir;
 }
 
-char *getUserLevelDir(char *level_subdir)
+char *getUserLevelDir(char *levelset_subdir)
 {
   static char *userlevel_dir = NULL;
   char *data_dir = getMainUserGameDataDir();
-  char *userlevel_subdir = LEVELS_DIRECTORY;
+  char *user_levelset_subdir = LEVELS_DIRECTORY;
 
   checked_free(userlevel_dir);
 
-  if (level_subdir != NULL)
-    userlevel_dir = getPath3(data_dir, userlevel_subdir, level_subdir);
+  if (levelset_subdir != NULL)
+    userlevel_dir = getPath3(data_dir, user_levelset_subdir, levelset_subdir);
   else
-    userlevel_dir = getPath2(data_dir, userlevel_subdir);
+    userlevel_dir = getPath2(data_dir, user_levelset_subdir);
 
   return userlevel_dir;
 }
 
-char *getNetworkLevelDir(char *level_subdir)
+char *getNetworkLevelDir(char *levelset_subdir)
 {
   static char *network_level_dir = NULL;
   char *data_dir = getNetworkDir();
-  char *networklevel_subdir = LEVELS_DIRECTORY;
+  char *network_levelset_subdir = LEVELS_DIRECTORY;
 
   checked_free(network_level_dir);
 
   // (do not use level namespace sub-directories for network levels)
-  if (level_subdir != NULL)
-    network_level_dir = getPath3(data_dir, networklevel_subdir, level_subdir);
+  if (levelset_subdir != NULL)
+    network_level_dir = getPath3(data_dir, network_levelset_subdir, levelset_subdir);
   else
-    network_level_dir = getPath2(data_dir, networklevel_subdir);
+    network_level_dir = getPath2(data_dir, network_levelset_subdir);
 
   return network_level_dir;
 }
@@ -384,7 +384,7 @@ char *getCurrentLevelDir(void)
 
 char *getNewUserLevelSubdir(void)
 {
-  static char *new_level_subdir = NULL;
+  static char *new_levelset_subdir = NULL;
   char *subdir_prefix = getLoginName();
   char subdir_suffix[10];
   int max_suffix_number = 1000;
@@ -394,17 +394,17 @@ char *getNewUserLevelSubdir(void)
   {
     sprintf(subdir_suffix, "_%d", i);
 
-    checked_free(new_level_subdir);
-    new_level_subdir = getStringCat2(subdir_prefix, subdir_suffix);
+    checked_free(new_levelset_subdir);
+    new_levelset_subdir = getStringCat2(subdir_prefix, subdir_suffix);
 
-    if (!directoryExists(getUserLevelDir(new_level_subdir)))
+    if (!directoryExists(getUserLevelDir(new_levelset_subdir)))
       break;
   }
 
-  return new_level_subdir;
+  return new_levelset_subdir;
 }
 
-char *getTapeDir(char *level_subdir)
+char *getTapeDir(char *levelset_subdir)
 {
   static char *tape_dir = NULL;
   char *data_dir = getUserGameDataDir();
@@ -414,8 +414,8 @@ char *getTapeDir(char *level_subdir)
 
   tape_dir = getPath2(data_dir, tape_subdir);
 
-  if (level_subdir != NULL)
-    return getPathWithLevelSubdir(tape_dir, level_subdir);
+  if (levelset_subdir != NULL)
+    return getPathWithLevelSubdir(tape_dir, levelset_subdir);
 
   return tape_dir;
 }
@@ -1593,27 +1593,27 @@ char *getCustomMusicDirectory_NoConf(void)
   return getCustomMusicDirectoryExt(TRUE);
 }
 
-void MarkTapeDirectoryUploadsAsComplete(char *level_subdir)
+void MarkTapeDirectoryUploadsAsComplete(char *levelset_subdir)
 {
-  char *filename = getPath2(getTapeDir(level_subdir), UPLOADED_FILENAME);
+  char *filename = getPath2(getTapeDir(levelset_subdir), UPLOADED_FILENAME);
 
   touchFile(filename);
 
   checked_free(filename);
 }
 
-void MarkTapeDirectoryUploadsAsIncomplete(char *level_subdir)
+void MarkTapeDirectoryUploadsAsIncomplete(char *levelset_subdir)
 {
-  char *filename = getPath2(getTapeDir(level_subdir), UPLOADED_FILENAME);
+  char *filename = getPath2(getTapeDir(levelset_subdir), UPLOADED_FILENAME);
 
   unlink(filename);
 
   checked_free(filename);
 }
 
-boolean CheckTapeDirectoryUploadsComplete(char *level_subdir)
+boolean CheckTapeDirectoryUploadsComplete(char *levelset_subdir)
 {
-  char *filename = getPath2(getTapeDir(level_subdir), UPLOADED_FILENAME);
+  char *filename = getPath2(getTapeDir(levelset_subdir), UPLOADED_FILENAME);
   boolean success = fileExists(filename);
 
   checked_free(filename);
@@ -1629,58 +1629,58 @@ void InitMissingFileHash(void)
   missing_file_hash = newSetupFileHash();
 }
 
-void InitTapeDirectory(char *level_subdir)
+void InitTapeDirectory(char *levelset_subdir)
 {
-  boolean new_tape_dir = !directoryExists(getTapeDir(level_subdir));
+  boolean new_tape_dir = !directoryExists(getTapeDir(levelset_subdir));
 
-  createDirectoryPath(getTapeDir(level_subdir), "tape");
+  createDirectoryPath(getTapeDir(levelset_subdir), "tape");
 
   if (new_tape_dir)
-    MarkTapeDirectoryUploadsAsComplete(level_subdir);
+    MarkTapeDirectoryUploadsAsComplete(levelset_subdir);
 }
 
-void InitScoreDirectory(char *level_subdir)
+void InitScoreDirectory(char *levelset_subdir)
 {
-  createDirectoryPath(getScoreDir(level_subdir), "score");
+  createDirectoryPath(getScoreDir(levelset_subdir), "score");
 }
 
-void InitScoreCacheDirectory(char *level_subdir)
+void InitScoreCacheDirectory(char *levelset_subdir)
 {
-  createDirectoryPath(getScoreCacheDir(level_subdir), "score cache");
+  createDirectoryPath(getScoreCacheDir(levelset_subdir), "score cache");
 }
 
-void InitScoreTapeDirectory(char *level_subdir, int nr)
+void InitScoreTapeDirectory(char *levelset_subdir, int nr)
 {
-  createDirectoryPath(getScoreTapeDir(level_subdir, nr), "score tape");
+  createDirectoryPath(getScoreTapeDir(levelset_subdir, nr), "score tape");
 }
 
-void InitScoreCacheTapeDirectory(char *level_subdir, int nr)
+void InitScoreCacheTapeDirectory(char *levelset_subdir, int nr)
 {
-  createDirectoryPath(getScoreCacheTapeDir(level_subdir, nr), "score cache tape");
+  createDirectoryPath(getScoreCacheTapeDir(levelset_subdir, nr), "score cache tape");
 }
 
 static void SaveUserLevelInfo(void);
 
-void InitUserLevelDirectory(char *level_subdir)
+void InitUserLevelDirectory(char *levelset_subdir)
 {
   createDirectoryPath(getUserLevelDir(NULL), "main user level");
 
-  if (!directoryExists(getUserLevelDir(level_subdir)) && setup.internal.create_user_levelset)
+  if (!directoryExists(getUserLevelDir(levelset_subdir)) && setup.internal.create_user_levelset)
   {
-    createDirectory(getUserLevelDir(level_subdir), "user level");
+    createDirectory(getUserLevelDir(levelset_subdir), "user level");
 
     SaveUserLevelInfo();
   }
 }
 
-void InitNetworkLevelDirectory(char *level_subdir)
+void InitNetworkLevelDirectory(char *levelset_subdir)
 {
-  createDirectoryPath(getNetworkLevelDir(level_subdir), "network level");
+  createDirectoryPath(getNetworkLevelDir(levelset_subdir), "network level");
 }
 
-void InitLevelSetupDirectory(char *level_subdir)
+void InitLevelSetupDirectory(char *levelset_subdir)
 {
-  createDirectoryPath(getLevelSetupDir(level_subdir), "level setup");
+  createDirectoryPath(getLevelSetupDir(levelset_subdir), "level setup");
 }
 
 static void InitCacheDirectory(void)
@@ -4811,9 +4811,9 @@ void AddTreeSetToTreeInfo(TreeInfo *tree_node, char *tree_dir,
     Fail("internal tree info structure corrupted -- aborting");
 }
 
-void AddUserLevelSetToLevelInfo(char *level_subdir_new)
+void AddUserLevelSetToLevelInfo(char *levelset_subdir_new)
 {
-  AddTreeSetToTreeInfo(NULL, NULL, level_subdir_new, TREE_TYPE_LEVEL_DIR);
+  AddTreeSetToTreeInfo(NULL, NULL, levelset_subdir_new, TREE_TYPE_LEVEL_DIR);
 }
 
 char *getArtworkIdentifierForUserLevelSet(int type)
@@ -4870,17 +4870,17 @@ boolean checkIfCustomArtworkExistsForCurrentLevelSet(void)
 	  !strEqual(music_set,    MUS_CLASSIC_SUBDIR));
 }
 
-boolean UpdateUserLevelSet(char *level_subdir, char *level_name,
+boolean UpdateUserLevelSet(char *levelset_subdir, char *level_name,
 			   char *level_author, int num_levels)
 {
-  char *filename = getPath2(getUserLevelDir(level_subdir), LEVELINFO_FILENAME);
+  char *filename = getPath2(getUserLevelDir(levelset_subdir), LEVELINFO_FILENAME);
   char *filename_tmp = getStringCat2(filename, ".tmp");
   FILE *file = NULL;
   FILE *file_tmp = NULL;
   char line[MAX_LINE_LEN];
   boolean success = FALSE;
   LevelDirTree *leveldir = getTreeInfoFromIdentifier(leveldir_first,
-						     level_subdir);
+						     levelset_subdir);
   // update values in level directory tree
 
   if (level_name != NULL)
@@ -4934,7 +4934,7 @@ boolean UpdateUserLevelSet(char *level_subdir, char *level_name,
   return success;
 }
 
-boolean CreateUserLevelSet(char *level_subdir, char *level_name,
+boolean CreateUserLevelSet(char *levelset_subdir, char *level_name,
 			   char *level_author, int num_levels,
 			   boolean use_artwork_set)
 {
@@ -4944,9 +4944,9 @@ boolean CreateUserLevelSet(char *level_subdir, char *level_name,
   int i;
 
   // create user level sub-directory, if needed
-  createDirectory(getUserLevelDir(level_subdir), "user level");
+  createDirectory(getUserLevelDir(levelset_subdir), "user level");
 
-  filename = getPath2(getUserLevelDir(level_subdir), LEVELINFO_FILENAME);
+  filename = getPath2(getUserLevelDir(levelset_subdir), LEVELINFO_FILENAME);
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {
@@ -5475,7 +5475,7 @@ void LoadLevelSetup_SeriesInfo(void)
 {
   char *filename;
   SetupFileHash *level_setup_hash = NULL;
-  char *level_subdir = leveldir_current->subdir;
+  char *levelset_subdir = leveldir_current->subdir;
   int i;
 
   // always start with reliable default values
@@ -5495,9 +5495,9 @@ void LoadLevelSetup_SeriesInfo(void)
   // ~/.<program>/levelsetup/<level series>/levelsetup.conf
   // --------------------------------------------------------------------------
 
-  level_subdir = leveldir_current->subdir;
+  levelset_subdir = leveldir_current->subdir;
 
-  filename = getPath2(getLevelSetupDir(level_subdir), LEVELSETUP_FILENAME);
+  filename = getPath2(getLevelSetupDir(levelset_subdir), LEVELSETUP_FILENAME);
 
   if ((level_setup_hash = loadSetupFileHash(filename)))
   {
@@ -5574,7 +5574,7 @@ void LoadLevelSetup_SeriesInfo(void)
 void SaveLevelSetup_SeriesInfo(void)
 {
   char *filename;
-  char *level_subdir = leveldir_current->subdir;
+  char *levelset_subdir = leveldir_current->subdir;
   char *level_nr_str = int2str(level_nr, 0);
   char *handicap_level_str = int2str(leveldir_current->handicap_level, 0);
   FILE *file;
@@ -5584,9 +5584,9 @@ void SaveLevelSetup_SeriesInfo(void)
   // ~/.<program>/levelsetup/<level series>/levelsetup.conf
   // --------------------------------------------------------------------------
 
-  InitLevelSetupDirectory(level_subdir);
+  InitLevelSetupDirectory(levelset_subdir);
 
-  filename = getPath2(getLevelSetupDir(level_subdir), LEVELSETUP_FILENAME);
+  filename = getPath2(getLevelSetupDir(levelset_subdir), LEVELSETUP_FILENAME);
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {
