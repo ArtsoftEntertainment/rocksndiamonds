@@ -554,6 +554,10 @@
 #define CURSOR_NONE			1
 #define CURSOR_PLAYFIELD		2
 
+// values for namespace and identification code length
+#define MAX_NAMESPACE_LEN		32
+#define MAX_IDENTCODE_LEN		32
+
 // values for general file and line handling stuff
 #define MAX_FILENAME_LEN		256
 #define MAX_LINE_LEN			1024
@@ -2031,8 +2035,8 @@ struct LevelSetInfo
 
 struct LevelObjectInfo
 {
-  char namespace[MAX_LINE_LEN];
-  char identcode[MAX_LINE_LEN];
+  char namespace[MAX_NAMESPACE_LEN];
+  char identcode[MAX_IDENTCODE_LEN];
 };
 
 struct LevelStats
