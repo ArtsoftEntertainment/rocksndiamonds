@@ -2813,7 +2813,7 @@ static void translate_keyname(Key *keysym, char **x11name, char **name, int mode
     }
 
     if (key == KSYM_UNDEFINED)
-      Warn("getKeyFromKeyName(): not completely implemented");
+      Warn("getKeyFromKeyName(): not completely implemented for key '%s'", *name);
 
     *keysym = key;
   }
