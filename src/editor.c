@@ -16586,7 +16586,7 @@ static int DrawLevelText(int sx, int sy, char letter, int mode)
       break;
 
     case TEXT_MOVECURSOR:
-      if (IN_LEV_FIELD(sx + level_xpos, sy + level_ypos))
+      if (IN_ED_FIELD(sx, sy) && IN_LEV_FIELD(sx + level_xpos, sy + level_ypos))
       {
 	if (sx >= start_sx && sy == last_sy)
 	  DrawLevelText(sx, sy, 0, TEXT_SETCURSOR);	// move cursor in same line
