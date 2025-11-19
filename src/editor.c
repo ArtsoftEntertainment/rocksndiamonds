@@ -16616,7 +16616,7 @@ static int DrawLevelText(int sx, int sy, char letter, int mode)
 	else if (sy + 1 < ed_fieldy && ly + 1 < lev_fieldy)
 	  DrawLevelText(start_sx, sy + 1, 0, TEXT_SETCURSOR);
 	else
-	  DrawLevelText(0, 0, 0, TEXT_END);
+	  DrawLevelText(sx, sy, 0, TEXT_SETCURSOR);		// stay at bottom-right corner
 
 	level.changed = TRUE;
       }
@@ -16635,7 +16635,7 @@ static int DrawLevelText(int sx, int sy, char letter, int mode)
       if (sy + 1 < ed_fieldy && ly + 1 < lev_fieldy)
 	DrawLevelText(start_sx, sy + 1, 0, TEXT_SETCURSOR);
       else
-	DrawLevelText(0, 0, 0, TEXT_END);
+	DrawLevelText(start_sx, sy, 0, TEXT_SETCURSOR);		// stay at bottom line
       break;
 
     case TEXT_END:
