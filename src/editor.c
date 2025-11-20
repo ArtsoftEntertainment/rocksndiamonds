@@ -16543,6 +16543,10 @@ static int DrawLevelText(int sx, int sy, char letter, int mode)
   else
     letter_element = EL_CHAR_ASCII0 + letter;
 
+  // use question mark for unknown keys
+  if (letter_element < EL_CHAR_START || letter_element > EL_CHAR_END)
+    letter_element = EL_CHAR_QUESTION;
+
   if (mode != TEXT_INIT)
   {
     if (!typing)
