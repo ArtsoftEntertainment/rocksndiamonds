@@ -18403,32 +18403,44 @@ static void HandleControlButtons(struct GadgetInfo *gi)
   }
 }
 
-void HandleLevelEditorKeyInput(Key key)
+boolean anyLevelEditorTextTypingActive(void)
 {
+  return (drawing_function == GADGET_ID_TEXT && DrawLevelText(0, 0, 0, TEXT_QUERY_TYPING) == TRUE);
+}
+
+boolean HandleLevelEditorTextTypingKeyInput(Key key)
+{
+  if (!anyLevelEditorTextTypingActive())
+    return FALSE;
+
   char letter = getCharFromKey(key);
 
-  if (drawing_function == GADGET_ID_TEXT && DrawLevelText(0, 0, 0, TEXT_QUERY_TYPING) == TRUE)
-  {
-    if (letter)
-      DrawLevelText(0, 0, letter, TEXT_WRITECHAR);
-    else if (key == KSYM_Delete || key == KSYM_BackSpace)
-      DrawLevelText(0, 0, 0, TEXT_BACKSPACE);
-    else if (key == KSYM_Return)
-      DrawLevelText(0, 0, 0, TEXT_NEWLINE);
-    else if (key == KSYM_Escape)
-      DrawLevelText(0, 0, 0, TEXT_END);
-    else if (key == KSYM_Left)
-      DrawLevelText(-1, 0, 0, TEXT_MOVECURSOR);
-    else if (key == KSYM_Right)
-      DrawLevelText(+1, 0, 0, TEXT_MOVECURSOR);
-    else if (key == KSYM_Up)
-      DrawLevelText(0, -1, 0, TEXT_MOVECURSOR);
-    else if (key == KSYM_Down)
-      DrawLevelText(0, +1, 0, TEXT_MOVECURSOR);
+  if (letter)
+    DrawLevelText(0, 0, letter, TEXT_WRITECHAR);
+  else if (key == KSYM_Delete || key == KSYM_BackSpace)
+    DrawLevelText(0, 0, 0, TEXT_BACKSPACE);
+  else if (key == KSYM_Return)
+    DrawLevelText(0, 0, 0, TEXT_NEWLINE);
+  else if (key == KSYM_Escape)
+    DrawLevelText(0, 0, 0, TEXT_END);
+  else if (key == KSYM_Left)
+    DrawLevelText(-1, 0, 0, TEXT_MOVECURSOR);
+  else if (key == KSYM_Right)
+    DrawLevelText(+1, 0, 0, TEXT_MOVECURSOR);
+  else if (key == KSYM_Up)
+    DrawLevelText(0, -1, 0, TEXT_MOVECURSOR);
+  else if (key == KSYM_Down)
+    DrawLevelText(0, +1, 0, TEXT_MOVECURSOR);
 
+  return TRUE;
+}
+
+void HandleLevelEditorKeyInput(Key key)
+{
+  if (HandleLevelEditorTextTypingKeyInput(key))
     return;
-  }
 
+  char letter = getCharFromKey(key);
   int id = GADGET_ID_NONE;
   int new_element_shift = element_shift;
   int step = ED_ELEMENTLIST_BUTTONS_VERT - 1;

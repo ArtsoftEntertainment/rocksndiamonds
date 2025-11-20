@@ -20,6 +20,9 @@ void CreateLevelEditorGadgets(void);
 void FreeLevelEditorGadgets(void);
 void UnmapLevelEditorGadgets(void);
 void DrawLevelEd(void);
+
+boolean anyLevelEditorTextTypingActive(void);
+boolean HandleLevelEditorTextTypingKeyInput(Key);
 void HandleLevelEditorKeyInput(Key);
 void HandleLevelEditorIdle(void);
 void HandleEditorGadgetInfoText(void *ptr);
