@@ -352,6 +352,9 @@ boolean anyColorPickerGadgetActive(void);
 char *getTextFromActiveTextInputGadget(void);
 char *getTextFromActiveTextAreaGadget(void);
 
+void clearTextFromActiveTextInputGadget(void);
+void clearTextFromActiveTextAreaGadget(void);
+
 void ClickOnGadget(struct GadgetInfo *, int);
 
 boolean HandleGadgets(int, int, int);

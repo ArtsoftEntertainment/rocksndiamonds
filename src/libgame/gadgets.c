@@ -2360,6 +2360,28 @@ char *getTextFromActiveTextAreaGadget(void)
   return last_gi->textarea.value;
 }
 
+void clearTextFromActiveTextInputGadget(void)
+{
+  if (!anyTextInputGadgetActive())
+    return;
+
+  last_gi->textinput.value[0] = '\0';
+  last_gi->textinput.cursor_position = 0;
+
+  DrawGadget(last_gi, DG_PRESSED, last_gi->direct_draw);
+}
+
+void clearTextFromActiveTextAreaGadget(void)
+{
+  if (!anyTextAreaGadgetActive())
+    return;
+
+  last_gi->textarea.value[0] = '\0';
+  setTextAreaCursorPosition(last_gi, 0);
+
+  DrawGadget(last_gi, DG_PRESSED, last_gi->direct_draw);
+}
+
 static boolean insideSelectboxLine(struct GadgetInfo *gi, int mx, int my)
 {
   return (gi != NULL &&

@@ -2190,6 +2190,19 @@ static boolean HandleKeysClipboard(Key key)
 
     return TRUE;
   }
+  else if (key == KSYM_x && text_input_gadgets_active)
+  {
+    // copy gadget text
+    HandleKeysClipboard(KSYM_c);
+
+    // clear gadget text
+    if (anyTextInputGadgetActive())
+      clearTextFromActiveTextInputGadget();
+    else if (anyTextAreaGadgetActive())
+      clearTextFromActiveTextAreaGadget();
+
+    return TRUE;
+  }
 
   return FALSE;
 }
