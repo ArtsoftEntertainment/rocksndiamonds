@@ -2133,7 +2133,24 @@ static boolean HandleKeysClipboard(Key key)
   if (!(GetKeyModState() & (KMOD_Control | KMOD_Meta)))
     return FALSE;
 
-  if (key == KSYM_v)
+  if (key == KSYM_c && text_input_gadgets_active)
+  {
+    char *text = (anyTextInputGadgetActive() ? getTextFromActiveTextInputGadget() :
+		  anyTextAreaGadgetActive()  ? getTextFromActiveTextAreaGadget() :
+		  NULL);
+
+    if (text != NULL && strlen(text) > 0)
+    {
+      char *text_utf8 = getUTF8FromLatin1(text);
+
+      SDL_SetClipboardText(text_utf8);
+
+      checked_free(text_utf8);
+    }
+
+    return TRUE;
+  }
+  else if (key == KSYM_v)
   {
     if (!SDL_HasClipboardText())
     {

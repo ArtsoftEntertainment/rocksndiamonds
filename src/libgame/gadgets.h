@@ -349,6 +349,9 @@ boolean anyScrollbarGadgetActive(void);
 boolean anyTextGadgetActive(void);
 boolean anyColorPickerGadgetActive(void);
 
+char *getTextFromActiveTextInputGadget(void);
+char *getTextFromActiveTextAreaGadget(void);
+
 void ClickOnGadget(struct GadgetInfo *, int);
 
 boolean HandleGadgets(int, int, int);

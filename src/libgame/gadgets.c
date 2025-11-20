@@ -2344,6 +2344,22 @@ boolean anyTextGadgetActive(void)
 	  anySelectboxGadgetActive());
 }
 
+char *getTextFromActiveTextInputGadget(void)
+{
+  if (!anyTextInputGadgetActive())
+    return NULL;
+
+  return last_gi->textinput.value;
+}
+
+char *getTextFromActiveTextAreaGadget(void)
+{
+  if (!anyTextAreaGadgetActive())
+    return NULL;
+
+  return last_gi->textarea.value;
+}
+
 static boolean insideSelectboxLine(struct GadgetInfo *gi, int mx, int my)
 {
   return (gi != NULL &&
