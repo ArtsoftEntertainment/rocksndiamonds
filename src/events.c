@@ -2162,6 +2162,9 @@ static boolean HandleKeysClipboard(Key key)
       if (!success)
 	break;
 
+      if (text_editor_typing_active && anyLevelEditorTextTypingEndReached())
+	break;
+
       ptr++;
     }
 

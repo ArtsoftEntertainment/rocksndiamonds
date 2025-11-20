@@ -16519,6 +16519,7 @@ static void FloodFillWall_MM(int from_sx2, int from_sy2, int fill_element)
 #define TEXT_NEWLINE		5
 #define TEXT_END		6
 #define TEXT_QUERY_TYPING	7
+#define TEXT_END_REACHED	8
 
 static int DrawLevelText(int sx, int sy, char letter, int mode)
 {
@@ -16526,6 +16527,7 @@ static int DrawLevelText(int sx, int sy, char letter, int mode)
   static int start_sx;
   static int last_sx, last_sy;
   static boolean typing = FALSE;
+  static boolean end_reached = FALSE;
   int letter_element;
   int lx = 0, ly = 0;
 
@@ -16580,6 +16582,7 @@ static int DrawLevelText(int sx, int sy, char letter, int mode)
 	DrawLevelText(0, 0, 0, TEXT_END);
 
       typing = TRUE;
+      end_reached = FALSE;
       start_sx = sx;
       last_sx = sx;
       last_sy = sy;
@@ -16601,6 +16604,8 @@ static int DrawLevelText(int sx, int sy, char letter, int mode)
 	  DrawLevelText(sx, sy, 0, TEXT_SETCURSOR);	// move cursor in same line
 	else
 	  DrawLevelText(sx, sy, 0, TEXT_INIT);		// start with new line
+
+	end_reached = FALSE;
       }
       break;
 
@@ -16619,11 +16624,19 @@ static int DrawLevelText(int sx, int sy, char letter, int mode)
       Tile[lx][ly] = letter_element;
 
       if (sx + 1 < ed_fieldx && lx + 1 < lev_fieldx)
+      {
 	DrawLevelText(sx + 1, sy, 0, TEXT_SETCURSOR);
+      }
       else if (sy + 1 < ed_fieldy && ly + 1 < lev_fieldy)
+      {
 	DrawLevelText(start_sx, sy + 1, 0, TEXT_SETCURSOR);
+      }
       else
+      {
 	DrawLevelText(sx, sy, 0, TEXT_SETCURSOR);		// stay at bottom-right corner
+
+	end_reached = TRUE;
+      }
 
       level.changed = TRUE;
       break;
@@ -16639,9 +16652,15 @@ static int DrawLevelText(int sx, int sy, char letter, int mode)
 
     case TEXT_NEWLINE:
       if (sy + 1 < ed_fieldy && ly + 1 < lev_fieldy)
+      {
 	DrawLevelText(start_sx, sy + 1, 0, TEXT_SETCURSOR);
+      }
       else
+      {
 	DrawLevelText(start_sx, sy, 0, TEXT_SETCURSOR);		// stay at bottom line
+
+	end_reached = TRUE;
+      }
       break;
 
     case TEXT_END:
@@ -16652,6 +16671,10 @@ static int DrawLevelText(int sx, int sy, char letter, int mode)
       break;
 
     case TEXT_QUERY_TYPING:
+      break;
+
+    case TEXT_END_REACHED:
+      return end_reached;
       break;
 
     default:
@@ -18412,6 +18435,11 @@ static void HandleControlButtons(struct GadgetInfo *gi)
 boolean anyLevelEditorTextTypingActive(void)
 {
   return (drawing_function == GADGET_ID_TEXT && DrawLevelText(0, 0, 0, TEXT_QUERY_TYPING) == TRUE);
+}
+
+boolean anyLevelEditorTextTypingEndReached(void)
+{
+  return (drawing_function == GADGET_ID_TEXT && DrawLevelText(0, 0, 0, TEXT_END_REACHED) == TRUE);
 }
 
 boolean HandleLevelEditorTextTypingKeyInput(Key key)

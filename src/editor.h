@@ -22,6 +22,7 @@ void UnmapLevelEditorGadgets(void);
 void DrawLevelEd(void);
 
 boolean anyLevelEditorTextTypingActive(void);
+boolean anyLevelEditorTextTypingEndReached(void);
 boolean HandleLevelEditorTextTypingKeyInput(Key);
 void HandleLevelEditorKeyInput(Key);
 void HandleLevelEditorIdle(void);
