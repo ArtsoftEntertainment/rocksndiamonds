@@ -2795,6 +2795,24 @@ static void translate_keyname(Key *keysym, char **x11name, char **name, int mode
 	key = KSYM_a + (Key)(c - 'a');
       else if (c >= '0' && c <= '9')
 	key = KSYM_0 + (Key)(c - '0');
+      else if (c == CHAR_BYTE_UMLAUT_A)
+	key = KSYM_Adiaeresis;
+      else if (c == CHAR_BYTE_UMLAUT_O)
+	key = KSYM_Odiaeresis;
+      else if (c == CHAR_BYTE_UMLAUT_U)
+	key = KSYM_Udiaeresis;
+      else if (c == CHAR_BYTE_UMLAUT_a)
+	key = KSYM_adiaeresis;
+      else if (c == CHAR_BYTE_UMLAUT_o)
+	key = KSYM_odiaeresis;
+      else if (c == CHAR_BYTE_UMLAUT_u)
+	key = KSYM_udiaeresis;
+      else if (c == CHAR_BYTE_SHARP_S)
+	key = KSYM_ssharp;
+      else if (c == CHAR_BYTE_DEGREE)
+	key = KSYM_degree;
+      else if (c == 0x0a)
+	key = KSYM_Return;
     }
 
     if (key == KSYM_UNDEFINED)
