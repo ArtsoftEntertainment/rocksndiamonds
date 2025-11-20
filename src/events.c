@@ -2119,6 +2119,61 @@ boolean HandleKeysDebug(Key key, int key_status)
   return FALSE;
 }
 
+static boolean HandleKeysClipboard(Key key)
+{
+  boolean text_input_gadgets_active = (anyTextInputGadgetActive() ||
+				       anyTextAreaGadgetActive());
+  boolean text_editor_typing_active = anyLevelEditorTextTypingActive();
+
+  // return if no text input gadget active and not typing text elements in level editor
+  if (!text_input_gadgets_active && !text_editor_typing_active)
+    return FALSE;
+
+  // return if neither Ctrl nor Meta/Cmd key pressed
+  if (!(GetKeyModState() & (KMOD_Control | KMOD_Meta)))
+    return FALSE;
+
+  if (key == KSYM_v)
+  {
+    if (!SDL_HasClipboardText())
+    {
+      Request("Clipboard is empty!", REQ_CONFIRM);
+
+      return FALSE;
+    }
+
+    char *text = SDL_GetClipboardText();
+    char *text_latin1 = getLatin1FromUTF8(text);
+    char *ptr = text_latin1;
+
+    while (*ptr)
+    {
+      char name[2] = { *ptr, 0 };
+      Key key_from_clipboard = getKeyFromKeyName(name);
+
+      if (key_from_clipboard == KSYM_UNDEFINED)
+	key_from_clipboard = KSYM_question;
+
+      boolean success =
+	(text_input_gadgets_active ? HandleGadgetsKeyInput(key_from_clipboard) :
+	 text_editor_typing_active ? HandleLevelEditorTextTypingKeyInput(key_from_clipboard) :
+	 FALSE);
+
+      if (!success)
+	break;
+
+      ptr++;
+    }
+
+    checked_free(text_latin1);
+    SDL_free(text);
+
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
 void HandleKey(Key key, int key_status)
 {
   boolean anyTextGadgetActiveOrJustFinished = anyTextGadgetActive();
@@ -2473,6 +2528,9 @@ void HandleKey(Key key, int key_status)
   }
 
   HandleKeysSpecial(key);
+
+  if (HandleKeysClipboard(key))
+    return;		// do not handle already processed keys again
 
   if (HandleGadgetsKeyInput(key))
     return;		// do not handle already processed keys again
