@@ -16547,6 +16547,11 @@ static int DrawLevelText(int sx, int sy, char letter, int mode)
   if (letter_element < EL_CHAR_START || letter_element > EL_CHAR_END)
     letter_element = EL_CHAR_QUESTION;
 
+  boolean letter_is_alpha = ((letter_element >= EL_CHAR_A && letter_element <= EL_CHAR_Z) ||
+			     letter_element == EL_CHAR_AUMLAUT ||
+			     letter_element == EL_CHAR_OUMLAUT ||
+			     letter_element == EL_CHAR_UUMLAUT);
+
   if (mode != TEXT_INIT)
   {
     if (!typing)
@@ -16605,7 +16610,7 @@ static int DrawLevelText(int sx, int sy, char letter, int mode)
 	letter_element = letter_element - EL_CHAR_START + EL_STEEL_CHAR_START;
 
       // if Shift key pressed, change normal to steel characters and vice versa
-      if (GetKeyModState() & KMOD_Shift)
+      if ((GetKeyModState() & KMOD_Shift) && letter_is_alpha)
 	letter_element = (letter_element >= EL_CHAR_START && letter_element <= EL_CHAR_END ?
 			  letter_element - EL_CHAR_START + EL_STEEL_CHAR_START :
 			  letter_element - EL_STEEL_CHAR_START + EL_CHAR_START);
