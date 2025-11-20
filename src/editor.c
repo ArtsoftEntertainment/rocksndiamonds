@@ -16600,30 +16600,27 @@ static int DrawLevelText(int sx, int sy, char letter, int mode)
       break;
 
     case TEXT_WRITECHAR:
-      if (letter_element >= EL_CHAR_START && letter_element <= EL_CHAR_END)
-      {
-	if (new_element1 >= EL_STEEL_CHAR_START &&
-	    new_element1 <= EL_STEEL_CHAR_END)
-	  letter_element = letter_element - EL_CHAR_START + EL_STEEL_CHAR_START;
+      if (new_element1 >= EL_STEEL_CHAR_START &&
+	  new_element1 <= EL_STEEL_CHAR_END)
+	letter_element = letter_element - EL_CHAR_START + EL_STEEL_CHAR_START;
 
-	// if Shift key pressed, change normal to steel characters and vice versa
-	if (GetKeyModState() & KMOD_Shift)
-	  letter_element = (letter_element >= EL_CHAR_START && letter_element <= EL_CHAR_END ?
-			    letter_element - EL_CHAR_START + EL_STEEL_CHAR_START :
-			    letter_element - EL_STEEL_CHAR_START + EL_CHAR_START);
+      // if Shift key pressed, change normal to steel characters and vice versa
+      if (GetKeyModState() & KMOD_Shift)
+	letter_element = (letter_element >= EL_CHAR_START && letter_element <= EL_CHAR_END ?
+			  letter_element - EL_CHAR_START + EL_STEEL_CHAR_START :
+			  letter_element - EL_STEEL_CHAR_START + EL_CHAR_START);
 
-	delete_buffer[sx - start_sx] = Tile[lx][ly];
-	Tile[lx][ly] = letter_element;
+      delete_buffer[sx - start_sx] = Tile[lx][ly];
+      Tile[lx][ly] = letter_element;
 
-	if (sx + 1 < ed_fieldx && lx + 1 < lev_fieldx)
-	  DrawLevelText(sx + 1, sy, 0, TEXT_SETCURSOR);
-	else if (sy + 1 < ed_fieldy && ly + 1 < lev_fieldy)
-	  DrawLevelText(start_sx, sy + 1, 0, TEXT_SETCURSOR);
-	else
-	  DrawLevelText(sx, sy, 0, TEXT_SETCURSOR);		// stay at bottom-right corner
+      if (sx + 1 < ed_fieldx && lx + 1 < lev_fieldx)
+	DrawLevelText(sx + 1, sy, 0, TEXT_SETCURSOR);
+      else if (sy + 1 < ed_fieldy && ly + 1 < lev_fieldy)
+	DrawLevelText(start_sx, sy + 1, 0, TEXT_SETCURSOR);
+      else
+	DrawLevelText(sx, sy, 0, TEXT_SETCURSOR);		// stay at bottom-right corner
 
-	level.changed = TRUE;
-      }
+      level.changed = TRUE;
       break;
 
     case TEXT_BACKSPACE:
