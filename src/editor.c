@@ -15011,6 +15011,14 @@ static void SetElementIntelliDraw(int x, int y, int dx, int dy, int new_element,
 
     new_element = getBeltSwitchElementFromBeltNrAndBeltDir(belt_nr, belt_dir);
   }
+  else if (old_element >= EL_CHAR_START && old_element <= EL_CHAR_END)
+  {
+    new_element = old_element - EL_CHAR_START + EL_STEEL_CHAR_START;
+  }
+  else if (old_element >= EL_STEEL_CHAR_START && old_element <= EL_STEEL_CHAR_END)
+  {
+    new_element = old_element - EL_STEEL_CHAR_START + EL_CHAR_START;
+  }
   else
   {
     static int swappable_elements[][2] =
