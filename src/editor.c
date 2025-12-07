@@ -749,6 +749,7 @@ enum
   GADGET_ID_LEVELCONFIG_LEVEL,
   GADGET_ID_LEVELCONFIG_LEVELSET,
   GADGET_ID_LEVELCONFIG_EDITOR,
+  GADGET_ID_LEVELCONFIG_HELP,
   GADGET_ID_LEVELCONFIG_COLORS,
   GADGET_ID_LEVELCONFIG_ENGINE,
   GADGET_ID_PROPERTIES_INFO,
@@ -1189,6 +1190,7 @@ enum
   ED_TEXTBUTTON_ID_LEVELCONFIG_LEVEL,
   ED_TEXTBUTTON_ID_LEVELCONFIG_LEVELSET,
   ED_TEXTBUTTON_ID_LEVELCONFIG_EDITOR,
+  ED_TEXTBUTTON_ID_LEVELCONFIG_HELP,
   ED_TEXTBUTTON_ID_LEVELCONFIG_COLORS,
   ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE,
   ED_TEXTBUTTON_ID_PROPERTIES_INFO,
@@ -1546,6 +1548,7 @@ enum
 #define ED_MODE_LEVELCONFIG_LEVEL	ED_TEXTBUTTON_ID_LEVELCONFIG_LEVEL
 #define ED_MODE_LEVELCONFIG_LEVELSET	ED_TEXTBUTTON_ID_LEVELCONFIG_LEVELSET
 #define ED_MODE_LEVELCONFIG_EDITOR	ED_TEXTBUTTON_ID_LEVELCONFIG_EDITOR
+#define ED_MODE_LEVELCONFIG_HELP	ED_TEXTBUTTON_ID_LEVELCONFIG_HELP
 #define ED_MODE_LEVELCONFIG_COLORS	ED_TEXTBUTTON_ID_LEVELCONFIG_COLORS
 #define ED_MODE_LEVELCONFIG_ENGINE	ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE
 
@@ -3800,16 +3803,23 @@ static struct TextbuttonInfo
     NULL, NULL, NULL,				"Configure editor settings"
   },
   {
-    ED_TEXTBUTTON_ID_LEVELCONFIG_COLORS,
+    ED_TEXTBUTTON_ID_LEVELCONFIG_HELP,
     -1,						-1,
-    GADGET_ID_LEVELCONFIG_COLORS,		GADGET_ID_LEVELCONFIG_EDITOR,
+    GADGET_ID_LEVELCONFIG_HELP,			GADGET_ID_LEVELCONFIG_EDITOR,
+    8,						"Help",
+    NULL, NULL, NULL,				"Help on level editor key shortcuts"
+  },
+  {
+    ED_TEXTBUTTON_ID_LEVELCONFIG_COLORS,
+    ED_ENGINE_TABS_XPOS(0),			ED_ENGINE_TABS_YPOS(0),
+    GADGET_ID_LEVELCONFIG_COLORS,		GADGET_ID_NONE,
     8,						"Colors",
     NULL, NULL, NULL,				"Configure level colors"
   },
   {
     ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE,
     -1,						-1,
-    GADGET_ID_LEVELCONFIG_ENGINE,		GADGET_ID_LEVELCONFIG_EDITOR,
+    GADGET_ID_LEVELCONFIG_ENGINE,		GADGET_ID_LEVELCONFIG_COLORS,
     8,						"Engine",
     NULL, NULL, NULL,				"Configure game engine settings"
   },
@@ -10037,43 +10047,67 @@ static void CreateColorPickerGadgets(void)
 
 static void PrepareLevelEditorGadgets(void)
 {
-  struct TextbuttonInfo *tbi = &textbutton_info[ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE];
+  boolean has_colors_tab = checkLevelConfigColors();
+  boolean has_engine_tab = checkLevelConfigEngine();
 
-  // adjust position of "engine" tabulator button according to colors / engine settings
-  if (!checkLevelConfigEngine())
+  // adjust positions of tabulator buttons according to optional colors and engine settings
+
+  if (!has_colors_tab && !has_engine_tab)
   {
-    // no engine settings required -- position for "engine" tabulator button does matter
+    // no colors and no engine settings -- nothing to do
     use_2nd_tab_row = FALSE;
+
+    return;
   }
-  else if (!checkLevelConfigColors())
+
+  // colors or engine settings (or both) -- set position for one of the new tabulator buttons
+  int textbutton_id = (has_colors_tab ?
+		       ED_TEXTBUTTON_ID_LEVELCONFIG_COLORS :
+		       ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE);
+  struct TextbuttonInfo *tbi = &textbutton_info[textbutton_id];
+  struct GraphicInfo *gd = &graphic_info[IMG_EDITOR_TABBUTTON];
+  int gadget_distance = ED_GADGET_SMALL_DISTANCE;
+  int border_xsize = gd->border_size + gd->draw_xoffset;
+  int tab_width = tbi->size * getFontWidth(FONT_INPUT_2) + 2 * border_xsize;
+  int tabs_count = 5;
+  int tabs_width = tabs_count * tab_width + (tabs_count - 1) * gadget_distance;
+  int xpos_right = ED_SETTINGS_X(ED_LEVEL_TABS_XPOS(0)) + tabs_width;
+
+  // check if playfield viewport is wide enough for another tab button
+  if (xpos_right < SXSIZE)
   {
-    // no color settings required -- set default position for "engine" tabulator button
     tbi->x = -1;
     tbi->y = -1;
-    tbi->gadget_id_align = GADGET_ID_LEVELCONFIG_EDITOR;
+    tbi->gadget_id_align = GADGET_ID_LEVELCONFIG_HELP;
 
+    // place tab to the right of the "help" tab
     use_2nd_tab_row = FALSE;
   }
   else
   {
-    // color and engine settings required -- set position for "engine" tabulator button
-    struct GraphicInfo *gd = &graphic_info[IMG_EDITOR_TABBUTTON];
-    int gadget_distance = ED_GADGET_SMALL_DISTANCE;
-    int border_xsize = gd->border_size + gd->draw_xoffset;
-    int tab_width = tbi->size * getFontWidth(FONT_INPUT_2) + 2 * border_xsize;
-    int tabs_count = ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE - ED_TEXTBUTTON_ID_LEVELCONFIG_LEVEL + 1;
-    int tabs_width = tabs_count * tab_width + (tabs_count - 1) * gadget_distance;
-    int xpos_right = ED_SETTINGS_X(0) + tabs_width;
+    tbi->x = ED_ENGINE_TABS_XPOS(0);
+    tbi->y = ED_ENGINE_TABS_YPOS(0);
+    tbi->gadget_id_align = GADGET_ID_NONE;
+
+    // place tab in a new, second row of tabs
+    use_2nd_tab_row = TRUE;
+  }
+
+  if (has_colors_tab && has_engine_tab)
+  {
+    // both tabs needed -- continue with position for "engine" tab ("colors" tab already set)
+    tbi = &textbutton_info[ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE];
+
+    tabs_count = 6;
+    tabs_width = tabs_count * tab_width + (tabs_count - 1) * gadget_distance;
+    xpos_right = ED_SETTINGS_X(ED_LEVEL_TABS_XPOS(0)) + tabs_width;
 
     // check if playfield viewport is wide enough for another tab button
-    if (xpos_right < SXSIZE)
+    if (xpos_right < SXSIZE || use_2nd_tab_row)
     {
       tbi->x = -1;
       tbi->y = -1;
       tbi->gadget_id_align = GADGET_ID_LEVELCONFIG_COLORS;
-
-      // place "engine" tab to the right of the "colors" tab
-      use_2nd_tab_row = FALSE;
     }
     else
     {
@@ -10081,7 +10115,7 @@ static void PrepareLevelEditorGadgets(void)
       tbi->y = ED_ENGINE_TABS_YPOS(0);
       tbi->gadget_id_align = GADGET_ID_NONE;
 
-      // place "engine" tab in a new, second row of tabs
+      // place tab in a new, second row of tabs
       use_2nd_tab_row = TRUE;
     }
   }
@@ -12074,10 +12108,11 @@ static int getTabulatorBarWidth(void)
   if (edit_mode == ED_MODE_LEVELCONFIG)
   {
     struct GadgetInfo *gd_gi1 = level_editor_gadget[GADGET_ID_LEVELCONFIG_LEVEL];
-    struct GadgetInfo *gd_gi4 = level_editor_gadget[GADGET_ID_LEVELCONFIG_COLORS];
-    struct GadgetInfo *gd_gi5 = level_editor_gadget[GADGET_ID_LEVELCONFIG_ENGINE];
+    struct GadgetInfo *gd_gi4 = level_editor_gadget[GADGET_ID_LEVELCONFIG_HELP];
+    struct GadgetInfo *gd_gi5 = level_editor_gadget[GADGET_ID_LEVELCONFIG_COLORS];
+    struct GadgetInfo *gd_gi6 = level_editor_gadget[GADGET_ID_LEVELCONFIG_ENGINE];
 
-    return MAX(gd_gi4->x, gd_gi5->x) - gd_gi1->x + gd_gi4->width;
+    return MAX(MAX(gd_gi4->x, gd_gi5->x), gd_gi6->x) - gd_gi1->x + gd_gi4->width;
   }
 
   struct GadgetInfo *gd_gi1 = level_editor_gadget[GADGET_ID_PROPERTIES_INFO];
@@ -12130,8 +12165,8 @@ static void DrawLevelConfigTabulatorGadgets(void)
     ModifyGadget(gi, GDI_ACTIVE, active, GDI_END);
     MapTextbuttonGadget(i);
 
-    if ((i == ED_TEXTBUTTON_ID_LEVELCONFIG_LEVEL) ||
-        (i == ED_TEXTBUTTON_ID_LEVELCONFIG_ENGINE && use_2nd_tab_row))
+    if (textbutton_info[i].x == ED_LEVEL_TABS_XPOS(0) ||
+	textbutton_info[i].x == ED_ENGINE_TABS_XPOS(0))
     {
       // draw little border line below tabulator buttons
       if (tab_color != BLACK_PIXEL)		// black => transparent
@@ -12318,6 +12353,14 @@ static void DrawLevelConfigEditor(void)
 
   // draw textbutton gadgets
   MapTextbuttonGadget(ED_TEXTBUTTON_ID_SAVE_AS_TEMPLATE_2);
+}
+
+static void DrawLevelConfigHelp(void)
+{
+  int xpos = ED_LEVEL_SETTINGS_X(0);
+  int ypos = ED_LEVEL_SETTINGS_Y(0) - getFontHeight(FONT_TEXT_1) - ED_GADGET_LINE_DISTANCE;
+
+  PrintInfoText("No help available yet.", FONT_TEXT_1, xpos, ypos);
 }
 
 static void DrawLevelConfigEngine(void)
@@ -12573,6 +12616,8 @@ static void DrawLevelConfigWindow(void)
     DrawLevelConfigLevelSet();
   else if (edit_mode_levelconfig == ED_MODE_LEVELCONFIG_EDITOR)
     DrawLevelConfigEditor();
+  else if (edit_mode_levelconfig == ED_MODE_LEVELCONFIG_HELP)
+    DrawLevelConfigHelp();
   else if (edit_mode_levelconfig == ED_MODE_LEVELCONFIG_COLORS)
     DrawLevelConfigColors();
   else if (edit_mode_levelconfig == ED_MODE_LEVELCONFIG_ENGINE)
