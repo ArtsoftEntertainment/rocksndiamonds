@@ -1,0 +1,252 @@
+# .font: font.text_2
+# .autowrap: false
+
+# .centered: true
+Keyboard Shortcuts
+# .centered: false
+
+# .font: font.text_3
+Element Palette
+
+# .font: font.text_1
+Scroll one page up:
+# .font: font.text_2
+  Page Up
+# .font: font.text_1
+Scroll one page down:
+# .font: font.text_2
+  Page Down
+# .font: font.text_1
+Scroll element group up:
+# .font: font.text_2
+  Insert
+# .font: font.text_1
+Scroll element group down:
+# .font: font.text_2
+  Delete
+# .font: font.text_1
+Scroll to top
+# .font: font.text_2
+  Home
+# .font: font.text_1
+Scroll to bottom
+# .font: font.text_2
+  End
+
+# .font: font.text_3
+Element Properties
+
+# .font: font.text_1
+Current drawing element:
+# .font: font.text_2
+  P
+# .font: font.text_1
+Drawing element 1:
+# .font: font.text_2
+  1
+# .font: font.text_1
+Drawing element 2:
+# .font: font.text_2
+  2
+# .font: font.text_1
+Drawing element 3:
+# .font: font.text_2
+  3
+
+# .font: font.text_3
+Toolbox / Playfield
+
+# .font: font.text_1
+Draw single items:
+# .font: font.text_2
+  .
+  S
+# .font: font.text_1
+Draw connected items:
+# .font: font.text_2
+  D
+# .font: font.text_1
+Draw lines:
+# .font: font.text_2
+  D
+# .font: font.text_1
+Draw arcs:
+# .font: font.text_2
+  A
+# .font: font.text_1
+Draw rectangles:
+# .font: font.text_2
+  R
+# .font: font.text_1
+Draw filled rectangles:
+# .font: font.text_2
+  Shift-R
+# .font: font.text_1
+Type text:
+# .font: font.text_2
+  T
+# .font: font.text_1
+Fill:
+# .font: font.text_2
+  F
+# .font: font.text_1
+Zoom playfield:
+# .font: font.text_2
+  -
+  0
+  +
+# .font: font.text_1
+Grab brush:
+# .font: font.text_2
+  B
+# .font: font.text_1
+Pick element:
+# .font: font.text_2
+  ,
+  Ctrl-<Left Mouse Button>
+  Ctrl-<Middle Mouse Button>
+  Ctrl-<Right Mouse Button>
+# .font: font.text_1
+Clear playfield:
+# .font: font.text_2
+  Shift-C
+
+# .font: font.text_3
+Undo / Redo (Playfield)
+
+# .font: font.text_1
+Undo:
+# .font: font.text_2
+  U
+  Ctrl-Z
+  Cmd-Z
+# .font: font.text_1
+Redo:
+# .font: font.text_2
+  Shift-U
+  Ctrl-Shift-Z
+  Cmd-Shift-Z
+  Ctrl-Y
+
+# .font: font.text_3
+Brush manipulation
+
+# .font: font.text_1
+Flip brush horizontally:
+# .font: font.text_2
+  x
+# .font: font.text_1
+Flip brush vertically:
+# .font: font.text_2
+  y
+# .font: font.text_1
+Rotate brush clockwise:
+# .font: font.text_2
+  z
+
+# .font: font.text_3
+Toolbox / Editor
+
+# .font: font.text_1
+Settings:
+# .font: font.text_2
+  Shift-I
+# .font: font.text_1
+Save:
+# .font: font.text_2
+  Shift-S
+# .font: font.text_1
+Test game:
+# .font: font.text_2
+  Shift-T
+  Space
+  Enter
+# .font: font.text_1
+Exit:
+# .font: font.text_2
+  Shift-E
+
+# .font: font.text_3
+Copy / Paste (Playfield)
+
+# .font: font.text_1
+Copy playfield:
+# .font: font.text_2
+  Ctrl-C
+# .font: font.text_1
+Paste playfield:
+# .font: font.text_2
+  Ctrl-V
+
+# .font: font.text_3
+Copy / Paste (Brush)
+
+# .font: font.text_1
+Copy brush (normal size):
+# .font: font.text_2
+  Ctrl-C
+# .font: font.text_1
+Copy brush (small size):
+# .font: font.text_2
+  Ctrl-Shift-C
+# .font: font.text_1
+Paste brush:
+# .font: font.text_2
+  Ctrl-V
+
+# .font: font.text_3
+Copy / Paste (Text Gadgets)
+
+# .font: font.text_1
+Copy text:
+# .font: font.text_2
+  Ctrl-C
+# .font: font.text_1
+Cut text:
+# .font: font.text_2
+  Ctrl-X
+# .font: font.text_1
+Paste text:
+# .font: font.text_2
+  Ctrl-V
+
+# .font: font.text_3
+Copy / Paste (Playfield Text)
+
+# .font: font.text_1
+Paste text (normal text):
+# .font: font.text_2
+  Ctrl-V
+# .font: font.text_1
+Paste text (steel text):
+# .font: font.text_2
+  Ctrl-Shift-V
+
+# .font: font.text_3
+Playfield Element Manipulation
+
+# .font: font.text_1
+Swap/Rotate/Connect elements:
+# .font: font.text_2
+  Shift-<Left Mouse Button>
+
+# .font: font.text_1
+# .autowrap: true
+This works both for existing elements on the playfield (like gems or text
+elements) and for newly drawn elements (like tubes) in various drawing modes
+(like rectangles), but is only supported for certain game elements.
+# .autowrap: false
+
+# .font: font.text_3
+Playfield Element Highlighting
+
+# .font: font.text_1
+Highlight drawing elements:
+# .font: font.text_2
+  Alt
+  Option
+# .font: font.text_1
+Highlight similar elements:
+# .font: font.text_2
+  Shift-Alt
+  Shift-Option
