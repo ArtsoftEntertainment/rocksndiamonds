@@ -18949,13 +18949,12 @@ void HandleLevelEditorKeyInput(Key key)
   {
     // handle special key shortcuts with control or command key pressed
 
-    if (letter == 'x')	// copy brush to clipboard (small size)
+    if (letter == 'c')		// copy brush to clipboard
     {
-      CopyBrushToClipboard_Small();
-    }
-    else if (letter == 'c')	// copy brush to clipboard (normal size)
-    {
-      CopyBrushToClipboard();
+      if (GetKeyModState() & KMOD_Shift)
+	CopyBrushToClipboard_Small();	// small size
+      else
+	CopyBrushToClipboard();		// normal size
     }
     else if (letter == 'v')	// paste brush from Clipboard
     {
