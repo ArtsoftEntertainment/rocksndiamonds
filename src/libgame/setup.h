@@ -294,6 +294,7 @@ char *getLevelStoryFilename(int);
 char *getLevelSetTitleMessageFilename(int, boolean);
 char *getCreditsFilename(int, boolean);
 char *getProgramInfoFilename(int);
+char *getEditorInfoFilename(int);
 char *getImageFilename(char *);
 char *getCustomImageFilename(char *);
 char *getCustomSoundFilename(char *);

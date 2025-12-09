@@ -1226,6 +1226,34 @@ char *getProgramInfoFilename(int nr)
   return NULL;		// cannot find program info file
 }
 
+static char *getEditorInfoBasename(int nr)
+{
+  static char basename[32];
+
+  sprintf(basename, "editor_%d.txt", nr + 1);
+
+  return basename;
+}
+
+char *getEditorInfoFilename(int nr)
+{
+  char *basename = getEditorInfoBasename(nr);
+  static char *info_subdir = NULL;
+  static char *filename = NULL;
+
+  if (info_subdir == NULL)
+    info_subdir = getPath2(DOCS_DIRECTORY, EDITOR_INFO_DIRECTORY);
+
+  checked_free(filename);
+
+  // look for editor info file in the game's base directory
+  filename = getPath3(options.base_directory, info_subdir, basename);
+  if (fileExists(filename))
+    return filename;
+
+  return NULL;		// cannot find editor info file
+}
+
 static char *getCorrectedArtworkBasename(char *basename)
 {
   return basename;

@@ -8403,6 +8403,15 @@ struct ConfigInfo image_config[] =
   { "editor.playfield.scrollbar.pressed_xoffset",	"-16"				},
   { "editor.playfield.scrollbar.border_size",		"3"				},
 
+  { "editor.infotext.scroll_up",			UNDEFINED_FILENAME		},
+  { "editor.infotext.scroll_up.clone_from",		"editor.playfield.scroll_up"	},
+
+  { "editor.infotext.scroll_down",			UNDEFINED_FILENAME		},
+  { "editor.infotext.scroll_down.clone_from",		"editor.playfield.scroll_down"	},
+
+  { "editor.infotext.scrollbar",			UNDEFINED_FILENAME		},
+  { "editor.infotext.scrollbar.clone_from",		"editor.playfield.scrollbar"	},
+
   { "gfx.editor.button.prev_level",			"RocksDoor.png"			},
   { "gfx.editor.button.prev_level.x",			"724"				},
   { "gfx.editor.button.prev_level.y",			"32"				},

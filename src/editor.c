@@ -371,6 +371,20 @@
 					 ED_ELEMENTLIST_YSIZE -			\
 					 2 * ED_SCROLLBUTTON2_YSIZE)
 
+// values for scrolling gadgets for info text
+#define ED_SCROLLBUTTON3_XSIZE		(graphic_info[IMG_EDITOR_INFOTEXT_SCROLL_UP].width)
+#define ED_SCROLLBUTTON3_YSIZE		(graphic_info[IMG_EDITOR_INFOTEXT_SCROLL_UP].height)
+
+#define ED_SCROLL3_UP_XPOS		(SXSIZE - ED_SCROLLBUTTON3_XSIZE)
+#define ED_SCROLL3_UP_YPOS		(0)
+#define ED_SCROLL3_DOWN_XPOS		ED_SCROLL3_UP_XPOS
+#define ED_SCROLL3_DOWN_YPOS		(SYSIZE - 2 * ED_SCROLLBUTTON3_YSIZE)
+#define ED_SCROLL3_VERTICAL_XPOS	ED_SCROLL3_UP_XPOS
+#define ED_SCROLL3_VERTICAL_YPOS	(ED_SCROLL3_UP_YPOS + ED_SCROLLBUTTON3_YSIZE)
+#define ED_SCROLL3_VERTICAL_XSIZE	ED_SCROLLBUTTON3_XSIZE
+#define ED_SCROLL3_VERTICAL_YSIZE	(SYSIZE - 3 * ED_SCROLLBUTTON_YSIZE)
+
+// values for color picker
 #define COLORPICKER_X			(editor.settings.colorpicker.x)
 #define COLORPICKER_Y			(editor.settings.colorpicker.y)
 #define COLORPICKER_X_REDEFINED		(COLORPICKER_X != -1)
@@ -810,6 +824,12 @@ enum
   GADGET_ID_SCROLL_LIST_DOWN,
   GADGET_ID_SCROLL_LIST_VERTICAL,
 
+  // gadgets for scrolling info text
+
+  GADGET_ID_SCROLL_INFO_UP,
+  GADGET_ID_SCROLL_INFO_DOWN,
+  GADGET_ID_SCROLL_INFO_VERTICAL,
+
   // checkbuttons/radiobuttons for level/element properties
 
   GADGET_ID_AUTO_COUNT_GEMS,
@@ -1026,6 +1046,8 @@ enum
   ED_SCROLLBUTTON_ID_AREA_RIGHT,
   ED_SCROLLBUTTON_ID_LIST_UP,
   ED_SCROLLBUTTON_ID_LIST_DOWN,
+  ED_SCROLLBUTTON_ID_INFO_UP,
+  ED_SCROLLBUTTON_ID_INFO_DOWN,
 
   ED_NUM_SCROLLBUTTONS
 };
@@ -1039,6 +1061,7 @@ enum
   ED_SCROLLBAR_ID_AREA_HORIZONTAL,
   ED_SCROLLBAR_ID_AREA_VERTICAL,
   ED_SCROLLBAR_ID_LIST_VERTICAL,
+  ED_SCROLLBAR_ID_INFO_VERTICAL,
 
   ED_NUM_SCROLLBARS
 };
@@ -4181,6 +4204,18 @@ static struct
     GADGET_ID_SCROLL_LIST_DOWN,
     "Scroll element list down ('Page Down')"
   },
+  {
+    ED_SCROLLBUTTON_ID_INFO_UP,
+    IMG_EDITOR_INFOTEXT_SCROLL_UP,
+    GADGET_ID_SCROLL_INFO_UP,
+    "Scroll info text up ('Page Up')"
+  },
+  {
+    ED_SCROLLBUTTON_ID_INFO_DOWN,
+    IMG_EDITOR_INFOTEXT_SCROLL_DOWN,
+    GADGET_ID_SCROLL_INFO_DOWN,
+    "Scroll info text up ('Page Down')"
+  },
 };
 
 static struct
@@ -4220,7 +4255,14 @@ static struct
     GD_TYPE_SCROLLBAR_VERTICAL,
     GADGET_ID_SCROLL_LIST_VERTICAL,
     "Scroll element list vertically"
-  }
+  },
+  {
+    ED_SCROLLBAR_ID_INFO_VERTICAL,
+    IMG_EDITOR_INFOTEXT_SCROLLBAR,
+    GD_TYPE_SCROLLBAR_VERTICAL,
+    GADGET_ID_SCROLL_INFO_VERTICAL,
+    "Scroll info text vertically"
+  },
 };
 
 
@@ -5970,6 +6012,9 @@ static int use_permanent_palette = TRUE;
 #define PY			(use_permanent_palette ? DY : SY)
 #define PXSIZE			(use_permanent_palette ? DXSIZE : SXSIZE)
 #define PYSIZE			(use_permanent_palette ? DYSIZE : SYSIZE)
+
+static struct WrappedTextInfo *wrapped_text = NULL;
+static struct TitleMessageInfo *wrapped_tmi = NULL;
 
 // forward declaration for internal use
 static void CopyBrushToCursor(int, int);
@@ -9091,6 +9136,10 @@ static void CreateControlButtons(void)
   scrollbutton_pos[ED_SCROLLBUTTON_ID_LIST_UP].y    = ED_SCROLL2_UP_YPOS;
   scrollbutton_pos[ED_SCROLLBUTTON_ID_LIST_DOWN].x  = ED_SCROLL2_DOWN_XPOS;
   scrollbutton_pos[ED_SCROLLBUTTON_ID_LIST_DOWN].y  = ED_SCROLL2_DOWN_YPOS;
+  scrollbutton_pos[ED_SCROLLBUTTON_ID_INFO_UP].x    = ED_SCROLL3_UP_XPOS;
+  scrollbutton_pos[ED_SCROLLBUTTON_ID_INFO_UP].y    = ED_SCROLL3_UP_YPOS;
+  scrollbutton_pos[ED_SCROLLBUTTON_ID_INFO_DOWN].x  = ED_SCROLL3_DOWN_XPOS;
+  scrollbutton_pos[ED_SCROLLBUTTON_ID_INFO_DOWN].y  = ED_SCROLL3_DOWN_YPOS;
 
   // create buttons for scrolling of drawing area and element list
   for (i = 0; i < ED_NUM_SCROLLBUTTONS; i++)
@@ -9800,6 +9849,15 @@ static void CreateScrollbarGadgets(void)
   scrollbar_pos[ED_SCROLLBAR_ID_LIST_VERTICAL].wheel_width  = PXSIZE;
   scrollbar_pos[ED_SCROLLBAR_ID_LIST_VERTICAL].wheel_height = PYSIZE;
 
+  scrollbar_pos[ED_SCROLLBAR_ID_INFO_VERTICAL].x = SX + ED_SCROLL3_VERTICAL_XPOS;
+  scrollbar_pos[ED_SCROLLBAR_ID_INFO_VERTICAL].y = SY + ED_SCROLL3_VERTICAL_YPOS;
+  scrollbar_pos[ED_SCROLLBAR_ID_INFO_VERTICAL].width  = ED_SCROLL3_VERTICAL_XSIZE;
+  scrollbar_pos[ED_SCROLLBAR_ID_INFO_VERTICAL].height = ED_SCROLL3_VERTICAL_YSIZE;
+  scrollbar_pos[ED_SCROLLBAR_ID_INFO_VERTICAL].wheel_x      = SX;
+  scrollbar_pos[ED_SCROLLBAR_ID_INFO_VERTICAL].wheel_y      = SY;
+  scrollbar_pos[ED_SCROLLBAR_ID_INFO_VERTICAL].wheel_width  = SXSIZE;
+  scrollbar_pos[ED_SCROLLBAR_ID_INFO_VERTICAL].wheel_height = SYSIZE;
+
   for (i = 0; i < ED_NUM_SCROLLBARS; i++)
   {
     int id = scrollbar_info[i].gadget_id;
@@ -9822,6 +9880,13 @@ static void CreateScrollbarGadgets(void)
       items_max = num_editor_elements / ED_ELEMENTLIST_BUTTONS_HORIZ;
       items_visible = ED_ELEMENTLIST_BUTTONS_VERT;
       item_position = element_shift / ED_ELEMENTLIST_BUTTONS_HORIZ;
+    }
+    else if (i == ED_SCROLLBAR_ID_INFO_VERTICAL)
+    {
+      // dummy values -- will be set dynamically
+      items_max = 1;
+      items_visible = 1;
+      item_position = 0;
     }
     else	// drawing area scrollbars
     {
@@ -10708,6 +10773,13 @@ static void MapOrUnmapLevelEditorToolboxDrawingGadgets(boolean map)
       }
     }
   }
+}
+
+static void MapLevelEditorInfoTextGadgets(void)
+{
+  MapGadget(level_editor_gadget[GADGET_ID_SCROLL_INFO_UP]);
+  MapGadget(level_editor_gadget[GADGET_ID_SCROLL_INFO_DOWN]);
+  MapGadget(level_editor_gadget[GADGET_ID_SCROLL_INFO_VERTICAL]);
 }
 
 static void MapLevelEditorToolboxDrawingGadgets(void)
@@ -12355,13 +12427,190 @@ static void DrawLevelConfigEditor(void)
   MapTextbuttonGadget(ED_TEXTBUTTON_ID_SAVE_AS_TEMPLATE_2);
 }
 
+static void AdjustScrollbar(int id, int items_max, int items_visible,
+			    int item_position)
+{
+  struct GadgetInfo *gi = level_editor_gadget[id];
+
+  if (item_position > items_max - items_visible)
+    item_position = items_max - items_visible;
+
+  ModifyGadget(gi, GDI_SCROLLBAR_ITEMS_MAX, items_max,
+	       GDI_SCROLLBAR_ITEMS_VISIBLE, items_visible,
+	       GDI_SCROLLBAR_ITEM_POSITION, item_position, GDI_END);
+}
+
+static void AdjustEditorInfoTextGadgets(int y, int height,
+					int items_max, int items_visible, int item_position)
+{
+  struct GadgetInfo *gi_up     = level_editor_gadget[GADGET_ID_SCROLL_INFO_UP];
+  struct GadgetInfo *gi_down   = level_editor_gadget[GADGET_ID_SCROLL_INFO_DOWN];
+  struct GadgetInfo *gi_scroll = level_editor_gadget[GADGET_ID_SCROLL_INFO_VERTICAL];
+  int y_up = y;
+  int y_down = y + height - ED_SCROLLBUTTON3_YSIZE;
+  int y_scroll = y + ED_SCROLLBUTTON3_YSIZE;
+  int height_scroll = height - 2 * ED_SCROLLBUTTON3_YSIZE;
+
+  ModifyGadget(gi_up, GDI_Y, y_up, GDI_END);
+  ModifyGadget(gi_down, GDI_Y, y_down, GDI_END);
+  ModifyGadget(gi_scroll, GDI_Y, y_scroll, GDI_HEIGHT, height_scroll, GDI_END);
+
+  AdjustScrollbar(GADGET_ID_SCROLL_INFO_VERTICAL, items_max, items_visible, item_position);
+}
+
+static void SetWrappedText_EditorInfoText(struct TitleMessageInfo *tmi)
+{
+  char *filename = getEditorInfoFilename(0);
+  char *raw_text = GetTextBufferFromFile(filename, MAX_OUTPUT_LINES);
+  int line_spacing = ED_GADGET_LINE_DISTANCE;
+
+  FreeWrappedText(wrapped_text);
+
+  wrapped_text = GetWrappedTextBuffer(raw_text, tmi->font, -1, -1, -1, tmi->width, -1, tmi->height,
+				      line_spacing, -1,
+				      tmi->autowrap, tmi->centered, tmi->parse_comments);
+  checked_free(raw_text);
+}
+
+static void DrawWrappedText_EditorInfoText(struct WrappedTextInfo *wrapped_text,
+					   struct TitleMessageInfo *tmi, int start_pos)
+{
+  int x = SX + ALIGNED_TEXT_XPOS(tmi);
+  int y = SY + ALIGNED_TEXT_YPOS(tmi);
+
+  // clear info text area, but not title or scrollbar
+  DrawBackground(x, y, tmi->width, tmi->height);
+
+  DrawWrappedText(x, y, wrapped_text, start_pos);
+}
+
 static void DrawLevelConfigHelp(void)
 {
+  static struct TitleMessageInfo tmi_info;
+  struct TitleMessageInfo *tmi = &tmi_info;
   int font1_nr = FONT_TEXT_1;
   int xpos = ED_LEVEL_SETTINGS_X(0);
   int ypos = ED_LEVEL_SETTINGS_Y(0) - getFontHeight(font1_nr) - ED_GADGET_LINE_DISTANCE;
+  int infotext_height = (IN_PIX_FIELD(INFOTEXT_XPOS - SX, INFOTEXT_YPOS - SY) ?
+			 SYSIZE - (INFOTEXT_YPOS - SY) - ED_GADGET_SMALL_DISTANCE : 0);
+  tmi->x = xpos;
+  tmi->y = ypos;
+  tmi->width  = SXSIZE - tmi->x - xpos;
+  tmi->height = SYSIZE - tmi->y - infotext_height;
+  tmi->align = ALIGN_LEFT;
+  tmi->valign = VALIGN_TOP;
+  tmi->font = font1_nr;
+  tmi->autowrap = TRUE;
+  tmi->centered = FALSE;
+  tmi->parse_comments = TRUE;
 
-  PrintInfoText("No help available yet.", font1_nr, xpos, ypos);
+  SetWrappedText_EditorInfoText(tmi);
+
+  if (wrapped_text != NULL && wrapped_text->total_height > wrapped_text->max_height)
+  {
+    // re-wrap text with text width reduced by scroll bar width
+    tmi->width -= ED_SCROLLBUTTON3_XSIZE;
+
+    // adjust left border and text width if text should be centered
+    if (wrapped_text->line[0].centered)
+    {
+      tmi->x += ED_SCROLL3_VERTICAL_XSIZE;
+      tmi->width -= ED_SCROLLBUTTON3_XSIZE;
+    }
+
+    SetWrappedText_EditorInfoText(tmi);
+
+    int start_pos = 0;
+
+    while (wrapped_text->line_visible_last < wrapped_text->num_lines - 1)
+      InitWrappedText(0, 0, wrapped_text, ++start_pos);
+
+    int items_max = wrapped_text->num_lines;
+    int items_visible = wrapped_text->num_lines - start_pos;
+    int item_position = 0;
+
+    AdjustEditorInfoTextGadgets(SY + ALIGNED_TEXT_YPOS(tmi), wrapped_text->max_height,
+				items_max, items_visible, item_position);
+
+    MapLevelEditorInfoTextGadgets();
+  }
+
+  DrawWrappedText_EditorInfoText(wrapped_text, tmi, 0);
+
+  wrapped_tmi = tmi;
+
+  if (wrapped_text == NULL)
+    PrintInfoText("No help available yet.", font1_nr, xpos, ypos);
+}
+
+static boolean HandleLevelEditorInfoText(int dx, int dy)
+{
+  if (edit_mode != ED_MODE_LEVELCONFIG || edit_mode_levelconfig != ED_MODE_LEVELCONFIG_HELP)
+    return FALSE;
+
+  if (wrapped_text == NULL)
+    return FALSE;
+
+  if (wrapped_text->total_height <= wrapped_text->max_height)
+    return FALSE;
+
+  boolean position_set_by_scrollbar = (dx == 999);
+  int start_pos = wrapped_text->line_visible_first;
+
+  if (position_set_by_scrollbar)
+  {
+    struct GadgetInfo *gi = level_editor_gadget[GADGET_ID_SCROLL_INFO_VERTICAL];
+    int items_max = gi->scrollbar.items_max;
+    int items_visible = gi->scrollbar.items_visible;
+
+    // check if scrollbar was moved by one screen, or to top or bottom position
+    if (ABS(dy - start_pos) == items_visible - 1 || dy == 0 || dy == items_max - items_visible)
+    {
+      // use dynamic "next screen" calculation instead of adding static offset
+      // (required for text using multiple fonts with different vertical sizes)
+      HandleLevelEditorInfoText(0, SIGN(dy - start_pos) * SCROLL_PAGE);
+    }
+    else
+    {
+      start_pos = dy;
+
+      DrawWrappedText_EditorInfoText(wrapped_text, wrapped_tmi, start_pos);
+    }
+  }
+  else if ((dy < 0 && wrapped_text->line_visible_first > 0) ||
+	   (dy > 0 && wrapped_text->line_visible_last < wrapped_text->num_lines - 1))
+  {
+    if (ABS(dy) == SCROLL_PAGE)
+    {
+      if (dy < 0)
+      {
+        int old_line_visible_first = wrapped_text->line_visible_first;
+
+        while (wrapped_text->line_visible_first > 0 &&
+               wrapped_text->line_visible_last > old_line_visible_first)
+          InitWrappedText(0, 0, wrapped_text, --start_pos);
+      }
+      else
+      {
+        int old_line_visible_last = wrapped_text->line_visible_last;
+
+        while (wrapped_text->line_visible_last < wrapped_text->num_lines - 1 &&
+               wrapped_text->line_visible_first < old_line_visible_last)
+          InitWrappedText(0, 0, wrapped_text, ++start_pos);
+      }
+    }
+    else
+    {
+      start_pos += SIGN(dy);
+    }
+
+    DrawWrappedText_EditorInfoText(wrapped_text, wrapped_tmi, start_pos);
+
+    ModifyGadget(level_editor_gadget[GADGET_ID_SCROLL_INFO_VERTICAL],
+                 GDI_SCROLLBAR_ITEM_POSITION, start_pos, GDI_END);
+  }
+
+  return TRUE;
 }
 
 static void DrawLevelConfigEngine(void)
@@ -18118,6 +18367,24 @@ static void HandleControlButtons(struct GadgetInfo *gi)
 
       break;
 
+    case GADGET_ID_SCROLL_INFO_UP:
+      if (HandleLevelEditorInfoText(0, -1 * SCROLL_LINE))
+	return;
+
+      break;
+
+    case GADGET_ID_SCROLL_INFO_DOWN:
+      if (HandleLevelEditorInfoText(0, +1 * SCROLL_LINE))
+	return;
+
+      break;
+
+    case GADGET_ID_SCROLL_INFO_VERTICAL:
+      if (HandleLevelEditorInfoText(999, gi->event.item_position))
+	return;
+
+      break;
+
     case GADGET_ID_PROPERTIES:
       // always switch off element properties when they are already displayed
       last_properties_element = new_element;
@@ -18540,18 +18807,30 @@ void HandleLevelEditorKeyInput(Key key)
     case KSYM_Left:
       id = GADGET_ID_SCROLL_LEFT;
       break;
+
     case KSYM_Right:
       id = GADGET_ID_SCROLL_RIGHT;
       break;
+
     case KSYM_Up:
+      if (HandleLevelEditorInfoText(0, -1 * SCROLL_LINE))
+	return;
+
       id = GADGET_ID_SCROLL_UP;
       break;
+
     case KSYM_Down:
+      if (HandleLevelEditorInfoText(0, +1 * SCROLL_LINE))
+	return;
+
       id = GADGET_ID_SCROLL_DOWN;
       break;
 
     case KSYM_Page_Up:
     case KSYM_Page_Down:
+      if (HandleLevelEditorInfoText(0, (key == KSYM_Page_Up ? -1 : +1) * SCROLL_PAGE))
+	return;
+
       step *= (key == KSYM_Page_Up ? -1 : +1);
       element_shift += step * ED_ELEMENTLIST_BUTTONS_HORIZ;
 
@@ -18624,6 +18903,12 @@ void HandleLevelEditorKeyInput(Key key)
 	HandleControlButtons(level_editor_gadget[GADGET_ID_PALETTE]);
       else		// should never happen
 	ChangeEditModeWindow(ED_MODE_DRAWING);
+
+      break;
+
+    case KSYM_space:
+      if (HandleLevelEditorInfoText(0, +1 * SCROLL_PAGE))
+	return;
 
       break;
 
