@@ -12357,10 +12357,11 @@ static void DrawLevelConfigEditor(void)
 
 static void DrawLevelConfigHelp(void)
 {
+  int font1_nr = FONT_TEXT_1;
   int xpos = ED_LEVEL_SETTINGS_X(0);
-  int ypos = ED_LEVEL_SETTINGS_Y(0) - getFontHeight(FONT_TEXT_1) - ED_GADGET_LINE_DISTANCE;
+  int ypos = ED_LEVEL_SETTINGS_Y(0) - getFontHeight(font1_nr) - ED_GADGET_LINE_DISTANCE;
 
-  PrintInfoText("No help available yet.", FONT_TEXT_1, xpos, ypos);
+  PrintInfoText("No help available yet.", font1_nr, xpos, ypos);
 }
 
 static void DrawLevelConfigEngine(void)
