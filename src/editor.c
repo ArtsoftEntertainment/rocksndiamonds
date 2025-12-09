@@ -16918,7 +16918,10 @@ static int DrawLevelText(int sx, int sy, char letter, int mode)
 	letter_element = letter_element - EL_CHAR_START + EL_STEEL_CHAR_START;
 
       // if Shift key pressed, change normal to steel characters and vice versa
-      if ((GetKeyModState() & KMOD_Shift) && letter_is_alpha)
+      // (do not limit change to characters "A" to "Z" if Ctrl or Cmd key pressed;
+      // this is especially the case when pasting text using "Ctrl-v" or "Cmd-v")
+      if ((GetKeyModState() & KMOD_Shift) &&
+	  ((GetKeyModState() & (KMOD_Control | KMOD_Meta)) || letter_is_alpha))
 	letter_element = (letter_element >= EL_CHAR_START && letter_element <= EL_CHAR_END ?
 			  letter_element - EL_CHAR_START + EL_STEEL_CHAR_START :
 			  letter_element - EL_STEEL_CHAR_START + EL_CHAR_START);
