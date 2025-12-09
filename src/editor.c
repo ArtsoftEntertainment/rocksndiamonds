@@ -9717,7 +9717,7 @@ static void CreateGraphicbuttonGadgets(void)
   struct GadgetInfo *gi;
   int i;
 
-  // create buttons for scrolling of drawing area and element list
+  // create graphic buttons
   for (i = 0; i < ED_NUM_GRAPHICBUTTONS; i++)
   {
     int id = graphicbutton_info[i].gadget_id;
