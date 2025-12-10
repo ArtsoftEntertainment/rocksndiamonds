@@ -9444,6 +9444,7 @@ struct FontInfo font_info[NUM_FONTS + 1] =
   { "font.info.level"		},
   { "font.info.story"		},
   { "font.main.network_players"	},
+  { "font.tooltip"		},
 
   { NULL			}
 };

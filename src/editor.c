@@ -397,7 +397,7 @@
 #define COLORPICKER_MAX_VALUES		256
 
 // values for ClearEditorGadgetInfoText() and HandleEditorGadgetInfoText()
-#define INFOTEXT_FONT			FONT_TEXT_2
+#define INFOTEXT_FONT			FONT_TOOLTIP
 #define INFOTEXT_XSIZE			SXSIZE
 #define INFOTEXT_YSIZE			getFontHeight(INFOTEXT_FONT)
 #define INFOTEXT_YSIZE_FULL		(INFOTEXT_YSIZE + ED_GADGET_SMALL_DISTANCE)

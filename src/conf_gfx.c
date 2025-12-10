@@ -8219,6 +8219,9 @@ struct ConfigInfo image_config[] =
   { "font.main.network_players",			UNDEFINED_FILENAME		},
   { "font.main.network_players.clone_from",		"font.level_number"		},
 
+  { "font.tooltip",					UNDEFINED_FILENAME		},
+  { "font.tooltip.clone_from",				"font.text_2"			},
+
   { "editor.element_border",				"RocksMore.png"			},
   { "editor.element_border.xpos",			"0"				},
   { "editor.element_border.ypos",			"2"				},
