@@ -12183,8 +12183,17 @@ static int getTabulatorBarWidth(void)
     struct GadgetInfo *gd_gi4 = level_editor_gadget[GADGET_ID_LEVELCONFIG_HELP];
     struct GadgetInfo *gd_gi5 = level_editor_gadget[GADGET_ID_LEVELCONFIG_COLORS];
     struct GadgetInfo *gd_gi6 = level_editor_gadget[GADGET_ID_LEVELCONFIG_ENGINE];
+    boolean has_colors_tab = checkLevelConfigColors();
+    boolean has_engine_tab = checkLevelConfigEngine();
+    int max_x = gd_gi4->x;
 
-    return MAX(MAX(gd_gi4->x, gd_gi5->x), gd_gi6->x) - gd_gi1->x + gd_gi4->width;
+    if (has_colors_tab)
+      max_x = MAX(max_x, gd_gi5->x);
+
+    if (has_engine_tab)
+      max_x = MAX(max_x, gd_gi6->x);
+
+    return max_x - gd_gi1->x + gd_gi4->width;
   }
 
   struct GadgetInfo *gd_gi1 = level_editor_gadget[GADGET_ID_PROPERTIES_INFO];
