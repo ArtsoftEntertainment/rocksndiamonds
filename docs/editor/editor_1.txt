@@ -119,13 +119,11 @@ Undo:
 # .font: font.text_2
   U
   Ctrl-Z
-  Cmd-Z
 # .font: font.text_1
 Redo:
 # .font: font.text_2
   Shift-U
   Ctrl-Shift-Z
-  Cmd-Shift-Z
   Ctrl-Y
 
 # .font: font.text_3
@@ -167,34 +165,22 @@ Exit:
   Shift-E
 
 # .font: font.text_3
-Copy / Paste (Playfield)
+Copy / Paste (Brush or Playfield)
 
 # .font: font.text_1
-Copy playfield:
+Copy (level sketch, normal tiles):
 # .font: font.text_2
   Ctrl-C
 # .font: font.text_1
-Paste playfield:
-# .font: font.text_2
-  Ctrl-V
-
-# .font: font.text_3
-Copy / Paste (Brush)
-
-# .font: font.text_1
-Copy brush (normal size):
-# .font: font.text_2
-  Ctrl-C
-# .font: font.text_1
-Copy brush (small size):
+Copy (level sketch, small tiles):
 # .font: font.text_2
   Ctrl-Shift-C
 # .font: font.text_1
-Copy brush (element names):
+Copy (element names):
 # .font: font.text_2
   Ctrl-Alt-C
 # .font: font.text_1
-Paste brush:
+Paste (all of the above formats):
 # .font: font.text_2
   Ctrl-V
 
@@ -202,15 +188,15 @@ Paste brush:
 Copy / Paste (Text Gadgets)
 
 # .font: font.text_1
-Copy text:
+Copy:
 # .font: font.text_2
   Ctrl-C
 # .font: font.text_1
-Cut text:
+Cut:
 # .font: font.text_2
   Ctrl-X
 # .font: font.text_1
-Paste text:
+Paste:
 # .font: font.text_2
   Ctrl-V
 
@@ -218,11 +204,11 @@ Paste text:
 Copy / Paste (Playfield Text)
 
 # .font: font.text_1
-Paste text (normal text):
+Paste (normal text):
 # .font: font.text_2
   Ctrl-V
 # .font: font.text_1
-Paste text (steel text):
+Paste (steel text):
 # .font: font.text_2
   Ctrl-Shift-V
 
@@ -248,9 +234,7 @@ Playfield Element Highlighting
 Highlight drawing elements:
 # .font: font.text_2
   Alt
-  Option
 # .font: font.text_1
 Highlight similar elements:
 # .font: font.text_2
   Shift-Alt
-  Shift-Option
