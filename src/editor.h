@@ -32,6 +32,7 @@ void PrintEditorElementList(void);
 
 void DumpBrush(void);
 void DumpBrush_Small(void);
+void DumpBrush_Names(void);
 
 void SetDefaultLevelColorType_BD(void);
 void SetDefaultLevelColors_BD(void);

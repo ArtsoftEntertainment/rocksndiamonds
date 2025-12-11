@@ -190,6 +190,10 @@ Copy brush (small size):
 # .font: font.text_2
   Ctrl-Shift-C
 # .font: font.text_1
+Copy brush (element names):
+# .font: font.text_2
+  Ctrl-Alt-C
+# .font: font.text_1
 Paste brush:
 # .font: font.text_2
   Ctrl-V

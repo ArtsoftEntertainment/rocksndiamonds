@@ -16128,14 +16128,17 @@ static void SelectArea(int from_x, int from_y, int to_x, int to_y, int element, 
 #define CB_DELETE_OLD_CURSOR		3
 #define CB_DUMP_BRUSH			4
 #define CB_DUMP_BRUSH_SMALL		5
-#define CB_CLIPBOARD_TO_BRUSH		6
-#define CB_BRUSH_TO_CLIPBOARD		7
-#define CB_BRUSH_TO_CLIPBOARD_SMALL	8
-#define CB_UPDATE_BRUSH_POSITION	9
-#define CB_FLIP_BRUSH_X			10
-#define CB_FLIP_BRUSH_Y			11
-#define CB_FLIP_BRUSH_XY		12
+#define CB_DUMP_BRUSH_NAMES		6
+#define CB_CLIPBOARD_TO_BRUSH		7
+#define CB_BRUSH_TO_CLIPBOARD		8
+#define CB_BRUSH_TO_CLIPBOARD_SMALL	9
+#define CB_BRUSH_TO_CLIPBOARD_NAMES	10
+#define CB_UPDATE_BRUSH_POSITION	11
+#define CB_FLIP_BRUSH_X			12
+#define CB_FLIP_BRUSH_Y			13
+#define CB_FLIP_BRUSH_XY		14
 
+#define MAX_CB_TOKEN_LEN		128
 #define MAX_CB_PART_SIZE		10
 #define MAX_CB_LINE_SIZE		(MAX_LEV_FIELDX + 1)	// text plus newline
 #define MAX_CB_NUM_LINES		(MAX_LEV_FIELDY)
@@ -16338,8 +16341,10 @@ static void CopyBrushExt(int from_x, int from_y, int to_x, int to_y, int button,
 
   if (mode == CB_DUMP_BRUSH ||
       mode == CB_DUMP_BRUSH_SMALL ||
+      mode == CB_DUMP_BRUSH_NAMES ||
       mode == CB_BRUSH_TO_CLIPBOARD ||
-      mode == CB_BRUSH_TO_CLIPBOARD_SMALL)
+      mode == CB_BRUSH_TO_CLIPBOARD_SMALL ||
+      mode == CB_BRUSH_TO_CLIPBOARD_NAMES)
   {
     if (edit_mode != ED_MODE_DRAWING)
       return;
@@ -16365,18 +16370,30 @@ static void CopyBrushExt(int from_x, int from_y, int to_x, int to_y, int button,
 	if (element >= NUM_FILE_ELEMENTS)
 	  element = EL_UNKNOWN;
 
-	// copy brush to level sketch text buffer for the R'n'D forum:
-	// - large tiles: `xxx or `xxxx (0x60 ASCII)
-	// - small tiles: ¸xxx or ¸xxxx (0xb8 ISO-8859-1, 0xc2b8 UTF-8)
-	snprintf(part, MAX_CB_PART_SIZE + 1, format, prefix, element);
-	strcat(text, part);
+	if (mode == CB_DUMP_BRUSH_NAMES ||
+	    mode == CB_BRUSH_TO_CLIPBOARD_NAMES)
+	{
+	  strcat(text, element_info[element].token_name);
+
+	  if (x < width - 1)
+	    strcat(text, ",");
+	}
+	else
+	{
+	  // copy brush to level sketch text buffer for the R'n'D forum:
+	  // - large tiles: `xxx or `xxxx (0x60 ASCII)
+	  // - small tiles: ¸xxx or ¸xxxx (0xb8 ISO-8859-1, 0xc2b8 UTF-8)
+	  snprintf(part, MAX_CB_PART_SIZE + 1, format, prefix, element);
+	  strcat(text, part);
+	}
       }
 
       strcat(text, "\n");
     }
 
     if (mode == CB_BRUSH_TO_CLIPBOARD ||
-	mode == CB_BRUSH_TO_CLIPBOARD_SMALL)
+	mode == CB_BRUSH_TO_CLIPBOARD_SMALL ||
+	mode == CB_BRUSH_TO_CLIPBOARD_NAMES)
       SDL_SetClipboardText(text);
     else
       Print("%s", text);	// print brush data to console and log file
@@ -16474,6 +16491,40 @@ static void CopyBrushExt(int from_x, int from_y, int to_x, int to_y, int button,
 
 	if (element >= NUM_FILE_ELEMENTS)
 	  element = EL_UNKNOWN;
+
+	brush_buffer[x][y] = element;
+
+	brush_width  = MAX(x + 1, brush_width);
+	brush_height = MAX(y + 1, brush_height);
+
+	x++;
+
+	if (x >= MAX_LEV_FIELDX)
+	  start_new_row = TRUE;
+
+	allow_new_row = TRUE;
+      }
+      else if (*ptr >= 'a' && *ptr <= 'z')	// check for element token
+      {
+	char token[MAX_CB_TOKEN_LEN + 1];
+
+	for (i = 0; i < MAX_CB_TOKEN_LEN; i++)
+	{
+	  token[i] = ptr[i];
+
+	  if (ptr[i] == ',' || ptr[i] == '\n' || ptr[i] == '\r' || ptr[i] == '\0')
+	    break;
+	}
+
+	token[i] = '\0';
+
+	ptr += strlen(token);
+
+	char *value = getHashEntry(element_token_hash, token);
+	int element = (value != NULL ? atoi(value) : EL_UNKNOWN);
+
+	// remap some (historic, now obsolete) elements
+	element = getMappedElement(element);
 
 	brush_buffer[x][y] = element;
 
@@ -16770,6 +16821,11 @@ void DumpBrush_Small(void)
   CopyBrushExt(0, 0, 0, 0, 0, CB_DUMP_BRUSH_SMALL);
 }
 
+void DumpBrush_Names(void)
+{
+  CopyBrushExt(0, 0, 0, 0, 0, CB_DUMP_BRUSH_NAMES);
+}
+
 static void CopyClipboardToBrush(void)
 {
   CopyBrushExt(0, 0, 0, 0, 0, CB_CLIPBOARD_TO_BRUSH);
@@ -16783,6 +16839,11 @@ static void CopyBrushToClipboard(void)
 static void CopyBrushToClipboard_Small(void)
 {
   CopyBrushExt(0, 0, 0, 0, 0, CB_BRUSH_TO_CLIPBOARD_SMALL);
+}
+
+static void CopyBrushToClipboard_Names(void)
+{
+  CopyBrushExt(0, 0, 0, 0, 0, CB_BRUSH_TO_CLIPBOARD_NAMES);
 }
 
 static void UndoLevelEditorOperation(void)
@@ -18965,6 +19026,8 @@ void HandleLevelEditorKeyInput(Key key)
     {
       if (GetKeyModState() & KMOD_Shift)
 	CopyBrushToClipboard_Small();	// small size
+      else if (GetKeyModState() & KMOD_Alt)
+	CopyBrushToClipboard_Names();	// comma separated element names
       else
 	CopyBrushToClipboard();		// normal size
     }

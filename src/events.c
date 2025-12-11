@@ -2006,9 +2006,15 @@ static void HandleKeysSpecial(Key key)
     {
       DumpBrush();
     }
-    else if (strSuffix(cheat_input, ":DDB"))
+    else if (strSuffix(cheat_input, ":dump-brush-small") ||
+	     strSuffix(cheat_input, ":DDB"))
     {
       DumpBrush_Small();
+    }
+    else if (strSuffix(cheat_input, ":dump-brush-names") ||
+	     strSuffix(cheat_input, ":NDB"))
+    {
+      DumpBrush_Names();
     }
   }
 
