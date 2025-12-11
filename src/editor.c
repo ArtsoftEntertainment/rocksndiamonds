@@ -17395,7 +17395,7 @@ static void HandleDrawingAreas(struct GadgetInfo *gi)
      drawing_function : GADGET_ID_SINGLE_ITEMS);
 
   // clicking into drawing area with pressed Control key picks element
-  if (GetKeyModState() & KMOD_Control)
+  if (GetKeyModState() & (KMOD_Control | KMOD_Meta))
   {
     last_drawing_function = drawing_function;
     actual_drawing_function = GADGET_ID_PICK_ELEMENT;
@@ -18296,7 +18296,7 @@ static void HandleControlButtons(struct GadgetInfo *gi)
       id != GADGET_ID_PICK_ELEMENT &&
       edit_mode != ED_MODE_DRAWING &&
       drawing_function != GADGET_ID_PICK_ELEMENT &&
-      !(GetKeyModState() & KMOD_Control))
+      !(GetKeyModState() & (KMOD_Control | KMOD_Meta)))
     ChangeEditModeWindow(ED_MODE_DRAWING);
 
   // element copy mode active, but no element button pressed => deactivate
@@ -18585,7 +18585,7 @@ static void HandleControlButtons(struct GadgetInfo *gi)
     case GADGET_ID_UNDO:
       if (button < 0)	// keep button value (even if modifier keys are pressed)
 	button = -button;
-      else if (button == 1 && GetKeyModState() & (KMOD_Shift | KMOD_Control))
+      else if (button == 1 && GetKeyModState() & (KMOD_Shift | KMOD_Control | KMOD_Meta))
 	button = 3;
 
       if (button == 1 && undo_buffer_steps == 0)
@@ -18799,7 +18799,7 @@ static void HandleControlButtons(struct GadgetInfo *gi)
 
 	if (!stick_element_properties_window &&
 	    drawing_function != GADGET_ID_PICK_ELEMENT &&
-	    !(GetKeyModState() & KMOD_Control))
+	    !(GetKeyModState() & (KMOD_Control | KMOD_Meta)))
 	{
 	  properties_element = new_element;
 	  if (edit_mode == ED_MODE_PROPERTIES)
@@ -19200,7 +19200,7 @@ static void HandleDrawingAreaInfo(struct GadgetInfo *gi)
   infotext[0] = '\0';		// start with empty info text
 
   // pressed Control key: simulate picking element
-  if (GetKeyModState() & KMOD_Control)
+  if (GetKeyModState() & (KMOD_Control | KMOD_Meta))
     actual_drawing_function = GADGET_ID_PICK_ELEMENT;
 
   ClearEditorGadgetInfoText();
