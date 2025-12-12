@@ -1006,7 +1006,12 @@ void CoverScreen(void)
 
   // do not cover screen if returning from playing to level editor
   if (game_status == GAME_MODE_EDITOR)
+  {
+    // prevent covering screen later when returning to main menu
+    game_bd.cover_screen = FALSE;
+
     return;
+  }
 
   // before covering screen, close request door that might still be open
   if (game.request_open)
