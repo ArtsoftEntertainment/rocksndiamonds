@@ -5394,6 +5394,9 @@ static void LevelSolved(void)
 
 static boolean AdvanceToNextLevel(void)
 {
+  // store level number just played
+  scores.this_level_nr = level_nr;
+
   if (setup.increment_levels &&
       level_nr < leveldir_current->last_level &&
       !network_playing)

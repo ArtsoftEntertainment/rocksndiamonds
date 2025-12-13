@@ -5541,7 +5541,9 @@ static void drawChooseTreeList(TreeInfo *ti)
     else
       initCursor(i, IMG_MENU_BUTTON);
 
-    if (game_status == GAME_MODE_SCORES && node->pos == scores.last_added)
+    // only mark last added score entry for the level for which the score was achieved
+    if (game_status == GAME_MODE_SCORES && node->pos == scores.last_added &&
+	scores.last_level_nr == scores.this_level_nr)
       initCursor(i, IMG_MENU_BUTTON_ENTER_MENU);
 
     if (game_status == GAME_MODE_NAMES)
@@ -5613,7 +5615,8 @@ static void drawChooseTreeScreen(TreeInfo *ti)
 
 static TreeInfo *setHallOfFameActiveEntry(TreeInfo **ti_ptr)
 {
-  int score_pos = scores.last_added;
+  // only use last added score entry for the level for which the score was achieved
+  int score_pos = (scores.last_level_nr == scores.this_level_nr ? scores.last_added : -1);
 
   if (game_status_last_screen == GAME_MODE_SCOREINFO)
     score_pos = scores.last_entry_nr;
