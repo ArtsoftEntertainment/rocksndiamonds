@@ -270,7 +270,7 @@ static void HandleFailure_ApiAddScore(void *data_raw)
 {
   struct ApiAddScoreThreadData *data = data_raw;
 
-  PrepareScoreTapesForUpload(data->leveldir_subdir);
+  PrepareScoreTapesForUpload(data->leveldir_subdir, data->level_nr);
 }
 
 #if defined(PLATFORM_EMSCRIPTEN)
@@ -496,7 +496,7 @@ static void HandleResponse_ApiGetScore(struct HttpResponse *response, void *data
   int i;
 
   // used instead of "leveldir_current->subdir" (for network games)
-  InitScoreCacheDirectory(levelset.identifier);
+  InitScoreCacheDirectory(levelset.identifier, levelset.level_nr);
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {

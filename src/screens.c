@@ -12131,7 +12131,7 @@ static void CheckUploadTapes(void)
   setup.ask_for_uploading_tapes = FALSE;
   setup.ask_for_remaining_tapes = FALSE;
 
-  if (directoryExists(getTapeDir(NULL)))
+  if (directoryExists(getTapeDir(NULL, 0)))
   {
     boolean tapes_uploaded = OfferUploadTapes();
 

@@ -75,7 +75,7 @@ void SaveServerScoreFromFile(int, boolean, char *);
 
 void LoadLocalAndServerScore(int, boolean);
 
-void PrepareScoreTapesForUpload(char *);
+void PrepareScoreTapesForUpload(char *, int);
 
 void LoadUserNames(void);
 

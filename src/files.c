@@ -7529,6 +7529,11 @@ static void LoadLevelFromFileInfo_BD(struct LevelInfo *level,
   {
     strcpy(levelobj.namespace, "KBD");
     strcpy(levelobj.identcode, level->native_bd_level->cave->krissz_engine_cave_code);
+
+    if (levelobj.identcode_hash == NULL)
+      levelobj.identcode_hash = newSetupFileHash();
+
+    setHashEntry(levelobj.identcode_hash, int2str(level_file_info->nr, 0), levelobj.identcode);
   }
 }
 
@@ -10056,7 +10061,7 @@ void SaveTape(int nr)
 {
   char *filename = getTapeFilename(nr);
 
-  InitTapeDirectory(leveldir_current->subdir);
+  InitTapeDirectory(leveldir_current->subdir, nr);
 
   SaveTapeExt(filename);
 }
@@ -10579,7 +10584,7 @@ void SaveScore_OLD(int nr)
   FILE *file;
 
   // used instead of "leveldir_current->subdir" (for network games)
-  InitScoreDirectory(levelset.identifier);
+  InitScoreDirectory(levelset.identifier, nr);
 
   if (!(file = fopen(filename, MODE_WRITE)))
   {
@@ -10736,7 +10741,7 @@ void SaveScore(int nr)
   int i;
 
   // used instead of "leveldir_current->subdir" (for network games)
-  InitScoreDirectory(levelset.identifier);
+  InitScoreDirectory(levelset.identifier, nr);
 
   scores.file_version = FILE_VERSION_ACTUAL;
   scores.game_version = GAME_VERSION_ACTUAL;
@@ -10851,9 +10856,9 @@ void LoadServerScore(int nr, boolean download_score)
   }
 }
 
-void PrepareScoreTapesForUpload(char *leveldir_subdir)
+void PrepareScoreTapesForUpload(char *leveldir_subdir, int nr)
 {
-  MarkTapeDirectoryUploadsAsIncomplete(leveldir_subdir);
+  MarkTapeDirectoryUploadsAsIncomplete(leveldir_subdir, nr);
 
   // if score tape not uploaded, ask for uploading missing tapes later
   if (!setup.has_remaining_tapes)
@@ -10869,7 +10874,7 @@ void SaveServerScore(int nr, boolean tape_saved)
 {
   if (!runtime.use_api_server)
   {
-    PrepareScoreTapesForUpload(leveldir_current->subdir);
+    PrepareScoreTapesForUpload(leveldir_current->subdir, nr);
 
     return;
   }

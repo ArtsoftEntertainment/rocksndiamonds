@@ -2019,14 +2019,14 @@ static int AutoPlayTapesExt(boolean initialize)
     {
       boolean skip_levelset = FALSE;
 
-      if (!directoryExists(getTapeDir(autoplay.leveldir->subdir)))
+      if (!directoryExists(getTapeDir(autoplay.leveldir->subdir, autoplay.level_nr)))
       {
 	Print("No tape directory for this level set found -- skipping.\n");
 
 	skip_levelset = TRUE;
       }
 
-      if (CheckTapeDirectoryUploadsComplete(autoplay.leveldir->subdir))
+      if (CheckTapeDirectoryUploadsComplete(autoplay.leveldir->subdir, autoplay.level_nr))
       {
 	Print("All tapes for this level set already uploaded -- skipping.\n");
 
@@ -2064,7 +2064,8 @@ static int AutoPlayTapesExt(boolean initialize)
 	break;
 
       if (global.autoplay_mode == AUTOPLAY_MODE_UPLOAD)
-	MarkTapeDirectoryUploadsAsComplete(autoplay.leveldir->subdir);
+	for (i = autoplay.leveldir->first_level; i <= autoplay.leveldir->last_level; i++)
+	  MarkTapeDirectoryUploadsAsComplete(autoplay.leveldir->subdir, i);
 
       // continue with next level set
       autoplay.leveldir = getNextValidAutoPlayEntry(autoplay.leveldir);

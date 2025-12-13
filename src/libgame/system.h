@@ -14,6 +14,7 @@
 
 #include "platform.h"
 #include "types.h"
+#include "hash.h"
 
 
 #if defined(PLATFORM_MAC)
@@ -2036,8 +2037,10 @@ struct LevelSetInfo
 
 struct LevelObjectInfo
 {
-  char namespace[MAX_NAMESPACE_LEN];
-  char identcode[MAX_IDENTCODE_LEN];
+  char namespace[MAX_NAMESPACE_LEN];	// namespace of currently loaded level set
+  char identcode[MAX_IDENTCODE_LEN];	// identcode of currently loaded level
+
+  struct hashtable *identcode_hash;	// identcodes for previously loaded levels
 };
 
 struct LevelStats

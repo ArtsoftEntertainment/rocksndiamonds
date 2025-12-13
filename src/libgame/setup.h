@@ -305,14 +305,14 @@ char *getCustomArtworkLevelConfigFilename(int);
 char *getCustomMusicDirectory(void);
 char *getCustomMusicDirectory_NoConf(void);
 
-void MarkTapeDirectoryUploadsAsComplete(char *);
-void MarkTapeDirectoryUploadsAsIncomplete(char *);
-boolean CheckTapeDirectoryUploadsComplete(char *);
+void MarkTapeDirectoryUploadsAsComplete(char *, int);
+void MarkTapeDirectoryUploadsAsIncomplete(char *, int);
+boolean CheckTapeDirectoryUploadsComplete(char *, int);
 
 void InitMissingFileHash(void);
-void InitTapeDirectory(char *);
-void InitScoreDirectory(char *);
-void InitScoreCacheDirectory(char *);
+void InitTapeDirectory(char *, int);
+void InitScoreDirectory(char *, int);
+void InitScoreCacheDirectory(char *, int);
 void InitScoreTapeDirectory(char *, int);
 void InitScoreCacheTapeDirectory(char *, int);
 void InitUserLevelDirectory(char *);
@@ -351,7 +351,7 @@ char *getUserLevelsetDir(char *);
 char *getNetworkLevelDir(char *);
 char *getCurrentLevelDir(void);
 char *getNewUserLevelsetSubdir(void);
-char *getTapeDir(char *);
+char *getTapeDir(char *, int);
 
 void createDirectory(char *, char *);
 void createDirectoryPath(char *, char *);
