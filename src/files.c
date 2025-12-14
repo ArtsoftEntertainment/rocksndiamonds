@@ -11618,7 +11618,7 @@ static void setSetupInfoToDefaults_EditorCascade(struct SetupInfo *si)
   si->editor_cascade.el_bdx		= TRUE;
   si->editor_cascade.el_bdx_effects	= FALSE;
   si->editor_cascade.el_bdx_scanned	= FALSE;
-  si->editor_cascade.el_bdx_krissz	= FALSE;
+  si->editor_cascade.el_bdx_krissz	= TRUE;
   si->editor_cascade.el_em		= TRUE;
   si->editor_cascade.el_emc		= TRUE;
   si->editor_cascade.el_rnd		= TRUE;
