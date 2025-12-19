@@ -865,7 +865,7 @@ static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_byte
     byte code = data[index];
 
     // crazy dream 3 extension:
-    if (code == 0x0f)
+    if (code == 0x0f || (code == 0xfe && hack == GD_HACK_BD1_PLUS))
     {
       int x, y;
 
@@ -875,7 +875,7 @@ static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_byte
       int nx = data[index + 4];
       int ny = data[index + 5];
       int dx = data[index + 6];
-      int dy = data[index + 7] + 1;
+      int dy = data[index + 7] + (hack == GD_HACK_BD1_PLUS ? 0 : 1);
       GdElement element = import_func(data, index + 1);
 
       for (y = 0; y < ny; y++)
@@ -2753,6 +2753,7 @@ GdCavefileFormat gd_caveset_imported_get_format(const byte *buf)
 {
   const char *s_bd1       = "GDashBD1";
   const char *s_bd1_atari = "GDashB1A";
+  const char *s_bd1_plus  = "GDashB1+";
   const char *s_dc1       = "GDashDC1";
   const char *s_bd2       = "GDashBD2";
   const char *s_bd2_atari = "GDashB2A";
@@ -2768,6 +2769,8 @@ GdCavefileFormat gd_caveset_imported_get_format(const byte *buf)
     return GD_FORMAT_BD1;
   if (memcmp((char *)buf, s_bd1_atari, strlen(s_bd1_atari)) == 0)
     return GD_FORMAT_BD1_ATARI;
+  if (memcmp((char *)buf, s_bd1_plus, strlen(s_bd1_plus)) == 0)
+    return GD_FORMAT_BD1_PLUS;
   if (memcmp((char *)buf, s_dc1, strlen(s_dc1)) == 0)
     return GD_FORMAT_DC1;
   if (memcmp((char *)buf, s_bd2, strlen(s_bd2)) == 0)
@@ -2852,6 +2855,8 @@ List *gd_caveset_import_from_buffer (const byte *buf, size_t length)
     hack = GD_HACK_CRDR_7;
   if (format == GD_FORMAT_BD1    && length == 1241  && cs == 0x926f)
     hack = GD_HACK_MB;
+  if (format == GD_FORMAT_BD1_PLUS)
+    hack = GD_HACK_BD1_PLUS;
 
   int bufp = 0;
   int cavenum = 0;
@@ -2869,6 +2874,7 @@ List *gd_caveset_import_from_buffer (const byte *buf, size_t length)
     {
       case GD_FORMAT_BD1:                // boulder dash 1
       case GD_FORMAT_BD1_ATARI:          // boulder dash 1, atari version
+      case GD_FORMAT_BD1_PLUS:           // boulder dash 1 plus
       case GD_FORMAT_BD2:                // boulder dash 2
       case GD_FORMAT_BD2_ATARI:          // boulder dash 2
       case GD_FORMAT_DC1:                // deluxe caves 1
@@ -2886,6 +2892,7 @@ List *gd_caveset_import_from_buffer (const byte *buf, size_t length)
 	{
 	  case GD_FORMAT_BD1:
 	  case GD_FORMAT_BD1_ATARI:
+	  case GD_FORMAT_BD1_PLUS:
 	  case GD_FORMAT_DC1:
 	    cavelength = cave_copy_from_bd1(newcave, buf + bufp, length - bufp, format, hack);
 	    break;
