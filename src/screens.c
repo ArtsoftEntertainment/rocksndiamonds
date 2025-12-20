@@ -11805,6 +11805,7 @@ static void HandleScreenGadgets(struct GadgetInfo *gi)
 
     case SCREEN_CTRL_ID_SWITCH_ECS_AGA:
       setup.prefer_aga_graphics = !setup.prefer_aga_graphics;
+      SaveSetupIfNeeded();
       DrawMainMenu();
       break;
 
