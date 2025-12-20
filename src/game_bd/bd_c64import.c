@@ -1020,7 +1020,7 @@ static int cave_copy_from_bd1(GdCave *cave, const byte *data, int remaining_byte
 // Import bd2 cave data into our format.
 // Very similar to the bd1 importer, only the encoding was different.
 static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_bytes,
-			      GdCavefileFormat format)
+			      GdCavefileFormat format, GdImportHack hack)
 {
   int index;
   int x, y;
@@ -1083,7 +1083,13 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
   {
     // EXTREME CARE HERE! coordinates are in "wrong" order, first y then x.
 
-    switch (data[index])
+    int cave_code = data[index];
+
+    // handle some cave codes for certain special cave formats only
+    if ((cave_code == 8 || cave_code == 20) && hack != GD_HACK_BD2_CM)
+      cave_code = -1;	// ignore this cave code
+
+    switch (cave_code)
     {
       case 0:                // LINE
       {
@@ -1168,6 +1174,7 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
       }
 
       case 3:                // POINT
+      case 20:               // POINT (boulder dash 2, caduta massi)
       {
 	GdElement element = bd1_import(data, index + 1);
 	int x1 = data[index + 3];
@@ -1349,6 +1356,44 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
 	break;
       }
 
+      case 8:
+      {
+	int bytes = data[index + 1];
+	int x = data[index + 3];
+	int y = data[index + 2];
+	int start = index + 6;
+	int addr = y * 40 + x;
+
+	for (i = 0; i < bytes; i++)
+	{
+	  int pos = start + i;
+	  byte c = data[pos];
+	  GdElement element = bd1_import_byte(c, pos);
+	  int x1 = addr % 40;
+	  int y1 = addr / 40;
+
+	  cave->objects =
+	    list_append(cave->objects,
+			gd_object_new_point(GD_OBJECT_LEVEL_ALL,
+					    x1, y1, element));
+	  addr++;
+
+	  c += 0x34;
+
+	  element = bd1_import_byte(c, pos);
+
+	  x1 = addr % 40;
+	  y1 = addr / 40;
+
+	  cave->objects =
+	    list_append(cave->objects,
+			gd_object_new_point(GD_OBJECT_LEVEL_ALL,
+					    x1, y1, element));
+	  addr++;
+	}
+	break;
+      }
+
       default:
       {
 	Warn("unknown bd2 extension no. %02x at byte %d", data[index], index);
@@ -1372,7 +1417,7 @@ static int cave_copy_from_bd2(GdCave *cave, const byte *data, int remaining_byte
   index++;
 
   // the colors from the memory dump are appended here by any2gdash
-  if (format == GD_FORMAT_BD2)
+  if (format == GD_FORMAT_BD2 || format == GD_FORMAT_BD2_CM)
   {
     // c64 colors
     cave->color[0] = gd_c64_color(0);
@@ -2757,6 +2802,7 @@ GdCavefileFormat gd_caveset_imported_get_format(const byte *buf)
   const char *s_dc1       = "GDashDC1";
   const char *s_bd2       = "GDashBD2";
   const char *s_bd2_atari = "GDashB2A";
+  const char *s_bd2_cm    = "GDashB20";
   const char *s_plc       = "GDashPLC";
   const char *s_plc_atari = "GDashPCA";
   const char *s_dlb       = "GDashDLB";
@@ -2777,6 +2823,8 @@ GdCavefileFormat gd_caveset_imported_get_format(const byte *buf)
     return GD_FORMAT_BD2;
   if (memcmp((char *)buf, s_bd2_atari, strlen(s_bd2_atari)) == 0)
     return GD_FORMAT_BD2_ATARI;
+  if (memcmp((char *)buf, s_bd2_cm, strlen(s_bd2_cm)) == 0)
+    return GD_FORMAT_BD2_CM;
   if (memcmp((char *)buf, s_plc, strlen(s_plc)) == 0)
     return GD_FORMAT_PLC;
   if (memcmp((char *)buf, s_plc_atari, strlen(s_plc_atari)) == 0)
@@ -2857,6 +2905,8 @@ List *gd_caveset_import_from_buffer (const byte *buf, size_t length)
     hack = GD_HACK_MB;
   if (format == GD_FORMAT_BD1_PLUS)
     hack = GD_HACK_BD1_PLUS;
+  if (format == GD_FORMAT_BD2_CM)
+    hack = GD_HACK_BD2_CM;
 
   int bufp = 0;
   int cavenum = 0;
@@ -2877,6 +2927,7 @@ List *gd_caveset_import_from_buffer (const byte *buf, size_t length)
       case GD_FORMAT_BD1_PLUS:           // boulder dash 1 plus
       case GD_FORMAT_BD2:                // boulder dash 2
       case GD_FORMAT_BD2_ATARI:          // boulder dash 2
+      case GD_FORMAT_BD2_CM:             // boulder dash 2, caduta massi
       case GD_FORMAT_DC1:                // deluxe caves 1
 	// these are not in the data so we guess
 	newcave->selectable   = (cavenum < 16 && cavenum % 4 == 0);
@@ -2899,7 +2950,8 @@ List *gd_caveset_import_from_buffer (const byte *buf, size_t length)
 
 	  case GD_FORMAT_BD2:
 	  case GD_FORMAT_BD2_ATARI:
-	    cavelength = cave_copy_from_bd2(newcave, buf + bufp, length - bufp, format);
+	  case GD_FORMAT_BD2_CM:
+	    cavelength = cave_copy_from_bd2(newcave, buf + bufp, length - bufp, format, hack);
 	    break;
 
 	  default:

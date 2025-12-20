@@ -29,6 +29,7 @@ typedef enum _gd_cavefile_format
   GD_FORMAT_DC1,        // boulder dash 1, deluxe caves 1 extension - non-sloped brick wall
   GD_FORMAT_BD2,        // boulder dash 2 with rockford's extensions
   GD_FORMAT_BD2_ATARI,  // boulder dash 2, atari version
+  GD_FORMAT_BD2_CM,     // boulder dash 2, caduta massi
   GD_FORMAT_PLC,        // peter liepa construction kit
   GD_FORMAT_PLC_ATARI,  // peter liepa construction kit, atari version
   GD_FORMAT_DLB,        // no one's delight boulder dash
@@ -46,6 +47,7 @@ typedef enum _gd_import_hack
   GD_HACK_NONE,         // no hack
 
   GD_HACK_BD1_PLUS,     // boulder dash 1 plus
+  GD_HACK_BD2_CM,       // boulder dash 2 caduta massi
   GD_HACK_CRDR_1,       // crazy dream 1
   GD_HACK_CRDR_7,       // crazy dream 7
   GD_HACK_CRDR_9,       // crazy dream 9
