@@ -1688,6 +1688,7 @@ static void do_player_ext(GdCave *cave, int x, int y, GdDirection player_move, b
   {
     case O_PLAYER_START:
       store(cave, x, y, O_PLAYER);
+      unscan(cave, x, y);
       // FALL THROUGH
 
     case O_PLAYER:
