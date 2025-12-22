@@ -19095,7 +19095,8 @@ static void HandleLevelEditorIdle_Drawing(void)
 {
   static boolean last_highlighted = FALSE;
   static boolean last_highlighted_similar = FALSE;
-  boolean highlighted = (GetKeyModState() & KMOD_Alt);
+  boolean control_pressed = (GetKeyModState() & (KMOD_Control | KMOD_Meta));
+  boolean highlighted = ((GetKeyModState() & KMOD_Alt) && !control_pressed);
   boolean highlighted_similar = (GetKeyModState() & KMOD_Shift);
 
   if (highlighted != last_highlighted ||
