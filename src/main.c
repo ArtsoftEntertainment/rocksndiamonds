@@ -7243,56 +7243,6 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "Light rock"
   },
   {
-    "bdx_steel_exit_closed",
-    "bdx_steel_exit",
-    "Closed steel exit"
-  },
-  {
-    "bdx_steel_exit_open",
-    "bdx_steel_exit",
-    "Open steel exit"
-  },
-  {
-    "bdx_invisible_steel_exit_closed",
-    "bdx_invisible_steel_exit",
-    "Invisible steel exit (closed)"
-  },
-  {
-    "bdx_invisible_steel_exit_open",
-    "bdx_invisible_steel_exit",
-    "Invisible steel exit (open)"
-  },
-  {
-    "bdx_unused_1",
-    "bdx_unused",
-    "-"
-  },
-  {
-    "bdx_unused_2",
-    "bdx_unused",
-    "-"
-  },
-  {
-    "bdx_unused_3",
-    "bdx_unused",
-    "-"
-  },
-  {
-    "bdx_unused_4",
-    "bdx_unused",
-    "-"
-  },
-  {
-    "bdx_unused_5",
-    "bdx_unused",
-    "-"
-  },
-  {
-    "bdx_unused_6",
-    "bdx_unused",
-    "-"
-  },
-  {
     "bdx_grass_ball.falling",
     "bdx_grass_ball",
     "Grass ball (falling)"
@@ -8181,6 +8131,56 @@ struct ElementNameInfo element_name_info[MAX_NUM_ELEMENTS + 1] =
     "bdx_nut.breaking_0",
     "bdx_nut",
     "Nut explosion (0)"
+  },
+  {
+    "bdx_steel_exit_closed",
+    "bdx_steel_exit",
+    "Closed steel exit"
+  },
+  {
+    "bdx_steel_exit_open",
+    "bdx_steel_exit",
+    "Open steel exit"
+  },
+  {
+    "bdx_invisible_steel_exit_closed",
+    "bdx_invisible_steel_exit",
+    "Invisible steel exit (closed)"
+  },
+  {
+    "bdx_invisible_steel_exit_open",
+    "bdx_invisible_steel_exit",
+    "Invisible steel exit (open)"
+  },
+  {
+    "bdx_unused_1",
+    "bdx_unused",
+    "-"
+  },
+  {
+    "bdx_unused_2",
+    "bdx_unused",
+    "-"
+  },
+  {
+    "bdx_unused_3",
+    "bdx_unused",
+    "-"
+  },
+  {
+    "bdx_unused_4",
+    "bdx_unused",
+    "-"
+  },
+  {
+    "bdx_unused_5",
+    "bdx_unused",
+    "-"
+  },
+  {
+    "bdx_unused_6",
+    "bdx_unused",
+    "-"
   },
 
   // --------------------------------------------------------------------------

@@ -3237,6 +3237,14 @@ static int getMappedElementByVersion(int element, VersionType game_version)
 	       element);
   }
 
+  if (game_version == VERSION_IDENT(4,4,1,0))
+  {
+    // map BDX elements broken in this version
+    element = (element > EL_BDX_LIGHT_ROCK + 10 ? element - 10 :
+	       element > EL_BDX_LIGHT_ROCK      ? element - 1409 + 1587 :
+	       element);
+  }
+
   return element;
 }
 
