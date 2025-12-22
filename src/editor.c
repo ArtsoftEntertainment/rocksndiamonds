@@ -15880,7 +15880,7 @@ static void SetElementExt(int x, int y, int dx, int dy, int element, boolean cha
 {
   if (element < 0)
     SetElementSimple(x, y, Tile[x][y], change_level);
-  else if (GetKeyModState() & KMOD_Shift)
+  else if ((GetKeyModState() & KMOD_Shift) && !draw_with_brush)
     SetElementIntelliDraw(x, y, dx, dy, element, change_level, button);
   else
     SetElementSimpleExt(x, y, dx, dy, element, change_level);
