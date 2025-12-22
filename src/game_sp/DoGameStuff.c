@@ -23,7 +23,7 @@ void subDoGameStuff(byte action)
   int InfotronsNeeded_last = InfotronsNeeded;
 
   if (game_sp.zigzag_movement &&
-      action & MV_ANY_DIRECTION &&
+      !(action & KEY_BUTTON) &&
       PlayField16[MurphyPosIndex] == fiMurphy)
   {
     int move_dir = MV_NONE;
