@@ -16137,6 +16137,7 @@ static void SelectArea(int from_x, int from_y, int to_x, int to_y, int element, 
 #define CB_FLIP_BRUSH_X			12
 #define CB_FLIP_BRUSH_Y			13
 #define CB_FLIP_BRUSH_XY		14
+#define CB_UPDATE_BRUSH			15
 
 #define MAX_CB_TOKEN_LEN		128
 #define MAX_CB_PART_SIZE		10
@@ -16762,6 +16763,10 @@ static void CopyBrushExt(int from_x, int from_y, int to_x, int to_y, int button,
 
     CopyBrushExt(last_cursor_x, last_cursor_y, 0, 0, 0, CB_BRUSH_TO_CURSOR);
   }
+  else if (mode == CB_UPDATE_BRUSH)
+  {
+    CopyBrushExt(last_cursor_x, last_cursor_y, 0, 0, 0, CB_BRUSH_TO_CURSOR);
+  }
 
   if (mode == CB_UPDATE_BRUSH_POSITION)
   {
@@ -16809,6 +16814,11 @@ static void RotateBrush(void)
 {
   CopyBrushExt(0, 0, 0, 0, 0, CB_FLIP_BRUSH_XY);
   CopyBrushExt(0, 0, 0, 0, 0, CB_FLIP_BRUSH_X);
+}
+
+static void UpdateBrush(void)
+{
+  CopyBrushExt(0, 0, 0, 0, 0, CB_UPDATE_BRUSH);
 }
 
 void DumpBrush(void)
@@ -19103,6 +19113,9 @@ static void HandleLevelEditorIdle_Drawing(void)
       (highlighted && highlighted_similar != last_highlighted_similar))
   {
     DrawAreaElementHighlight(highlighted, highlighted_similar);
+
+    if (draw_with_brush)
+      UpdateBrush();
 
     redraw_mask |= REDRAW_FIELD;
   }
