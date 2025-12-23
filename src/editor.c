@@ -19101,7 +19101,7 @@ static void HandleLevelEditorIdle_Properties(void)
   FrameCounter++;	// increase animation frame counter
 }
 
-static void HandleLevelEditorIdle_Drawing(void)
+static void HandleLevelEditorIdle_Drawing(boolean force_redraw)
 {
   static boolean last_highlighted = FALSE;
   static boolean last_highlighted_similar = FALSE;
@@ -19110,7 +19110,8 @@ static void HandleLevelEditorIdle_Drawing(void)
   boolean highlighted_similar = (GetKeyModState() & KMOD_Shift);
 
   if (highlighted != last_highlighted ||
-      (highlighted && highlighted_similar != last_highlighted_similar))
+      (highlighted && highlighted_similar != last_highlighted_similar) ||
+      force_redraw)
   {
     DrawAreaElementHighlight(highlighted, highlighted_similar);
 
@@ -19129,7 +19130,7 @@ void HandleLevelEditorIdle(void)
   if (edit_mode == ED_MODE_PROPERTIES)
     HandleLevelEditorIdle_Properties();
   else if (edit_mode == ED_MODE_DRAWING)
-    HandleLevelEditorIdle_Drawing();
+    HandleLevelEditorIdle_Drawing(FALSE);
 }
 
 static void ClearEditorGadgetInfoText(void)
