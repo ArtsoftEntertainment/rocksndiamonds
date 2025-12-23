@@ -17288,6 +17288,9 @@ static void DrawAreaElementHighlight(boolean highlighted, boolean highlighted_si
       }
     }
   }
+
+  if (draw_with_brush)
+    UpdateBrush();
 }
 
 static void CopyLevelTemplateToUserLevelSet(char *levelset_subdir)
@@ -19117,9 +19120,6 @@ static void HandleLevelEditorIdle_Drawing(boolean force_redraw)
       force_redraw)
   {
     DrawAreaElementHighlight(highlighted, highlighted_similar);
-
-    if (draw_with_brush)
-      UpdateBrush();
 
     redraw_mask |= REDRAW_FIELD;
   }
