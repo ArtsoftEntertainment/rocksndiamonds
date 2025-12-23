@@ -19314,9 +19314,16 @@ static void HandleDrawingAreaInfo(struct GadgetInfo *gi)
     if (edit_mode == ED_MODE_DRAWING && draw_with_brush && !button_status)
     {
       if (IN_ED_FIELD(sx, sy) && IN_LEV_FIELD(lx, ly))
+      {
+	// update highlighted elements if needed
+	HandleLevelEditorIdle_Drawing(TRUE);
+
 	CopyBrushToCursor(sx, sy);
+      }
       else
+      {
 	DeleteBrushFromCursor();
+      }
     }
 
     if (!draw_with_brush)
