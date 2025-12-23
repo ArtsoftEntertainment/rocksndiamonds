@@ -18646,6 +18646,9 @@ static void HandleControlButtons(struct GadgetInfo *gi)
 
       DrawEditorLevel(ed_fieldx, ed_fieldy, level_xpos, level_ypos);
 
+      if (draw_with_brush)
+	UpdateBrush();
+
       break;
 
     case GADGET_ID_CONF:
