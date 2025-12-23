@@ -6019,6 +6019,7 @@ static struct TitleMessageInfo *wrapped_tmi = NULL;
 // forward declaration for internal use
 static void CopyBrushToCursor(int, int);
 static void DeleteBrushFromCursor(void);
+static void UpdateBrush(void);
 static void ModifyEditorCounterValue(int, int);
 static void ModifyEditorCounterLimits(int, int, int);
 static void ModifyEditorSelectboxValue(int, int);
@@ -8926,6 +8927,9 @@ static void DrawEditorLevel(int size_x, int size_y, int scroll_x, int scroll_y)
 {
   DrawSizedLevel(size_x, size_y, scroll_x, scroll_y, ed_tilesize);
   DrawEditorLevelBorderLinesIfNeeded();
+
+  if (draw_with_brush)
+    UpdateBrush();
 }
 
 static void DrawDrawingArea(int id)
@@ -18648,9 +18652,6 @@ static void HandleControlButtons(struct GadgetInfo *gi)
       CheckLevelBorderElement(FALSE);
 
       DrawEditorLevel(ed_fieldx, ed_fieldy, level_xpos, level_ypos);
-
-      if (draw_with_brush)
-	UpdateBrush();
 
       break;
 
