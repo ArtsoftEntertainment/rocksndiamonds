@@ -405,6 +405,7 @@ void LoadLevelArtworkInfo(void);
 
 char *getArtworkIdentifierForUserLevelSet(int);
 TreeInfo *getArtworkTreeInfoForUserLevelSet(int);
+TreeInfo *getArtworkTreeInfoForCurrentArtwork(int);
 boolean checkIfCustomArtworkExistsForCurrentLevelSet(void);
 void AddUserLevelSetToLevelInfo(char *);
 void AddTreeSetToTreeInfo(TreeInfo *, char *, char *, int);

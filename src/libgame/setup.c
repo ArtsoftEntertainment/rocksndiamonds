@@ -84,11 +84,21 @@ char *getConfigProgramString(int text_id)
   if (leveldir_current == NULL)
     return setup.internal.text[text_id];
 
-  TreeInfo *graphics_current = getArtworkTreeInfoForUserLevelSet(ARTWORK_TYPE_GRAPHICS);
+  if (GFX_OVERRIDE_ARTWORK(ARTWORK_TYPE_GRAPHICS))
+  {
+    TreeInfo *graphics_current = getArtworkTreeInfoForCurrentArtwork(ARTWORK_TYPE_GRAPHICS);
 
-  return (leveldir_current->text[text_id] ? leveldir_current->text[text_id] :
-	  graphics_current->text[text_id] ? graphics_current->text[text_id] :
-	  setup.internal.text[text_id]);
+    return (graphics_current->text[text_id] ? graphics_current->text[text_id] :
+	    setup.internal.text[text_id]);
+  }
+  else
+  {
+    TreeInfo *graphics_current = getArtworkTreeInfoForUserLevelSet(ARTWORK_TYPE_GRAPHICS);
+
+    return (leveldir_current->text[text_id] ? leveldir_current->text[text_id] :
+	    graphics_current->text[text_id] ? graphics_current->text[text_id] :
+	    setup.internal.text[text_id]);
+  }
 }
 
 char *getTreeInfoText(int type)
@@ -4888,6 +4898,23 @@ char *getArtworkIdentifierForUserLevelSet(int type)
 TreeInfo *getArtworkTreeInfoForUserLevelSet(int type)
 {
   char *artwork_set = getArtworkIdentifierForUserLevelSet(type);
+  TreeInfo *artwork_first_node = ARTWORK_FIRST_NODE(artwork, type);
+  TreeInfo *ti = getTreeInfoFromIdentifier(artwork_first_node, artwork_set);
+
+  if (ti == NULL)
+  {
+    ti = getTreeInfoFromIdentifier(artwork_first_node,
+				   ARTWORK_DEFAULT_SUBDIR(type));
+    if (ti == NULL)
+      Fail("cannot find default graphics -- should not happen");
+  }
+
+  return ti;
+}
+
+TreeInfo *getArtworkTreeInfoForCurrentArtwork(int type)
+{
+  char *artwork_set = ARTWORK_CURRENT_IDENTIFIER(artwork, type);
   TreeInfo *artwork_first_node = ARTWORK_FIRST_NODE(artwork, type);
   TreeInfo *ti = getTreeInfoFromIdentifier(artwork_first_node, artwork_set);
 
