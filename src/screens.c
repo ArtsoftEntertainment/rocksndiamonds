@@ -9151,8 +9151,6 @@ static void drawSetupValue(int screen_pos, int setup_info_pos_raw)
   int menu_screen_value_xpos = MENU_SCREEN_VALUE_XPOS + xoffset;
   int xpos = menu_screen_value_xpos;
   int ypos = MENU_SCREEN_START_YPOS + screen_pos;
-  int startx = mSX + xpos * 32;
-  int starty = mSY + ypos * 32;
 
   if (value_string == NULL)
     return;
@@ -9180,8 +9178,8 @@ static void drawSetupValue(int screen_pos, int setup_info_pos_raw)
     value_string = getSetupValue(TYPE_INTEGER, (void *)&displayed_player_nr);
   }
 
-  startx = mSX + xpos * 32;
-  starty = mSY + ypos * 32;
+  int startx = mSX + xpos * 32;
+  int starty = mSY + ypos * 32;
 
   // always use narrow font for setup values on right screen side
   if (xpos > MENU_SCREEN_START_XPOS)
