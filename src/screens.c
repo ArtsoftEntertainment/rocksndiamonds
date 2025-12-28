@@ -9137,6 +9137,13 @@ static void drawSetupValue(int screen_pos, int setup_info_pos_raw)
   struct TokenInfo *si = &setup_info[si_pos];
   boolean font_draw_xoffset_modified = FALSE;
   boolean scrollbar_needed = (num_setup_info < max_setup_info);
+  int type = si->type;
+  void *value = si->value;
+  char *value_string = getSetupValue(type, value);
+  int font_nr_default = getSetupValueFont(type, value);
+  int font_nr_narrow = getSetupValueFontNarrow(type, font_nr_default);
+  int font_width_default = getFontWidth(font_nr_default);
+  int font_nr = font_nr_default;
   int mx_scrollbar = screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL]->x;
   int mx_right_border = (scrollbar_needed ? mx_scrollbar : SX + SXSIZE);
   int font_draw_xoffset_old = -1;
@@ -9146,13 +9153,6 @@ static void drawSetupValue(int screen_pos, int setup_info_pos_raw)
   int ypos = MENU_SCREEN_START_YPOS + screen_pos;
   int startx = mSX + xpos * 32;
   int starty = mSY + ypos * 32;
-  int type = si->type;
-  void *value = si->value;
-  char *value_string = getSetupValue(type, value);
-  int font_nr_default = getSetupValueFont(type, value);
-  int font_nr_narrow = getSetupValueFontNarrow(type, font_nr_default);
-  int font_width_default = getFontWidth(font_nr_default);
-  int font_nr = font_nr_default;
 
   if (value_string == NULL)
     return;
