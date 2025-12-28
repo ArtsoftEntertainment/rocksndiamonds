@@ -9211,7 +9211,8 @@ static void drawSetupValue(int screen_pos, int setup_info_pos_raw)
         max_menu_text_length_medium * (16 - text_font_width);
   }
 
-  DrawBackground(startx, starty, mx_right_border - startx, font_height);
+  // clear background where text is really drawn (including horizontal draw offset)
+  DrawBackground(startx + draw_xoffset, starty, mx_right_border - startx, font_height);
   DrawText(startx, starty, value_string, font_nr);
 
   if (type & TYPE_PLAYER)
