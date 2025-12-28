@@ -188,8 +188,6 @@
 							      getFontHeight((t).font), (t).valign))
 #define MENU_SCREEN_START_XPOS			1
 #define MENU_SCREEN_START_YPOS			2
-#define MENU_SCREEN_VALUE_XPOS			(SCR_FIELDX - 3)
-#define MENU_SCREEN_MAX_XPOS			(SCR_FIELDX - 1)
 #define MENU_TITLE_YPOS				MENU_TEXT_ALIGNED_YPOS(menu.text.title)
 #define MENU_TITLE1_YPOS			MENU_TEXT_ALIGNED_YPOS(menu.text.title_1)
 #define MENU_TITLE2_YPOS			MENU_TEXT_ALIGNED_YPOS(menu.text.title_2)
@@ -9143,12 +9141,14 @@ static void drawSetupValue(int screen_pos, int setup_info_pos_raw)
   int font_nr_default = getSetupValueFont(type, value);
   int font_nr_narrow = getSetupValueFontNarrow(type, font_nr_default);
   int font_width_default = getFontWidth(font_nr_default);
+  int font_width_narrow = getFontWidth(font_nr_narrow);
   int font_nr = font_nr_default;
+  int max_value_width = strlen("auto") * font_width_narrow;
   int mx_scrollbar = screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL]->x;
-  int mx_right_border = (scrollbar_needed ? mx_scrollbar : SX + SXSIZE);
+  int mx_right_border = MIN(scrollbar_needed ? mx_scrollbar : SX + SXSIZE, SX + SXSIZE);
+  int mx_value_startx = mx_right_border - max_value_width;
   int font_draw_xoffset_old = -1;
-  int xoffset = (scrollbar_needed ? 0 : 1);
-  int menu_screen_value_xpos = MENU_SCREEN_VALUE_XPOS + xoffset;
+  int menu_screen_value_xpos = (mx_value_startx - mSX) / 32;
   int xpos = menu_screen_value_xpos;
   int ypos = MENU_SCREEN_START_YPOS + screen_pos;
 
