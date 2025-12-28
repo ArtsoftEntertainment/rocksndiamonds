@@ -9150,6 +9150,7 @@ static void drawSetupValue(int screen_pos, int setup_info_pos_raw)
   void *value = si->value;
   char *value_string = getSetupValue(type, value);
   int font_nr_default = getSetupValueFont(type, value);
+  int font_nr_narrow = getSetupValueFontNarrow(type, font_nr_default);
   int font_width_default = getFontWidth(font_nr_default);
   int font_nr = font_nr_default;
 
@@ -9184,7 +9185,13 @@ static void drawSetupValue(int screen_pos, int setup_info_pos_raw)
 
   // always use narrow font for setup values on right screen side
   if (xpos > MENU_SCREEN_START_XPOS)
-    font_nr = getSetupValueFontNarrow(type, font_nr);
+    font_nr = font_nr_narrow;
+
+  struct FontBitmapInfo *font = getFontBitmapInfo(font_nr);
+  int draw_xoffset = font->draw_xoffset;
+  int draw_yoffset = font->draw_yoffset;
+  int font_width = getFontWidth(font_nr);
+  int font_height = getFontHeight(font_nr);
 
   // special compatibility handling for "jue0" graphics set
   if (strPrefix(artwork.gfx_current_identifier, "jue0"))
@@ -9194,26 +9201,26 @@ static void drawSetupValue(int screen_pos, int setup_info_pos_raw)
     int max_menu_text_length_medium = max_menu_text_length_big * 2;
     int text_font_nr = getMenuTextFont(FONT_MENU_2);
     int text_font_xoffset = getFontDrawOffsetX(text_font_nr);
+    int text_font_width = getFontWidth(text_font_nr);
 
-    font_draw_xoffset_old = getFontDrawOffsetX(font_nr);
+    font_draw_xoffset_old = draw_xoffset;
     font_draw_xoffset_modified = TRUE;
 
     if (type & TYPE_KEY)
-      getFontBitmapInfo(font_nr)->draw_xoffset += 2 * getFontWidth(font_nr);
+      font->draw_xoffset += 2 * font_width;
     else if (!(type & TYPE_STRING))
-      getFontBitmapInfo(font_nr)->draw_xoffset = text_font_xoffset + 20 -
-        max_menu_text_length_medium * (16 - getFontWidth(text_font_nr));
+      font->draw_xoffset = text_font_xoffset + 20 -
+        max_menu_text_length_medium * (16 - text_font_width);
   }
 
-  DrawBackground(startx, starty, mx_right_border - startx, getFontHeight(font_nr));
+  DrawBackground(startx, starty, mx_right_border - startx, font_height);
   DrawText(startx, starty, value_string, font_nr);
 
   if (type & TYPE_PLAYER)
   {
-    struct FontBitmapInfo *font = getFontBitmapInfo(font_nr);
     int player_nr = *(int *)value;
-    int xoff = font->draw_xoffset + getFontWidth(font_nr);
-    int yoff = font->draw_yoffset + (getFontHeight(font_nr) - TILEY) / 2;
+    int xoff = draw_xoffset + font_width;
+    int yoff = draw_yoffset + (font_height - TILEY) / 2;
     int startx2 = startx + xoff;
     int starty2 = starty + yoff;
 
@@ -9225,7 +9232,7 @@ static void drawSetupValue(int screen_pos, int setup_info_pos_raw)
   }
 
   if (font_draw_xoffset_modified)
-    getFontBitmapInfo(font_nr)->draw_xoffset = font_draw_xoffset_old;
+    font->draw_xoffset = font_draw_xoffset_old;
 }
 
 static void changeSetupValue(int screen_pos, int setup_info_pos_raw, int dx)
