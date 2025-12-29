@@ -2016,6 +2016,13 @@ static void HandleKeysSpecial(Key key)
     {
       DumpBrush_Names();
     }
+#ifdef DEBUG
+    else if (strSuffix(cheat_input, ":test-add-to-clipboard") ||
+	     strSuffix(cheat_input, ":tatc"))
+    {
+      SDL_SetClipboardText("Test\r\nTest\r\n\r\nTest\r\n");
+    }
+#endif
   }
 
   // special key shortcuts for all game modes
