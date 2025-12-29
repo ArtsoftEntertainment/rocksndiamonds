@@ -2178,7 +2178,8 @@ static boolean HandleKeysClipboard(Key key)
 
     while (*ptr)
     {
-      char name[2] = { *ptr, 0 };
+      char c = *ptr++;
+      char name[2] = { c, 0 };
       Key key_from_clipboard = getKeyFromKeyName(name);
 
       if (key_from_clipboard == KSYM_UNDEFINED)
@@ -2194,8 +2195,6 @@ static boolean HandleKeysClipboard(Key key)
 
       if (text_editor_typing_active && anyLevelEditorTextTypingEndReached())
 	break;
-
-      ptr++;
     }
 
     checked_free(text_latin1);
