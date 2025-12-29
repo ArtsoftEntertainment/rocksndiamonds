@@ -2179,6 +2179,10 @@ static boolean HandleKeysClipboard(Key key)
     while (*ptr)
     {
       char c = *ptr++;
+
+      if (c == '\r')	// ignore carriage return characters
+	continue;
+
       char name[2] = { c, 0 };
       Key key_from_clipboard = getKeyFromKeyName(name);
 
