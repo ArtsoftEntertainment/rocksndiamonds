@@ -2394,7 +2394,7 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 
   // if diagonal movements not allowed,
   // horizontal movements have precedence. [BROADRIBB]
-  if (!cave->diagonal_movements && !game_bd.zigzag_movement)
+  if (!cave->diagonal_movements && (!game_bd.zigzag_movement || player_fire))
   {
     switch (player_move)
     {
