@@ -253,6 +253,9 @@ char *getUTF8FromLatin1(char *);
 char *getLatin1FromUTF8(char *);
 int getTextEncoding(char *);
 
+boolean hasTabs(char *);
+char *getExpandedTabs(char *);
+
 char *getEscapedJSON(char *);
 
 char *getKeyNameFromKey(Key);

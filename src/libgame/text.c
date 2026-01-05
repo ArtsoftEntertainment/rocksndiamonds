@@ -423,6 +423,15 @@ char *GetTextBufferFromFile(char *filename, int max_lines)
     buffer = body_latin1;
   }
 
+  if (hasTabs(buffer))
+  {
+    char *buffer_expanded_tabs = getExpandedTabs(buffer);
+
+    checked_free(buffer);
+
+    buffer = buffer_expanded_tabs;
+  }
+
   return buffer;
 }
 

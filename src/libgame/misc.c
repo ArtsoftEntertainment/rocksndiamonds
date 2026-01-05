@@ -2510,6 +2510,63 @@ int getTextEncoding(char *text)
   return encoding;
 }
 
+// ----------------------------------------------------------------------------
+// functions to manipulate text buffers
+// ----------------------------------------------------------------------------
+
+boolean hasTabs(char *s)
+{
+  char *s_ptr = s;
+
+  while (*s_ptr)
+  {
+    if (*s_ptr == '\t')
+      return TRUE;
+
+    s_ptr++;
+  }
+
+  return FALSE;
+}
+
+char *getExpandedTabs(char *s)
+{
+  char *s_ptr = s;
+  int num_tabs = 0;
+
+  while (*s_ptr)
+  {
+    if (*s_ptr == '\t')
+      num_tabs++;
+
+    s_ptr++;
+  }
+
+  char *s_new = checked_calloc(strlen(s) + num_tabs * 7);
+  char *s_new_ptr = s_new;
+
+  s_ptr = s;
+
+  while (*s_ptr)
+  {
+    if (*s_ptr == '\t')
+    {
+      int i;
+
+      for (i = 0; i < 8; i++)
+	*s_new_ptr++ = ' ';
+
+      s_ptr++;
+    }
+    else
+    {
+      *s_new_ptr++ = *s_ptr++;
+    }
+  }
+
+  return s_new;
+}
+
 
 // ----------------------------------------------------------------------------
 // functions for JSON handling
