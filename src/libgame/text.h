@@ -43,6 +43,7 @@
 #define CHAR_BYTE_REGISTERED	((char)0xae)
 #define CHAR_BYTE_DEGREE	((char)0xb0)
 #define CHAR_BYTE_CURSOR	((char)0xa0)
+#define CHAR_BYTE_ACUTE		((char)0xb4)
 
 // special character mapping for BDX fonts
 #define CHAR_BYTE_BDX_FIRST	((char)0xb1)
@@ -105,6 +106,7 @@
 				 (c) == CHAR_BYTE_UMLAUT_o   ? 136 :	\
 				 (c) == CHAR_BYTE_UMLAUT_u   ? 137 :	\
 				 (c) == CHAR_BYTE_SHARP_S    ? 138 :	\
+				 (c) == CHAR_BYTE_ACUTE      ?  39 :	\
 				 (c) >= CHAR_BYTE_BDX_FIRST &&		\
 				 (c) <= CHAR_BYTE_BDX_LAST   ?		\
 				 (c) -  CHAR_BYTE_BDX_FIRST  + 139 :	\
