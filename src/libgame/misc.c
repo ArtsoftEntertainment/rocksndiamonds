@@ -3568,7 +3568,7 @@ DirectoryEntry *readDirectory(Directory *dir)
     dir->dir_entry = checked_calloc(sizeof(DirectoryEntry));
 
     dir->dir_entry->is_directory = FALSE;
-    if (line[strlen(line) - 1] == '/')
+    if (line[strlen(line) - 1] == CHAR_PATH_SEPARATOR)
     {
       dir->dir_entry->is_directory = TRUE;
 

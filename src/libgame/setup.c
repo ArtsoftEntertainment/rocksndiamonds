@@ -2250,20 +2250,20 @@ void createDirectoryPath(char *dir, char *text)
   char *dir_copy = getStringCopy(dir);
   char *dir_ptr = dir_copy;
 
-  // skip checking for leading "/" (would result in empty directory string)
-  if (*dir_ptr == '/')
+  // skip checking for leading path separator (would result in empty directory string)
+  if (*dir_ptr == CHAR_PATH_SEPARATOR)
     dir_ptr++;
 
   // create all intermediate (parent) directories of the final directory
   while (*dir_ptr)
   {
-    if (*dir_ptr == '/')
+    if (*dir_ptr == CHAR_PATH_SEPARATOR)
     {
-      *dir_ptr = '\0';		// temporarily terminate directory string at path separator
+      *dir_ptr = '\0';			// temporarily terminate directory string at path separator
 
       createDirectory(dir_copy, text);
 
-      *dir_ptr = '/';		// restore directory string
+      *dir_ptr = CHAR_PATH_SEPARATOR;	// restore directory string
     }
 
     dir_ptr++;

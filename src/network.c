@@ -179,7 +179,9 @@ boolean hasStartedNetworkGame(void)
 
 static boolean hasPathSeparator(char *s)
 {
-  return (strchr(s, '/') != NULL);
+  // network client can be either Unix-like or Windows
+  return (strchr(s, CHAR_PATH_SEPARATOR_UNIX) != NULL ||
+	  strchr(s, CHAR_PATH_SEPARATOR_DOS)  != NULL);
 }
 
 static void StartNetworkServer(int port)
