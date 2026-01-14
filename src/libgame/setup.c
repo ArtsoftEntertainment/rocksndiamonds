@@ -2250,6 +2250,12 @@ void createDirectoryPath(char *dir, char *text)
   char *dir_copy = getStringCopy(dir);
   char *dir_ptr = dir_copy;
 
+#if defined(PLATFORM_WINDOWS)
+  // skip checking for Windows drive letter
+  if (strchr(dir_ptr, ':') != NULL)
+    dir_ptr = strchr(dir_ptr, ':') + 1;
+#endif
+
   // skip checking for leading path separator (would result in empty directory string)
   if (*dir_ptr == CHAR_PATH_SEPARATOR)
     dir_ptr++;
