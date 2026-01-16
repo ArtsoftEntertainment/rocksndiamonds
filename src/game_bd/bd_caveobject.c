@@ -52,7 +52,10 @@ char *gd_object_get_bdcff(const GdObject *object)
       return getStringPrint("FillRect=%d %d %d %d %s", object->x1, object->y1, object->x2, object->y2, gd_element_properties[object->element].filename);
 
     case GD_RASTER:
-      return getStringPrint("Raster=%d %d %d %d %d %d %s", object->x1, object->y1, (object->x2-object->x1)/object->dx+1, (object->y2-object->y1)/object->dy+1, object->dx, object->dy, gd_element_properties[object->element].filename);
+      return getStringPrint("Raster=%d %d %d %d %d %d %s", object->x1, object->y1,
+			    (object->dx != 0 ? (object->x2 - object->x1) / object->dx + 1 : 1),
+			    (object->dy != 0 ? (object->y2 - object->y1) / object->dy + 1 : 1),
+			    object->dx, object->dy, gd_element_properties[object->element].filename);
 
     case GD_JOIN:
       return getStringPrint("%s=%d %d %s %s", (object->backwards ? "AddBackward" : "Add"), object->dx, object->dy, gd_element_properties[object->element].filename, gd_element_properties[object->fill_element].filename);
