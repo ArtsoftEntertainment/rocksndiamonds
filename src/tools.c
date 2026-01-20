@@ -11153,6 +11153,7 @@ static boolean check_linear_animation_EM(int tile)
     case Xsplash_e:
     case Xsplash_w:
     case Ynut_stone:
+    case Xdrip:
       return TRUE;
   }
 
