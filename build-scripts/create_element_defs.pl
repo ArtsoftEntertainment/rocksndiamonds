@@ -235,7 +235,7 @@ sub print_file_header
 
     $filename_text .= ' ' x (length($filename_tmpl) - length($filename_text));
 
-    open(FILE, "$filename_header_tmpl") ||
+    open(FILE, '<', "$filename_header_tmpl") ||
 	fail("cannot open file '$filename_header_tmpl' for reading");
 
     while (<FILE>)
@@ -287,7 +287,7 @@ sub print_graphics_list
 
     print_file_header($filename_conf_gfx_h, $text_gfx_h);
 
-    open(FILE, "$filename") ||
+    open(FILE, '<', "$filename") ||
 	fail("cannot open file '$filename' for reading");
 
     my $max_num_tabs = 7;
@@ -463,7 +463,7 @@ sub print_sounds_list
 
     print_file_header($filename_conf_snd_h, $text_snd_h);
 
-    open(FILE, "$filename") ||
+    open(FILE, '<', "$filename") ||
 	fail("cannot open file '$filename' for reading");
 
     my $max_num_tabs = 7;
@@ -533,7 +533,7 @@ sub print_music_list
 
     print_file_header($filename_conf_mus_h, $text_mus_h);
 
-    open(FILE, "$filename") ||
+    open(FILE, '<', "$filename") ||
 	fail("cannot open file '$filename' for reading");
 
     my $max_num_tabs = 7;
@@ -1033,7 +1033,7 @@ sub get_known_element_definitions_ALTERNATIVE
 
     my $filename = "$src_path/main.h";
 
-    open(FILE, "$filename") ||
+    open(FILE, '<', "$filename") ||
 	fail("cannot open file '$filename' for reading");
 
     while (<FILE>)
@@ -1060,7 +1060,7 @@ sub get_known_element_definitions
 
     my $filename = "$src_path/main.c";
 
-    open(FILE, "$filename") ||
+    open(FILE, '<', "$filename") ||
 	fail("cannot open file '$filename' for reading");
 
     my $element_name = '';
@@ -1123,7 +1123,7 @@ sub get_known_element_class_definitions
 
     my $filename = "$src_path/main.c";
 
-    open(FILE, "$filename") ||
+    open(FILE, '<', "$filename") ||
 	fail("cannot open file '$filename' for reading");
 
     my $element_name = '';
@@ -1204,7 +1204,7 @@ sub get_known_action_definitions
 
     my $filename = "$src_path/main.h";
 
-    open(FILE, "$filename") ||
+    open(FILE, '<', "$filename") ||
 	fail("cannot open file '$filename' for reading");
 
     while (<FILE>)
@@ -1231,7 +1231,7 @@ sub get_known_special_arg_definitions
 
     my $filename = "$src_path/main.h";
 
-    open(FILE, "$filename") ||
+    open(FILE, '<', "$filename") ||
 	fail("cannot open file '$filename' for reading");
 
     while (<FILE>)
@@ -1263,7 +1263,7 @@ sub get_known_button_definitions
 
     my $filename = "$src_path/conf_gfx.h";
 
-    open(FILE, "$filename") ||
+    open(FILE, '<', "$filename") ||
 	fail("cannot open file '$filename' for reading");
 
     while (<FILE>)
@@ -1290,7 +1290,7 @@ sub get_known_font_definitions
 
     my $filename = "$src_path/main.h";
 
-    open(FILE, "$filename") ||
+    open(FILE, '<', "$filename") ||
 	fail("cannot open file '$filename' for reading");
 
     while (<FILE>)
@@ -1324,7 +1324,7 @@ sub get_known_music_prefix_definitions
 
     my $filename = "$src_path/main.c";
 
-    open(FILE, "$filename") ||
+    open(FILE, '<', "$filename") ||
 	fail("cannot open file '$filename' for reading");
 
     my $prefix_name = '';
@@ -1556,7 +1556,7 @@ sub print_element_to_graphic_list
 
     print_file_header($filename_conf_e2g_c, $text_e2g_c);
 
-    open(FILE, "$filename") ||
+    open(FILE, '<', "$filename") ||
 	fail("cannot open file '$filename' for reading");
 
     print "static struct\n";
@@ -1844,7 +1844,7 @@ sub print_element_to_special_graphic_list
 
     print_file_header($filename_conf_esg_c, $text_esg_c);
 
-    open(FILE, "$filename") ||
+    open(FILE, '<', "$filename") ||
 	fail("cannot open file '$filename' for reading");
 
     print "static struct\n";
@@ -2030,7 +2030,7 @@ sub print_element_to_sound_list
 
     print_file_header($filename_conf_e2s_c, $text_e2s_c);
 
-    open(FILE, "$filename") ||
+    open(FILE, '<', "$filename") ||
 	fail("cannot open file '$filename' for reading");
 
     print "static struct\n";
@@ -2209,7 +2209,7 @@ sub print_font_to_graphic_list
 
     print_file_header($filename_conf_fnt_c, $text_fnt_c);
 
-    open(FILE, "$filename") ||
+    open(FILE, '<', "$filename") ||
 	fail("cannot open file '$filename' for reading");
 
     print "static struct\n";
@@ -2313,7 +2313,7 @@ sub print_gamemode_to_sound_list
 
     print_file_header($filename_conf_g2s_c, $text_g2s_c);
 
-    open(FILE, "$filename") ||
+    open(FILE, '<', "$filename") ||
 	fail("cannot open file '$filename' for reading");
 
     print "static struct\n";
@@ -2403,7 +2403,7 @@ sub print_gamemode_to_music_list
 
     print_file_header($filename_conf_g2m_c, $text_g2m_c);
 
-    open(FILE, "$filename") ||
+    open(FILE, '<', "$filename") ||
 	fail("cannot open file '$filename' for reading");
 
     print "static struct\n";
@@ -2488,7 +2488,7 @@ sub print_config_vars
 
     print_file_header($filename_conf_var_c, $text_var_c);
 
-    open(FILE, "$filename") ||
+    open(FILE, '<', "$filename") ||
 	fail("cannot open file '$filename' for reading");
 
     print "struct TokenIntPtrInfo image_config_vars[] =\n";
