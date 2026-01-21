@@ -2344,6 +2344,14 @@ boolean anyTextGadgetActive(void)
 	  anySelectboxGadgetActive());
 }
 
+int getSizeFromActiveTextInputGadget(void)
+{
+  if (!anyTextInputGadgetActive())
+    return 0;
+
+  return last_gi->textinput.size;
+}
+
 char *getTextFromActiveTextInputGadget(void)
 {
   if (!anyTextInputGadgetActive())

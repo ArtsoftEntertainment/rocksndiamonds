@@ -349,6 +349,8 @@ boolean anyScrollbarGadgetActive(void);
 boolean anyTextGadgetActive(void);
 boolean anyColorPickerGadgetActive(void);
 
+int getSizeFromActiveTextInputGadget(void);
+
 char *getTextFromActiveTextInputGadget(void);
 char *getTextFromActiveTextAreaGadget(void);
 
