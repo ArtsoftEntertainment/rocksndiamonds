@@ -2172,6 +2172,10 @@ static boolean HandleKeysClipboard(Key key)
       return FALSE;
     }
 
+    // clear gadget text, if too small to append something
+    if (anyTextInputGadgetActive() && getSizeFromActiveTextInputGadget() < 10)
+      clearTextFromActiveTextInputGadget();
+
     char *text = SDL_GetClipboardText();
     char *text_latin1 = getLatin1FromUTF8(text);
     char *ptr = text_latin1;
