@@ -328,7 +328,7 @@ void convert_em_level(unsigned char *src, int file_version)
   cav.magnify_time	= MIN(GET_BE16(src[2156]), 9999);
   cav.wheel_time	= MIN(GET_BE16(src[2104]), 9999);
 
-  cav.amoeba_time	= MIN(GET_BE16(src[2100]) * 28, 9999);
+  cav.amoeba_time	= MIN(GET_BE16(src[2100]), 9999);
   cav.wonderwall_time	= MIN(GET_BE16(src[2102]), 9999);
 
   cav.wind_time		= 9999;

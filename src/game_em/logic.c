@@ -7877,9 +7877,11 @@ static void logic_globals(void)
 
   /* grow amoeba */
 
+  int amoeba_count = MIN(lev.amoeba_time * 28, 999);
+
   random = game_em.random;
 
-  for (i = 0; i < lev.amoeba_time; i++)
+  for (i = 0; i < amoeba_count; i++)
   {
     x = lev.left - 1 + (random >> 10) % (CAVE_WIDTH  + 2);
     y = lev.top  - 1 + (random >> 20) % (CAVE_HEIGHT + 2);
