@@ -3532,7 +3532,9 @@ static void InitGameEngine(void)
     (tape.property_bits & TAPE_PROPERTY_EM_RANDOM_BUG);
 
   boolean use_old_em_engine = (game.engine_version < VERSION_IDENT(4,2,0,0));
+  boolean use_old_em_random = (game.engine_version < VERSION_IDENT(4,4,1,4));
 
+  game_em.use_old_random		= use_old_em_random;
   game_em.use_old_explosions		= use_old_em_engine;
   game_em.use_old_android		= use_old_em_engine;
   game_em.use_old_push_elements		= use_old_em_engine;

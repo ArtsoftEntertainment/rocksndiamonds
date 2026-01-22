@@ -14,7 +14,9 @@
 
 #define RANDOM_BUG	/* handle problem with old tapes using 64-bit random */
 
-#define RANDOM(x)	((seed = seed << 31 | seed >> 1) % x)
+#define RANDOM_OLD(x)	((seed = seed << 31 | seed >> 1) % x)
+#define RANDOM_NEW(x)	(seed = seed * 12421 + 1, (x) * (seed & 65535) >> 16)
+#define RANDOM(x)	(game_em.use_old_random ? RANDOM_OLD(x) : RANDOM_NEW(x))
 
 static short **cave, **next, **boom;
 static unsigned int seed;

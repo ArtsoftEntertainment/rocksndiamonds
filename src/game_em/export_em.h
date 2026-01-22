@@ -59,6 +59,7 @@ struct GameInfo_EM
   boolean use_single_button;
   boolean use_snap_key_bug;
   boolean use_random_bug;
+  boolean use_old_random;
   boolean use_old_explosions;
   boolean use_old_android;
   boolean use_old_push_elements;
