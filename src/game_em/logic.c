@@ -7840,9 +7840,9 @@ static void logic_globals(void)
 {
   int i, x, y;
 #ifdef RANDOM_BUG
-  uint64_t random;
+  uint64_t amoeba_random;
 #else
-  uint32_t random;
+  uint32_t amoeba_random;
 #endif
 
   cave = lev.cave;
@@ -7879,26 +7879,26 @@ static void logic_globals(void)
 
   int amoeba_count = MIN(lev.amoeba_time * 28, 999);
 
-  random = game_em.random;
+  amoeba_random = game_em.random;
 
   for (i = 0; i < amoeba_count; i++)
   {
-    x = lev.left - 1 + (random >> 10) % (CAVE_WIDTH  + 2);
-    y = lev.top  - 1 + (random >> 20) % (CAVE_HEIGHT + 2);
+    x = lev.left - 1 + (amoeba_random >> 10) % (CAVE_WIDTH  + 2);
+    y = lev.top  - 1 + (amoeba_random >> 20) % (CAVE_HEIGHT + 2);
 
     if (x >= lev.left && x < lev.right &&
 	y >= lev.top  && y < lev.bottom)
       Lamoeba(x, y);
 
-    random = random * 129 + 1;
+    amoeba_random = amoeba_random * 129 + 1;
 
 #ifdef RANDOM_BUG
     if (!game_em.use_random_bug)
-      random = (uint32_t)random;
+      amoeba_random = (uint32_t)amoeba_random;
 #endif
   }
 
-  game_em.random = random;
+  game_em.random = amoeba_random;
 
   /* handle explosions */
 
