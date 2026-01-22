@@ -7872,6 +7872,7 @@ static void logic_globals(void)
 
   /* grow amoeba */
 
+  if (game_em.use_old_amoeba)
   {
     int amoeba_count = MIN(lev.amoeba_time * 28, 999);
 #ifdef RANDOM_BUG
@@ -7900,6 +7901,22 @@ static void logic_globals(void)
     }
 
     game_em.random = amoeba_random;
+  }
+  else
+  {
+    int amoeba_count = MIN(lev.amoeba_time * 8, 999);
+
+    seed = game_em.random;
+
+    for (i = 0; i < amoeba_count; i++)
+    {
+      x = lev.left + RANDOM(lev.width);
+      y = lev.top  + RANDOM(lev.height);
+
+      Lamoeba(x, y);
+    }
+
+    game_em.random = seed;
   }
 
   /* handle explosions */
