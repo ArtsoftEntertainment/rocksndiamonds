@@ -7836,9 +7836,7 @@ static void logic_objects(void)
 
 static void logic_globals(void)
 {
-  int x;
-  int y;
-  int count;
+  int i, x, y;
 #ifdef RANDOM_BUG
   uint64_t random;
 #else
@@ -7879,7 +7877,7 @@ static void logic_globals(void)
 
   random = game_em.random;
 
-  for (count = lev.amoeba_time; count--;)
+  for (i = 0; i < lev.amoeba_time; i++)
   {
     x = lev.left - 1 + (random >> 10) % (CAVE_WIDTH  + 2);
     y = lev.top  - 1 + (random >> 20) % (CAVE_HEIGHT + 2);
