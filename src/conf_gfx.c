@@ -2708,8 +2708,6 @@ struct ConfigInfo image_config[] =
   { "amoeba_drop.xpos",					"5"				},
   { "amoeba_drop.ypos",					"6"				},
   { "amoeba_drop.frames",				"1"				},
-  { "amoeba_drop.growing",				UNDEFINED_FILENAME		},
-  { "amoeba_drop.growing.clone_from",			"amoeba.growing"		},
   { "amoeba.growing",					"RocksElements.png"		},
   { "amoeba.growing.xpos",				"5"				},
   { "amoeba.growing.ypos",				"6"				},
