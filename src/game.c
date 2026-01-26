@@ -16999,6 +16999,15 @@ void RaiseScoreElement(int element)
     case EL_DC_KEY_WHITE:
       RaiseScore(level.score[SC_KEY]);
       break;
+    case EL_EMC_LENSES:
+      RaiseScore(level.lenses_score);
+      break;
+    case EL_EMC_MAGNIFIER:
+      RaiseScore(level.magnify_score);
+      break;
+    case EL_SPRING:
+      RaiseScore(level.slurp_score);
+      break;
     default:
       RaiseScore(element_info[element].collect_score);
       break;
