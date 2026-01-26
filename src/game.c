@@ -2229,7 +2229,7 @@ static void InitField(int x, int y, boolean init_game)
 
     case EL_LIGHT_SWITCH_ACTIVE:
       if (init_game)
-	game.light_time_left = level.time_light * FRAMES_PER_SECOND;
+	game.light_time_left = GET_TIME_IN_FRAMES(level.time_light);
       break;
 
     case EL_INVISIBLE_STEELWALL:
@@ -7376,7 +7376,7 @@ static void ToggleLightSwitch(int x, int y)
 {
   int element = Tile[x][y];
 
-  game.light_time_left = (element == EL_LIGHT_SWITCH ? level.time_light * FRAMES_PER_SECOND : 0);
+  game.light_time_left = (element == EL_LIGHT_SWITCH ? GET_TIME_IN_FRAMES(level.time_light) : 0);
 
   RedrawAllLightSwitchesAndInvisibleElements();
 }
@@ -7385,7 +7385,7 @@ static void ActivateTimegateSwitch(int x, int y)
 {
   int xx, yy;
 
-  game.timegate_time_left = level.time_timegate * FRAMES_PER_SECOND;
+  game.timegate_time_left = GET_TIME_IN_FRAMES(level.time_timegate);
 
   SCAN_PLAYFIELD(xx, yy)
   {
@@ -7541,7 +7541,7 @@ static void Impact(int x, int y)
 	  Tile[xx][yy] = activated_magic_wall;
       }
 
-      game.magic_wall_time_left = level.time_magic_wall * FRAMES_PER_SECOND;
+      game.magic_wall_time_left = GET_TIME_IN_FRAMES(level.time_magic_wall);
       game.magic_wall_active = TRUE;
 
       PlayLevelSound(x, y, (smashed == EL_MAGIC_WALL ?
@@ -10166,7 +10166,7 @@ static void Life(int ax, int ay)
 
 static void InitRobotWheel(int x, int y)
 {
-  ChangeDelay[x][y] = level.time_wheel * FRAMES_PER_SECOND;
+  ChangeDelay[x][y] = GET_TIME_IN_FRAMES(level.time_wheel);
 }
 
 static void RunRobotWheel(int x, int y)
@@ -10187,7 +10187,7 @@ static void StopRobotWheel(int x, int y)
 
 static void InitTimegateWheel(int x, int y)
 {
-  ChangeDelay[x][y] = level.time_timegate * FRAMES_PER_SECOND;
+  ChangeDelay[x][y] = GET_TIME_IN_FRAMES(level.time_timegate);
 }
 
 static void RunTimegateWheel(int x, int y)
@@ -15310,13 +15310,13 @@ static int DigField(struct PlayerInfo *player,
     }
     else if (element == EL_EMC_LENSES)
     {
-      game.lenses_time_left = level.lenses_time * FRAMES_PER_SECOND;
+      game.lenses_time_left = GET_TIME_IN_FRAMES(level.lenses_time);
 
       RedrawAllInvisibleElementsForLenses();
     }
     else if (element == EL_EMC_MAGNIFIER)
     {
-      game.magnify_time_left = level.magnify_time * FRAMES_PER_SECOND;
+      game.magnify_time_left = GET_TIME_IN_FRAMES(level.magnify_time);
 
       RedrawAllInvisibleElementsForMagnifier();
     }

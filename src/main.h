@@ -1024,6 +1024,8 @@
 #define GET_EMPTY_ELEMENT(i)		((i) == 0 ? EL_EMPTY_SPACE :			\
 					 EL_EMPTY_SPACE_1 + (i) - 1)
 
+#define GET_TIME_IN_FRAMES(x)		((x) * FRAMES_PER_SECOND)
+
 #define ANIM_FRAMES(g)			(graphic_info[g].anim_frames)
 #define ANIM_DELAY(g)			(graphic_info[g].anim_delay)
 #define ANIM_MODE(g)			(graphic_info[g].anim_mode)
