@@ -992,6 +992,20 @@
 					 (e) == EL_SOKOBAN_FIELD_EMPTY ||		\
 					 (e) == EL_SOKOBAN_FIELD_FULL)
 
+#define USES_MOVES_IN_EM_ENGINE(e)	((e) == EL_MAGIC_WALL ||			\
+					 (e) == EL_DC_MAGIC_WALL ||			\
+					 (e) == EL_ROBOT_WHEEL ||			\
+					 (e) == EL_EMC_LENSES ||			\
+					 (e) == EL_EMC_MAGNIFIER ||			\
+					 (e) == EL_LIGHT_SWITCH ||			\
+					 (e) == EL_LIGHT_SWITCH_ACTIVE ||		\
+					 (e) == EL_TIMEGATE_SWITCH ||			\
+					 (e) == EL_TIMEGATE_SWITCH_ACTIVE ||		\
+					 (e) == EL_DC_TIMEGATE_SWITCH ||		\
+					 (e) == EL_DC_TIMEGATE_SWITCH_ACTIVE ||		\
+					 (e) == EL_SHIELD_NORMAL ||			\
+					 (e) == EL_SHIELD_DEADLY)
+
 #define IS_DRAWABLE(e)			((e) < EL_BLOCKED)
 #define IS_NOT_DRAWABLE(e)		((e) >= EL_BLOCKED)
 #define TAPE_IS_EMPTY(x)		((x).length == 0)
@@ -1024,7 +1038,8 @@
 #define GET_EMPTY_ELEMENT(i)		((i) == 0 ? EL_EMPTY_SPACE :			\
 					 EL_EMPTY_SPACE_1 + (i) - 1)
 
-#define GET_TIME_IN_FRAMES(x)		((x) * FRAMES_PER_SECOND)
+#define GET_TIME_IN_FRAMES(x)		(level.em_use_moves_not_seconds ? (x) * 8 :	\
+					 (x) * FRAMES_PER_SECOND)
 
 #define ANIM_FRAMES(g)			(graphic_info[g].anim_frames)
 #define ANIM_DELAY(g)			(graphic_info[g].anim_delay)
@@ -3982,6 +3997,7 @@ struct LevelInfo
 
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
   boolean em_explodes_by_fire;		// EM style chain explosion behaviour
+  boolean em_use_moves_not_seconds;	// EM style durations in moves instead of seconds
   boolean use_spring_bug;		// for compatibility with old levels
   boolean use_time_orb_bug;		// for compatibility with old levels
   boolean use_life_bugs;		// for compatibility with old levels

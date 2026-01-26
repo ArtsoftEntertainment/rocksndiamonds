@@ -853,6 +853,7 @@ enum
   GADGET_ID_STICK_ELEMENT,
   GADGET_ID_EM_SLIPPERY_GEMS,
   GADGET_ID_EM_EXPLODES_BY_FIRE,
+  GADGET_ID_EM_USE_MOVES_NOT_SECONDS,
   GADGET_ID_USE_SPRING_BUG,
   GADGET_ID_USE_TIME_ORB_BUG,
   GADGET_ID_USE_LIFE_BUGS,
@@ -1314,6 +1315,7 @@ enum
   ED_CHECKBUTTON_ID_STICK_ELEMENT,
   ED_CHECKBUTTON_ID_EM_SLIPPERY_GEMS,
   ED_CHECKBUTTON_ID_EM_EXPLODES_BY_FIRE,
+  ED_CHECKBUTTON_ID_EM_USE_MOVES_NOT_SECONDS,
   ED_CHECKBUTTON_ID_USE_SPRING_BUG,
   ED_CHECKBUTTON_ID_USE_TIME_ORB_BUG,
   ED_CHECKBUTTON_ID_USE_LIFE_BUGS,
@@ -4478,6 +4480,14 @@ static struct
     &level.em_explodes_by_fire,
     NULL, NULL,
     "Explodes with chain reaction",		"Use R'n'D style explosion behaviour"
+  },
+  {
+    ED_CHECKBUTTON_ID_EM_USE_MOVES_NOT_SECONDS,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(1),
+    GADGET_ID_EM_USE_MOVES_NOT_SECONDS,		GADGET_ID_NONE,
+    &level.em_use_moves_not_seconds,
+    NULL, NULL,
+    "Use duration in moves, not seconds",	"Use EM/DC style duration measurement"
   },
   {
     ED_CHECKBUTTON_ID_USE_SPRING_BUG,
@@ -14117,6 +14127,15 @@ static void DrawPropertiesConfig(void)
 
   if (properties_element == EL_EM_DYNAMITE)
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_EM_EXPLODES_BY_FIRE);
+
+  // special case: duration in moves instead of seconds only available in R'n'D game engine
+  if (USES_MOVES_IN_EM_ENGINE(properties_element) && level.game_engine_type == GAME_ENGINE_TYPE_RND)
+  {
+    checkbutton_info[ED_CHECKBUTTON_ID_EM_USE_MOVES_NOT_SECONDS].y =
+      ED_ELEMENT_SETTINGS_XPOS(getScoreValueFromElement(properties_element) != NULL ? 2 : 1);
+
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_EM_USE_MOVES_NOT_SECONDS);
+  }
 
   if (level.game_engine_type == GAME_ENGINE_TYPE_RND &&
       COULD_MOVE_INTO_ACID(properties_element) &&

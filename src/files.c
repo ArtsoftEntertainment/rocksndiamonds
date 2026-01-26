@@ -347,6 +347,11 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
   },
   {
     -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(31),
+    &li.em_use_moves_not_seconds,		FALSE
+  },
+  {
+    -1,						-1,
     TYPE_INTEGER,				CONF_VALUE_32_BIT(4),
     &li.bd_color[0],				GD_C64_COLOR_BLACK
   },
@@ -5090,6 +5095,10 @@ static void CopyNativeLevel_EM_to_RND(struct LevelInfo *level)
       level->field[jx][jy] = EL_PLAYER_1 + nr;
   }
 
+  // Emerald Mine uses "moves" (eight frames) instead of seconds to specify
+  // the duration (running time) for certain game elements
+  level->em_use_moves_not_seconds = TRUE;
+
   // time score is counted for each 10 seconds left in Emerald Mine levels
   level->time_score_base = 10;
 }
@@ -7132,6 +7141,10 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
   // Diamond Caves has the same (strange) behaviour as Emerald Mine that gems
   // can slip down from flat walls, like normal walls and steel walls
   level->em_slippery_gems = TRUE;
+
+  // Diamond Caves (also like Emerald Mine) uses "moves" (eight frames) instead
+  // of seconds to specify the duration (running time) for certain game elements
+  level->em_use_moves_not_seconds = TRUE;
 
   // time score is counted for each 10 seconds left in Diamond Caves levels
   level->time_score_base = 10;
@@ -9221,6 +9234,8 @@ void DumpLevel(struct LevelInfo *level)
     return;
   }
 
+  char *time_unit = (level->em_use_moves_not_seconds ? "moves" : "seconds");
+
   PrintLine("-", 79);
   Print("Level xxx (file version %s, game version %s)\n",
 	getVersionString(level->file_version),
@@ -9235,10 +9250,10 @@ void DumpLevel(struct LevelInfo *level)
   Print("Level time:  %d seconds\n", level->time);
   Print("Gems needed: %d\n", level->gems_needed);
   Print("\n");
-  Print("Time for magic wall: %d seconds\n", level->time_magic_wall);
-  Print("Time for wheel:      %d seconds\n", level->time_wheel);
-  Print("Time for light:      %d seconds\n", level->time_light);
-  Print("Time for timegate:   %d seconds\n", level->time_timegate);
+  Print("Time for magic wall: %d %s\n", level->time_magic_wall, time_unit);
+  Print("Time for wheel:      %d %s\n", level->time_wheel,      time_unit);
+  Print("Time for light:      %d %s\n", level->time_light,      time_unit);
+  Print("Time for timegate:   %d %s\n", level->time_timegate,   time_unit);
   Print("\n");
   Print("Amoeba speed: %d\n", level->amoeba_speed);
   Print("\n");
