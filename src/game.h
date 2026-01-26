@@ -509,6 +509,7 @@ void PlaySound_MM(int);
 void PlaySoundLoop_MM(int);
 void StopSound_MM(int);
 
+int *getScoreValueFromElement(int);
 void RaiseScore(int);
 void RaiseScoreElement(int);
 

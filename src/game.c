@@ -16916,16 +16916,7 @@ void StopSound_MM(int sound_mm)
   StopSound(sound);
 }
 
-void RaiseScore(int value)
-{
-  game.score += value;
-
-  game_panel_controls[GAME_PANEL_SCORE].value = game.score;
-
-  DisplayGameControlValues();
-}
-
-void RaiseScoreElement(int element)
+int *getScoreValueFromElement(int element)
 {
   switch (element)
   {
@@ -16935,55 +16926,55 @@ void RaiseScoreElement(int element)
     case EL_EMERALD_RED:
     case EL_EMERALD_PURPLE:
     case EL_SP_INFOTRON:
-      RaiseScore(level.score[SC_EMERALD]);
-      break;
+      return &level.score[SC_EMERALD];
+
     case EL_DIAMOND:
-      RaiseScore(level.score[SC_DIAMOND]);
-      break;
+      return &level.score[SC_DIAMOND];
+
     case EL_CRYSTAL:
-      RaiseScore(level.score[SC_CRYSTAL]);
-      break;
+      return &level.score[SC_CRYSTAL];
+
     case EL_PEARL:
-      RaiseScore(level.score[SC_PEARL]);
-      break;
+      return &level.score[SC_PEARL];
+
     case EL_BUG:
     case EL_BD_BUTTERFLY:
     case EL_SP_ELECTRON:
-      RaiseScore(level.score[SC_BUG]);
-      break;
+      return &level.score[SC_BUG];
+
     case EL_SPACESHIP:
     case EL_BD_FIREFLY:
     case EL_SP_SNIKSNAK:
-      RaiseScore(level.score[SC_SPACESHIP]);
-      break;
+      return &level.score[SC_SPACESHIP];
+
     case EL_YAMYAM:
     case EL_DARK_YAMYAM:
-      RaiseScore(level.score[SC_YAMYAM]);
-      break;
+      return &level.score[SC_YAMYAM];
+
     case EL_ROBOT:
-      RaiseScore(level.score[SC_ROBOT]);
-      break;
+      return &level.score[SC_ROBOT];
+
     case EL_PACMAN:
-      RaiseScore(level.score[SC_PACMAN]);
-      break;
+      return &level.score[SC_PACMAN];
+
     case EL_NUT:
-      RaiseScore(level.score[SC_NUT]);
-      break;
+      return &level.score[SC_NUT];
+
     case EL_DYNAMITE:
     case EL_EM_DYNAMITE:
     case EL_SP_DISK_RED:
     case EL_DYNABOMB_INCREASE_NUMBER:
     case EL_DYNABOMB_INCREASE_SIZE:
     case EL_DYNABOMB_INCREASE_POWER:
-      RaiseScore(level.score[SC_DYNAMITE]);
-      break;
+      return &level.score[SC_DYNAMITE];
+
     case EL_SHIELD_NORMAL:
     case EL_SHIELD_DEADLY:
-      RaiseScore(level.score[SC_SHIELD]);
-      break;
+      return &level.score[SC_SHIELD];
+
     case EL_EXTRA_TIME:
-      RaiseScore(level.extra_time_score);
-      break;
+      return &level.extra_time_score;
+
     case EL_KEY_1:
     case EL_KEY_2:
     case EL_KEY_3:
@@ -16997,21 +16988,38 @@ void RaiseScoreElement(int element)
     case EL_EMC_KEY_7:
     case EL_EMC_KEY_8:
     case EL_DC_KEY_WHITE:
-      RaiseScore(level.score[SC_KEY]);
-      break;
+      return &level.score[SC_KEY];
+
     case EL_EMC_LENSES:
-      RaiseScore(level.lenses_score);
-      break;
+      return &level.lenses_score;
+
     case EL_EMC_MAGNIFIER:
-      RaiseScore(level.magnify_score);
-      break;
+      return &level.magnify_score;
+
     case EL_SPRING:
-      RaiseScore(level.slurp_score);
-      break;
+      return &level.slurp_score;
+
     default:
-      RaiseScore(element_info[element].collect_score);
       break;
   }
+
+  return NULL;
+}
+
+void RaiseScore(int value)
+{
+  game.score += value;
+
+  game_panel_controls[GAME_PANEL_SCORE].value = game.score;
+
+  DisplayGameControlValues();
+}
+
+void RaiseScoreElement(int element)
+{
+  int *value = getScoreValueFromElement(element);
+
+  RaiseScore(value != NULL ? *value : element_info[element].collect_score);
 }
 
 void RequestQuitGameExt(boolean skip_request, boolean quick_quit, char *message)
