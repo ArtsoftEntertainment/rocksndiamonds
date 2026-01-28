@@ -19,6 +19,17 @@ for additional toon animations
 Thanks to
 
 # .font: font.text_3
+The Onyx Guy
+
+# .font: font.text_2
+for improved game graphics
+
+
+
+# .font: font.text_2
+Thanks to
+
+# .font: font.text_3
 Majid Katzer
 
 # .font: font.text_2
