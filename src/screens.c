@@ -4755,7 +4755,7 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
 
     return;
   }
-  else if ((mx >= 0 && my >= 0 && button == MB_MENU_CHOICE) || dx > 0)
+  else if ((mx >= 0 && my >= 0 && button == MB_MENU_CHOICE) || dx)
   {
     PlaySound(SND_MENU_ITEM_SELECTING);
 
