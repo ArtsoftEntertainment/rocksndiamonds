@@ -10080,7 +10080,6 @@ static void AmoebaReproduce_DC(void)
 {
   if (!(FrameCounter % 8))
   {
-    static unsigned int random = 1684108901;
     int i;
 
     for (i = 0; i < level.amoeba_speed * 28 / 8; i++)
@@ -10107,8 +10106,6 @@ static void AmoebaReproduce_DC(void)
 	  ResetGfxAnimation(x, y);
 	}
       }
-
-      random = random * 129 + 1;
     }
   }
 }
