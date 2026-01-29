@@ -9875,6 +9875,19 @@ static void AmoebaGrowing(int x, int y)
 
     if (!MovDelay[x][y])
     {
+#if USE_NEW_AMOEBA_CODE
+      if (Store[x][y] == EL_AMOEBA_WET)
+      {
+	// amoeba drop, just grown to new EM/DC style amoeba, kills the player if on top of him
+	if (IN_LEV_FIELD(x, y + 1) && IS_PLAYER(x, y + 1))
+	{
+	  KillPlayerUnlessEnemyProtected(x, y + 1);
+
+	  return;
+	}
+      }
+#endif
+
       Tile[x][y] = Store[x][y];
       Store[x][y] = 0;
       TEST_DrawLevelField(x, y);
