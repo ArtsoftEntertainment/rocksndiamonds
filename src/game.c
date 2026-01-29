@@ -10099,13 +10099,12 @@ static void AmoebaReproduce_DC(void)
 
     int element = Tile[x][y];
 
-    if (!IS_PLAYER(x, y) &&
-	(element == EL_EMPTY ||
-	 CAN_GROW_INTO(element) ||
-	 element == EL_QUICKSAND_EMPTY ||
-	 element == EL_QUICKSAND_FAST_EMPTY ||
-	 element == EL_ACID_SPLASH_LEFT ||
-	 element == EL_ACID_SPLASH_RIGHT))
+    if (IS_FREE(x, y) ||
+	CAN_GROW_INTO(element) ||
+	element == EL_QUICKSAND_EMPTY ||
+	element == EL_QUICKSAND_FAST_EMPTY ||
+	element == EL_ACID_SPLASH_LEFT ||
+	element == EL_ACID_SPLASH_RIGHT)
     {
       if ((IN_LEV_FIELD(x, y - 1) && Tile[x][y - 1] == EL_AMOEBA_WET) ||
 	  (IN_LEV_FIELD(x - 1, y) && Tile[x - 1][y] == EL_AMOEBA_WET) ||
