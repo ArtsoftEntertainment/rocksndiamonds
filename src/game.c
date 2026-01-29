@@ -10078,15 +10078,25 @@ static void AmoebaReproduce(int ax, int ay)
 #if USE_NEW_AMOEBA_CODE
 static void AmoebaReproduce_DC(void)
 {
+  // handle growing of EM/DC style amoeba ("amoeba_wet") differently, if needed
+
   if ((FrameCounter % 8) != 0)		// only do this every 8th frame
     return;
 
   int i;
 
-  for (i = 0; i < level.amoeba_speed * 28 / 8; i++)
+  // Using twice the amoeba growth speed and randomly selecting a tile from the maximum
+  // playfield dimensions instead of the current playfield dimensions was experimentally
+  // determined by closely comparing the original amoeba behavior of Diamond Caves II.
+
+  for (i = 0; i < level.amoeba_speed * 2; i++)
   {
-    int x = RND(lev_fieldx);
-    int y = RND(lev_fieldy);
+    int x = RND(MAX_PLAYFIELD_WIDTH);
+    int y = RND(MAX_PLAYFIELD_HEIGHT);
+
+    if (!IN_LEV_FIELD(x, y))
+      continue;
+
     int element = Tile[x][y];
 
     if (!IS_PLAYER(x, y) &&
