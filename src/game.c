@@ -8848,6 +8848,8 @@ static void StartMoving(int x, int y)
     {
       Tile[x][y] = EL_AMOEBA_GROWING;
       Store[x][y] = EL_AMOEBA_WET;
+
+      ResetGfxAnimation(x, y);
     }
     else if (((IS_SLIPPERY(Tile[x][y + 1]) && !IS_PLAYER(x, y + 1)) ||
 	      (IS_EM_SLIPPERY_WALL(Tile[x][y + 1]) && IS_GEM(element))) &&
@@ -10067,6 +10069,8 @@ static void AmoebaReproduce(int ax, int ay)
 
     return;
   }
+
+  ResetGfxAnimation(newax, neway);
 
   TEST_DrawLevelField(newax, neway);
 }
@@ -13339,7 +13343,11 @@ void GameActions_RND(void)
 	    (IN_LEV_FIELD(x - 1, y) && Tile[x - 1][y] == EL_AMOEBA_WET) ||
 	    (IN_LEV_FIELD(x + 1, y) && Tile[x + 1][y] == EL_AMOEBA_WET) ||
 	    (IN_LEV_FIELD(x, y + 1) && Tile[x][y + 1] == EL_AMOEBA_WET))
+	{
 	  Tile[x][y] = EL_AMOEBA_DROP;
+
+	  ResetGfxAnimation(x, y);
+	}
       }
 
       random = random * 129 + 1;
