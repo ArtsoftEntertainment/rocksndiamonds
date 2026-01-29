@@ -10078,33 +10078,33 @@ static void AmoebaReproduce(int ax, int ay)
 #if USE_NEW_AMOEBA_CODE
 static void AmoebaReproduce_DC(void)
 {
-  if (!(FrameCounter % 8))
+  if ((FrameCounter % 8) != 0)		// only do this every 8th frame
+    return;
+
+  int i;
+
+  for (i = 0; i < level.amoeba_speed * 28 / 8; i++)
   {
-    int i;
+    int x = RND(lev_fieldx);
+    int y = RND(lev_fieldy);
+    int element = Tile[x][y];
 
-    for (i = 0; i < level.amoeba_speed * 28 / 8; i++)
+    if (!IS_PLAYER(x, y) &&
+	(element == EL_EMPTY ||
+	 CAN_GROW_INTO(element) ||
+	 element == EL_QUICKSAND_EMPTY ||
+	 element == EL_QUICKSAND_FAST_EMPTY ||
+	 element == EL_ACID_SPLASH_LEFT ||
+	 element == EL_ACID_SPLASH_RIGHT))
     {
-      int x = RND(lev_fieldx);
-      int y = RND(lev_fieldy);
-      int element = Tile[x][y];
-
-      if (!IS_PLAYER(x, y) &&
-	  (element == EL_EMPTY ||
-	   CAN_GROW_INTO(element) ||
-	   element == EL_QUICKSAND_EMPTY ||
-	   element == EL_QUICKSAND_FAST_EMPTY ||
-	   element == EL_ACID_SPLASH_LEFT ||
-	   element == EL_ACID_SPLASH_RIGHT))
+      if ((IN_LEV_FIELD(x, y - 1) && Tile[x][y - 1] == EL_AMOEBA_WET) ||
+	  (IN_LEV_FIELD(x - 1, y) && Tile[x - 1][y] == EL_AMOEBA_WET) ||
+	  (IN_LEV_FIELD(x + 1, y) && Tile[x + 1][y] == EL_AMOEBA_WET) ||
+	  (IN_LEV_FIELD(x, y + 1) && Tile[x][y + 1] == EL_AMOEBA_WET))
       {
-	if ((IN_LEV_FIELD(x, y - 1) && Tile[x][y - 1] == EL_AMOEBA_WET) ||
-	    (IN_LEV_FIELD(x - 1, y) && Tile[x - 1][y] == EL_AMOEBA_WET) ||
-	    (IN_LEV_FIELD(x + 1, y) && Tile[x + 1][y] == EL_AMOEBA_WET) ||
-	    (IN_LEV_FIELD(x, y + 1) && Tile[x][y + 1] == EL_AMOEBA_WET))
-	{
-	  Tile[x][y] = EL_AMOEBA_DROP;
+	Tile[x][y] = EL_AMOEBA_DROP;
 
-	  ResetGfxAnimation(x, y);
-	}
+	ResetGfxAnimation(x, y);
       }
     }
   }
