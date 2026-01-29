@@ -10062,6 +10062,7 @@ static void AmoebaReproduce(int ax, int ay)
     InitMovingField(ax, ay, MV_DOWN);		// drop dripping from amoeba
     Tile[ax][ay] = EL_AMOEBA_DROPPING;
     Store[ax][ay] = EL_AMOEBA_DROP;
+
     ContinueMoving(ax, ay);
 
     return;
