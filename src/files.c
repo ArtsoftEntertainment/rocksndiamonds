@@ -1473,6 +1473,12 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   },
 
   {
+    EL_AMOEBA_WET,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
+    &li.dc_amoeba_behavior,			FALSE
+  },
+
+  {
     EL_TIME_ORB_FULL,				-1,
     TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
     &li.time_orb_time,				10
@@ -7145,6 +7151,9 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
   // Diamond Caves (also like Emerald Mine) uses "moves" (eight frames) instead
   // of seconds to specify the duration (running time) for certain game elements
   level->em_use_moves_not_seconds = TRUE;
+
+  // Diamond Caves uses special (EM style) behavior (and different speed) for amoeba
+  level->dc_amoeba_behavior = TRUE;
 
   // time score is counted for each 10 seconds left in Diamond Caves levels
   level->time_score_base = 10;

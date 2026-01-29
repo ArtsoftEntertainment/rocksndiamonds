@@ -854,6 +854,7 @@ enum
   GADGET_ID_EM_SLIPPERY_GEMS,
   GADGET_ID_EM_EXPLODES_BY_FIRE,
   GADGET_ID_EM_USE_MOVES_NOT_SECONDS,
+  GADGET_ID_DC_AMOEBA_BEHAVIOR,
   GADGET_ID_USE_SPRING_BUG,
   GADGET_ID_USE_TIME_ORB_BUG,
   GADGET_ID_USE_LIFE_BUGS,
@@ -1316,6 +1317,7 @@ enum
   ED_CHECKBUTTON_ID_EM_SLIPPERY_GEMS,
   ED_CHECKBUTTON_ID_EM_EXPLODES_BY_FIRE,
   ED_CHECKBUTTON_ID_EM_USE_MOVES_NOT_SECONDS,
+  ED_CHECKBUTTON_ID_DC_AMOEBA_BEHAVIOR,
   ED_CHECKBUTTON_ID_USE_SPRING_BUG,
   ED_CHECKBUTTON_ID_USE_TIME_ORB_BUG,
   ED_CHECKBUTTON_ID_USE_LIFE_BUGS,
@@ -4488,6 +4490,14 @@ static struct
     &level.em_use_moves_not_seconds,
     NULL, NULL,
     "Use duration in moves, not seconds",	"Use EM/DC style duration measurement"
+  },
+  {
+    ED_CHECKBUTTON_ID_DC_AMOEBA_BEHAVIOR,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(4),
+    GADGET_ID_DC_AMOEBA_BEHAVIOR,		GADGET_ID_NONE,
+    &level.dc_amoeba_behavior,
+    NULL, NULL,
+    "Use DC style amoeba behavior/speed",	"Use DC style amoeba behavior and speed"
   },
   {
     ED_CHECKBUTTON_ID_USE_SPRING_BUG,
@@ -14136,6 +14146,10 @@ static void DrawPropertiesConfig(void)
 
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_EM_USE_MOVES_NOT_SECONDS);
   }
+
+  // special case: DC style amoeba behavior only available in R'n'D game engine
+  if (properties_element == EL_AMOEBA_WET && level.game_engine_type == GAME_ENGINE_TYPE_RND)
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_DC_AMOEBA_BEHAVIOR);
 
   if (level.game_engine_type == GAME_ENGINE_TYPE_RND &&
       COULD_MOVE_INTO_ACID(properties_element) &&

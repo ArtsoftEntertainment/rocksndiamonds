@@ -3998,6 +3998,7 @@ struct LevelInfo
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
   boolean em_explodes_by_fire;		// EM style chain explosion behaviour
   boolean em_use_moves_not_seconds;	// EM style durations in moves instead of seconds
+  boolean dc_amoeba_behavior;		// DC style behavior (and speed) of EM style amoeba
   boolean use_spring_bug;		// for compatibility with old levels
   boolean use_time_orb_bug;		// for compatibility with old levels
   boolean use_life_bugs;		// for compatibility with old levels

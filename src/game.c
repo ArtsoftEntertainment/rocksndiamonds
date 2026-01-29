@@ -27,9 +27,6 @@
 #define DEBUG_PLAYER_ACTIONS		0
 
 // EXPERIMENTAL STUFF
-#define USE_NEW_AMOEBA_CODE		FALSE
-
-// EXPERIMENTAL STUFF
 #define USE_QUICKSAND_BD_ROCK_BUGFIX	0
 #define USE_QUICKSAND_IMPACT_BUGFIX	0
 #define USE_DELAYED_GFX_REDRAW		0
@@ -9875,8 +9872,7 @@ static void AmoebaGrowing(int x, int y)
 
     if (!MovDelay[x][y])
     {
-#if USE_NEW_AMOEBA_CODE
-      if (Store[x][y] == EL_AMOEBA_WET)
+      if (Store[x][y] == EL_AMOEBA_WET && level.dc_amoeba_behavior)
       {
 	// amoeba drop, just grown to new EM/DC style amoeba, kills the player if on top of him
 	if (IN_LEV_FIELD(x, y + 1) && IS_PLAYER(x, y + 1))
@@ -9886,7 +9882,6 @@ static void AmoebaGrowing(int x, int y)
 	  return;
 	}
       }
-#endif
 
       Tile[x][y] = Store[x][y];
       Store[x][y] = 0;
@@ -9938,11 +9933,9 @@ static void AmoebaReproduce(int ax, int ay)
   boolean can_drop = (element == EL_AMOEBA_WET || element == EL_EMC_DRIPPER);
   struct XY *xy = xy_topdown;
 
-#if USE_NEW_AMOEBA_CODE
   // handle growing of EM/DC style amoeba ("amoeba_wet") differently, if needed
-  if (element == EL_AMOEBA_WET)
+  if (element == EL_AMOEBA_WET && level.dc_amoeba_behavior)
     return;
-#endif
 
   if (!level.amoeba_speed && element != EL_EMC_DRIPPER)
   {
@@ -10094,7 +10087,6 @@ static void AmoebaReproduce(int ax, int ay)
   TEST_DrawLevelField(newax, neway);
 }
 
-#if USE_NEW_AMOEBA_CODE
 static void AmoebaReproduce_DC(void)
 {
   // handle growing of EM/DC style amoeba ("amoeba_wet") differently, if needed
@@ -10137,7 +10129,6 @@ static void AmoebaReproduce_DC(void)
     }
   }
 }
-#endif
 
 static void Life(int ax, int ay)
 {
@@ -13379,10 +13370,9 @@ void GameActions_RND(void)
     }
   }
 
-#if USE_NEW_AMOEBA_CODE
-  // new experimental amoeba growth stuff
-  AmoebaReproduce_DC();
-#endif
+  // handle growing of EM/DC style amoeba ("amoeba_wet") differently, if needed
+  if (level.dc_amoeba_behavior)
+    AmoebaReproduce_DC();
 
   game.explosions_delayed = FALSE;
 
