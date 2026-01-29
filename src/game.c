@@ -10075,6 +10075,45 @@ static void AmoebaReproduce(int ax, int ay)
   TEST_DrawLevelField(newax, neway);
 }
 
+#if USE_NEW_AMOEBA_CODE
+static void AmoebaReproduce_DC(void)
+{
+  if (!(FrameCounter % 8))
+  {
+    static unsigned int random = 1684108901;
+    int i;
+
+    for (i = 0; i < level.amoeba_speed * 28 / 8; i++)
+    {
+      int x = RND(lev_fieldx);
+      int y = RND(lev_fieldy);
+      int element = Tile[x][y];
+
+      if (!IS_PLAYER(x, y) &&
+	  (element == EL_EMPTY ||
+	   CAN_GROW_INTO(element) ||
+	   element == EL_QUICKSAND_EMPTY ||
+	   element == EL_QUICKSAND_FAST_EMPTY ||
+	   element == EL_ACID_SPLASH_LEFT ||
+	   element == EL_ACID_SPLASH_RIGHT))
+      {
+	if ((IN_LEV_FIELD(x, y - 1) && Tile[x][y - 1] == EL_AMOEBA_WET) ||
+	    (IN_LEV_FIELD(x - 1, y) && Tile[x - 1][y] == EL_AMOEBA_WET) ||
+	    (IN_LEV_FIELD(x + 1, y) && Tile[x + 1][y] == EL_AMOEBA_WET) ||
+	    (IN_LEV_FIELD(x, y + 1) && Tile[x][y + 1] == EL_AMOEBA_WET))
+	{
+	  Tile[x][y] = EL_AMOEBA_DROP;
+
+	  ResetGfxAnimation(x, y);
+	}
+      }
+
+      random = random * 129 + 1;
+    }
+  }
+}
+#endif
+
 static void Life(int ax, int ay)
 {
   int x1, y1, x2, y2;
@@ -13321,38 +13360,7 @@ void GameActions_RND(void)
 
 #if USE_NEW_AMOEBA_CODE
   // new experimental amoeba growth stuff
-  if (!(FrameCounter % 8))
-  {
-    static unsigned int random = 1684108901;
-
-    for (i = 0; i < level.amoeba_speed * 28 / 8; i++)
-    {
-      x = RND(lev_fieldx);
-      y = RND(lev_fieldy);
-      element = Tile[x][y];
-
-      if (!IS_PLAYER(x, y) &&
-	  (element == EL_EMPTY ||
-	   CAN_GROW_INTO(element) ||
-	   element == EL_QUICKSAND_EMPTY ||
-	   element == EL_QUICKSAND_FAST_EMPTY ||
-	   element == EL_ACID_SPLASH_LEFT ||
-	   element == EL_ACID_SPLASH_RIGHT))
-      {
-	if ((IN_LEV_FIELD(x, y - 1) && Tile[x][y - 1] == EL_AMOEBA_WET) ||
-	    (IN_LEV_FIELD(x - 1, y) && Tile[x - 1][y] == EL_AMOEBA_WET) ||
-	    (IN_LEV_FIELD(x + 1, y) && Tile[x + 1][y] == EL_AMOEBA_WET) ||
-	    (IN_LEV_FIELD(x, y + 1) && Tile[x][y + 1] == EL_AMOEBA_WET))
-	{
-	  Tile[x][y] = EL_AMOEBA_DROP;
-
-	  ResetGfxAnimation(x, y);
-	}
-      }
-
-      random = random * 129 + 1;
-    }
-  }
+  AmoebaReproduce_DC();
 #endif
 
   game.explosions_delayed = FALSE;
