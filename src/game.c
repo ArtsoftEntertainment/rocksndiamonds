@@ -9925,6 +9925,12 @@ static void AmoebaReproduce(int ax, int ay)
   boolean can_drop = (element == EL_AMOEBA_WET || element == EL_EMC_DRIPPER);
   struct XY *xy = xy_topdown;
 
+#if USE_NEW_AMOEBA_CODE
+  // handle growing of EM/DC style amoeba ("amoeba_wet") differently, if needed
+  if (element == EL_AMOEBA_WET)
+    return;
+#endif
+
   if (!level.amoeba_speed && element != EL_EMC_DRIPPER)
   {
     Tile[ax][ay] = EL_AMOEBA_DEAD;
@@ -13293,12 +13299,8 @@ void GameActions_RND(void)
       AmoebaGrowing(x, y);
     else if (element == EL_AMOEBA_SHRINKING)
       AmoebaShrinking(x, y);
-
-#if !USE_NEW_AMOEBA_CODE
     else if (IS_AMOEBALIVE(element))
       AmoebaReproduce(x, y);
-#endif
-
     else if (element == EL_GAME_OF_LIFE || element == EL_BIOMAZE)
       Life(x, y);
     else if (element == EL_EXIT_CLOSED)
