@@ -2750,6 +2750,8 @@ static void Leater_w(int x, int y)
 
 static void Lalien(int x, int y)
 {
+  boolean prefer_horizontal_steps = !game_em.use_old_alien;
+  boolean try_vertical_step;
   int dx, dy;
 
   if (lev.wheel_cnt)
@@ -2762,7 +2764,19 @@ static void Lalien(int x, int y)
     set_nearest_player_xy(x, y, &dx, &dy);
   }
 
-  if (RANDOM(2))
+  if (prefer_horizontal_steps)
+  {
+    if (x != dx)
+      try_vertical_step = (RANDOM(4) == 0);	// player left/right/diagonal: prefer horizontal
+    else
+      try_vertical_step = (RANDOM(4) != 0);	// player above/below: prefer vertical
+  }
+  else
+  {
+    try_vertical_step = RANDOM(2);		// horizontal or vertical have same probability
+  }
+
+  if (try_vertical_step)
   {
     if (y > dy)
     {
