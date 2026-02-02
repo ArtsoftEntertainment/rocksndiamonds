@@ -9525,22 +9525,22 @@ em_object_mapping_list[GAME_TILE_MAX + 1] =
 
   {
     Xamoeba_1,				TRUE,	FALSE,
-    EL_AMOEBA_DRY,			ACTION_OTHER, -1
+    EL_AMOEBA_WET,			ACTION_OTHER, -1
   },
   {
     Xamoeba_2,				FALSE,	FALSE,
-    EL_AMOEBA_DRY,			ACTION_OTHER, -1
+    EL_AMOEBA_WET,			ACTION_OTHER, -1
   },
   {
     Xamoeba_3,				FALSE,	FALSE,
-    EL_AMOEBA_DRY,			ACTION_OTHER, -1
+    EL_AMOEBA_WET,			ACTION_OTHER, -1
   },
   {
     Xamoeba_4,				FALSE,	FALSE,
-    EL_AMOEBA_DRY,			ACTION_OTHER, -1
+    EL_AMOEBA_WET,			ACTION_OTHER, -1
   },
   {
-    Xamoeba_5,				TRUE,	FALSE,
+    Xamoeba_5,				FALSE,	FALSE,
     EL_AMOEBA_WET,			ACTION_OTHER, -1
   },
   {
