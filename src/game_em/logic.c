@@ -7932,7 +7932,7 @@ static void logic_globals(void)
 
     game_em.random = amoeba_random;
   }
-  else
+  else if (lev.amoeba_time > 0)
   {
     int amoeba_count = MIN(lev.amoeba_time * 8 + 4, 999);
 
