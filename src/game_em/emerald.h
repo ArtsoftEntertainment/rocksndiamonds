@@ -402,6 +402,7 @@ enum
   Ywheel,
 
   Xswitch,
+  Xswitch_pause,
   Yswitch,
 
   Xbumper,

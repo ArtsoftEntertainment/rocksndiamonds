@@ -9612,6 +9612,10 @@ em_object_mapping_list[GAME_TILE_MAX + 1] =
     EL_EMC_MAGIC_BALL_SWITCH,		-1, -1
   },
   {
+    Xswitch_pause,			FALSE,	FALSE,
+    EL_EMC_MAGIC_BALL_SWITCH,		-1, -1
+  },
+  {
     Yswitch,				FALSE,	FALSE,
     EL_EMC_MAGIC_BALL_SWITCH,		ACTION_ACTIVE, -1
   },

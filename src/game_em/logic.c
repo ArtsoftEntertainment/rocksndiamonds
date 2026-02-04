@@ -1217,6 +1217,7 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	break;
 
       case Xswitch:
+	next[x][y] = Xswitch_pause;
 	play_element_sound(x, y, SOUND_press, element);
 	lev.ball_cnt = lev.ball_time;
 	lev.ball_active = !lev.ball_active;
@@ -4107,6 +4108,7 @@ static void Lemerald(int x, int y)
     case Xball_2:
     case Xwonderwall:
     case Xswitch:
+    case Xswitch_pause:
     case Xbumper:
     case Ybumper:
     case Xacid_ne:
@@ -4374,6 +4376,7 @@ static void Ldiamond(int x, int y)
     case Xball_2:
     case Xwonderwall:
     case Xswitch:
+    case Xswitch_pause:
     case Xbumper:
     case Ybumper:
     case Xacid_ne:
@@ -4649,6 +4652,7 @@ static void Lstone(int x, int y)
     case Xball_1:
     case Xball_2:
     case Xswitch:
+    case Xswitch_pause:
     case Xbumper:
     case Ybumper:
     case Xacid_ne:
@@ -5104,6 +5108,7 @@ static void Lbomb(int x, int y)
     case Xball_1:
     case Xball_2:
     case Xswitch:
+    case Xswitch_pause:
     case Xbumper:
     case Ybumper:
     case Xacid_ne:
@@ -5329,6 +5334,7 @@ static void Lnut(int x, int y)
     case Xball_1:
     case Xball_2:
     case Xswitch:
+    case Xswitch_pause:
     case Xbumper:
     case Ybumper:
     case Xacid_ne:
@@ -5565,6 +5571,7 @@ static void Lspring(int x, int y)
     case Xball_1:
     case Xball_2:
     case Xswitch:
+    case Xswitch_pause:
     case Xbumper:
     case Ybumper:
     case Xacid_ne:
@@ -7120,6 +7127,14 @@ static void Lswitch(int x, int y)
     cave[x][y] = Yswitch;
 }
 
+static void Lswitch_pause(int x, int y)
+{
+  if (lev.ball_active)
+    cave[x][y] = Yswitch;
+
+  next[x][y] = Xswitch;
+}
+
 static void Lfake_blank(int x, int y)
 {
   if (lev.lenses_cnt)
@@ -7661,6 +7676,7 @@ static void handle_tile(int x, int y)
     case Xwheel:		Lwheel(x, y);			break;
 
     case Xswitch:		Lswitch(x, y);			break;
+    case Xswitch_pause:		Lswitch_pause(x, y);		break;
 
     case Xfake_blank:		Lfake_blank(x, y);		break;
     case Xfake_grass:		Lfake_grass(x, y);		break;
