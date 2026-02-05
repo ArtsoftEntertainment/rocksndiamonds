@@ -90,8 +90,12 @@ void GameActions_EM(byte action[MAX_PLAYERS])
   game_em.random = game_em.random * 129 + 1;
   game_em.frame = (game_em.frame + 1) % 8;
 
-  // generally, game and graphics engine frame are the same
+  // generally, game and graphics engine frame are the same ...
   game_em.gfx_frame = game_em.frame;
+
+  // ... but do not animate the first inactive game engine cycle
+  if (FrameCounter < 7)
+    game_em.gfx_frame = 0;
 
   for (i = 0; i < MAX_PLAYERS; i++)
     readjoy(action[i], &ply[i]);
