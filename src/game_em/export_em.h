@@ -42,6 +42,7 @@ struct GameInfo_EM
   unsigned int random;
 
   int frame;			// current game engine frame
+  int gfx_frame;		// current graphics engine frame
 
   int screen_x;			// current scroll x position
   int screen_y;			// current scroll y position

@@ -125,20 +125,20 @@ static void BackToFront_EM(void)
 static struct GraphicInfo_EM *getObjectGraphic(int x, int y)
 {
   int tile = lev.draw[x][y];
-  struct GraphicInfo_EM *g = &graphic_info_em_object[tile][game_em.frame];
+  struct GraphicInfo_EM *g = &graphic_info_em_object[tile][game_em.gfx_frame];
 
   if (!game.use_native_emc_graphics_engine)
-    getGraphicSourceObjectExt_EM(g, tile, game_em.frame, x - lev.left, y - lev.top);
+    getGraphicSourceObjectExt_EM(g, tile, game_em.gfx_frame, x - lev.left, y - lev.top);
 
   return g;
 }
 
 static struct GraphicInfo_EM *getPlayerGraphic(int player_nr, int anim)
 {
-  struct GraphicInfo_EM *g = &graphic_info_em_player[player_nr][anim][game_em.frame];
+  struct GraphicInfo_EM *g = &graphic_info_em_player[player_nr][anim][game_em.gfx_frame];
 
   if (!game.use_native_emc_graphics_engine)
-    getGraphicSourcePlayerExt_EM(g, player_nr, anim, game_em.frame);
+    getGraphicSourcePlayerExt_EM(g, player_nr, anim, game_em.gfx_frame);
 
   return g;
 }
@@ -311,8 +311,8 @@ static void animscreen(void)
   if (!game.use_native_emc_graphics_engine)
     for (y = lev.top; y < lev.bottom; y++)
       for (x = lev.left; x < lev.right; x++)
-	SetGfxAnimation_EM(&graphic_info_em_object[lev.draw[x][y]][game_em.frame],
-			   lev.draw[x][y], game_em.frame,
+	SetGfxAnimation_EM(&graphic_info_em_object[lev.draw[x][y]][game_em.gfx_frame],
+			   lev.draw[x][y], game_em.gfx_frame,
 			   x - lev.left, y - lev.top);
 
   for (y = top; y < top + MAX_BUF_YSIZE; y++)
@@ -322,7 +322,7 @@ static void animscreen(void)
       int sx = x % MAX_BUF_XSIZE;
       int sy = y % MAX_BUF_YSIZE;    
       int tile = lev.draw[x][y];
-      struct GraphicInfo_EM *g = &graphic_info_em_object[tile][game_em.frame];
+      struct GraphicInfo_EM *g = &graphic_info_em_object[tile][game_em.gfx_frame];
       int obj = g->unique_identifier;
       int crm = 0;
       boolean redraw_screen_tile = FALSE;
@@ -342,7 +342,7 @@ static void animscreen(void)
 
 	  tile_next = lev.draw[xx][yy];
 
-	  if (!graphic_info_em_object[tile_next][game_em.frame].has_crumbled_graphics)
+	  if (!graphic_info_em_object[tile_next][game_em.gfx_frame].has_crumbled_graphics)
 	    crm |= (1 << i);
 	}
       }
@@ -466,7 +466,8 @@ void game_initscreen(void)
 {
   int x, y, sx, sy;
 
-  game_em.frame = 1;
+  game_em.frame = 1;		// this causes the first game cycle to be skipped ...
+  game_em.gfx_frame = 0;	// ... but always start with first graphics frame
 
   if (game.centered_player_nr == -1)
   {

@@ -90,6 +90,9 @@ void GameActions_EM(byte action[MAX_PLAYERS])
   game_em.random = game_em.random * 129 + 1;
   game_em.frame = (game_em.frame + 1) % 8;
 
+  // generally, game and graphics engine frame are the same
+  game_em.gfx_frame = game_em.frame;
+
   for (i = 0; i < MAX_PLAYERS; i++)
     readjoy(action[i], &ply[i]);
 
