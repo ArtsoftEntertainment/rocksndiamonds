@@ -518,6 +518,7 @@ struct ConfigInfo sound_config[] =
 
   { "game.use_native_bd_sound_engine",		"false"				},
   { "game.use_native_bd_bonus_jingle",		"false"				},
+  { "game.use_native_emc_sound_engine",		"false"				},
 
   { NULL,					NULL				}
 };
