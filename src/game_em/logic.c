@@ -7972,6 +7972,8 @@ void logic_init(void)
 
 void logic(void)
 {
+  init_native_sounds();
+
   if (game_em.frame == 0)
   {
     logic_players();
@@ -7982,4 +7984,6 @@ void logic(void)
   {
     logic_globals();
   }
+
+  play_native_sounds();
 }

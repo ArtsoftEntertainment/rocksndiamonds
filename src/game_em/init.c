@@ -11,6 +11,10 @@ Bitmap *screenBitmap;
 struct GlobalInfo_EM global_em_info;
 struct GameInfo_EM game_em;
 
+static boolean native_sound_active[SOUND_MAX];
+static int native_sound_element[SOUND_MAX];
+
+
 void InitGfxBuffers_EM(void)
 {
   ReCreateBitmap(&screenBitmap, MAX_BUF_XSIZE * TILEX, MAX_BUF_YSIZE * TILEY);
@@ -61,9 +65,47 @@ void em_close_all(void)
 {
 }
 
+void init_native_sounds(void)
+{
+  int i;
+
+  for (i = 0; i < SOUND_MAX; i++)
+  {
+    native_sound_active[i] = FALSE;
+    native_sound_element[i] = -1;
+  }
+}
+
+void play_native_sounds(void)
+{
+  int i;
+
+  for (i = 0; i < SOUND_MAX; i++)
+    if (native_sound_active[i])
+      PlayLevelSound_EM(-1, -1, native_sound_element[i], i);
+}
+
+static void mark_native_sound_active(int x, int y, int sample, int element)
+{
+  int left = game_em.screen_x / TILEX;
+  int top  = game_em.screen_y / TILEY;
+
+  // do not mark sound for fields that are outside the visible screen area
+  // (SCR_FIELDX/Y + 1 required, because even viewport has two half tiles)
+  if (x < left || x >= left + SCR_FIELDX + 1 ||
+      y < top  || y >= top  + SCR_FIELDY + 1)
+    return;
+
+  native_sound_active[sample] = TRUE;
+  native_sound_element[sample] = element;
+}
+
 void play_element_sound(int x, int y, int sample, int element)
 {
-  PlayLevelSound_EM(CAVE_POS_X(x), CAVE_POS_Y(y), element, sample);
+  if (game.use_native_emc_sound_engine)
+    mark_native_sound_active(x, y, sample, element);
+  else
+    PlayLevelSound_EM(CAVE_POS_X(x), CAVE_POS_Y(y), element, sample);
 }
 
 void play_sound(int x, int y, int sample)

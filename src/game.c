@@ -16127,6 +16127,13 @@ static void PlayLevelSoundElementActionExt(int x, int y, int element, int action
   if (sound_effect == SND_UNDEFINED)
     return;
 
+  if (use_native_emc_sound_engine)
+  {
+    x = LEVELX(MIDPOSX);
+    y = LEVELY(MIDPOSY);
+    is_loop_sound = FALSE;
+  }
+
   PlayLevelSoundExt(x, y, sound_effect, is_loop_sound);
 }
 
