@@ -88,14 +88,13 @@ void GameActions_EM(byte action[MAX_PLAYERS])
   boolean any_player_dropping = FALSE;
 
   game_em.random = game_em.random * 129 + 1;
-
-  frame = (frame + 1) % 8;
+  game_em.frame = (game_em.frame + 1) % 8;
 
   for (i = 0; i < MAX_PLAYERS; i++)
     readjoy(action[i], &ply[i]);
 
-  UpdateEngineValues(CAVE_POS_X(screen_x / TILEX),
-		     CAVE_POS_Y(screen_y / TILEY),
+  UpdateEngineValues(CAVE_POS_X(game_em.screen_x / TILEX),
+		     CAVE_POS_Y(game_em.screen_y / TILEY),
 		     CAVE_POS_X(ply[0].x),
 		     CAVE_POS_Y(ply[0].y));
 
@@ -109,7 +108,7 @@ void GameActions_EM(byte action[MAX_PLAYERS])
       any_player_dropping = TRUE;
 
   boolean single_step_mode_paused =
-    CheckSingleStepMode_EM(frame, game_em.any_player_moving,
+    CheckSingleStepMode_EM(game_em.frame, game_em.any_player_moving,
 			   game_em.any_player_snapping, any_player_dropping);
 
   // draw wrapping around before going to single step pause mode
@@ -126,10 +125,6 @@ void SaveEngineSnapshotValues_EM(void)
   engine_snapshot_em.game_em = game_em;
   engine_snapshot_em.lev = lev;
 
-  engine_snapshot_em.frame = frame;
-  engine_snapshot_em.screen_x = screen_x;
-  engine_snapshot_em.screen_y = screen_y;
-
   for (i = 0; i < 4; i++)
     engine_snapshot_em.ply[i] = ply[i];
 }
@@ -140,10 +135,6 @@ void LoadEngineSnapshotValues_EM(void)
 
   game_em = engine_snapshot_em.game_em;
   lev = engine_snapshot_em.lev;
-
-  frame = engine_snapshot_em.frame;
-  screen_x = engine_snapshot_em.screen_x;
-  screen_y = engine_snapshot_em.screen_y;
 
   for (i = 0; i < 4; i++)
     ply[i] = engine_snapshot_em.ply[i];

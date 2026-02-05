@@ -41,6 +41,11 @@ struct GameInfo_EM
 {
   unsigned int random;
 
+  int frame;			// current game engine frame
+
+  int screen_x;			// current scroll x position
+  int screen_y;			// current scroll y position
+
   boolean level_solved;
   boolean game_over;
 
@@ -101,10 +106,6 @@ struct EngineSnapshotInfo_EM
   struct GameInfo_EM game_em;
   struct LOGIC lev;
   struct PLAYER ply[MAX_PLAYERS];
-
-  int frame;
-  int screen_x;
-  int screen_y;
 };
 
 

@@ -25,10 +25,10 @@
 #define VALID_SCREEN_Y(y)	((y) < MIN_SCREEN_Y ? MIN_SCREEN_Y :	\
 				 (y) > MAX_SCREEN_Y ? MAX_SCREEN_Y : (y))
 
-#define PLAYER_POS_X(nr)	(((7 - frame) * ply[nr].prev_x +	\
-				  (1 + frame) * ply[nr].x) * TILEX / 8)
-#define PLAYER_POS_Y(nr)	(((7 - frame) * ply[nr].prev_y +	\
-				  (1 + frame) * ply[nr].y) * TILEY / 8)
+#define PLAYER_POS_X(nr)	(((7 - game_em.frame) * ply[nr].prev_x +	\
+				  (1 + game_em.frame) * ply[nr].x) * TILEX / 8)
+#define PLAYER_POS_Y(nr)	(((7 - game_em.frame) * ply[nr].prev_y +	\
+				  (1 + game_em.frame) * ply[nr].y) * TILEY / 8)
 
 #define PLAYER_SCREEN_X(nr)	(PLAYER_POS_X(nr) -			\
 				 (SCR_FIELDX - 1) * TILEX / 2)
@@ -37,9 +37,6 @@
 
 #define USE_EXTENDED_GRAPHICS_ENGINE		1
 
-
-int frame;				/* current screen frame */
-int screen_x, screen_y;			/* current scroll position */
 
 /* tiles currently on screen */
 static int screen_tiles[MAX_PLAYFIELD_WIDTH + 2][MAX_PLAYFIELD_HEIGHT + 2];
@@ -61,20 +58,20 @@ static void setScreenCenteredToAllPlayers(int *, int *);
 
 int getFieldbufferOffsetX_EM(void)
 {
-  return screen_x % TILEX;
+  return game_em.screen_x % TILEX;
 }
 
 int getFieldbufferOffsetY_EM(void)
 {
-  return screen_y % TILEY;
+  return game_em.screen_y % TILEY;
 }
 
 void BlitScreenToBitmap_EM(Bitmap *target_bitmap)
 {
   /* blit all (up to four) parts of the scroll buffer to the target bitmap */
 
-  int x = screen_x % (MAX_BUF_XSIZE * TILEX);
-  int y = screen_y % (MAX_BUF_YSIZE * TILEY);
+  int x = game_em.screen_x % (MAX_BUF_XSIZE * TILEX);
+  int y = game_em.screen_y % (MAX_BUF_YSIZE * TILEY);
   int xsize = SXSIZE;
   int ysize = SYSIZE;
   int full_xsize = lev.width  * TILEX;
@@ -128,20 +125,20 @@ static void BackToFront_EM(void)
 static struct GraphicInfo_EM *getObjectGraphic(int x, int y)
 {
   int tile = lev.draw[x][y];
-  struct GraphicInfo_EM *g = &graphic_info_em_object[tile][frame];
+  struct GraphicInfo_EM *g = &graphic_info_em_object[tile][game_em.frame];
 
   if (!game.use_native_emc_graphics_engine)
-    getGraphicSourceObjectExt_EM(g, tile, frame, x - lev.left, y - lev.top);
+    getGraphicSourceObjectExt_EM(g, tile, game_em.frame, x - lev.left, y - lev.top);
 
   return g;
 }
 
 static struct GraphicInfo_EM *getPlayerGraphic(int player_nr, int anim)
 {
-  struct GraphicInfo_EM *g = &graphic_info_em_player[player_nr][anim][frame];
+  struct GraphicInfo_EM *g = &graphic_info_em_player[player_nr][anim][game_em.frame];
 
   if (!game.use_native_emc_graphics_engine)
-    getGraphicSourcePlayerExt_EM(g, player_nr, anim, frame);
+    getGraphicSourcePlayerExt_EM(g, player_nr, anim, game_em.frame);
 
   return g;
 }
@@ -156,8 +153,8 @@ static void DrawLevelField_EM(int x, int y, int sx, int sy,
   int dst_y = sy * TILEY + g->dst_offset_y * TILESIZE_VAR / TILESIZE;
   int width = g->width * TILESIZE_VAR / TILESIZE;
   int height = g->height * TILESIZE_VAR / TILESIZE;
-  int left = screen_x / TILEX;
-  int top  = screen_y / TILEY;
+  int left = game_em.screen_x / TILEX;
+  int top  = game_em.screen_y / TILEY;
 
   /* do not draw fields that are outside the visible screen area */
   if (x < left || x >= left + MAX_BUF_XSIZE ||
@@ -186,8 +183,8 @@ static void DrawLevelFieldCrumbled_EM(int x, int y, int sx, int sy,
 {
   struct GraphicInfo_EM *g;
   int crumbled_border_size;
-  int left = screen_x / TILEX;
-  int top  = screen_y / TILEY;
+  int left = game_em.screen_x / TILEX;
+  int top  = game_em.screen_y / TILEY;
   int i;
 
   /* do not draw fields that are outside the visible screen area */
@@ -250,8 +247,8 @@ static void DrawLevelPlayer_EM(int x1, int y1, int player_nr, int anim,
   int dst_x, dst_y;
 
   /* do not draw fields that are outside the visible screen area */
-  if (x1 < screen_x - TILEX || x1 >= screen_x + MAX_BUF_XSIZE * TILEX ||
-      y1 < screen_y - TILEY || y1 >= screen_y + MAX_BUF_YSIZE * TILEY)
+  if (x1 < game_em.screen_x - TILEX || x1 >= game_em.screen_x + MAX_BUF_XSIZE * TILEX ||
+      y1 < game_em.screen_y - TILEY || y1 >= game_em.screen_y + MAX_BUF_YSIZE * TILEY)
     return;
 
   x1 %= MAX_BUF_XSIZE * TILEX;
@@ -307,15 +304,15 @@ static void DrawLevelPlayer_EM(int x1, int y1, int player_nr, int anim,
 static void animscreen(void)
 {
   int x, y, i;
-  int left = screen_x / TILEX;
-  int top  = screen_y / TILEY;
+  int left = game_em.screen_x / TILEX;
+  int top  = game_em.screen_y / TILEY;
   struct XY *xy = xy_topdown;
 
   if (!game.use_native_emc_graphics_engine)
     for (y = lev.top; y < lev.bottom; y++)
       for (x = lev.left; x < lev.right; x++)
-	SetGfxAnimation_EM(&graphic_info_em_object[lev.draw[x][y]][frame],
-			   lev.draw[x][y], frame,
+	SetGfxAnimation_EM(&graphic_info_em_object[lev.draw[x][y]][game_em.frame],
+			   lev.draw[x][y], game_em.frame,
 			   x - lev.left, y - lev.top);
 
   for (y = top; y < top + MAX_BUF_YSIZE; y++)
@@ -325,7 +322,7 @@ static void animscreen(void)
       int sx = x % MAX_BUF_XSIZE;
       int sy = y % MAX_BUF_YSIZE;    
       int tile = lev.draw[x][y];
-      struct GraphicInfo_EM *g = &graphic_info_em_object[tile][frame];
+      struct GraphicInfo_EM *g = &graphic_info_em_object[tile][game_em.frame];
       int obj = g->unique_identifier;
       int crm = 0;
       boolean redraw_screen_tile = FALSE;
@@ -345,7 +342,7 @@ static void animscreen(void)
 
 	  tile_next = lev.draw[xx][yy];
 
-	  if (!graphic_info_em_object[tile_next][frame].has_crumbled_graphics)
+	  if (!graphic_info_em_object[tile_next][game_em.frame].has_crumbled_graphics)
 	    crm |= (1 << i);
 	}
       }
@@ -385,14 +382,14 @@ static void blitplayer_ext(int nr)
   x2 = x1 + TILEX - 1;
   y2 = y1 + TILEY - 1;
 
-  if ((int)(x2 - screen_x) < ((MAX_BUF_XSIZE - 1) * TILEX - 1) &&
-      (int)(y2 - screen_y) < ((MAX_BUF_YSIZE - 1) * TILEY - 1))
+  if ((int)(x2 - game_em.screen_x) < ((MAX_BUF_XSIZE - 1) * TILEX - 1) &&
+      (int)(y2 - game_em.screen_y) < ((MAX_BUF_YSIZE - 1) * TILEY - 1))
   {
     /* some casts to "int" are needed because of negative calculation values */
     int dx = (int)ply[nr].x - (int)ply[nr].prev_x;
     int dy = (int)ply[nr].y - (int)ply[nr].prev_y;
-    int old_x = (int)ply[nr].prev_x + (int)frame * dx / 8;
-    int old_y = (int)ply[nr].prev_y + (int)frame * dy / 8;
+    int old_x = (int)ply[nr].prev_x + (int)game_em.frame * dx / 8;
+    int old_y = (int)ply[nr].prev_y + (int)game_em.frame * dy / 8;
     int new_x = old_x + SIGN(dx);
     int new_y = old_y + SIGN(dy);
     int old_sx = old_x % MAX_BUF_XSIZE;
@@ -469,7 +466,7 @@ void game_initscreen(void)
 {
   int x, y, sx, sy;
 
-  frame = 1;
+  game_em.frame = 1;
 
   if (game.centered_player_nr == -1)
   {
@@ -481,8 +478,8 @@ void game_initscreen(void)
     sy = PLAYER_SCREEN_Y(game.centered_player_nr);
   }
 
-  screen_x = VALID_SCREEN_X(sx);
-  screen_y = VALID_SCREEN_Y(sy);
+  game_em.screen_x = VALID_SCREEN_X(sx);
+  game_em.screen_y = VALID_SCREEN_Y(sy);
 
   for (y = 0; y < MAX_BUF_YSIZE; y++)
   {
@@ -566,7 +563,8 @@ boolean checkIfAllPlayersFitToScreen(void)
 
 static void setScreenCenteredToAllPlayers(int *sx, int *sy)
 {
-  int sx1 = screen_x, sy1 = screen_y, sx2 = screen_x, sy2 = screen_y;
+  int sx1 = game_em.screen_x, sy1 = game_em.screen_y;
+  int sx2 = game_em.screen_x, sy2 = game_em.screen_y;
 
   setMinimalPlayerBoundaries(&sx1, &sy1, &sx2, &sy2);
 
@@ -601,13 +599,13 @@ void RedrawPlayfield_EM(boolean force_redraw)
   boolean draw_new_player_location_wrap = FALSE;
   boolean quick_relocation = setup.quick_switch;
   int max_center_distance_player_nr =
-    getMaxCenterDistancePlayerNr(screen_x, screen_y);
+    getMaxCenterDistancePlayerNr(game_em.screen_x, game_em.screen_y);
   int stepsize = TILEX / 8;
   int offset_raw = game.scroll_delay_value;
   int offset_x = MIN(offset_raw, (SCR_FIELDX - 2) / 2) * TILEX;
   int offset_y = MIN(offset_raw, (SCR_FIELDY - 2) / 2) * TILEY;
-  int screen_x_old = screen_x;
-  int screen_y_old = screen_y;
+  int screen_x_old = game_em.screen_x;
+  int screen_y_old = game_em.screen_y;
   int x, y, sx, sy;
   int i;
 
@@ -664,10 +662,10 @@ void RedrawPlayfield_EM(boolean force_redraw)
 
   if (draw_new_player_location && quick_relocation)
   {
-    screen_x = VALID_SCREEN_X(sx);
-    screen_y = VALID_SCREEN_Y(sy);
-    screen_x_old = screen_x;
-    screen_y_old = screen_y;
+    game_em.screen_x = VALID_SCREEN_X(sx);
+    game_em.screen_y = VALID_SCREEN_Y(sy);
+    screen_x_old = game_em.screen_x;
+    screen_y_old = game_em.screen_y;
   }
 
   if (draw_new_player_location && !quick_relocation)
@@ -682,7 +680,7 @@ void RedrawPlayfield_EM(boolean force_redraw)
       if (lev.infinite_true)
       {
 	// when wrapping around (horizontally), keep vertical player position
-	screen_yy = screen_y;
+	screen_yy = game_em.screen_y;
       }
 
       // scrolling for wrapping should be faster than for switching players
@@ -691,40 +689,40 @@ void RedrawPlayfield_EM(boolean force_redraw)
 
     SetVideoFrameDelay(wait_delay_value);
 
-    while (screen_x != screen_xx || screen_y != screen_yy)
+    while (game_em.screen_x != screen_xx || game_em.screen_y != screen_yy)
     {
-      int dx = (screen_xx < screen_x ? +1 : screen_xx > screen_x ? -1 : 0);
-      int dy = (screen_yy < screen_y ? +1 : screen_yy > screen_y ? -1 : 0);
+      int dx = (screen_xx < game_em.screen_x ? +1 : screen_xx > game_em.screen_x ? -1 : 0);
+      int dy = (screen_yy < game_em.screen_y ? +1 : screen_yy > game_em.screen_y ? -1 : 0);
       int dxx = 0, dyy = 0;
 
       if (dx == 0 && dy == 0)		/* no scrolling needed at all */
 	break;
 
-      if (ABS(screen_xx - screen_x) >= TILEX)
+      if (ABS(screen_xx - game_em.screen_x) >= TILEX)
       {
-	screen_x -= dx * TILEX;
+	game_em.screen_x -= dx * TILEX;
 	dxx = dx * TILEX / 2;
       }
       else
       {
-	screen_x = screen_xx;
+	game_em.screen_x = screen_xx;
 	dxx = 0;
       }
 
-      if (ABS(screen_yy - screen_y) >= TILEY)
+      if (ABS(screen_yy - game_em.screen_y) >= TILEY)
       {
-	screen_y -= dy * TILEY;
+	game_em.screen_y -= dy * TILEY;
 	dyy = dy * TILEY / 2;
       }
       else
       {
-	screen_y = screen_yy;
+	game_em.screen_y = screen_yy;
 	dyy = 0;
       }
 
       /* scroll in two steps of half tile size to make things smoother */
-      screen_x += dxx;
-      screen_y += dyy;
+      game_em.screen_x += dxx;
+      game_em.screen_y += dyy;
 
       animscreen();
 
@@ -735,8 +733,8 @@ void RedrawPlayfield_EM(boolean force_redraw)
       BackToFront_EM();
 
       /* scroll second step to align at full tile size */
-      screen_x -= dxx;
-      screen_y -= dyy;
+      game_em.screen_x -= dxx;
+      game_em.screen_y -= dyy;
 
       animscreen();
 
@@ -749,8 +747,8 @@ void RedrawPlayfield_EM(boolean force_redraw)
 
     SetVideoFrameDelay(frame_delay_value_old);
 
-    screen_x_old = screen_x;
-    screen_y_old = screen_y;
+    screen_x_old = game_em.screen_x;
+    screen_y_old = game_em.screen_y;
   }
 
   if (force_redraw)
@@ -766,25 +764,25 @@ void RedrawPlayfield_EM(boolean force_redraw)
   }
 
   /* calculate new screen scrolling position, with regard to scroll delay */
-  screen_x = VALID_SCREEN_X(sx + offset_x < screen_x ? sx + offset_x :
-			    sx - offset_x > screen_x ? sx - offset_x :
-			    screen_x);
-  screen_y = VALID_SCREEN_Y(sy + offset_y < screen_y ? sy + offset_y :
-			    sy - offset_y > screen_y ? sy - offset_y :
-			    screen_y);
+  game_em.screen_x = VALID_SCREEN_X(sx + offset_x < game_em.screen_x ? sx + offset_x :
+				    sx - offset_x > game_em.screen_x ? sx - offset_x :
+				    game_em.screen_x);
+  game_em.screen_y = VALID_SCREEN_Y(sy + offset_y < game_em.screen_y ? sy + offset_y :
+				    sy - offset_y > game_em.screen_y ? sy - offset_y :
+				    game_em.screen_y);
 
   /* prevent scrolling further than double player step size when scrolling */
-  if (ABS(screen_x - screen_x_old) > 2 * stepsize)
+  if (ABS(game_em.screen_x - screen_x_old) > 2 * stepsize)
   {
-    int dx = SIGN(screen_x - screen_x_old);
+    int dx = SIGN(game_em.screen_x - screen_x_old);
 
-    screen_x = screen_x_old + dx * 2 * stepsize;
+    game_em.screen_x = screen_x_old + dx * 2 * stepsize;
   }
-  if (ABS(screen_y - screen_y_old) > 2 * stepsize)
+  if (ABS(game_em.screen_y - screen_y_old) > 2 * stepsize)
   {
-    int dy = SIGN(screen_y - screen_y_old);
+    int dy = SIGN(game_em.screen_y - screen_y_old);
 
-    screen_y = screen_y_old + dy * 2 * stepsize;
+    game_em.screen_y = screen_y_old + dy * 2 * stepsize;
   }
 
   /* prevent scrolling away from the other players when focus on all players */
@@ -792,23 +790,23 @@ void RedrawPlayfield_EM(boolean force_redraw)
   {
     /* check if all players are still visible with new scrolling position */
     if (checkIfAllPlayersAreVisible(screen_x_old, screen_y_old) &&
-	!checkIfAllPlayersAreVisible(screen_x, screen_y))
+	!checkIfAllPlayersAreVisible(game_em.screen_x, game_em.screen_y))
     {
       /* reset horizontal scroll position to last value, if needed */
-      if (!checkIfAllPlayersAreVisible(screen_x, screen_y_old))
-	screen_x = screen_x_old;
+      if (!checkIfAllPlayersAreVisible(game_em.screen_x, screen_y_old))
+	game_em.screen_x = screen_x_old;
 
       /* reset vertical scroll position to last value, if needed */
-      if (!checkIfAllPlayersAreVisible(screen_x_old, screen_y))
-	screen_y = screen_y_old;
+      if (!checkIfAllPlayersAreVisible(screen_x_old, game_em.screen_y))
+	game_em.screen_y = screen_y_old;
     }
   }
 
   /* prevent scrolling (for screen correcting) if no player is moving */
   if (!game_em.any_player_moving)
   {
-    screen_x = screen_x_old;
-    screen_y = screen_y_old;
+    game_em.screen_x = screen_x_old;
+    game_em.screen_y = screen_y_old;
   }
   else
   {
@@ -816,16 +814,16 @@ void RedrawPlayfield_EM(boolean force_redraw)
     int player_nr = (game.centered_player_nr == -1 ?
 		     max_center_distance_player_nr : game.centered_player_nr);
     int player_move_dir = game_em.last_player_direction[player_nr];
-    int dx = SIGN(screen_x - screen_x_old);
-    int dy = SIGN(screen_y - screen_y_old);
+    int dx = SIGN(game_em.screen_x - screen_x_old);
+    int dy = SIGN(game_em.screen_y - screen_y_old);
 
     if ((dx < 0 && player_move_dir != MV_LEFT) ||
 	(dx > 0 && player_move_dir != MV_RIGHT))
-      screen_x = screen_x_old;
+      game_em.screen_x = screen_x_old;
 
     if ((dy < 0 && player_move_dir != MV_UP) ||
 	(dy > 0 && player_move_dir != MV_DOWN))
-      screen_y = screen_y_old;
+      game_em.screen_y = screen_y_old;
   }
 
   // skip redrawing playfield in warp mode or when testing tapes with "autotest"

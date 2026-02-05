@@ -7972,13 +7972,13 @@ void logic_init(void)
 
 void logic(void)
 {
-  if (frame == 0)
+  if (game_em.frame == 0)
   {
     logic_players();
     logic_objects();
   }
 
-  if (frame == 1)
+  if (game_em.frame == 1)
   {
     logic_globals();
   }
