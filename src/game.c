@@ -16118,12 +16118,23 @@ static void PlayLevelSoundAction(int x, int y, int action)
   PlayLevelSoundElementAction(x, y, Tile[x][y], action);
 }
 
-static void PlayLevelSoundElementAction(int x, int y, int element, int action)
+static void PlayLevelSoundElementActionExt(int x, int y, int element, int action,
+					   boolean use_native_emc_sound_engine)
 {
   int sound_effect = element_info[SND_ELEMENT(element)].sound[action];
 
   if (sound_effect != SND_UNDEFINED)
     PlayLevelSound(x, y, sound_effect);
+}
+
+static void PlayLevelSoundElementAction(int x, int y, int element, int action)
+{
+  PlayLevelSoundElementActionExt(x, y, element, action, FALSE);
+}
+
+static void PlayLevelSoundElementAction_EM(int x, int y, int element, int action)
+{
+  PlayLevelSoundElementActionExt(x, y, element, action, game.use_native_emc_sound_engine);
 }
 
 static void PlayLevelSoundElementActionIfLoop(int x, int y, int element, int action)
@@ -16741,144 +16752,144 @@ void PlayLevelSound_EM(int xx, int yy, int element_em, int sample)
   switch (sample)
   {
     case SOUND_blank:
-      PlayLevelSoundElementAction(x, y, element, ACTION_WALKING);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_WALKING);
       break;
 
     case SOUND_roll:
-      PlayLevelSoundElementAction(x, y, element, ACTION_PUSHING);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_PUSHING);
       break;
 
     case SOUND_stone:
-      PlayLevelSoundElementAction(x, y, element, ACTION_IMPACT);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_IMPACT);
       break;
 
     case SOUND_nut:
-      PlayLevelSoundElementAction(x, y, element, ACTION_IMPACT);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_IMPACT);
       break;
 
     case SOUND_crack:
-      PlayLevelSoundElementAction(x, y, element, ACTION_BREAKING);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_BREAKING);
       break;
 
     case SOUND_bug:
-      PlayLevelSoundElementAction(x, y, element, ACTION_MOVING);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_MOVING);
       break;
 
     case SOUND_tank:
-      PlayLevelSoundElementAction(x, y, element, ACTION_MOVING);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_MOVING);
       break;
 
     case SOUND_android_clone:
-      PlayLevelSoundElementAction(x, y, element, ACTION_DROPPING);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_DROPPING);
       break;
 
     case SOUND_android_move:
-      PlayLevelSoundElementAction(x, y, element, ACTION_MOVING);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_MOVING);
       break;
 
     case SOUND_spring:
-      PlayLevelSoundElementAction(x, y, element, ACTION_IMPACT);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_IMPACT);
       break;
 
     case SOUND_slurp:
-      PlayLevelSoundElementAction(x, y, element, ACTION_EATING);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_EATING);
       break;
 
     case SOUND_eater:
-      PlayLevelSoundElementAction(x, y, element, ACTION_WAITING);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_WAITING);
       break;
 
     case SOUND_eater_eat:
-      PlayLevelSoundElementAction(x, y, element, ACTION_DIGGING);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_DIGGING);
       break;
 
     case SOUND_alien:
-      PlayLevelSoundElementAction(x, y, element, ACTION_MOVING);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_MOVING);
       break;
 
     case SOUND_collect:
-      PlayLevelSoundElementAction(x, y, element, ACTION_COLLECTING);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_COLLECTING);
       break;
 
     case SOUND_diamond:
-      PlayLevelSoundElementAction(x, y, element, ACTION_IMPACT);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_IMPACT);
       break;
 
     case SOUND_squash:
       // !!! CHECK THIS !!!
 #if 1
-      PlayLevelSoundElementAction(x, y, element, ACTION_BREAKING);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_BREAKING);
 #else
-      PlayLevelSoundElementAction(x, y, element, ACTION_SMASHED_BY_ROCK);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_SMASHED_BY_ROCK);
 #endif
       break;
 
     case SOUND_wonderfall:
-      PlayLevelSoundElementAction(x, y, element, ACTION_FILLING);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_FILLING);
       break;
 
     case SOUND_drip:
-      PlayLevelSoundElementAction(x, y, element, ACTION_IMPACT);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_IMPACT);
       break;
 
     case SOUND_push:
-      PlayLevelSoundElementAction(x, y, element, ACTION_PUSHING);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_PUSHING);
       break;
 
     case SOUND_dirt:
-      PlayLevelSoundElementAction(x, y, element, ACTION_DIGGING);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_DIGGING);
       break;
 
     case SOUND_acid:
-      PlayLevelSoundElementAction(x, y, element, ACTION_SPLASHING);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_SPLASHING);
       break;
 
     case SOUND_ball:
-      PlayLevelSoundElementAction(x, y, element, ACTION_DROPPING);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_DROPPING);
       break;
 
     case SOUND_slide:
-      PlayLevelSoundElementAction(x, y, element, ACTION_GROWING);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_GROWING);
       break;
 
     case SOUND_wonder:
-      PlayLevelSoundElementAction(x, y, element, ACTION_ACTIVE);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_ACTIVE);
       break;
 
     case SOUND_door:
-      PlayLevelSoundElementAction(x, y, element, ACTION_PASSING);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_PASSING);
       break;
 
     case SOUND_exit_open:
-      PlayLevelSoundElementAction(x, y, element, ACTION_OPENING);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_OPENING);
       break;
 
     case SOUND_exit_leave:
-      PlayLevelSoundElementAction(x, y, element, ACTION_PASSING);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_PASSING);
       break;
 
     case SOUND_dynamite:
-      PlayLevelSoundElementAction(x, y, element, ACTION_DROPPING);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_DROPPING);
       break;
 
     case SOUND_tick:
-      PlayLevelSoundElementAction(x, y, element, ACTION_ACTIVE);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_ACTIVE);
       break;
 
     case SOUND_press:
-      PlayLevelSoundElementAction(x, y, element, ACTION_ACTIVATING);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_ACTIVATING);
       break;
 
     case SOUND_wheel:
-      PlayLevelSoundElementAction(x, y, element, ACTION_ACTIVE);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_ACTIVE);
       break;
 
     case SOUND_boom:
-      PlayLevelSoundElementAction(x, y, element, ACTION_EXPLODING);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_EXPLODING);
       break;
 
     case SOUND_die:
-      PlayLevelSoundElementAction(x, y, element, ACTION_DYING);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_DYING);
       break;
 
     case SOUND_time:
@@ -16886,7 +16897,7 @@ void PlayLevelSound_EM(int xx, int yy, int element_em, int sample)
       break;
 
     default:
-      PlayLevelSoundElementAction(x, y, element, ACTION_DEFAULT);
+      PlayLevelSoundElementAction_EM(x, y, element, ACTION_DEFAULT);
       break;
   }
 }
