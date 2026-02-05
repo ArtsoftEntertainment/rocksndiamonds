@@ -16122,9 +16122,12 @@ static void PlayLevelSoundElementActionExt(int x, int y, int element, int action
 					   boolean use_native_emc_sound_engine)
 {
   int sound_effect = element_info[SND_ELEMENT(element)].sound[action];
+  boolean is_loop_sound = IS_LOOP_SOUND(sound_effect);
 
-  if (sound_effect != SND_UNDEFINED)
-    PlayLevelSound(x, y, sound_effect);
+  if (sound_effect == SND_UNDEFINED)
+    return;
+
+  PlayLevelSoundExt(x, y, sound_effect, is_loop_sound);
 }
 
 static void PlayLevelSoundElementAction(int x, int y, int element, int action)
