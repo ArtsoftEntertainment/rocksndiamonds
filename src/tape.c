@@ -1358,13 +1358,13 @@ void TapeQuickLoad(void)
 
     LoadEngineSnapshotSingle();
 
-    DrawCompleteVideoDisplay();
-
     tape.playing = TRUE;
     tape.pausing = TRUE;
 
     TapeStopWarpForward();
     TapeAppendRecording();
+
+    DrawCompleteVideoDisplay();
 
     // restart step/move snapshots after quick loading tape
     SaveEngineSnapshotToListInitial();
