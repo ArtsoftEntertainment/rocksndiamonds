@@ -9523,6 +9523,21 @@ em_object_mapping_list[] =
     EL_EMC_MAGIC_BALL,			ACTION_DROPPING, -1
   },
 
+  // convert various R'n'D amoeba types to same EM amoeba type
+  {
+    Xamoeba_1,				TRUE,	FALSE,
+    EL_AMOEBA_DEAD,			ACTION_OTHER, -1
+  },
+  {
+    Xamoeba_1,				TRUE,	FALSE,
+    EL_AMOEBA_DRY,			ACTION_OTHER, -1
+  },
+  {
+    Xamoeba_1,				TRUE,	FALSE,
+    EL_AMOEBA_FULL,			ACTION_OTHER, -1
+  },
+
+  // this mapping for "Xamoeba_1" overwrites previous mappings
   {
     Xamoeba_1,				TRUE,	FALSE,
     EL_AMOEBA_WET,			ACTION_OTHER, -1

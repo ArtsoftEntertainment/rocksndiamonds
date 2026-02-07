@@ -4976,15 +4976,9 @@ static void CopyNativeLevel_RND_to_EM(struct LevelInfo *level)
       cav->cave[x][y] = Cblank;
 
   // then copy the real level contents from level file into the playfield
-  for (y = 0; y < cav->height; y++) for (x = 0; x < cav->width; x++)
-  {
-    int new_element = map_element_RND_to_EM_cave(level->field[x][y]);
-
-    if (level->field[x][y] == EL_AMOEBA_DEAD)
-      new_element = map_element_RND_to_EM_cave(EL_AMOEBA_WET);
-
-    cav->cave[x][y] = new_element;
-  }
+  for (y = 0; y < cav->height; y++)
+    for (x = 0; x < cav->width; x++)
+      cav->cave[x][y] = map_element_RND_to_EM_cave(level->field[x][y]);
 
   for (i = 0; i < MAX_PLAYERS; i++)
   {
@@ -5079,16 +5073,10 @@ static void CopyNativeLevel_EM_to_RND(struct LevelInfo *level)
 
   map_android_clone_elements_EM_to_RND(level);
 
-  // convert the playfield (some elements need special treatment)
-  for (y = 0; y < level->fieldy; y++) for (x = 0; x < level->fieldx; x++)
-  {
-    int new_element = map_element_EM_to_RND_cave(cav->cave[x][y]);
-
-    if (new_element == EL_AMOEBA_WET && level->amoeba_speed == 0)
-      new_element = EL_AMOEBA_DEAD;
-
-    level->field[x][y] = new_element;
-  }
+  // convert the playfield
+  for (y = 0; y < level->fieldy; y++)
+    for (x = 0; x < level->fieldx; x++)
+      level->field[x][y] = map_element_EM_to_RND_cave(cav->cave[x][y]);
 
   for (i = 0; i < MAX_PLAYERS; i++)
   {
