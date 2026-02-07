@@ -451,6 +451,9 @@ void DrawCompleteVideoDisplay(void)
 
     if (tape.pausing)
       DrawVideoDisplay(VIDEO_STATE_PAUSE_ON, 0);
+
+    if (tape.single_step)
+      DrawVideoDisplay(VIDEO_STATE_1STEP_ON, 0);
   }
   else if (tape.playing)
   {
