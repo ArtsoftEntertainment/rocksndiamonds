@@ -8380,7 +8380,7 @@ static struct Mapping_EM_to_RND_object
   int action;
   int direction;
 }
-em_object_mapping_list[GAME_TILE_MAX + 1] =
+em_object_mapping_list[] =
 {
   {
     Zborder,				FALSE,	FALSE,
@@ -10173,7 +10173,7 @@ static struct Mapping_EM_to_RND_player
   int action;
   int direction;
 }
-em_player_mapping_list[MAX_PLAYERS * PLY_MAX + 1] =
+em_player_mapping_list[] =
 {
   {
     PLY_walk_n,				0,
