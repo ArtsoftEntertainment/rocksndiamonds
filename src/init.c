@@ -4348,8 +4348,6 @@ void InitElementPropertiesStatic(void)
     EL_YAMYAM_RIGHT,
     EL_YAMYAM_UP,
     EL_YAMYAM_DOWN,
-    EL_AMOEBA_WET,
-    EL_AMOEBA_DRY,
     EL_AMOEBA_FULL,
     EL_BD_AMOEBA,
     EL_BDX_AMOEBA_1,
