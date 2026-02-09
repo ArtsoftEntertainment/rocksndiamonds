@@ -163,7 +163,7 @@ static const GdElement import_table_crdr[0x100] =
   /* fc */ O_WATER, O_WATER, O_WATER, O_WATER,
 };
 
-// conversion table for imported 1stb caves.
+// conversion table for imported CrLi caves.
 // @todo check O_PRE_DIA_0 and O_EXPLODE_0
 static const GdElement import_table_crli[0x80] =
 {
