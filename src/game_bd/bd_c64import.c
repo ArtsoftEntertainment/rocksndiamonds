@@ -67,8 +67,8 @@ static const GdElement import_table_1stb[0x80] =
   // ----- CLOCK: not mentioned in marek's bd inside faq
   /* 28 */ O_PRE_PL_3, O_CLOCK, O_H_EXPANDING_WALL, O_H_EXPANDING_WALL_scanned,
   /* 2c */ O_CREATURE_SWITCH, O_CREATURE_SWITCH, O_EXPANDING_WALL_SWITCH, O_EXPANDING_WALL_SWITCH,
-  /* 30 */ O_BUTTER_3, O_BUTTER_4, O_BUTTER_1, O_BUTTER_2,
-  /* 34 */ O_BUTTER_3_scanned, O_BUTTER_4_scanned, O_BUTTER_1_scanned, O_BUTTER_2_scanned,
+  /* 30 */ O_BUTTER_3, O_BUTTER_2, O_BUTTER_1, O_BUTTER_4,
+  /* 34 */ O_BUTTER_3_scanned, O_BUTTER_2_scanned, O_BUTTER_1_scanned, O_BUTTER_4_scanned,
   /* 38 */ O_STEEL, O_SLIME, O_BOMB, O_SWEET,
   /* 3c */ O_PRE_STONE_1, O_PRE_STONE_2, O_PRE_STONE_3, O_PRE_STONE_4,
   /* 40 */ O_BLADDER, O_BLADDER_1, O_BLADDER_2, O_BLADDER_3,
@@ -106,8 +106,8 @@ static const GdElement import_table_crdr[0x100] =
   // ----- CLOCK: not mentioned in marek's bd inside faq
   /* 28 */ O_PRE_PL_3, O_CLOCK, O_H_EXPANDING_WALL, O_H_EXPANDING_WALL_scanned,
   /* 2c */ O_CREATURE_SWITCH, O_CREATURE_SWITCH, O_EXPANDING_WALL_SWITCH, O_EXPANDING_WALL_SWITCH,
-  /* 30 */ O_BUTTER_3, O_BUTTER_4, O_BUTTER_1, O_BUTTER_2,
-  /* 34 */ O_BUTTER_3_scanned, O_BUTTER_4_scanned, O_BUTTER_1_scanned, O_BUTTER_2_scanned,
+  /* 30 */ O_BUTTER_3, O_BUTTER_2, O_BUTTER_1, O_BUTTER_4,
+  /* 34 */ O_BUTTER_3_scanned, O_BUTTER_2_scanned, O_BUTTER_1_scanned, O_BUTTER_4_scanned,
   /* 38 */ O_STEEL, O_SLIME, O_BOMB, O_SWEET,
   /* 3c */ O_PRE_STONE_1, O_PRE_STONE_2, O_PRE_STONE_3, O_PRE_STONE_4,
   /* 40 */ O_BLADDER, O_BLADDER_1, O_BLADDER_2, O_BLADDER_3,
