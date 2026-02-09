@@ -13741,11 +13741,13 @@ static void DrawPropertiesConfig(void)
       continue;
 
     int counter_id = ED_COUNTER_ID_ELEMENT_VALUE1 + num_element_counters;
+    boolean could_move_into_acid = (level.game_engine_type == GAME_ENGINE_TYPE_RND &&
+				    COULD_MOVE_INTO_ACID(properties_element));
 
     counterbutton_info[counter_id].y =
       ED_ELEMENT_SETTINGS_YPOS((HAS_EDITOR_CONTENT(properties_element)		? 1 : 0) +
 			       (CAN_GROW(properties_element)			? 1 : 0) +
-			       (COULD_MOVE_INTO_ACID(properties_element)	? 1 : 0) +
+			       (could_move_into_acid				? 1 : 0) +
 			       (MAYBE_DONT_COLLIDE_WITH(properties_element)	? 1 : 0) +
 			       (properties_element == EL_BDX_AMOEBA_1		? 2 : 0) +
 			       (properties_element == EL_BDX_AMOEBA_2		? 2 : 0) +
