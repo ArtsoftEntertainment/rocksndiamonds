@@ -68,6 +68,7 @@ struct GameInfo_EM
   boolean use_old_random;
   boolean use_old_amoeba;
   boolean use_old_alien;
+  boolean use_old_switch;
   boolean use_old_explosions;
   boolean use_old_android;
   boolean use_old_push_elements;

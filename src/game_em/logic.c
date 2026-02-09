@@ -1217,7 +1217,8 @@ static boolean player_digfield(struct PLAYER *ply, int dx, int dy)
 	break;
 
       case Xswitch:
-	next[x][y] = Xswitch_pause;
+	if (!game_em.use_old_switch)
+	  next[x][y] = Xswitch_pause;
 	play_element_sound(x, y, SOUND_press, element);
 	lev.ball_cnt = lev.ball_time;
 	lev.ball_active = !lev.ball_active;

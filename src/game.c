@@ -3532,10 +3532,12 @@ static void InitGameEngine(void)
   boolean use_old_em_random = (game.engine_version < VERSION_IDENT(4,4,1,4));
   boolean use_old_em_amoeba = (game.engine_version < VERSION_IDENT(4,4,1,4));
   boolean use_old_em_alien  = (game.engine_version < VERSION_IDENT(4,4,1,4));
+  boolean use_old_em_switch = (game.engine_version < VERSION_IDENT(4,4,1,4));
 
   game_em.use_old_random		= use_old_em_random;
   game_em.use_old_amoeba		= use_old_em_amoeba;
   game_em.use_old_alien			= use_old_em_alien;
+  game_em.use_old_switch		= use_old_em_switch;
   game_em.use_old_explosions		= use_old_em_engine;
   game_em.use_old_android		= use_old_em_engine;
   game_em.use_old_push_elements		= use_old_em_engine;
