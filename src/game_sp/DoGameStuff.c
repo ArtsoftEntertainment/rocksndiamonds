@@ -25,13 +25,12 @@ void subDoGameStuff(byte action)
   boolean is_action_moving = !(action & KEY_BUTTON);
   boolean is_action_moving_diagonal = (is_action_moving && is_action_diagonal);
   boolean can_move = (PlayField16[MurphyPosIndex] == fiMurphy);
+  int move_dir = MV_ALL_DIRECTIONS;
 
   if (game_sp.zigzag_movement &&
       is_action_moving_diagonal &&
       can_move)
   {
-    int move_dir = MV_NONE;
-
     if (game_sp.last_move_dir & MV_HORIZONTAL)
     {
       move_dir = MV_VERTICAL;
@@ -58,18 +57,15 @@ void subDoGameStuff(byte action)
 	subAnimateMurphy(&MurphyPosIndex);	// move Murphy in vertical direction
       }
     }
-
-    if (PlayField16[MurphyPosIndex] != fiMurphy)
-      game_sp.last_move_dir = action & move_dir;
   }
   else
   {
     subAnimateMurphy(&MurphyPosIndex);		// move Murphy (or snap) in any direction
-
-    // also remember last movement direction if not moving diagonally
-    if (can_move && PlayField16[MurphyPosIndex] != fiMurphy)
-      game_sp.last_move_dir = action;
   }
+
+  // remember last movement direction after movement
+  if (can_move && PlayField16[MurphyPosIndex] != fiMurphy)
+    game_sp.last_move_dir = action & move_dir;
 
   if (InfotronsNeeded != InfotronsNeeded_last)
     game.snapshot.collected_item = TRUE;
