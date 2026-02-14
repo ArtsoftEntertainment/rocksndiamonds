@@ -65,6 +65,10 @@ void subDoGameStuff(byte action)
   else
   {
     subAnimateMurphy(&MurphyPosIndex);		// move Murphy (or snap) in any direction
+
+    // also remember last movement direction if not moving diagonally
+    if (can_move && PlayField16[MurphyPosIndex] != fiMurphy)
+      game_sp.last_move_dir = action;
   }
 
   if (InfotronsNeeded != InfotronsNeeded_last)
