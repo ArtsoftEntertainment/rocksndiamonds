@@ -21,10 +21,12 @@ void subDoGameStuff(byte action)
 {
   int si, cx, dx, bl;
   int InfotronsNeeded_last = InfotronsNeeded;
+  boolean is_action_moving = !(action & KEY_BUTTON);
+  boolean can_move = (PlayField16[MurphyPosIndex] == fiMurphy);
 
   if (game_sp.zigzag_movement &&
-      !(action & KEY_BUTTON) &&
-      PlayField16[MurphyPosIndex] == fiMurphy)
+      is_action_moving &&
+      can_move)
   {
     int move_dir = MV_NONE;
 
