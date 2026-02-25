@@ -7118,22 +7118,18 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
   level->num_yamyam_contents = num_yamyam_contents;
 
   for (i = 0; i < num_yamyam_contents; i++)
-  {
-    for (y = 0; y < 3; y++) for (x = 0; x < 3; x++)
-    {
-      level->yamyam_content[i].e[x][y] = getElementFromFile_DC(file);
-    }
-  }
+    for (y = 0; y < 3; y++)
+      for (x = 0; x < 3; x++)
+	level->yamyam_content[i].e[x][y] = getElementFromFile_DC(file);
 
   // read playfield data
 
   level->fieldx = fieldx;
   level->fieldy = fieldy;
 
-  for (y = 0; y < fieldy; y++) for (x = 0; x < fieldx; x++)
-  {
-    level->field[x][y] = getElementFromFile_DC(file);
-  }
+  for (y = 0; y < fieldy; y++)
+    for (x = 0; x < fieldx; x++)
+      level->field[x][y] = getElementFromFile_DC(file);
 
   // read playfield positions of the players
 
