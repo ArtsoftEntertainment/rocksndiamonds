@@ -5500,7 +5500,10 @@ static void CopyNativeLevel_MM_to_RND(struct LevelInfo *level)
 // functions for loading DC level
 // ----------------------------------------------------------------------------
 
-#define DC_LEVEL_HEADER_SIZE		344
+#define DC_LEVEL_HEADER_SIZE_SINGLE_DC1	96
+#define DC_LEVEL_HEADER_SIZE_SINGLE_DC2	344
+#define DC_LEVEL_HEADER_SIZE_PACKED_DC1	336
+#define DC_LEVEL_HEADER_SIZE_PACKED_DC2	344
 
 #define DC_LEVEL_TYPE_SINGLE		(1 << 0)
 #define DC_LEVEL_TYPE_PACKED		(1 << 1)
@@ -5512,6 +5515,15 @@ static void CopyNativeLevel_MM_to_RND(struct LevelInfo *level)
 #define DC_LEVEL_TYPE_SINGLE_DC2	(DC_LEVEL_TYPE_SINGLE | DC_LEVEL_TYPE_DC2)
 #define DC_LEVEL_TYPE_PACKED_DC1	(DC_LEVEL_TYPE_PACKED | DC_LEVEL_TYPE_DC1)
 #define DC_LEVEL_TYPE_PACKED_DC2	(DC_LEVEL_TYPE_PACKED | DC_LEVEL_TYPE_DC2)
+
+#define DC_LEVEL_HEADER_SIZE(type)	(type == DC_LEVEL_TYPE_SINGLE_DC1 ?	\
+					 DC_LEVEL_HEADER_SIZE_SINGLE_DC1  :	\
+					 type == DC_LEVEL_TYPE_SINGLE_DC2 ?	\
+					 DC_LEVEL_HEADER_SIZE_SINGLE_DC2  :	\
+					 type == DC_LEVEL_TYPE_PACKED_DC1 ?	\
+					 DC_LEVEL_HEADER_SIZE_PACKED_DC1  :	\
+					 type == DC_LEVEL_TYPE_PACKED_DC2 ?	\
+					 DC_LEVEL_HEADER_SIZE_PACKED_DC2  : 0)
 
 static unsigned short getSwappedWord(unsigned short word)
 {
@@ -7525,7 +7537,7 @@ static unsigned short getHeader_DC(byte *header, int pos, int type)
 
 static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int type)
 {
-  int header_size = DC_LEVEL_HEADER_SIZE;
+  int header_size = DC_LEVEL_HEADER_SIZE(type);
   byte header[header_size];
   int envelope_size;
   int envelope_header_pos = 62;
