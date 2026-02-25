@@ -5502,6 +5502,11 @@ static void CopyNativeLevel_MM_to_RND(struct LevelInfo *level)
 
 #define DC_LEVEL_HEADER_SIZE		344
 
+static unsigned short getSwappedWord(unsigned short word)
+{
+  return ((word & 0x00ff) << 8) | ((word & 0xff00) >> 8);
+}
+
 static unsigned short getDecodedWordFromFile_DC(File *file)
 {
   static int last_data_encoded;
@@ -5548,7 +5553,7 @@ static unsigned short getDecodedElementFromFile_DC(File *file)
 {
   unsigned short element_word = getDecodedWordFromFile_DC(file);
 
-  element_word = ((element_word & 0x00ff) << 8) | ((element_word & 0xff00) >> 8);
+  element_word = getSwappedWord(element_word);
 
   return element_word;
 }
