@@ -6995,6 +6995,13 @@ static unsigned short getElementFromFile_DC(File *file)
   return element_mapped;
 }
 
+static unsigned short getHeader_DC(byte *header, int pos)
+{
+  unsigned short header_word = header[pos] | (header[pos + 1] << 8);
+
+  return header_word;
+}
+
 static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
 {
   int header_size = DC_LEVEL_HEADER_SIZE;
@@ -7023,9 +7030,9 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
   }
 
   // read some values from level header to check level decoding integrity
-  fieldx = header[6] | (header[7] << 8);
-  fieldy = header[8] | (header[9] << 8);
-  num_yamyam_contents = header[60] | (header[61] << 8);
+  fieldx = getHeader_DC(header, 6);
+  fieldy = getHeader_DC(header, 8);
+  num_yamyam_contents = getHeader_DC(header, 60);
 
   // do some simple sanity checks to ensure that level was correctly decoded
   if (fieldx < 1 || fieldx > 256 ||
@@ -7088,7 +7095,7 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
     level->author[i] = header[level_author_pos + 1 + i];
   level->author[level_author_len] = '\0';
 
-  num_yamyam_contents = header[60] | (header[61] << 8);
+  num_yamyam_contents = getHeader_DC(header, 60);
   level->num_yamyam_contents =
     MIN(MAX(MIN_ELEMENT_CONTENTS, num_yamyam_contents), MAX_ELEMENT_CONTENTS);
 
@@ -7101,8 +7108,8 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
     }
   }
 
-  fieldx = header[6] | (header[7] << 8);
-  fieldy = header[8] | (header[9] << 8);
+  fieldx = getHeader_DC(header, 6);
+  fieldy = getHeader_DC(header, 8);
   level->fieldx = MIN(MAX(MIN_LEV_FIELDX, fieldx), MAX_LEV_FIELDX);
   level->fieldy = MIN(MAX(MIN_LEV_FIELDY, fieldy), MAX_LEV_FIELDY);
 
@@ -7112,38 +7119,38 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
       level->field[x][y] = getElementFromFile_DC(file);
   }
 
-  x = MIN(MAX(0, (header[10] | (header[11] << 8)) - 1), MAX_LEV_FIELDX - 1);
-  y = MIN(MAX(0, (header[12] | (header[13] << 8)) - 1), MAX_LEV_FIELDY - 1);
+  x = MIN(MAX(0, getHeader_DC(header, 10) - 1), MAX_LEV_FIELDX - 1);
+  y = MIN(MAX(0, getHeader_DC(header, 12) - 1), MAX_LEV_FIELDY - 1);
   level->field[x][y] = EL_PLAYER_1;
 
-  x = MIN(MAX(0, (header[14] | (header[15] << 8)) - 1), MAX_LEV_FIELDX - 1);
-  y = MIN(MAX(0, (header[16] | (header[17] << 8)) - 1), MAX_LEV_FIELDY - 1);
+  x = MIN(MAX(0, getHeader_DC(header, 14) - 1), MAX_LEV_FIELDX - 1);
+  y = MIN(MAX(0, getHeader_DC(header, 16) - 1), MAX_LEV_FIELDY - 1);
   level->field[x][y] = EL_PLAYER_2;
 
-  level->gems_needed		= header[18] | (header[19] << 8);
+  level->gems_needed		= getHeader_DC(header, 18);
 
-  level->score[SC_EMERALD]	= header[20] | (header[21] << 8);
-  level->score[SC_DIAMOND]	= header[22] | (header[23] << 8);
-  level->score[SC_PEARL]	= header[24] | (header[25] << 8);
-  level->score[SC_CRYSTAL]	= header[26] | (header[27] << 8);
-  level->score[SC_NUT]		= header[28] | (header[29] << 8);
-  level->score[SC_ROBOT]	= header[30] | (header[31] << 8);
-  level->score[SC_SPACESHIP]	= header[32] | (header[33] << 8);
-  level->score[SC_BUG]		= header[34] | (header[35] << 8);
-  level->score[SC_YAMYAM]	= header[36] | (header[37] << 8);
-  level->score[SC_DYNAMITE]	= header[38] | (header[39] << 8);
-  level->score[SC_KEY]		= header[40] | (header[41] << 8);
-  level->score[SC_TIME_BONUS]	= header[42] | (header[43] << 8);
+  level->score[SC_EMERALD]	= getHeader_DC(header, 20);
+  level->score[SC_DIAMOND]	= getHeader_DC(header, 22);
+  level->score[SC_PEARL]	= getHeader_DC(header, 24);
+  level->score[SC_CRYSTAL]	= getHeader_DC(header, 26);
+  level->score[SC_NUT]		= getHeader_DC(header, 28);
+  level->score[SC_ROBOT]	= getHeader_DC(header, 30);
+  level->score[SC_SPACESHIP]	= getHeader_DC(header, 32);
+  level->score[SC_BUG]		= getHeader_DC(header, 34);
+  level->score[SC_YAMYAM]	= getHeader_DC(header, 36);
+  level->score[SC_DYNAMITE]	= getHeader_DC(header, 38);
+  level->score[SC_KEY]		= getHeader_DC(header, 40);
+  level->score[SC_TIME_BONUS]	= getHeader_DC(header, 42);
 
-  level->time			= header[44] | (header[45] << 8);
+  level->time			= getHeader_DC(header, 44);
 
-  level->amoeba_speed		= header[46] | (header[47] << 8);
-  level->time_light		= header[48] | (header[49] << 8);
-  level->time_timegate		= header[50] | (header[51] << 8);
-  level->time_wheel		= header[52] | (header[53] << 8);
-  level->time_magic_wall	= header[54] | (header[55] << 8);
-  level->extra_time		= header[56] | (header[57] << 8);
-  level->shield_normal_time	= header[58] | (header[59] << 8);
+  level->amoeba_speed		= getHeader_DC(header, 46);
+  level->time_light		= getHeader_DC(header, 48);
+  level->time_timegate		= getHeader_DC(header, 50);
+  level->time_wheel		= getHeader_DC(header, 52);
+  level->time_magic_wall	= getHeader_DC(header, 54);
+  level->extra_time		= getHeader_DC(header, 56);
+  level->shield_normal_time	= getHeader_DC(header, 58);
 
   // shield and extra time elements do not have a score
   level->score[SC_SHIELD]	= 0;
