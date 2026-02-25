@@ -7562,6 +7562,7 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
   int level_author_len;
   int fieldx, fieldy;
   int num_yamyam_contents;
+  int x1, y1, x2, y2;
   int i, x, y;
 
   getDecodedWordFromFile_DC(NULL, type);	// initialize DC2 decoding engine
@@ -7678,12 +7679,18 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
 
   // read playfield positions of the players
 
-  x = MIN(MAX(0, getHeader_DC(header, 10, type) - 1), MAX_LEV_FIELDX - 1);
-  y = MIN(MAX(0, getHeader_DC(header, 12, type) - 1), MAX_LEV_FIELDY - 1);
+  x1 = getHeader_DC(header, 10, type) - 1;
+  y1 = getHeader_DC(header, 12, type) - 1;
+
+  x2 = getHeader_DC(header, 14, type) - 1;
+  y2 = getHeader_DC(header, 16, type) - 1;
+
+  x = MIN(MAX(0, x1), MAX_LEV_FIELDX - 1);
+  y = MIN(MAX(0, y1), MAX_LEV_FIELDY - 1);
   level->field[x][y] = EL_PLAYER_1;
 
-  x = MIN(MAX(0, getHeader_DC(header, 14, type) - 1), MAX_LEV_FIELDX - 1);
-  y = MIN(MAX(0, getHeader_DC(header, 16, type) - 1), MAX_LEV_FIELDY - 1);
+  x = MIN(MAX(0, x2), MAX_LEV_FIELDX - 1);
+  y = MIN(MAX(0, y2), MAX_LEV_FIELDY - 1);
   level->field[x][y] = EL_PLAYER_2;
 
   // read level and element related values
