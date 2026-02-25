@@ -6987,6 +6987,14 @@ static int getMappedElement_DC(int element)
   return getMappedElement(element);
 }
 
+static unsigned short getElementFromFile_DC(File *file)
+{
+  int element_native = getDecodedElementFromFile_DC(file);
+  int element_mapped = getMappedElement_DC(element_native);
+
+  return element_mapped;
+}
+
 static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
 {
   byte header[DC_LEVEL_HEADER_SIZE];
@@ -7087,10 +7095,8 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
   {
     for (y = 0; y < 3; y++) for (x = 0; x < 3; x++)
     {
-      int element_dc = getDecodedElementFromFile_DC(file);
-
       if (i < MAX_ELEMENT_CONTENTS)
-	level->yamyam_content[i].e[x][y] = getMappedElement_DC(element_dc);
+	level->yamyam_content[i].e[x][y] = getElementFromFile_DC(file);
     }
   }
 
@@ -7101,10 +7107,8 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
 
   for (y = 0; y < fieldy; y++) for (x = 0; x < fieldx; x++)
   {
-    int element_dc = getDecodedElementFromFile_DC(file);
-
     if (x < MAX_LEV_FIELDX && y < MAX_LEV_FIELDY)
-      level->field[x][y] = getMappedElement_DC(element_dc);
+      level->field[x][y] = getElementFromFile_DC(file);
   }
 
   x = MIN(MAX(0, (header[10] | (header[11] << 8)) - 1), MAX_LEV_FIELDX - 1);
