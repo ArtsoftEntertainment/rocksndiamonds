@@ -5502,12 +5502,23 @@ static void CopyNativeLevel_MM_to_RND(struct LevelInfo *level)
 
 #define DC_LEVEL_HEADER_SIZE		344
 
+#define DC_LEVEL_TYPE_SINGLE		(1 << 0)
+#define DC_LEVEL_TYPE_PACKED		(1 << 1)
+#define DC_LEVEL_TYPE_DC1		(1 << 2)
+#define DC_LEVEL_TYPE_DC2		(1 << 3)
+
+#define DC_LEVEL_TYPE_UNDEFINED		0
+#define DC_LEVEL_TYPE_SINGLE_DC1	(DC_LEVEL_TYPE_SINGLE | DC_LEVEL_TYPE_DC1)
+#define DC_LEVEL_TYPE_SINGLE_DC2	(DC_LEVEL_TYPE_SINGLE | DC_LEVEL_TYPE_DC2)
+#define DC_LEVEL_TYPE_PACKED_DC1	(DC_LEVEL_TYPE_PACKED | DC_LEVEL_TYPE_DC1)
+#define DC_LEVEL_TYPE_PACKED_DC2	(DC_LEVEL_TYPE_PACKED | DC_LEVEL_TYPE_DC2)
+
 static unsigned short getSwappedWord(unsigned short word)
 {
   return ((word & 0x00ff) << 8) | ((word & 0xff00) >> 8);
 }
 
-static unsigned short getDecodedWordFromFile_DC(File *file)
+static unsigned short getDecodedWordFromFile_DC(File *file, int type)
 {
   static int last_data_encoded;
   static int offset1;
@@ -5549,9 +5560,9 @@ static unsigned short getDecodedWordFromFile_DC(File *file)
   return data_decoded;
 }
 
-static unsigned short getDecodedElementFromFile_DC(File *file)
+static unsigned short getDecodedElementFromFile_DC(File *file, int type)
 {
-  unsigned short element_word = getDecodedWordFromFile_DC(file);
+  unsigned short element_word = getDecodedWordFromFile_DC(file, type);
 
   element_word = getSwappedWord(element_word);
 
@@ -6987,22 +6998,22 @@ static int getMappedElement_DC(int element)
   return getMappedElement(element);
 }
 
-static unsigned short getElementFromFile_DC(File *file)
+static unsigned short getElementFromFile_DC(File *file, int type)
 {
-  int element_native = getDecodedElementFromFile_DC(file);
+  int element_native = getDecodedElementFromFile_DC(file, type);
   int element_mapped = getMappedElement_DC(element_native);
 
   return element_mapped;
 }
 
-static unsigned short getHeader_DC(byte *header, int pos)
+static unsigned short getHeader_DC(byte *header, int pos, int type)
 {
   unsigned short header_word = header[pos] | (header[pos + 1] << 8);
 
   return header_word;
 }
 
-static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
+static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int type)
 {
   int header_size = DC_LEVEL_HEADER_SIZE;
   byte header[header_size];
@@ -7019,20 +7030,20 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
   int num_yamyam_contents;
   int i, x, y;
 
-  getDecodedWordFromFile_DC(NULL);		// initialize DC2 decoding engine
+  getDecodedWordFromFile_DC(NULL, type);	// initialize DC2 decoding engine
 
   for (i = 0; i < header_size / 2; i++)
   {
-    unsigned short header_word = getDecodedWordFromFile_DC(file);
+    unsigned short header_word = getDecodedWordFromFile_DC(file, type);
 
     header[i * 2 + 0] = header_word >> 8;
     header[i * 2 + 1] = header_word & 0xff;
   }
 
   // read some values from level header to check level decoding integrity
-  fieldx = getHeader_DC(header, 6);
-  fieldy = getHeader_DC(header, 8);
-  num_yamyam_contents = getHeader_DC(header, 60);
+  fieldx = getHeader_DC(header, 6, type);
+  fieldy = getHeader_DC(header, 8, type);
+  num_yamyam_contents = getHeader_DC(header, 60, type);
 
   // do some simple sanity checks to ensure that level was correctly decoded
   if (fieldx < MIN_LEV_FIELDX || fieldx > MAX_LEV_FIELDX ||
@@ -7120,7 +7131,7 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
   for (i = 0; i < num_yamyam_contents; i++)
     for (y = 0; y < 3; y++)
       for (x = 0; x < 3; x++)
-	level->yamyam_content[i].e[x][y] = getElementFromFile_DC(file);
+	level->yamyam_content[i].e[x][y] = getElementFromFile_DC(file, type);
 
   // read playfield data
 
@@ -7129,44 +7140,44 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
 
   for (y = 0; y < fieldy; y++)
     for (x = 0; x < fieldx; x++)
-      level->field[x][y] = getElementFromFile_DC(file);
+      level->field[x][y] = getElementFromFile_DC(file, type);
 
   // read playfield positions of the players
 
-  x = MIN(MAX(0, getHeader_DC(header, 10) - 1), MAX_LEV_FIELDX - 1);
-  y = MIN(MAX(0, getHeader_DC(header, 12) - 1), MAX_LEV_FIELDY - 1);
+  x = MIN(MAX(0, getHeader_DC(header, 10, type) - 1), MAX_LEV_FIELDX - 1);
+  y = MIN(MAX(0, getHeader_DC(header, 12, type) - 1), MAX_LEV_FIELDY - 1);
   level->field[x][y] = EL_PLAYER_1;
 
-  x = MIN(MAX(0, getHeader_DC(header, 14) - 1), MAX_LEV_FIELDX - 1);
-  y = MIN(MAX(0, getHeader_DC(header, 16) - 1), MAX_LEV_FIELDY - 1);
+  x = MIN(MAX(0, getHeader_DC(header, 14, type) - 1), MAX_LEV_FIELDX - 1);
+  y = MIN(MAX(0, getHeader_DC(header, 16, type) - 1), MAX_LEV_FIELDY - 1);
   level->field[x][y] = EL_PLAYER_2;
 
   // read level and element related values
 
-  level->gems_needed		= getHeader_DC(header, 18);
+  level->gems_needed		= getHeader_DC(header, 18, type);
 
-  level->score[SC_EMERALD]	= getHeader_DC(header, 20);
-  level->score[SC_DIAMOND]	= getHeader_DC(header, 22);
-  level->score[SC_PEARL]	= getHeader_DC(header, 24);
-  level->score[SC_CRYSTAL]	= getHeader_DC(header, 26);
-  level->score[SC_NUT]		= getHeader_DC(header, 28);
-  level->score[SC_ROBOT]	= getHeader_DC(header, 30);
-  level->score[SC_SPACESHIP]	= getHeader_DC(header, 32);
-  level->score[SC_BUG]		= getHeader_DC(header, 34);
-  level->score[SC_YAMYAM]	= getHeader_DC(header, 36);
-  level->score[SC_DYNAMITE]	= getHeader_DC(header, 38);
-  level->score[SC_KEY]		= getHeader_DC(header, 40);
-  level->score[SC_TIME_BONUS]	= getHeader_DC(header, 42);
+  level->score[SC_EMERALD]	= getHeader_DC(header, 20, type);
+  level->score[SC_DIAMOND]	= getHeader_DC(header, 22, type);
+  level->score[SC_PEARL]	= getHeader_DC(header, 24, type);
+  level->score[SC_CRYSTAL]	= getHeader_DC(header, 26, type);
+  level->score[SC_NUT]		= getHeader_DC(header, 28, type);
+  level->score[SC_ROBOT]	= getHeader_DC(header, 30, type);
+  level->score[SC_SPACESHIP]	= getHeader_DC(header, 32, type);
+  level->score[SC_BUG]		= getHeader_DC(header, 34, type);
+  level->score[SC_YAMYAM]	= getHeader_DC(header, 36, type);
+  level->score[SC_DYNAMITE]	= getHeader_DC(header, 38, type);
+  level->score[SC_KEY]		= getHeader_DC(header, 40, type);
+  level->score[SC_TIME_BONUS]	= getHeader_DC(header, 42, type);
 
-  level->time			= getHeader_DC(header, 44);
+  level->time			= getHeader_DC(header, 44, type);
 
-  level->amoeba_speed		= getHeader_DC(header, 46);
-  level->time_light		= getHeader_DC(header, 48);
-  level->time_timegate		= getHeader_DC(header, 50);
-  level->time_wheel		= getHeader_DC(header, 52);
-  level->time_magic_wall	= getHeader_DC(header, 54);
-  level->extra_time		= getHeader_DC(header, 56);
-  level->shield_normal_time	= getHeader_DC(header, 58);
+  level->amoeba_speed		= getHeader_DC(header, 46, type);
+  level->time_light		= getHeader_DC(header, 48, type);
+  level->time_timegate		= getHeader_DC(header, 50, type);
+  level->time_wheel		= getHeader_DC(header, 52, type);
+  level->time_magic_wall	= getHeader_DC(header, 54, type);
+  level->extra_time		= getHeader_DC(header, 56, type);
+  level->shield_normal_time	= getHeader_DC(header, 58, type);
 
   // shield and extra time elements do not have a score
   level->score[SC_SHIELD]	= 0;
@@ -7199,6 +7210,7 @@ static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
   int num_magic_bytes = 8;
   char magic_bytes[num_magic_bytes + 1];
   int num_levels_to_skip = level_file_info->nr - leveldir_current->first_level;
+  int type = DC_LEVEL_TYPE_UNDEFINED;
 
   if (!(file = openFile(filename, MODE_READ)))
   {
@@ -7262,6 +7274,8 @@ static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
 
 	num_levels_to_skip--;
       }
+
+      type = DC_LEVEL_TYPE_PACKED_DC2;
     }
     else
     {
@@ -7273,7 +7287,7 @@ static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
     }
   }
 
-  LoadLevelFromFileStream_DC(file, level);
+  LoadLevelFromFileStream_DC(file, level, type);
 
   closeFile(file);
 }
