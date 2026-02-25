@@ -5502,7 +5502,7 @@ static void CopyNativeLevel_MM_to_RND(struct LevelInfo *level)
 
 #define DC_LEVEL_HEADER_SIZE		344
 
-static unsigned short getDecodedWord_DC(unsigned short data_encoded, boolean init)
+static unsigned short getDecodedWordFromFile_DC(File *file)
 {
   static int last_data_encoded;
   static int offset1;
@@ -5510,9 +5510,10 @@ static unsigned short getDecodedWord_DC(unsigned short data_encoded, boolean ini
   int diff;
   int diff_hi, diff_lo;
   int data_hi, data_lo;
+  unsigned short data_encoded;
   unsigned short data_decoded;
 
-  if (init)
+  if (file == NULL)
   {
     last_data_encoded = 0;
     offset1 = -1;
@@ -5520,6 +5521,8 @@ static unsigned short getDecodedWord_DC(unsigned short data_encoded, boolean ini
 
     return 0;
   }
+
+  data_encoded = getFile16BitBE(file);
 
   diff = data_encoded - last_data_encoded;
   diff_hi = diff & ~0xff;
@@ -6986,11 +6989,11 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
   int num_yamyam_contents;
   int i, x, y;
 
-  getDecodedWord_DC(0, TRUE);		// initialize DC2 decoding engine
+  getDecodedWordFromFile_DC(NULL);		// initialize DC2 decoding engine
 
   for (i = 0; i < DC_LEVEL_HEADER_SIZE / 2; i++)
   {
-    unsigned short header_word = getDecodedWord_DC(getFile16BitBE(file), FALSE);
+    unsigned short header_word = getDecodedWordFromFile_DC(file);
 
     header[i * 2 + 0] = header_word >> 8;
     header[i * 2 + 1] = header_word & 0xff;
@@ -7070,7 +7073,7 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
   {
     for (y = 0; y < 3; y++) for (x = 0; x < 3; x++)
     {
-      unsigned short word = getDecodedWord_DC(getFile16BitBE(file), FALSE);
+      unsigned short word = getDecodedWordFromFile_DC(file);
       int element_dc = ((word & 0xff) << 8) | ((word >> 8) & 0xff);
 
       if (i < MAX_ELEMENT_CONTENTS)
@@ -7085,7 +7088,7 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
 
   for (y = 0; y < fieldy; y++) for (x = 0; x < fieldx; x++)
   {
-    unsigned short word = getDecodedWord_DC(getFile16BitBE(file), FALSE);
+    unsigned short word = getDecodedWordFromFile_DC(file);
     int element_dc = ((word & 0xff) << 8) | ((word >> 8) & 0xff);
 
     if (x < MAX_LEV_FIELDX && y < MAX_LEV_FIELDY)
