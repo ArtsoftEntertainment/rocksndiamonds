@@ -7808,6 +7808,10 @@ static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
       return;
     }
   }
+  else
+  {
+    type = DC_LEVEL_TYPE_SINGLE_DC2;
+  }
 
   LoadLevelFromFileStream_DC(file, level, type);
 
