@@ -5569,7 +5569,7 @@ static unsigned short getDecodedElementFromFile_DC(File *file, int type)
   return element_word;
 }
 
-static int getMappedElement_DC(int element)
+static int getMappedElement_DC1(int element)
 {
   switch (element)
   {
@@ -5577,10 +5577,509 @@ static int getMappedElement_DC(int element)
       element = EL_ROCK;
       break;
 
-      // 0x0117 - 0x036e: (?)
+    case 0x06b0:
+      element = EL_NUT;
+      break;
+
+    case 0x070b:
+      element = EL_BOMB;
+      break;
+
+    case 0x0866:	// slow quicksand (boulder)
+      element = EL_QUICKSAND_FULL;
+      break;
+
+    case 0x088d:
+      element = EL_EM_EXIT_OPEN;
+      break;
+
+    case 0x089e:
+      element = EL_EM_EXIT_CLOSED;
+      break;
+
+    case 0x08b3:	// dynamite (lit 1)
+      element = EL_EM_DYNAMITE_ACTIVE;
+      break;
+
+    case 0x08dc:
+    case 0x08dd:
+    case 0x08de:
+    case 0x08df:
+      element = EL_AMOEBA_WET;
+      break;
+
+    case 0x08e0:
+      element = EL_AMOEBA_DROP;
+      break;
+
+    case 0x090b:
+      element = EL_MAGIC_WALL;
+      break;
+
+    case 0x0922:
+    case 0x097b:
+      element = EL_SPACESHIP_UP;
+      break;
+
+    case 0x092b:
+    case 0x0963:
+      element = EL_SPACESHIP_DOWN;
+      break;
+
+    case 0x0943:
+    case 0x0993:
+      element = EL_SPACESHIP_LEFT;
+      break;
+
+    case 0x094b:
+    case 0x0983:
+      element = EL_SPACESHIP_RIGHT;
+      break;
+
+    case 0x09d2:
+    case 0x0a0a:
+      element = EL_BUG_RIGHT;
+      break;
+
+    case 0x09a9:
+    case 0x0a02:
+      element = EL_BUG_UP;
+      break;
+
+    case 0x09b2:
+    case 0x09ea:
+      element = EL_BUG_DOWN;
+      break;
+
+    case 0x09ca:
+    case 0x0a1a:
+      element = EL_BUG_LEFT;
+      break;
+
+    case 0x0a71:
+      element = EL_ROBOT;
+      break;
+
+    case 0x0cd6:
+    case 0x0cfc:
+      element = EL_YAMYAM_UP;
+      break;
+
+    case 0x0d06:
+      element = EL_SWITCHGATE_OPEN;
+      break;
+
+    case 0x0d07:
+      element = EL_SWITCHGATE_CLOSED;
+      break;
+
+    case 0x0d18:
+      element = EL_DC_SWITCHGATE_SWITCH_UP;
+      break;
+
+    case 0x0d1b:	// conveyor belt switch (yellow)
+      element = EL_CONVEYOR_BELT_2_SWITCH_MIDDLE;
+      break;
+
+    case 0x0d24:
+      element = EL_CONVEYOR_BELT_2_MIDDLE;
+      break;
+
+    case 0x0d2c:
+      element = EL_CONVEYOR_BELT_2_LEFT;
+      break;
+
+    case 0x0d34:
+      element = EL_CONVEYOR_BELT_2_RIGHT;
+      break;
+
+    case 0x0d45:
+      element = EL_EXPANDABLE_WALL_HORIZONTAL;
+      break;
+
+    case 0x0d56:
+      element = EL_EXPANDABLE_WALL_VERTICAL;
+      break;
+
+    case 0x0d5f:
+      element = EL_SHIELD_DEADLY;
+      break;
+
+    case 0x0d77:
+      element = EL_EXTRA_TIME;
+      break;
+
+    case 0x0d8f:
+      element = EL_ACID;
+      break;
+
+    case 0x0db7:
+      element = EL_EMPTY_SPACE;
+      break;
+
+    case 0x0db8:	// slow quicksand (empty)
+      element = EL_QUICKSAND_EMPTY;
+      break;
+
+    case 0x0db9:	// key (red)
+      element = EL_EM_KEY_1;
+      break;
+
+    case 0x0dba:	// key (yellow)
+      element = EL_EM_KEY_2;
+      break;
+
+    case 0x0dbb:	// key (green)
+      element = EL_EM_KEY_3;
+      break;
+
+    case 0x0dbc:	// key (blue)
+      element = EL_EM_KEY_4;
+      break;
+
+    case 0x0dbd:
+      element = EL_EM_DYNAMITE;
+      break;
+
+    case 0x0dd6:
+      element = EL_WALL_SLIPPERY;
+      break;
+
+    case 0x0dd7:
+      element = EL_WALL;
+      break;
+
+    case 0x0dd8:	// (blue)
+      element = EL_CHAR_LESS;
+      break;
+
+    case 0x0dd9:	// (blue)
+      element = EL_CHAR_GREATER;
+      break;
+
+    case 0x0dda:	// (blue)
+      element = EL_CHAR_QUESTION;
+      break;
+
+    case 0x0ddb:	// (blue)
+      element = EL_CHAR_COPYRIGHT;
+      break;
+
+    case 0x0ddc:	// (blue)
+      element = EL_CHAR_A;
+      break;
+
+    case 0x0ddd:	// (blue)
+      element = EL_CHAR_B;
+      break;
+
+    case 0x0dde:	// (blue)
+      element = EL_CHAR_C;
+      break;
+
+    case 0x0ddf:	// (blue)
+      element = EL_CHAR_D;
+      break;
+
+    case 0x0de0:	// (blue)
+      element = EL_CHAR_E;
+      break;
+
+    case 0x0de1:	// (blue)
+      element = EL_CHAR_F;
+      break;
+
+    case 0x0de2:	// (blue)
+      element = EL_CHAR_G;
+      break;
+
+    case 0x0de3:	// (blue)
+      element = EL_CHAR_H;
+      break;
+
+    case 0x0de4:	// (blue)
+      element = EL_CHAR_I;
+      break;
+
+    case 0x0de5:	// (blue)
+      element = EL_CHAR_J;
+      break;
+
+    case 0x0de6:	// (blue)
+      element = EL_CHAR_K;
+      break;
+
+    case 0x0de7:	// (blue)
+      element = EL_CHAR_L;
+      break;
+
+    case 0x0de8:	// (blue)
+      element = EL_CHAR_M;
+      break;
+
+    case 0x0de9:	// (blue)
+      element = EL_CHAR_N;
+      break;
+
+    case 0x0dea:	// (blue)
+      element = EL_CHAR_O;
+      break;
+
+    case 0x0deb:	// (blue)
+      element = EL_CHAR_P;
+      break;
+
+    case 0x0dec:	// (blue)
+      element = EL_CHAR_Q;
+      break;
+
+    case 0x0ded:	// (blue)
+      element = EL_CHAR_R;
+      break;
+
+    case 0x0dee:	// (blue)
+      element = EL_CHAR_S;
+      break;
+
+    case 0x0def:	// (blue)
+      element = EL_CHAR_T;
+      break;
+
+    case 0x0df0:	// (blue)
+      element = EL_CHAR_U;
+      break;
+
+    case 0x0df1:	// (blue)
+      element = EL_CHAR_V;
+      break;
+
+    case 0x0df2:	// (blue)
+      element = EL_CHAR_W;
+      break;
+
+    case 0x0df3:	// (blue)
+      element = EL_CHAR_X;
+      break;
+
+    case 0x0df4:	// (blue)
+      element = EL_CHAR_Y;
+      break;
+
+    case 0x0df5:	// (blue)
+      element = EL_CHAR_Z;
+      break;
+
+    case 0x0df6:	// (blue)
+      element = EL_CHAR_AUMLAUT;
+      break;
+
+    case 0x0df7:	// (blue)
+      element = EL_CHAR_OUMLAUT;
+      break;
+
+    case 0x0df8:	// (blue)
+      element = EL_CHAR_UUMLAUT;
+      break;
+
+    case 0x0df9:	// (blue)
+      element = EL_CHAR_0;
+      break;
+
+    case 0x0dfa:	// (blue)
+      element = EL_CHAR_1;
+      break;
+
+    case 0x0dfb:	// (blue)
+      element = EL_CHAR_2;
+      break;
+
+    case 0x0dfc:	// (blue)
+      element = EL_CHAR_3;
+      break;
+
+    case 0x0dfd:	// (blue)
+      element = EL_CHAR_4;
+      break;
+
+    case 0x0dfe:	// (blue)
+      element = EL_CHAR_5;
+      break;
+
+    case 0x0dff:	// (blue)
+      element = EL_CHAR_6;
+      break;
+
+    case 0x0e00:	// (blue)
+      element = EL_CHAR_7;
+      break;
+
+    case 0x0e01:	// (blue)
+      element = EL_CHAR_8;
+      break;
+
+    case 0x0e02:	// (blue)
+      element = EL_CHAR_9;
+      break;
+
+    case 0x0e03:	// (blue)
+      element = EL_CHAR_PERIOD;
+      break;
+
+    case 0x0e04:	// (blue)
+      element = EL_CHAR_EXCLAM;
+      break;
+
+    case 0x0e05:	// (blue)
+      element = EL_CHAR_COLON;
+      break;
+
+    case 0x0e06:	// gate (red)
+      element = EL_EM_GATE_1;
+      break;
+
+    case 0x0e07:	// secret gate (red)
+      element = EL_EM_GATE_1_GRAY;
+      break;
+
+    case 0x0e08:	// gate (yellow)
+      element = EL_EM_GATE_2;
+      break;
+
+    case 0x0e09:	// secret gate (yellow)
+      element = EL_EM_GATE_2_GRAY;
+      break;
+
+    case 0x0e0a:	// gate (green)
+      element = EL_EM_GATE_3;
+      break;
+
+    case 0x0e0b:	// secret gate (green)
+      element = EL_EM_GATE_3_GRAY;
+      break;
+
+    case 0x0e0c:	// gate (blue)
+      element = EL_EM_GATE_4;
+      break;
+
+    case 0x0e0d:	// secret gate (blue)
+      element = EL_EM_GATE_4_GRAY;
+      break;
+
+    case 0x0e0e:
+      element = EL_ROBOT_WHEEL;
+      break;
+
+    case 0x0e0f:
+      element = EL_ACID_POOL_BOTTOM;
+      break;
+
+    case 0x0e10:
+      element = EL_ACID_POOL_TOPLEFT;
+      break;
+
+    case 0x0e11:
+      element = EL_ACID_POOL_TOPRIGHT;
+      break;
+
+    case 0x0e12:
+      element = EL_ACID_POOL_BOTTOMLEFT;
+      break;
+
+    case 0x0e13:
+      element = EL_ACID_POOL_BOTTOMRIGHT;
+      break;
+
+    case 0x0e15:	// steel wall (left)
+      element = EL_DC_STEELWALL_1_LEFT;
+      break;
+
+    case 0x0e16:	// steel wall (bottom)
+      element = EL_DC_STEELWALL_1_BOTTOM;
+      break;
+
+    case 0x0e17:	// steel wall (right)
+      element = EL_DC_STEELWALL_1_RIGHT;
+      break;
+
+    case 0x0e18:	// steel wall (top)
+      element = EL_DC_STEELWALL_1_TOP;
+      break;
+
+    case 0x0e19:	// steel wall (left/bottom)
+      element = EL_DC_STEELWALL_1_BOTTOMLEFT;
+      break;
+
+    case 0x0e1a:	// steel wall (right/bottom)
+      element = EL_DC_STEELWALL_1_BOTTOMRIGHT;
+      break;
+
+    case 0x0e1b:	// steel wall (right/top)
+      element = EL_DC_STEELWALL_1_TOPRIGHT;
+      break;
+
+    case 0x0e1c:	// steel wall (left/top)
+      element = EL_DC_STEELWALL_1_TOPLEFT;
+      break;
+
+    case 0x0e1d:	// steel wall (right/bottom small)
+      element = EL_DC_STEELWALL_1_BOTTOMRIGHT_2;
+      break;
+
+    case 0x0e1e:	// steel wall (left/bottom small)
+      element = EL_DC_STEELWALL_1_BOTTOMLEFT_2;
+      break;
+
+    case 0x0e1f:	// steel wall (right/top small)
+      element = EL_DC_STEELWALL_1_TOPRIGHT_2;
+      break;
+
+    case 0x0e20:	// steel wall (left/top small)
+      element = EL_DC_STEELWALL_1_TOPLEFT_2;
+      break;
+
+    case 0x0e14:
+      element = EL_STEELWALL;
+      break;
+
+    case 0x0e23:
+      element = EL_SIGN_EXCLAMATION;
+      break;
+
+    case 0x0e24:
+      element = EL_EMERALD;
+      break;
+
+    case 0x0e25:
+      element = EL_DIAMOND;
+      break;
+
+    case 0x0e26:
+      element = EL_INVISIBLE_WALL;
+      break;
+
+    default:
+      if (element >= 0x0dc2 && element <= 0x0dd1)
+	element = EL_SAND;
+      else
+	element = EL_UNKNOWN;
+      break;
+  }
+
+  return getMappedElement(element);
+}
+
+static int getMappedElement_DC2(int element)
+{
+  switch (element)
+  {
+    case 0x0000:
+      element = EL_ROCK;
+      break;
+
+      // 0x00d6 - 0x036e: (?)
       // EL_DIAMOND
 
-      // 0x042d - 0x0684: (?)
+      // 0x03ec - 0x0684: (?)
       // EL_EMERALD
 
     case 0x06f1:
@@ -6976,9 +7475,9 @@ static int getMappedElement_DC(int element)
       break;
 
     default:
-      if (element >= 0x0117 && element <= 0x036e)	// (?)
+      if (element >= 0x00d6 && element <= 0x036e)	// (?)
 	element = EL_DIAMOND;
-      else if (element >= 0x042d && element <= 0x0684)	// (?)
+      else if (element >= 0x03ec && element <= 0x0684)	// (?)
 	element = EL_EMERALD;
       else if (element >= 0x157c && element <= 0x158b)
 	element = EL_SAND;
@@ -6987,15 +7486,26 @@ static int getMappedElement_DC(int element)
       else if (element >= 0x16bc && element <= 0x16cb)
 	element = EL_INVISIBLE_SAND;
       else
-      {
-	Warn("unknown Diamond Caves element 0x%04x", element);
-
 	element = EL_UNKNOWN;
-      }
       break;
   }
 
   return getMappedElement(element);
+}
+
+static int getMappedElement_DC(int element)
+{
+  // 1st try: check for element from Diamond Caves
+  int element_mapped = getMappedElement_DC1(element);
+
+  // 2st try: check for element from Diamond Caves II
+  if (element_mapped == EL_UNKNOWN)
+    element_mapped = getMappedElement_DC2(element);
+
+  if (element_mapped == EL_UNKNOWN)
+    Warn("unknown Diamond Caves element 0x%04x", element);
+
+  return element_mapped;
 }
 
 static unsigned short getElementFromFile_DC(File *file, int type)
