@@ -7047,21 +7047,24 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
     return;
   }
 
-  // maximum envelope header size is 31 bytes
-  envelope_header_len	= header[envelope_header_pos];
-  // maximum envelope content size is 110 (156?) bytes
-  envelope_content_len	= header[envelope_content_pos];
+  // envelope header size is stored in byte before string
+  envelope_header_len = header[envelope_header_pos++];
+  // envelope content size is stored in byte before string
+  envelope_content_len = header[envelope_content_pos++];
 
-  // maximum level title size is 40 bytes
-  level_name_len	= MIN(header[level_name_pos],   MAX_LEVEL_NAME_LEN);
-  // maximum level author size is 30 (51?) bytes
-  level_author_len	= MIN(header[level_author_pos], MAX_LEVEL_AUTHOR_LEN);
+  // level name size is is stored in byte before string
+  level_name_len = header[level_name_pos++];
+  // level author size is is stored in byte before string
+  level_author_len = header[level_author_pos++];
+
+  level_name_len   = MIN(level_name_len,   MAX_LEVEL_NAME_LEN);
+  level_author_len = MIN(level_author_len, MAX_LEVEL_AUTHOR_LEN);
 
   envelope_size = 0;
 
   for (i = 0; i < envelope_header_len; i++)
     if (envelope_size < MAX_ENVELOPE_TEXT_LEN)
-      level->envelope[0].text[envelope_size++] = header[envelope_header_pos + 1 + i];
+      level->envelope[0].text[envelope_size++] = header[envelope_header_pos + i];
 
   if (envelope_header_len > 0 && envelope_content_len > 0)
   {
@@ -7074,7 +7077,7 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
   for (i = 0; i < envelope_content_len; i++)
     if (envelope_size < MAX_ENVELOPE_TEXT_LEN)
       level->envelope[0].text[envelope_size++] =
-	header[envelope_content_pos + 1 + i];
+	header[envelope_content_pos + i];
 
   level->envelope[0].text[envelope_size] = '\0';
 
@@ -7084,15 +7087,15 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
   level->envelope[0].centered = TRUE;
 
   for (i = 0; i < level_name_len; i++)
-    level->name_native[i] = header[level_name_pos + 1 + i];
+    level->name_native[i] = header[level_name_pos + i];
   level->name_native[level_name_len] = '\0';
 
   for (i = 0; i < level_name_len; i++)
-    level->name[i] = header[level_name_pos + 1 + i];
+    level->name[i] = header[level_name_pos + i];
   level->name[level_name_len] = '\0';
 
   for (i = 0; i < level_author_len; i++)
-    level->author[i] = header[level_author_pos + 1 + i];
+    level->author[i] = header[level_author_pos + i];
   level->author[level_author_len] = '\0';
 
   num_yamyam_contents = getHeader_DC(header, 60);
