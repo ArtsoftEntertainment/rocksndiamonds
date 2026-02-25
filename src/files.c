@@ -5535,9 +5535,12 @@ static unsigned short getDecodedWordFromFile_DC(File *file, int type)
   static int last_data_encoded;
   static int offset1;
   static int offset2;
+  int is_old_file = (type & DC_LEVEL_TYPE_DC1);
   int diff;
   int diff_hi, diff_lo;
   int data_hi, data_lo;
+  int offset1_final;
+  int offset1_modulo;
   unsigned short data_encoded;
   unsigned short data_decoded;
 
@@ -5550,7 +5553,7 @@ static unsigned short getDecodedWordFromFile_DC(File *file, int type)
     return 0;
   }
 
-  data_encoded = getFile16BitBE(file);
+  data_encoded = (is_old_file ? getFile16BitLE(file) : getFile16BitBE(file));
 
   diff = data_encoded - last_data_encoded;
   diff_hi = diff & ~0xff;
@@ -5558,15 +5561,22 @@ static unsigned short getDecodedWordFromFile_DC(File *file, int type)
 
   offset2 += diff_lo;
 
-  data_hi = diff_hi - (offset1 << 8) + (offset2 & 0xff00);
+  offset1_final = (is_old_file ? MAX(0, offset1) : offset1);
+  offset1_modulo = (type == DC_LEVEL_TYPE_SINGLE_DC1 ? 3 :
+		    type == DC_LEVEL_TYPE_PACKED_DC1 ? 15 : 31);
+
+  data_hi = diff_hi - (offset1_final << 8) + (offset2 & 0xff00);
   data_lo = (diff_lo + (data_hi >> 16)) & 0x00ff;
   data_hi = data_hi & 0xff00;
 
   data_decoded = data_hi | data_lo;
 
+  if (is_old_file)
+    data_decoded = getSwappedWord(data_decoded);
+
   last_data_encoded = data_encoded;
 
-  offset1 = (offset1 + 1) % 31;
+  offset1 = (offset1 + 1) % offset1_modulo;
   offset2 = offset2 & 0xff;
 
   return data_decoded;
@@ -5575,8 +5585,10 @@ static unsigned short getDecodedWordFromFile_DC(File *file, int type)
 static unsigned short getDecodedElementFromFile_DC(File *file, int type)
 {
   unsigned short element_word = getDecodedWordFromFile_DC(file, type);
+  int is_new_file = (type & DC_LEVEL_TYPE_DC2);
 
-  element_word = getSwappedWord(element_word);
+  if (is_new_file)
+    element_word = getSwappedWord(element_word);
 
   return element_word;
 }
