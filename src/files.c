@@ -7542,7 +7542,17 @@ static unsigned short getElementFromFile_DC(File *file, int type)
 
 static unsigned short getHeader_DC(byte *header, int pos, int type)
 {
+  boolean is_old_file = (type & DC_LEVEL_TYPE_DC1);
+  boolean is_yamyam_contents = (pos == 60);
+
+  // correct header position for number of yamyam contents
+  if (type == DC_LEVEL_TYPE_PACKED_DC1)
+    pos += (is_yamyam_contents ? 274 : 86);
+
   unsigned short header_word = header[pos] | (header[pos + 1] << 8);
+
+  if (is_old_file)
+    header_word = getSwappedWord(header_word);
 
   return header_word;
 }
@@ -7552,13 +7562,13 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
   int header_size = DC_LEVEL_HEADER_SIZE(type);
   byte header[header_size];
   int envelope_size;
-  int envelope_header_pos = 62;
-  int envelope_content_pos = 94;
-  int level_name_pos = 251;
-  int level_author_pos = 292;
+  int envelope_header_pos;
   int envelope_header_len;
+  int envelope_content_pos;
   int envelope_content_len;
+  int level_name_pos;
   int level_name_len;
+  int level_author_pos;
   int level_author_len;
   int fieldx, fieldy;
   int num_yamyam_contents;
@@ -7593,15 +7603,44 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
     return;
   }
 
-  // envelope header size is stored in byte before string
-  envelope_header_len = header[envelope_header_pos++];
-  // envelope content size is stored in byte before string
-  envelope_content_len = header[envelope_content_pos++];
+  // set position and length of envelope text, level name and level author
 
-  // level name size is is stored in byte before string
-  level_name_len = header[level_name_pos++];
-  // level author size is is stored in byte before string
-  level_author_len = header[level_author_pos++];
+  if (type & DC_LEVEL_TYPE_DC2)
+  {
+    envelope_header_pos = 62;
+    envelope_content_pos = 94;
+
+    level_name_pos = 251;
+    level_author_pos = 292;
+
+    // envelope header size is stored in byte before string
+    envelope_header_len = header[envelope_header_pos++];
+    // envelope content size is stored in byte before string
+    envelope_content_len = header[envelope_content_pos++];
+
+    // level name size is is stored in byte before string
+    level_name_len = header[level_name_pos++];
+    // level author size is is stored in byte before string
+    level_author_len = header[level_author_pos++];
+  }
+  else		// DC_LEVEL_TYPE_PACKED_DC1
+  {
+    envelope_header_pos = 146;
+    envelope_content_pos = 178;
+
+    level_name_pos = 0;
+    level_author_pos = 40;
+
+    // maximum envelope header size (padded with null bytes)
+    envelope_header_len = 30;
+    // maximum envelope content size (padded with null bytes)
+    envelope_content_len = 158;
+
+    // maximum level name size (padded with null bytes)
+    level_name_len = 40;
+    // maximum level author size (padded with null bytes)
+    level_author_len = 40;
+  }
 
   level_name_len   = MIN(level_name_len,   MAX_LEVEL_NAME_LEN);
   level_author_len = MIN(level_author_len, MAX_LEVEL_AUTHOR_LEN);
@@ -7615,6 +7654,11 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
     for (i = 0; i < envelope_header_len; i++)
       if (envelope_size < MAX_ENVELOPE_TEXT_LEN)
 	level->envelope[0].text[envelope_size++] = header[envelope_header_pos + i];
+
+    // handle strings with either length specification or null-termination
+    level->envelope[0].text[envelope_size] = '\0';	// null-terminate string, if needed
+    envelope_size = strlen(level->envelope[0].text);	// get length without trailing zeroes
+    envelope_header_len = envelope_size;		// set real envelope header length
 
     if (envelope_header_len > 0 && envelope_content_len > 0)
     {
@@ -7679,11 +7723,22 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
 
   // read playfield positions of the players
 
-  x1 = getHeader_DC(header, 10, type) - 1;
-  y1 = getHeader_DC(header, 12, type) - 1;
+  if (type == DC_LEVEL_TYPE_PACKED_DC1)
+  {
+    x1 = getHeader_DC(header, 10, type);
+    y1 = getHeader_DC(header, 12, type);
 
-  x2 = getHeader_DC(header, 14, type) - 1;
-  y2 = getHeader_DC(header, 16, type) - 1;
+    x2 = getHeader_DC(header, 14, type);
+    y2 = getHeader_DC(header, 16, type);
+  }
+  else
+  {
+    x1 = getHeader_DC(header, 10, type) - 1;
+    y1 = getHeader_DC(header, 12, type) - 1;
+
+    x2 = getHeader_DC(header, 14, type) - 1;
+    y2 = getHeader_DC(header, 16, type) - 1;
+  }
 
   x = MIN(MAX(0, x1), MAX_LEV_FIELDX - 1);
   y = MIN(MAX(0, y1), MAX_LEV_FIELDY - 1);
@@ -7784,6 +7839,8 @@ static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
     if (strPrefix(magic_bytes, "DC2Win95") ||
 	strPrefix(magic_bytes, "DC2Win98"))
     {
+      // new packed level file (Diamond Caves II format)
+
       int position_first_level = 0x00fa;
       int extra_bytes = 4;
       int skip_bytes;
@@ -7818,6 +7875,49 @@ static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
 
       type = DC_LEVEL_TYPE_PACKED_DC2;
     }
+    else if (strPrefix(magic_bytes, "DC2Group"))
+    {
+      // old packed level file (Diamond Caves (Amiga) format)
+
+      int position_first_level = 0x0028;
+      int extra_bytes = 2;
+      int skip_bytes;
+
+      // advance file stream to first level inside the level package
+      skip_bytes = position_first_level - num_magic_bytes - extra_bytes;
+
+      // each block of level data is followed by block of non-level data
+      num_levels_to_skip *= 2;
+
+      // at least skip header bytes, therefore use ">= 0" instead of "> 0"
+      while (num_levels_to_skip >= 0)
+      {
+	// advance file stream to next level inside the level package
+	if (seekFile(file, skip_bytes, SEEK_CUR) != 0)
+	{
+	  level->no_valid_file = TRUE;
+
+	  Warn("cannot fseek in file '%s' -- using empty level", filename);
+
+	  return;
+	}
+
+	extra_bytes = ((num_levels_to_skip % 2) != 0 ? 4 : 2);
+
+	// skip apparently unused extra bytes following each level
+	ReadUnusedBytesFromFile(file, extra_bytes);
+
+	// read size of next level in level package
+	skip_bytes = getFile32BitBE(file);
+
+	num_levels_to_skip--;
+      }
+
+      // skip unused header bytes
+      ReadUnusedBytesFromFile(file, 4);
+
+      type = DC_LEVEL_TYPE_PACKED_DC1;
+    }
     else
     {
       level->no_valid_file = TRUE;
@@ -7827,8 +7927,10 @@ static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
       return;
     }
   }
-  else
+  else		// single level file
   {
+    // new single level file without "magic bytes" header (Diamond Caves II format)
+
     type = DC_LEVEL_TYPE_SINGLE_DC2;
   }
 
