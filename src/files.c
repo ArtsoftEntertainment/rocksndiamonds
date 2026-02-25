@@ -7035,10 +7035,10 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
   num_yamyam_contents = getHeader_DC(header, 60);
 
   // do some simple sanity checks to ensure that level was correctly decoded
-  if (fieldx < 1 || fieldx > 256 ||
-      fieldy < 1 || fieldy > 256 ||
-      num_yamyam_contents < 1 ||
-      num_yamyam_contents > 8)
+  if (fieldx < MIN_LEV_FIELDX || fieldx > MAX_LEV_FIELDX ||
+      fieldy < MIN_LEV_FIELDY || fieldy > MAX_LEV_FIELDY ||
+      num_yamyam_contents < MIN_ELEMENT_CONTENTS ||
+      num_yamyam_contents > MAX_ELEMENT_CONTENTS)
   {
     level->no_valid_file = TRUE;
 
