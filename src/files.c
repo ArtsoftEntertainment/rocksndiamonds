@@ -7060,6 +7060,8 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
   level_name_len   = MIN(level_name_len,   MAX_LEVEL_NAME_LEN);
   level_author_len = MIN(level_author_len, MAX_LEVEL_AUTHOR_LEN);
 
+  // read envelope text, if defined
+
   if (envelope_header_len > 0 || envelope_content_len > 0)
   {
     envelope_size = 0;
@@ -7089,6 +7091,8 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
     level->envelope[0].centered = TRUE;
   }
 
+  // read level name, if defined
+
   if (level_name_len > 0)
   {
     for (i = 0; i < level_name_len; i++)
@@ -7100,12 +7104,16 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
     level->name[level_name_len] = '\0';
   }
 
+  // read level author, if defined
+
   if (level_author_len > 0)
   {
     for (i = 0; i < level_author_len; i++)
       level->author[i] = header[level_author_pos + i];
     level->author[level_author_len] = '\0';
   }
+
+  // read yamyam data
 
   num_yamyam_contents = getHeader_DC(header, 60);
   level->num_yamyam_contents =
@@ -7120,6 +7128,8 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
     }
   }
 
+  // read playfield data
+
   fieldx = getHeader_DC(header, 6);
   fieldy = getHeader_DC(header, 8);
   level->fieldx = MIN(MAX(MIN_LEV_FIELDX, fieldx), MAX_LEV_FIELDX);
@@ -7131,6 +7141,8 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
       level->field[x][y] = getElementFromFile_DC(file);
   }
 
+  // read playfield positions of the players
+
   x = MIN(MAX(0, getHeader_DC(header, 10) - 1), MAX_LEV_FIELDX - 1);
   y = MIN(MAX(0, getHeader_DC(header, 12) - 1), MAX_LEV_FIELDY - 1);
   level->field[x][y] = EL_PLAYER_1;
@@ -7138,6 +7150,8 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
   x = MIN(MAX(0, getHeader_DC(header, 14) - 1), MAX_LEV_FIELDX - 1);
   y = MIN(MAX(0, getHeader_DC(header, 16) - 1), MAX_LEV_FIELDY - 1);
   level->field[x][y] = EL_PLAYER_2;
+
+  // read level and element related values
 
   level->gems_needed		= getHeader_DC(header, 18);
 
