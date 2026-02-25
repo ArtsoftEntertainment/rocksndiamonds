@@ -7060,43 +7060,52 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
   level_name_len   = MIN(level_name_len,   MAX_LEVEL_NAME_LEN);
   level_author_len = MIN(level_author_len, MAX_LEVEL_AUTHOR_LEN);
 
-  envelope_size = 0;
-
-  for (i = 0; i < envelope_header_len; i++)
-    if (envelope_size < MAX_ENVELOPE_TEXT_LEN)
-      level->envelope[0].text[envelope_size++] = header[envelope_header_pos + i];
-
-  if (envelope_header_len > 0 && envelope_content_len > 0)
+  if (envelope_header_len > 0 || envelope_content_len > 0)
   {
-    if (envelope_size < MAX_ENVELOPE_TEXT_LEN)
-      level->envelope[0].text[envelope_size++] = '\n';
-    if (envelope_size < MAX_ENVELOPE_TEXT_LEN)
-      level->envelope[0].text[envelope_size++] = '\n';
+    envelope_size = 0;
+
+    for (i = 0; i < envelope_header_len; i++)
+      if (envelope_size < MAX_ENVELOPE_TEXT_LEN)
+	level->envelope[0].text[envelope_size++] = header[envelope_header_pos + i];
+
+    if (envelope_header_len > 0 && envelope_content_len > 0)
+    {
+      if (envelope_size < MAX_ENVELOPE_TEXT_LEN)
+	level->envelope[0].text[envelope_size++] = '\n';
+      if (envelope_size < MAX_ENVELOPE_TEXT_LEN)
+	level->envelope[0].text[envelope_size++] = '\n';
+    }
+
+    for (i = 0; i < envelope_content_len; i++)
+      if (envelope_size < MAX_ENVELOPE_TEXT_LEN)
+	level->envelope[0].text[envelope_size++] =
+	  header[envelope_content_pos + i];
+
+    level->envelope[0].text[envelope_size] = '\0';
+
+    level->envelope[0].xsize = MAX_ENVELOPE_XSIZE;
+    level->envelope[0].ysize = 10;
+    level->envelope[0].autowrap = TRUE;
+    level->envelope[0].centered = TRUE;
   }
 
-  for (i = 0; i < envelope_content_len; i++)
-    if (envelope_size < MAX_ENVELOPE_TEXT_LEN)
-      level->envelope[0].text[envelope_size++] =
-	header[envelope_content_pos + i];
+  if (level_name_len > 0)
+  {
+    for (i = 0; i < level_name_len; i++)
+      level->name_native[i] = header[level_name_pos + i];
+    level->name_native[level_name_len] = '\0';
 
-  level->envelope[0].text[envelope_size] = '\0';
+    for (i = 0; i < level_name_len; i++)
+      level->name[i] = header[level_name_pos + i];
+    level->name[level_name_len] = '\0';
+  }
 
-  level->envelope[0].xsize = MAX_ENVELOPE_XSIZE;
-  level->envelope[0].ysize = 10;
-  level->envelope[0].autowrap = TRUE;
-  level->envelope[0].centered = TRUE;
-
-  for (i = 0; i < level_name_len; i++)
-    level->name_native[i] = header[level_name_pos + i];
-  level->name_native[level_name_len] = '\0';
-
-  for (i = 0; i < level_name_len; i++)
-    level->name[i] = header[level_name_pos + i];
-  level->name[level_name_len] = '\0';
-
-  for (i = 0; i < level_author_len; i++)
-    level->author[i] = header[level_author_pos + i];
-  level->author[level_author_len] = '\0';
+  if (level_author_len > 0)
+  {
+    for (i = 0; i < level_author_len; i++)
+      level->author[i] = header[level_author_pos + i];
+    level->author[level_author_len] = '\0';
+  }
 
   num_yamyam_contents = getHeader_DC(header, 60);
   level->num_yamyam_contents =
