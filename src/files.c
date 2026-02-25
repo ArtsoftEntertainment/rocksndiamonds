@@ -6997,7 +6997,8 @@ static unsigned short getElementFromFile_DC(File *file)
 
 static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
 {
-  byte header[DC_LEVEL_HEADER_SIZE];
+  int header_size = DC_LEVEL_HEADER_SIZE;
+  byte header[header_size];
   int envelope_size;
   int envelope_header_pos = 62;
   int envelope_content_pos = 94;
@@ -7013,7 +7014,7 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
 
   getDecodedWordFromFile_DC(NULL);		// initialize DC2 decoding engine
 
-  for (i = 0; i < DC_LEVEL_HEADER_SIZE / 2; i++)
+  for (i = 0; i < header_size / 2; i++)
   {
     unsigned short header_word = getDecodedWordFromFile_DC(file);
 
