@@ -7586,9 +7586,37 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
   }
 
   // read some values from level header to check level decoding integrity
-  fieldx = getHeader_DC(header, 6, type);
-  fieldy = getHeader_DC(header, 8, type);
-  num_yamyam_contents = getHeader_DC(header, 60, type);
+
+  if (type == DC_LEVEL_TYPE_SINGLE_DC1)
+  {
+    fieldx = getHeader_DC(header, 0, type);
+    fieldy = getHeader_DC(header, 2, type);
+
+    num_yamyam_contents = 4;
+
+    // file only contains playfield data without (steel) border tiles
+    fieldx += 2;
+    fieldy += 2;
+
+    // set values for reading playfield data from file
+    x1 = 1;
+    y1 = 1;
+    x2 = fieldx - 2;
+    y2 = fieldy - 2;
+  }
+  else
+  {
+    fieldx = getHeader_DC(header, 6, type);
+    fieldy = getHeader_DC(header, 8, type);
+
+    num_yamyam_contents = getHeader_DC(header, 60, type);
+
+    // set values for reading playfield data from file
+    x1 = 0;
+    y1 = 0;
+    x2 = fieldx - 1;
+    y2 = fieldy - 1;
+  }
 
   // do some simple sanity checks to ensure that level was correctly decoded
   if (fieldx < MIN_LEV_FIELDX || fieldx > MAX_LEV_FIELDX ||
@@ -7623,7 +7651,7 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
     // level author size is is stored in byte before string
     level_author_len = header[level_author_pos++];
   }
-  else		// DC_LEVEL_TYPE_PACKED_DC1
+  else if (type == DC_LEVEL_TYPE_PACKED_DC1)
   {
     envelope_header_pos = 146;
     envelope_content_pos = 178;
@@ -7640,6 +7668,24 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
     level_name_len = 40;
     // maximum level author size (padded with null bytes)
     level_author_len = 40;
+  }
+  else		// DC_LEVEL_TYPE_SINGLE_DC1
+  {
+    envelope_header_pos = 0;
+    envelope_content_pos = 0;
+
+    level_name_pos = 42;
+    level_author_pos = 0;
+
+    // maximum envelope header size (padded with null bytes)
+    envelope_header_len = 0;
+    // maximum envelope content size (padded with null bytes)
+    envelope_content_len = 0;
+
+    // maximum level name size (padded with null bytes)
+    level_name_len = 20;
+    // maximum level author size (padded with null bytes)
+    level_author_len = 0;
   }
 
   level_name_len   = MIN(level_name_len,   MAX_LEVEL_NAME_LEN);
@@ -7712,18 +7758,36 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
       for (x = 0; x < 3; x++)
 	level->yamyam_content[i].e[x][y] = getElementFromFile_DC(file, type);
 
+  // initialize playfield, if needed
+
+  if (type == DC_LEVEL_TYPE_SINGLE_DC1)
+  {
+    // border elements not included in playfield data of old files
+    for (y = 0; y < fieldy; y++)
+      for (x = 0; x < fieldx; x++)
+	level->field[x][y] = EL_STEELWALL;
+  }
+
   // read playfield data
 
   level->fieldx = fieldx;
   level->fieldy = fieldy;
 
-  for (y = 0; y < fieldy; y++)
-    for (x = 0; x < fieldx; x++)
+  for (y = y1; y <= y2; y++)
+    for (x = x1; x <= x2; x++)
       level->field[x][y] = getElementFromFile_DC(file, type);
 
   // read playfield positions of the players
 
-  if (type == DC_LEVEL_TYPE_PACKED_DC1)
+  if (type == DC_LEVEL_TYPE_SINGLE_DC1)
+  {
+    x1 = getHeader_DC(header,  4, type) + 1;
+    y1 = getHeader_DC(header,  6, type) + 1;
+
+    x2 = getHeader_DC(header,  8, type) + 1;
+    y2 = getHeader_DC(header, 10, type) + 1;
+  }
+  else if (type == DC_LEVEL_TYPE_PACKED_DC1)
   {
     x1 = getHeader_DC(header, 10, type);
     y1 = getHeader_DC(header, 12, type);
@@ -7750,30 +7814,60 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
 
   // read level and element related values
 
-  level->gems_needed		= getHeader_DC(header, 18, type);
+  if (type == DC_LEVEL_TYPE_SINGLE_DC1)
+  {
+    level->gems_needed		= getHeader_DC(header, 90, type);
 
-  level->score[SC_EMERALD]	= getHeader_DC(header, 20, type);
-  level->score[SC_DIAMOND]	= getHeader_DC(header, 22, type);
-  level->score[SC_PEARL]	= getHeader_DC(header, 24, type);
-  level->score[SC_CRYSTAL]	= getHeader_DC(header, 26, type);
-  level->score[SC_NUT]		= getHeader_DC(header, 28, type);
-  level->score[SC_ROBOT]	= getHeader_DC(header, 30, type);
-  level->score[SC_SPACESHIP]	= getHeader_DC(header, 32, type);
-  level->score[SC_BUG]		= getHeader_DC(header, 34, type);
-  level->score[SC_YAMYAM]	= getHeader_DC(header, 36, type);
-  level->score[SC_DYNAMITE]	= getHeader_DC(header, 38, type);
-  level->score[SC_KEY]		= getHeader_DC(header, 40, type);
-  level->score[SC_TIME_BONUS]	= getHeader_DC(header, 42, type);
+    level->score[SC_EMERALD]	= getHeader_DC(header, 62, type);
+    level->score[SC_DIAMOND]	= getHeader_DC(header, 64, type);
+    level->score[SC_PEARL]	= 0;	// (not supported in DC1)
+    level->score[SC_CRYSTAL]	= 0;	// (not supported in DC1)
+    level->score[SC_NUT]	= getHeader_DC(header, 74, type);
+    level->score[SC_ROBOT]	= getHeader_DC(header, 66, type);
+    level->score[SC_SPACESHIP]	= getHeader_DC(header, 68, type);
+    level->score[SC_BUG]	= getHeader_DC(header, 70, type);
+    level->score[SC_YAMYAM]	= getHeader_DC(header, 72, type);
+    level->score[SC_DYNAMITE]	= getHeader_DC(header, 76, type);
+    level->score[SC_KEY]	= getHeader_DC(header, 78, type);
+    level->score[SC_TIME_BONUS]	= getHeader_DC(header, 80, type);
 
-  level->time			= getHeader_DC(header, 44, type);
+    level->time			= getHeader_DC(header, 82, type);
 
-  level->amoeba_speed		= getHeader_DC(header, 46, type);
-  level->time_light		= getHeader_DC(header, 48, type);
-  level->time_timegate		= getHeader_DC(header, 50, type);
-  level->time_wheel		= getHeader_DC(header, 52, type);
-  level->time_magic_wall	= getHeader_DC(header, 54, type);
-  level->extra_time		= getHeader_DC(header, 56, type);
-  level->shield_normal_time	= getHeader_DC(header, 58, type);
+    level->amoeba_speed		= getHeader_DC(header, 84, type);
+    level->time_light		= 0;	// (not supported in DC1)
+    level->time_timegate	= 0;	// (not supported in DC1)
+    level->time_wheel		= getHeader_DC(header, 86, type);
+    level->time_magic_wall	= getHeader_DC(header, 88, type);
+    level->extra_time		= getHeader_DC(header, 92, type);
+    level->shield_normal_time	= getHeader_DC(header, 94, type);
+  }
+  else
+  {
+    level->gems_needed		= getHeader_DC(header, 18, type);
+
+    level->score[SC_EMERALD]	= getHeader_DC(header, 20, type);
+    level->score[SC_DIAMOND]	= getHeader_DC(header, 22, type);
+    level->score[SC_PEARL]	= getHeader_DC(header, 24, type);
+    level->score[SC_CRYSTAL]	= getHeader_DC(header, 26, type);
+    level->score[SC_NUT]	= getHeader_DC(header, 28, type);
+    level->score[SC_ROBOT]	= getHeader_DC(header, 30, type);
+    level->score[SC_SPACESHIP]	= getHeader_DC(header, 32, type);
+    level->score[SC_BUG]	= getHeader_DC(header, 34, type);
+    level->score[SC_YAMYAM]	= getHeader_DC(header, 36, type);
+    level->score[SC_DYNAMITE]	= getHeader_DC(header, 38, type);
+    level->score[SC_KEY]	= getHeader_DC(header, 40, type);
+    level->score[SC_TIME_BONUS]	= getHeader_DC(header, 42, type);
+
+    level->time			= getHeader_DC(header, 44, type);
+
+    level->amoeba_speed		= getHeader_DC(header, 46, type);
+    level->time_light		= getHeader_DC(header, 48, type);
+    level->time_timegate	= getHeader_DC(header, 50, type);
+    level->time_wheel		= getHeader_DC(header, 52, type);
+    level->time_magic_wall	= getHeader_DC(header, 54, type);
+    level->extra_time		= getHeader_DC(header, 56, type);
+    level->shield_normal_time	= getHeader_DC(header, 58, type);
+  }
 
   // shield and extra time elements do not have a score
   level->score[SC_SHIELD]	= 0;
@@ -7820,13 +7914,13 @@ static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
 
   // fseek(file, 0x0000, SEEK_SET);
 
+  // read "magic bytes" from start of file
+  if (getStringFromFile(file, magic_bytes, num_magic_bytes + 1) == NULL)
+    magic_bytes[0] = '\0';
+
   if (level_file_info->packed)
   {
-    // read "magic bytes" from start of file
-    if (getStringFromFile(file, magic_bytes, num_magic_bytes + 1) == NULL)
-      magic_bytes[0] = '\0';
-
-    // check "magic bytes" for correct file format
+    // check "magic bytes" for supported file formats
     if (!strPrefix(magic_bytes, "DC2"))
     {
       level->no_valid_file = TRUE;
@@ -7929,9 +8023,19 @@ static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
   }
   else		// single level file
   {
-    // new single level file without "magic bytes" header (Diamond Caves II format)
+    // check "magic bytes" for supported file formats
+    if (strPrefix(magic_bytes, "DCLV1.00"))
+    {
+      // old single level file (Diamond Caves (Amiga) format)
+      type = DC_LEVEL_TYPE_SINGLE_DC1;
+    }
+    else
+    {
+      // new single level file without "magic bytes" header (Diamond Caves II format)
+      seekFile(file, 0, SEEK_SET);	// rewind file
 
-    type = DC_LEVEL_TYPE_SINGLE_DC2;
+      type = DC_LEVEL_TYPE_SINGLE_DC2;
+    }
   }
 
   LoadLevelFromFileStream_DC(file, level, type);
