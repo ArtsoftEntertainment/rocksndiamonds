@@ -5544,6 +5544,15 @@ static unsigned short getDecodedWordFromFile_DC(File *file)
   return data_decoded;
 }
 
+static unsigned short getDecodedElementFromFile_DC(File *file)
+{
+  unsigned short element_word = getDecodedWordFromFile_DC(file);
+
+  element_word = ((element_word & 0x00ff) << 8) | ((element_word & 0xff00) >> 8);
+
+  return element_word;
+}
+
 static int getMappedElement_DC(int element)
 {
   switch (element)
@@ -7073,8 +7082,7 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
   {
     for (y = 0; y < 3; y++) for (x = 0; x < 3; x++)
     {
-      unsigned short word = getDecodedWordFromFile_DC(file);
-      int element_dc = ((word & 0xff) << 8) | ((word >> 8) & 0xff);
+      int element_dc = getDecodedElementFromFile_DC(file);
 
       if (i < MAX_ELEMENT_CONTENTS)
 	level->yamyam_content[i].e[x][y] = getMappedElement_DC(element_dc);
@@ -7088,8 +7096,7 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level)
 
   for (y = 0; y < fieldy; y++) for (x = 0; x < fieldx; x++)
   {
-    unsigned short word = getDecodedWordFromFile_DC(file);
-    int element_dc = ((word & 0xff) << 8) | ((word >> 8) & 0xff);
+    int element_dc = getDecodedElementFromFile_DC(file);
 
     if (x < MAX_LEV_FIELDX && y < MAX_LEV_FIELDY)
       level->field[x][y] = getMappedElement_DC(element_dc);
