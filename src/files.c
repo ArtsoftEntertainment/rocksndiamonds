@@ -5506,6 +5506,8 @@ static void CopyNativeLevel_MM_to_RND(struct LevelInfo *level)
 // functions for loading DC level
 // ----------------------------------------------------------------------------
 
+#define DEBUG_DC_HEADER			FALSE
+
 #define DC_LEVEL_HEADER_SIZE_SINGLE_DC1	96
 #define DC_LEVEL_HEADER_SIZE_SINGLE_DC2	344
 #define DC_LEVEL_HEADER_SIZE_PACKED_DC1	336
@@ -7563,6 +7565,59 @@ static unsigned short getHeader_DC(byte *header, int pos, int type)
   return header_word;
 }
 
+#if DEBUG_DC_HEADER
+static void DumpHeader_DC(byte *header, int header_size)
+{
+  int i, j;
+
+  for (i = 0; i < (header_size + 15) / 16; i++)
+  {
+    printf("%04x: ", i * 16);
+
+    for (j = 0; j < 16; j++)
+    {
+      if (i * 16 + j < header_size)
+      {
+	int c = header[i * 16 + j];
+
+	printf("%02x", c);
+      }
+      else
+      {
+	printf("  ");
+      }
+
+      if (j % 2)
+	printf(" ");
+    }
+
+    for (j = 0; j < 16; j++)
+    {
+      if (i * 16 + j < header_size)
+      {
+	int c = header[i * 16 + j];
+
+	if ((c >= 'A' && c <= 'Z') ||
+	    (c >= 'a' && c <= 'z') ||
+	    (c >= '0' && c <= '9') ||
+	    (c == ' '))
+	  printf("%c", c);
+	else
+	  printf(".");
+      }
+      else
+      {
+	printf(" ");
+      }
+    }
+
+    printf("\n");
+  }
+
+  printf("\n");
+}
+#endif
+
 static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int type)
 {
   int header_size = DC_LEVEL_HEADER_SIZE(type);
@@ -7590,6 +7645,10 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
     header[i * 2 + 0] = header_word >> 8;
     header[i * 2 + 1] = header_word & 0xff;
   }
+
+#if DEBUG_DC_HEADER
+  DumpHeader_DC(header, header_size);
+#endif
 
   // read some values from level header to check level decoding integrity
 
