@@ -1575,6 +1575,12 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   },
 
   {
+    EL_DC_LANDMINE,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
+    &li.use_diggable_landmines,			FALSE
+  },
+
+  {
     EL_MM_MCDUFFIN,				-1,
     TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
     &li.mm_laser_red,				FALSE
@@ -7886,6 +7892,9 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
 
   // Diamond Caves uses special (EM style) behavior (and different speed) for amoeba
   level->dc_amoeba_behavior = TRUE;
+
+  // Diamond Caves II uses special behavior when digging (DC style) landmines
+  level->use_diggable_landmines = TRUE;
 
   // time score is counted for each 10 seconds left in Diamond Caves levels
   level->time_score_base = 10;

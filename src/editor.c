@@ -855,6 +855,7 @@ enum
   GADGET_ID_EM_EXPLODES_BY_FIRE,
   GADGET_ID_EM_USE_MOVES_NOT_SECONDS,
   GADGET_ID_DC_AMOEBA_BEHAVIOR,
+  GADGET_ID_USE_DIGGABLE_LANDMINES,
   GADGET_ID_USE_SPRING_BUG,
   GADGET_ID_USE_TIME_ORB_BUG,
   GADGET_ID_USE_LIFE_BUGS,
@@ -1318,6 +1319,7 @@ enum
   ED_CHECKBUTTON_ID_EM_EXPLODES_BY_FIRE,
   ED_CHECKBUTTON_ID_EM_USE_MOVES_NOT_SECONDS,
   ED_CHECKBUTTON_ID_DC_AMOEBA_BEHAVIOR,
+  ED_CHECKBUTTON_ID_USE_DIGGABLE_LANDMINES,
   ED_CHECKBUTTON_ID_USE_SPRING_BUG,
   ED_CHECKBUTTON_ID_USE_TIME_ORB_BUG,
   ED_CHECKBUTTON_ID_USE_LIFE_BUGS,
@@ -4498,6 +4500,14 @@ static struct
     &level.dc_amoeba_behavior,
     NULL, NULL,
     "Use DC style amoeba behavior/speed",	"Use DC style amoeba behavior and speed"
+  },
+  {
+    ED_CHECKBUTTON_ID_USE_DIGGABLE_LANDMINES,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(0),
+    GADGET_ID_USE_DIGGABLE_LANDMINES,		GADGET_ID_NONE,
+    &level.use_diggable_landmines,
+    NULL, NULL,
+    "Diggable when using deadly shield",	"Use DC style behavior when digging"
   },
   {
     ED_CHECKBUTTON_ID_USE_SPRING_BUG,
@@ -13637,7 +13647,10 @@ static boolean checkPropertiesConfig(int element)
       element == EL_BDX_SWEET ||
       element == EL_BDX_VOODOO_DOLL ||
       element == EL_BDX_WATER ||
-      element == EL_BDX_GRAVITY_SWITCH)
+      element == EL_BDX_GRAVITY_SWITCH ||
+      element == EL_LANDMINE ||
+      element == EL_DC_LANDMINE ||
+      element == EL_TRAP)
   {
     return TRUE;
   }
@@ -14237,6 +14250,11 @@ static void DrawPropertiesConfig(void)
 
     DrawEnvelopeTextArea(envelope_nr);
   }
+
+  if (properties_element == EL_LANDMINE ||
+      properties_element == EL_DC_LANDMINE ||
+      properties_element == EL_TRAP)
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_USE_DIGGABLE_LANDMINES);
 
   if (IS_MM_MCDUFFIN(properties_element))
   {

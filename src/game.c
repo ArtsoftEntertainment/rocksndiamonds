@@ -15068,6 +15068,13 @@ static int DigField(struct PlayerInfo *player,
     return MP_DONT_RUN_INTO;
   }
 
+  // when using a deadly shield, player can dig traps and (DC) landmines like sand
+  if (player_can_move && player->shield_deadly_time_left > 0 && level.use_diggable_landmines &&
+      (element == EL_LANDMINE ||
+       element == EL_DC_LANDMINE ||
+       element == EL_TRAP_ACTIVE))
+    element = EL_SAND;
+
   if (player_can_move && DONT_RUN_INTO(element))
   {
     TestIfPlayerRunsIntoBadThing(jx, jy, player->MovDir);
