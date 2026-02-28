@@ -5508,30 +5508,30 @@ static void CopyNativeLevel_MM_to_RND(struct LevelInfo *level)
 
 #define DEBUG_DC_HEADER			FALSE
 
-#define DC_LEVEL_HEADER_SIZE_SINGLE_DC1	96
-#define DC_LEVEL_HEADER_SIZE_SINGLE_DC2	344
-#define DC_LEVEL_HEADER_SIZE_PACKED_DC1	336
-#define DC_LEVEL_HEADER_SIZE_PACKED_DC2	344
+#define DC_LEVEL_HEADER_SIZE_SINGLE_OLD	96
+#define DC_LEVEL_HEADER_SIZE_SINGLE_NEW	344
+#define DC_LEVEL_HEADER_SIZE_PACKED_OLD	336
+#define DC_LEVEL_HEADER_SIZE_PACKED_NEW	344
 
 #define DC_LEVEL_TYPE_SINGLE		(1 << 0)
 #define DC_LEVEL_TYPE_PACKED		(1 << 1)
-#define DC_LEVEL_TYPE_DC1		(1 << 2)
-#define DC_LEVEL_TYPE_DC2		(1 << 3)
+#define DC_LEVEL_TYPE_OLD		(1 << 2)
+#define DC_LEVEL_TYPE_NEW		(1 << 3)
 
 #define DC_LEVEL_TYPE_UNDEFINED		0
-#define DC_LEVEL_TYPE_SINGLE_DC1	(DC_LEVEL_TYPE_SINGLE | DC_LEVEL_TYPE_DC1)
-#define DC_LEVEL_TYPE_SINGLE_DC2	(DC_LEVEL_TYPE_SINGLE | DC_LEVEL_TYPE_DC2)
-#define DC_LEVEL_TYPE_PACKED_DC1	(DC_LEVEL_TYPE_PACKED | DC_LEVEL_TYPE_DC1)
-#define DC_LEVEL_TYPE_PACKED_DC2	(DC_LEVEL_TYPE_PACKED | DC_LEVEL_TYPE_DC2)
+#define DC_LEVEL_TYPE_SINGLE_OLD	(DC_LEVEL_TYPE_SINGLE | DC_LEVEL_TYPE_OLD)
+#define DC_LEVEL_TYPE_SINGLE_NEW	(DC_LEVEL_TYPE_SINGLE | DC_LEVEL_TYPE_NEW)
+#define DC_LEVEL_TYPE_PACKED_OLD	(DC_LEVEL_TYPE_PACKED | DC_LEVEL_TYPE_OLD)
+#define DC_LEVEL_TYPE_PACKED_NEW	(DC_LEVEL_TYPE_PACKED | DC_LEVEL_TYPE_NEW)
 
-#define DC_LEVEL_HEADER_SIZE(type)	(type == DC_LEVEL_TYPE_SINGLE_DC1 ?	\
-					 DC_LEVEL_HEADER_SIZE_SINGLE_DC1  :	\
-					 type == DC_LEVEL_TYPE_SINGLE_DC2 ?	\
-					 DC_LEVEL_HEADER_SIZE_SINGLE_DC2  :	\
-					 type == DC_LEVEL_TYPE_PACKED_DC1 ?	\
-					 DC_LEVEL_HEADER_SIZE_PACKED_DC1  :	\
-					 type == DC_LEVEL_TYPE_PACKED_DC2 ?	\
-					 DC_LEVEL_HEADER_SIZE_PACKED_DC2  : 0)
+#define DC_LEVEL_HEADER_SIZE(type)	(type == DC_LEVEL_TYPE_SINGLE_OLD ?	\
+					 DC_LEVEL_HEADER_SIZE_SINGLE_OLD  :	\
+					 type == DC_LEVEL_TYPE_SINGLE_NEW ?	\
+					 DC_LEVEL_HEADER_SIZE_SINGLE_NEW  :	\
+					 type == DC_LEVEL_TYPE_PACKED_OLD ?	\
+					 DC_LEVEL_HEADER_SIZE_PACKED_OLD  :	\
+					 type == DC_LEVEL_TYPE_PACKED_NEW ?	\
+					 DC_LEVEL_HEADER_SIZE_PACKED_NEW  : 0)
 
 static unsigned short getSwappedWord(unsigned short word)
 {
@@ -5543,7 +5543,7 @@ static unsigned short getDecodedWordFromFile_DC(File *file, int type)
   static int last_data_encoded;
   static int offset1;
   static int offset2;
-  int is_old_file = (type & DC_LEVEL_TYPE_DC1);
+  int is_old_file = (type & DC_LEVEL_TYPE_OLD);
   int diff;
   int diff_hi, diff_lo;
   int data_hi, data_lo;
@@ -5570,8 +5570,8 @@ static unsigned short getDecodedWordFromFile_DC(File *file, int type)
   offset2 += diff_lo;
 
   offset1_final = (is_old_file ? MAX(0, offset1) : offset1);
-  offset1_modulo = (type == DC_LEVEL_TYPE_SINGLE_DC1 ? 3 :
-		    type == DC_LEVEL_TYPE_PACKED_DC1 ? 15 : 31);
+  offset1_modulo = (type == DC_LEVEL_TYPE_SINGLE_OLD ? 3 :
+		    type == DC_LEVEL_TYPE_PACKED_OLD ? 15 : 31);
 
   data_hi = diff_hi - (offset1_final << 8) + (offset2 & 0xff00);
   data_lo = (diff_lo + (data_hi >> 16)) & 0x00ff;
@@ -5593,7 +5593,7 @@ static unsigned short getDecodedWordFromFile_DC(File *file, int type)
 static unsigned short getDecodedElementFromFile_DC(File *file, int type)
 {
   unsigned short element_word = getDecodedWordFromFile_DC(file, type);
-  int is_new_file = (type & DC_LEVEL_TYPE_DC2);
+  int is_new_file = (type & DC_LEVEL_TYPE_NEW);
 
   if (is_new_file)
     element_word = getSwappedWord(element_word);
@@ -7550,11 +7550,11 @@ static unsigned short getElementFromFile_DC(File *file, int type)
 
 static unsigned short getHeader_DC(byte *header, int pos, int type)
 {
-  boolean is_old_file = (type & DC_LEVEL_TYPE_DC1);
+  boolean is_old_file = (type & DC_LEVEL_TYPE_OLD);
   boolean is_yamyam_contents = (pos == 60);
 
   // correct header position for number of yamyam contents
-  if (type == DC_LEVEL_TYPE_PACKED_DC1)
+  if (type == DC_LEVEL_TYPE_PACKED_OLD)
     pos += (is_yamyam_contents ? 274 : 86);
 
   unsigned short header_word = header[pos] | (header[pos + 1] << 8);
@@ -7652,7 +7652,7 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
 
   // read some values from level header to check level decoding integrity
 
-  if (type == DC_LEVEL_TYPE_SINGLE_DC1)
+  if (type == DC_LEVEL_TYPE_SINGLE_OLD)
   {
     fieldx = getHeader_DC(header, 0, type);
     fieldy = getHeader_DC(header, 2, type);
@@ -7698,7 +7698,7 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
 
   // set position and length of envelope text, level name and level author
 
-  if (type & DC_LEVEL_TYPE_DC2)
+  if (type & DC_LEVEL_TYPE_NEW)
   {
     envelope_header_pos = 62;
     envelope_content_pos = 94;
@@ -7716,7 +7716,7 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
     // level author size is is stored in byte before string
     level_author_len = header[level_author_pos++];
   }
-  else if (type == DC_LEVEL_TYPE_PACKED_DC1)
+  else if (type == DC_LEVEL_TYPE_PACKED_OLD)
   {
     envelope_header_pos = 146;
     envelope_content_pos = 178;
@@ -7734,7 +7734,7 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
     // maximum level author size (padded with null bytes)
     level_author_len = 40;
   }
-  else		// DC_LEVEL_TYPE_SINGLE_DC1
+  else		// DC_LEVEL_TYPE_SINGLE_OLD
   {
     envelope_header_pos = 0;
     envelope_content_pos = 0;
@@ -7825,7 +7825,7 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
 
   // initialize playfield, if needed
 
-  if (type == DC_LEVEL_TYPE_SINGLE_DC1)
+  if (type == DC_LEVEL_TYPE_SINGLE_OLD)
   {
     // border elements not included in playfield data of old files
     for (y = 0; y < fieldy; y++)
@@ -7844,7 +7844,7 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
 
   // read playfield positions of the players
 
-  if (type == DC_LEVEL_TYPE_SINGLE_DC1)
+  if (type == DC_LEVEL_TYPE_SINGLE_OLD)
   {
     x1 = getHeader_DC(header,  4, type) + 1;
     y1 = getHeader_DC(header,  6, type) + 1;
@@ -7852,7 +7852,7 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
     x2 = getHeader_DC(header,  8, type) + 1;
     y2 = getHeader_DC(header, 10, type) + 1;
   }
-  else if (type == DC_LEVEL_TYPE_PACKED_DC1)
+  else if (type == DC_LEVEL_TYPE_PACKED_OLD)
   {
     x1 = getHeader_DC(header, 10, type);
     y1 = getHeader_DC(header, 12, type);
@@ -7879,7 +7879,7 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
 
   // read level and element related values
 
-  if (type == DC_LEVEL_TYPE_SINGLE_DC1)
+  if (type == DC_LEVEL_TYPE_SINGLE_OLD)
   {
     level->gems_needed		= getHeader_DC(header, 90, type);
 
@@ -8001,7 +8001,7 @@ static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
     if (strPrefix(magic_bytes, "DC2Win95") ||
 	strPrefix(magic_bytes, "DC2Win98"))
     {
-      // new packed level file (Diamond Caves II format)
+      // new packed level file format (Diamond Caves II / Windows)
 
       int position_first_level = 0x00fa;
       int extra_bytes = 4;
@@ -8035,11 +8035,11 @@ static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
 	num_levels_to_skip--;
       }
 
-      type = DC_LEVEL_TYPE_PACKED_DC2;
+      type = DC_LEVEL_TYPE_PACKED_NEW;
     }
     else if (strPrefix(magic_bytes, "DC2Group"))
     {
-      // old packed level file (Diamond Caves (Amiga) format)
+      // old packed level file format (Diamond Caves II / Amiga)
 
       int position_first_level = 0x0028;
       int extra_bytes = 2;
@@ -8083,7 +8083,7 @@ static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
       // skip unused header bytes
       ReadUnusedBytesFromFile(file, 4);
 
-      type = DC_LEVEL_TYPE_PACKED_DC1;
+      type = DC_LEVEL_TYPE_PACKED_OLD;
     }
     else
     {
@@ -8099,15 +8099,15 @@ static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
     // check "magic bytes" for supported file formats
     if (strPrefix(magic_bytes, "DCLV1.00"))
     {
-      // old single level file (Diamond Caves (Amiga) format)
-      type = DC_LEVEL_TYPE_SINGLE_DC1;
+      // old single level file format (Diamond Caves / Amiga)
+      type = DC_LEVEL_TYPE_SINGLE_OLD;
     }
     else
     {
-      // new single level file without "magic bytes" header (Diamond Caves II format)
+      // new single level file format, without "magic bytes" header (Diamond Caves II)
       seekFile(file, 0, SEEK_SET);	// rewind file
 
-      type = DC_LEVEL_TYPE_SINGLE_DC2;
+      type = DC_LEVEL_TYPE_SINGLE_NEW;
     }
   }
 
