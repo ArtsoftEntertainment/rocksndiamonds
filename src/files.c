@@ -8072,6 +8072,10 @@ static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
 	// read size of next level in level package
 	skip_bytes = getFile32BitBE(file);
 
+	// correct wrong number of bytes to skip for certain level pacxkage files
+	if (skip_bytes > 0xffff)
+	  skip_bytes >>= 16;
+
 	num_levels_to_skip--;
       }
 
