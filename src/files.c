@@ -8048,13 +8048,13 @@ static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
       // advance file stream to first level inside the level package
       skip_bytes = position_first_level - num_magic_bytes - extra_bytes;
 
-      // each block of level data is followed by block of non-level data
+      // each block of level data is followed by block of replay data
       num_levels_to_skip *= 2;
 
       // at least skip header bytes, therefore use ">= 0" instead of "> 0"
       while (num_levels_to_skip >= 0)
       {
-	// advance file stream to next level inside the level package
+	// advance file stream to next block inside the level package
 	if (seekFile(file, skip_bytes, SEEK_CUR) != 0)
 	{
 	  level->no_valid_file = TRUE;
@@ -8064,12 +8064,13 @@ static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
 	  return;
 	}
 
+	// level data followed by 4 bytes, replay data followed by 2 bytes
 	extra_bytes = ((num_levels_to_skip % 2) != 0 ? 4 : 2);
 
-	// skip apparently unused extra bytes following each level
+	// skip apparently unused extra bytes following each block
 	ReadUnusedBytesFromFile(file, extra_bytes);
 
-	// read size of next level in level package
+	// read size of next block in level package
 	skip_bytes = getFile32BitBE(file);
 
 	// correct wrong number of bytes to skip for certain level pacxkage files
