@@ -5633,6 +5633,18 @@ static int getMappedElement_DC1(int element)
       element = EL_EM_DYNAMITE_ACTIVE;
       break;
 
+    case 0x08bb:	// dynamite (lit 2)
+      element = EL_EM_DYNAMITE_ACTIVE;
+      break;
+
+    case 0x08c3:	// dynamite (lit 3)
+      element = EL_EM_DYNAMITE_ACTIVE;
+      break;
+
+    case 0x08cb:	// dynamite (lit 4)
+      element = EL_EM_DYNAMITE_ACTIVE;
+      break;
+
     case 0x08dc:
     case 0x08dd:
     case 0x08de:
@@ -6067,6 +6079,14 @@ static int getMappedElement_DC1(int element)
 
     case 0x0e20:	// steel wall (left/top small)
       element = EL_DC_STEELWALL_1_TOPLEFT_2;
+      break;
+
+    case 0x0e21:	// steel wall (left/right)
+      element = EL_DC_STEELWALL_1_VERTICAL;
+      break;
+
+    case 0x0e22:	// steel wall (top/bottom)
+      element = EL_DC_STEELWALL_1_HORIZONTAL;
       break;
 
     case 0x0e14:
