@@ -8094,8 +8094,29 @@ static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
 	skip_bytes = getFile32BitBE(file);
 
 	// correct wrong number of bytes to skip for certain level package files
-	if (skip_bytes > 0xffff)
-	  skip_bytes >>= 16;
+	if (ABS(skip_bytes) > 0xffff)
+	{
+	  if (extra_bytes == 4)
+	  {
+	    // special case 1 (after block of level data; example: "Laser Mine 2")
+
+	    skip_bytes >>= 16;
+	  }
+	  else
+	  {
+	    // special case 2 (after block of replay data; example: "Per One Mine 1")
+
+	    // rewind file for some bytes
+	    seekFile(file, -8, SEEK_CUR);
+
+	    // get number of additional bytes to skip
+	    skip_bytes = getFile16BitBE(file);
+	    ReadUnusedBytesFromFile(file, skip_bytes + 2);
+
+	    // read size of next block in level package
+	    skip_bytes = getFile32BitBE(file);
+	  }
+	}
 
 	num_levels_to_skip--;
       }
