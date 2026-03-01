@@ -8134,6 +8134,11 @@ static void LoadLevelFromFileInfo_DC(struct LevelInfo *level,
   LoadLevelFromFileStream_DC(file, level, type);
 
   closeFile(file);
+
+  // set level title, if not properly defined
+  if (strEqualCase(level->name, NAMELESS_LEVEL_NAME) ||
+      strEqualCase(level->name, "no title"))
+    sprintf(level->name, "Level %d", level_file_info->nr);
 }
 
 
