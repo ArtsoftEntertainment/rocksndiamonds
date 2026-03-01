@@ -7814,7 +7814,7 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
 
   // read level name, if defined
 
-  if (level_name_len > 0)
+  if (level_name_len > 0 && header[level_name_pos] != '\0')
   {
     for (i = 0; i < level_name_len; i++)
       level->name_native[i] = header[level_name_pos + i];
@@ -7827,7 +7827,7 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
 
   // read level author, if defined
 
-  if (level_author_len > 0)
+  if (level_author_len > 0 && header[level_author_pos] != '\0')
   {
     for (i = 0; i < level_author_len; i++)
       level->author[i] = header[level_author_pos + i];
