@@ -1379,6 +1379,11 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
     TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
     &li.time_magic_wall,			10
   },
+  {
+    EL_MAGIC_WALL,				-1,
+    TYPE_INTEGER,				CONF_VALUE_8_BIT(1),
+    &li.rnd_magic_wall_behavior,		TRUE
+  },
 
   {
     EL_GAME_OF_LIFE,				-1,
@@ -7968,6 +7973,9 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
   // Diamond Caves (also like Emerald Mine) uses "moves" (eight frames) instead
   // of seconds to specify the duration (running time) for certain game elements
   level->em_use_moves_not_seconds = TRUE;
+
+  // Diamond Caves uses classic (BD/EM style) behavior for magic walls
+  level->rnd_magic_wall_behavior = FALSE;
 
   // Diamond Caves uses special (EM style) behavior (and different speed) for amoeba
   level->dc_amoeba_behavior = TRUE;

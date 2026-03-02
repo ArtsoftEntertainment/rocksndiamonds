@@ -8778,12 +8778,12 @@ static void StartMoving(int x, int y)
 	Store[x][y] = 0;
       }
     }
-    else if ((CAN_PASS_MAGIC_WALL(element) &&
-	      (Tile[x][y + 1] == EL_MAGIC_WALL_ACTIVE ||
-	       Tile[x][y + 1] == EL_BD_MAGIC_WALL_ACTIVE)) ||
-	     (CAN_PASS_DC_MAGIC_WALL(element) &&
-	      (Tile[x][y + 1] == EL_DC_MAGIC_WALL_ACTIVE)))
-
+    else if (((CAN_PASS_MAGIC_WALL(element) &&
+	       (Tile[x][y + 1] == EL_MAGIC_WALL_ACTIVE ||
+		Tile[x][y + 1] == EL_BD_MAGIC_WALL_ACTIVE)) ||
+	      (CAN_PASS_DC_MAGIC_WALL(element) &&
+	       (Tile[x][y + 1] == EL_DC_MAGIC_WALL_ACTIVE))) &&
+	     (WasJustFalling[x][y] || level.rnd_magic_wall_behavior))
     {
       InitMovingField(x, y, MV_DOWN);
       started_moving = TRUE;
