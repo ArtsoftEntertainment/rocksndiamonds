@@ -236,9 +236,13 @@ typedef struct hashtable     SetupFileHash;
 			 IS_ARTWORKCLASS_LEVEL(n) ? ARTWORKCLASS_LEVEL :      \
 			 ARTWORKCLASS_UNDEFINED)
 
+#define TREE_IS_TOP_NODE(ti)		((ti)->node_parent == *(ti)->node_top)
+#define TREE_SORTING_IS_SUPPORTED(ti)	(IS_LEVELCLASS_TUTORIAL(ti) || IS_LEVELCLASS_CLASSICS(ti))
+#define TREE_SORTING_IS_IGNORED(ti)	(TREE_IS_TOP_NODE(ti) || !TREE_SORTING_IS_SUPPORTED(ti))
+
 #define TREE_SORTING_DIR(ti)						\
 	(((ti)->parent_link				   ? 0 :	\
-	  (ti)->in_user_dir				   ? 4 * 200 :	\
+	  (ti)->in_user_dir && TREE_SORTING_IS_IGNORED(ti) ? 4 * 200 :	\
 	  (ti)->sort_priority >= LEVELCLASS_CLASSICS_START ? 3 * 200 +	\
 	  (ti)->sort_priority % 100 :					\
 	  (ti)->sort_priority >= LEVELCLASS_TUTORIAL_START ? 2 * 200 +	\
