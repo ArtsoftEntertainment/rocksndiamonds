@@ -7933,6 +7933,9 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
     level->time_magic_wall	= getHeader_DC(header, 88, type);
     level->extra_time		= getHeader_DC(header, 92, type);
     level->shield_normal_time	= getHeader_DC(header, 94, type);
+
+    // old (DC1) level files stored shield time in seconds, not in moves
+    level->shield_normal_time = level->shield_normal_time * FRAMES_PER_SECOND / 8;
   }
   else
   {
