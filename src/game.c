@@ -8783,7 +8783,7 @@ static void StartMoving(int x, int y)
 		Tile[x][y + 1] == EL_BD_MAGIC_WALL_ACTIVE)) ||
 	      (CAN_PASS_DC_MAGIC_WALL(element) &&
 	       (Tile[x][y + 1] == EL_DC_MAGIC_WALL_ACTIVE))) &&
-	     (WasJustFalling[x][y] || level.rnd_magic_wall_behavior))
+	     (WasJustFalling[x][y] || !level.em_magic_wall_behavior))
     {
       InitMovingField(x, y, MV_DOWN);
       started_moving = TRUE;

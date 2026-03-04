@@ -1382,7 +1382,7 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   {
     EL_MAGIC_WALL,				-1,
     TYPE_INTEGER,				CONF_VALUE_8_BIT(1),
-    &li.rnd_magic_wall_behavior,		TRUE
+    &li.em_magic_wall_behavior,			FALSE
   },
 
   {
@@ -5105,7 +5105,7 @@ static void CopyNativeLevel_EM_to_RND(struct LevelInfo *level)
   level->em_use_moves_not_seconds = TRUE;
 
   // Emerald Mine uses classic (BD style) behavior for magic walls
-  level->rnd_magic_wall_behavior = FALSE;
+  level->em_magic_wall_behavior = TRUE;
 
   // time score is counted for each 10 seconds left in Emerald Mine levels
   level->time_score_base = 10;
@@ -7978,7 +7978,7 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
   level->em_use_moves_not_seconds = TRUE;
 
   // Diamond Caves uses classic (BD/EM style) behavior for magic walls
-  level->rnd_magic_wall_behavior = FALSE;
+  level->em_magic_wall_behavior = TRUE;
 
   // Diamond Caves uses special (EM style) behavior (and different speed) for amoeba
   level->dc_amoeba_behavior = TRUE;

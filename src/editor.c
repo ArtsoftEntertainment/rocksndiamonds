@@ -856,7 +856,7 @@ enum
   GADGET_ID_EM_USE_MOVES_NOT_SECONDS,
   GADGET_ID_DC_AMOEBA_BEHAVIOR,
   GADGET_ID_USE_DIGGABLE_LANDMINES,
-  GADGET_ID_RND_MAGIC_WALL_BEHAVIOR,
+  GADGET_ID_EM_MAGIC_WALL_BEHAVIOR,
   GADGET_ID_USE_SPRING_BUG,
   GADGET_ID_USE_TIME_ORB_BUG,
   GADGET_ID_USE_LIFE_BUGS,
@@ -1321,7 +1321,7 @@ enum
   ED_CHECKBUTTON_ID_EM_USE_MOVES_NOT_SECONDS,
   ED_CHECKBUTTON_ID_DC_AMOEBA_BEHAVIOR,
   ED_CHECKBUTTON_ID_USE_DIGGABLE_LANDMINES,
-  ED_CHECKBUTTON_ID_RND_MAGIC_WALL_BEHAVIOR,
+  ED_CHECKBUTTON_ID_EM_MAGIC_WALL_BEHAVIOR,
   ED_CHECKBUTTON_ID_USE_SPRING_BUG,
   ED_CHECKBUTTON_ID_USE_TIME_ORB_BUG,
   ED_CHECKBUTTON_ID_USE_LIFE_BUGS,
@@ -4512,12 +4512,12 @@ static struct
     "Diggable when using deadly shield",	"Use DC style behavior when digging"
   },
   {
-    ED_CHECKBUTTON_ID_RND_MAGIC_WALL_BEHAVIOR,
+    ED_CHECKBUTTON_ID_EM_MAGIC_WALL_BEHAVIOR,
     ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(2),
-    GADGET_ID_RND_MAGIC_WALL_BEHAVIOR,		GADGET_ID_NONE,
-    &level.rnd_magic_wall_behavior,
+    GADGET_ID_EM_MAGIC_WALL_BEHAVIOR,		GADGET_ID_NONE,
+    &level.em_magic_wall_behavior,
     NULL, NULL,
-    "Also convert non-falling elements",	"Use R'n'D behavior for magic walls"
+    "Use BD/EM/DC style behavior",		"Use BD/EM/DC behavior for magic walls"
   },
   {
     ED_CHECKBUTTON_ID_USE_SPRING_BUG,
@@ -14268,10 +14268,10 @@ static void DrawPropertiesConfig(void)
        properties_element == EL_BD_MAGIC_WALL ||
        properties_element == EL_DC_MAGIC_WALL) && level.game_engine_type == GAME_ENGINE_TYPE_RND)
   {
-    checkbutton_info[ED_CHECKBUTTON_ID_RND_MAGIC_WALL_BEHAVIOR].y =
+    checkbutton_info[ED_CHECKBUTTON_ID_EM_MAGIC_WALL_BEHAVIOR].y =
       ED_ELEMENT_SETTINGS_XPOS(properties_element == EL_BD_MAGIC_WALL ? 1 : 2);
 
-    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_RND_MAGIC_WALL_BEHAVIOR);
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_EM_MAGIC_WALL_BEHAVIOR);
   }
 
   if (properties_element == EL_LANDMINE ||
