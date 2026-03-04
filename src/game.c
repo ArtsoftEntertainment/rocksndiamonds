@@ -3826,6 +3826,18 @@ static void InitGameEngine(void)
   {
     int e = move_stepsize_list[i].element;
 
+    // keep default move stepsize for classic BD/EM/DC style behavior for magic walls
+    if (level.em_magic_wall_behavior)
+    {
+      if (e == EL_MAGIC_WALL_FILLING ||
+	  e == EL_MAGIC_WALL_EMPTYING ||
+	  e == EL_BD_MAGIC_WALL_FILLING ||
+	  e == EL_BD_MAGIC_WALL_EMPTYING ||
+	  e == EL_DC_MAGIC_WALL_FILLING ||
+	  e == EL_DC_MAGIC_WALL_EMPTYING)
+	continue;
+    }
+
     element_info[e].move_stepsize = move_stepsize_list[i].move_stepsize;
 
     // set move stepsize value for certain elements for older engine versions
