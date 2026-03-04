@@ -12571,8 +12571,9 @@ void AdvanceFrameAndPlayerCounters(int player_nr)
   // advance player counters (counters for move delay, move animation etc.)
   for (i = 0; i < MAX_PLAYERS; i++)
   {
+    struct PlayerInfo *player = &stored_player[i];
     boolean advance_player_counters = (player_nr == -1 || player_nr == i);
-    int move_delay_value = stored_player[i].move_delay_value;
+    int move_delay_value = player->move_delay_value;
     int move_frames = MOVE_DELAY_NORMAL_SPEED / move_delay_value;
 
     if (!advance_player_counters)	// not all players may be affected
@@ -12582,30 +12583,30 @@ void AdvanceFrameAndPlayerCounters(int player_nr)
     {
       int stepsize = TILEX / move_delay_value;
       int delay = move_delay_value / MOVE_DELAY_NORMAL_SPEED;
-      int count = (stored_player[i].is_moving ?
-		   ABS(stored_player[i].MovPos) / stepsize : FrameCounter);
+      int count = (player->is_moving ?
+		   ABS(player->MovPos) / stepsize : FrameCounter);
 
       if (count % delay == 0)
 	move_frames = 1;
     }
 
-    stored_player[i].Frame += move_frames;
+    player->Frame += move_frames;
 
-    if (stored_player[i].MovPos != 0)
-      stored_player[i].StepFrame += move_frames;
+    if (player->MovPos != 0)
+      player->StepFrame += move_frames;
 
-    if (stored_player[i].move_delay > 0)
-      stored_player[i].move_delay--;
+    if (player->move_delay > 0)
+      player->move_delay--;
 
     // due to bugs in previous versions, counter must count up, not down
-    if (stored_player[i].push_delay != -1)
-      stored_player[i].push_delay++;
+    if (player->push_delay != -1)
+      player->push_delay++;
 
-    if (stored_player[i].drop_delay > 0)
-      stored_player[i].drop_delay--;
+    if (player->drop_delay > 0)
+      player->drop_delay--;
 
-    if (stored_player[i].is_dropping_pressed)
-      stored_player[i].drop_pressed_delay++;
+    if (player->is_dropping_pressed)
+      player->drop_pressed_delay++;
   }
 }
 
