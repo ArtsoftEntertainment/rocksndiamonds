@@ -8704,6 +8704,11 @@ static void StartMoving(int x, int y)
 	Tile[x][y] = EL_MAGIC_WALL_EMPTYING;
 	Store[x][y] = EL_CHANGED(Store[x][y]);
       }
+      else if (level.em_magic_wall_behavior)
+      {
+	Tile[x][y] = EL_MAGIC_WALL_ACTIVE;
+	Store[x][y] = 0;
+      }
       else if (Tile[x][y + 1] == EL_MAGIC_WALL_ACTIVE)
       {
 	if (!MovDelay[x][y])
@@ -8732,6 +8737,11 @@ static void StartMoving(int x, int y)
 	Tile[x][y] = EL_BD_MAGIC_WALL_EMPTYING;
 	Store[x][y] = EL_CHANGED_BD(Store[x][y]);
       }
+      else if (level.em_magic_wall_behavior)
+      {
+	Tile[x][y] = EL_BD_MAGIC_WALL_ACTIVE;
+	Store[x][y] = 0;
+      }
       else if (Tile[x][y + 1] == EL_BD_MAGIC_WALL_ACTIVE)
       {
 	if (!MovDelay[x][y])
@@ -8759,6 +8769,11 @@ static void StartMoving(int x, int y)
 
 	Tile[x][y] = EL_DC_MAGIC_WALL_EMPTYING;
 	Store[x][y] = EL_CHANGED_DC(Store[x][y]);
+      }
+      else if (level.em_magic_wall_behavior)
+      {
+	Tile[x][y] = EL_DC_MAGIC_WALL_ACTIVE;
+	Store[x][y] = 0;
       }
       else if (Tile[x][y + 1] == EL_DC_MAGIC_WALL_ACTIVE)
       {
