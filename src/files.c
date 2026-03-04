@@ -5104,6 +5104,9 @@ static void CopyNativeLevel_EM_to_RND(struct LevelInfo *level)
   // the duration (running time) for certain game elements
   level->em_use_moves_not_seconds = TRUE;
 
+  // Emerald Mine uses classic (BD style) behavior for magic walls
+  level->rnd_magic_wall_behavior = FALSE;
+
   // time score is counted for each 10 seconds left in Emerald Mine levels
   level->time_score_base = 10;
 }
