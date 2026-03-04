@@ -2706,11 +2706,11 @@ static void UpdateGameControlValues(void)
   game_panel_controls[GAME_PANEL_SHIELD_NORMAL].value =
     (local_player->shield_normal_time_left > 0 ? EL_SHIELD_NORMAL_ACTIVE : EL_EMPTY);
   game_panel_controls[GAME_PANEL_SHIELD_NORMAL_TIME].value =
-    local_player->shield_normal_time_left;
+    local_player->shield_normal_time_left / FRAMES_PER_SECOND;
   game_panel_controls[GAME_PANEL_SHIELD_DEADLY].value =
     (local_player->shield_deadly_time_left > 0 ? EL_SHIELD_DEADLY_ACTIVE : EL_EMPTY);
   game_panel_controls[GAME_PANEL_SHIELD_DEADLY_TIME].value =
-    local_player->shield_deadly_time_left;
+    local_player->shield_deadly_time_left / FRAMES_PER_SECOND;
 
   game_panel_controls[GAME_PANEL_EXIT].value =
     (exit_closed ? EL_EXIT_CLOSED : EL_EXIT_OPEN);
@@ -12473,19 +12473,6 @@ static void CheckLevelTime(void)
   {
     TimeFrames = 0;
 
-    for (i = 0; i < MAX_PLAYERS; i++)
-    {
-      struct PlayerInfo *player = &stored_player[i];
-
-      if (SHIELD_ON(player))
-      {
-	player->shield_normal_time_left--;
-
-	if (player->shield_deadly_time_left > 0)
-	  player->shield_deadly_time_left--;
-      }
-    }
-
     if (!level.use_step_counter)
     {
       TimePlayed++;
@@ -12607,6 +12594,14 @@ void AdvanceFrameAndPlayerCounters(int player_nr)
 
     if (player->is_dropping_pressed)
       player->drop_pressed_delay++;
+
+    if (SHIELD_ON(player))
+    {
+      player->shield_normal_time_left--;
+
+      if (player->shield_deadly_time_left > 0)
+	player->shield_deadly_time_left--;
+    }
   }
 }
 
@@ -15325,9 +15320,9 @@ static int DigField(struct PlayerInfo *player,
     }
     else if (element == EL_SHIELD_NORMAL || element == EL_SHIELD_DEADLY)
     {
-      int shield_time = (element == EL_SHIELD_DEADLY ?
-			 level.shield_deadly_time :
-			 level.shield_normal_time);
+      int shield_time = GET_TIME_IN_FRAMES(element == EL_SHIELD_DEADLY ?
+					   level.shield_deadly_time :
+					   level.shield_normal_time);
 
       player->shield_normal_time_left += shield_time;
       if (element == EL_SHIELD_DEADLY)
