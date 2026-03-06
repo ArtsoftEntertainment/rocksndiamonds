@@ -823,6 +823,9 @@
 					 (e) == EL_WALL_PEARL ||			\
 					 (e) == EL_WALL_CRYSTAL)
 
+#define IS_SHIELD(e)			((e) == EL_SHIELD_NORMAL ||		\
+					 (e) == EL_SHIELD_DEADLY)
+
 #define IS_EMC_PILLAR(e)		((e) >= EL_EMC_WALL_1 &&		\
 					 (e) <= EL_EMC_WALL_3)
 #define IS_SP_CHIP(e)			((e) == EL_SP_CHIP_SINGLE ||		\
@@ -4013,6 +4016,7 @@ struct LevelInfo
   boolean em_magic_wall_behavior;	// EM style behavior of BD/EM/DC style magic walls
   boolean dc_amoeba_behavior;		// DC style behavior (and speed) of EM style amoeba
   boolean dc_keep_wall_content;		// DC style behavior when exploding wall with content
+  boolean dc_no_timeout_with_shield;	// DC style behavior of surviving timeout with shield
   boolean use_diggable_landmines;	// DC style behavior when digging traps and (DC) landmines
   boolean use_spring_bug;		// for compatibility with old levels
   boolean use_time_orb_bug;		// for compatibility with old levels

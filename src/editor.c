@@ -858,6 +858,7 @@ enum
   GADGET_ID_EM_MAGIC_WALL_BEHAVIOR,
   GADGET_ID_DC_AMOEBA_BEHAVIOR,
   GADGET_ID_DC_KEEP_WALL_CONTENT,
+  GADGET_ID_DC_NO_TIMEOUT_WITH_SHIELD,
   GADGET_ID_USE_DIGGABLE_LANDMINES,
   GADGET_ID_USE_SPRING_BUG,
   GADGET_ID_USE_TIME_ORB_BUG,
@@ -1325,6 +1326,7 @@ enum
   ED_CHECKBUTTON_ID_EM_MAGIC_WALL_BEHAVIOR,
   ED_CHECKBUTTON_ID_DC_AMOEBA_BEHAVIOR,
   ED_CHECKBUTTON_ID_DC_KEEP_WALL_CONTENT,
+  ED_CHECKBUTTON_ID_DC_NO_TIMEOUT_WITH_SHIELD,
   ED_CHECKBUTTON_ID_USE_DIGGABLE_LANDMINES,
   ED_CHECKBUTTON_ID_USE_SPRING_BUG,
   ED_CHECKBUTTON_ID_USE_TIME_ORB_BUG,
@@ -4530,6 +4532,14 @@ static struct
     &level.dc_keep_wall_content,
     NULL, NULL,
     "Survive bug explosions",			"Use DC style behavior of wall with gem"
+  },
+  {
+    ED_CHECKBUTTON_ID_DC_NO_TIMEOUT_WITH_SHIELD,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(3),
+    GADGET_ID_DC_NO_TIMEOUT_WITH_SHIELD,	GADGET_ID_NONE,
+    &level.dc_no_timeout_with_shield,
+    NULL, NULL,
+    "Survive level timeout with shield",	"Use DC style behavior of level timeout"
   },
   {
     ED_CHECKBUTTON_ID_USE_DIGGABLE_LANDMINES,
@@ -14225,6 +14235,9 @@ static void DrawPropertiesConfig(void)
   // special case: DC style content wall behavior only available in R'n'D game engine
   if (IS_WALL_WITH_CONTENT(properties_element) && level.game_engine_type == GAME_ENGINE_TYPE_RND)
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_DC_KEEP_WALL_CONTENT);
+
+  if (IS_SHIELD(properties_element))
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_DC_NO_TIMEOUT_WITH_SHIELD);
 
   if (level.game_engine_type == GAME_ENGINE_TYPE_RND &&
       COULD_MOVE_INTO_ACID(properties_element) &&

@@ -12507,7 +12507,8 @@ static void CheckLevelTime(void)
 	    else
 	    {
 	      for (i = 0; i < MAX_PLAYERS; i++)
-	        KillPlayer(&stored_player[i]);
+		if (!SHIELD_ON(&stored_player[i]) || !level.dc_no_timeout_with_shield)
+		  KillPlayer(&stored_player[i]);
 	    }
 	  }
 	}

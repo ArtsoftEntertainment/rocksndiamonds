@@ -1456,6 +1456,11 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
 
   {
     EL_SHIELD_NORMAL,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
+    &li.dc_no_timeout_with_shield,		FALSE
+  },
+  {
+    EL_SHIELD_NORMAL,				-1,
     TYPE_INTEGER,				CONF_VALUE_16_BIT(1),
     &li.shield_normal_time,			10
   },
@@ -8002,6 +8007,9 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
 
   // Diamond Caves keeps the content of walls with gems in enemy (e.g. bug) explosions
   level->dc_keep_wall_content = TRUE;
+
+  // Diamond Caves lets the player survive level timeout when using shield
+  level->dc_no_timeout_with_shield = TRUE;
 
   // Diamond Caves II uses special behavior when digging (DC style) landmines
   level->use_diggable_landmines = TRUE;
