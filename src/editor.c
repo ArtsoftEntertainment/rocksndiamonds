@@ -14232,8 +14232,7 @@ static void DrawPropertiesConfig(void)
   if (properties_element == EL_AMOEBA_WET && level.game_engine_type == GAME_ENGINE_TYPE_RND)
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_DC_AMOEBA_BEHAVIOR);
 
-  // special case: DC style content wall behavior only available in R'n'D game engine
-  if (IS_WALL_WITH_CONTENT(properties_element) && level.game_engine_type == GAME_ENGINE_TYPE_RND)
+  if (IS_WALL_WITH_CONTENT(properties_element))
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_DC_KEEP_WALL_CONTENT);
 
   if (IS_SHIELD(properties_element))
