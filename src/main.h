@@ -814,13 +814,13 @@
 
 #define IS_SLIPPERY_CAN_FALL(e)		(IS_SLIPPERY(e) && CAN_FALL(e))
 
-#define IS_WALL_WITH_CONTENT(e)		((e) == EL_WALL_EMERALD ||			\
-					 (e) == EL_WALL_DIAMOND ||			\
-					 (e) == EL_WALL_BD_DIAMOND ||			\
-					 (e) == EL_WALL_EMERALD_YELLOW ||		\
-					 (e) == EL_WALL_EMERALD_RED ||			\
-					 (e) == EL_WALL_EMERALD_PURPLE ||		\
-					 (e) == EL_WALL_PEARL ||			\
+#define IS_WALL_WITH_CONTENT(e)		((e) == EL_WALL_EMERALD ||		\
+					 (e) == EL_WALL_DIAMOND ||		\
+					 (e) == EL_WALL_BD_DIAMOND ||		\
+					 (e) == EL_WALL_EMERALD_YELLOW ||	\
+					 (e) == EL_WALL_EMERALD_RED ||		\
+					 (e) == EL_WALL_EMERALD_PURPLE ||	\
+					 (e) == EL_WALL_PEARL ||		\
 					 (e) == EL_WALL_CRYSTAL)
 
 #define IS_SHIELD(e)			((e) == EL_SHIELD_NORMAL ||		\
