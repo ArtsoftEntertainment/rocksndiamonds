@@ -6681,6 +6681,8 @@ static void Explode(int ex, int ey, int phase, int mode)
 	Store[x][y] = EL_EMPTY;
       else if (center_element == EL_YAMYAM)
 	Store[x][y] = level.yamyam_content[game.yamyam_content_nr].e[xx][yy];
+      else if (IS_WALL_WITH_CONTENT(element) && level.dc_keep_wall_content)
+	Store[x][y] = element_info[element].content.e[1][1];
       else if (element_info[center_element].content.e[xx][yy] != EL_EMPTY)
 	Store[x][y] = element_info[center_element].content.e[xx][yy];
 #if 1

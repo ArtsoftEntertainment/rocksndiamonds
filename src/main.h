@@ -814,6 +814,15 @@
 
 #define IS_SLIPPERY_CAN_FALL(e)		(IS_SLIPPERY(e) && CAN_FALL(e))
 
+#define IS_WALL_WITH_CONTENT(e)		((e) == EL_WALL_EMERALD ||			\
+					 (e) == EL_WALL_DIAMOND ||			\
+					 (e) == EL_WALL_BD_DIAMOND ||			\
+					 (e) == EL_WALL_EMERALD_YELLOW ||		\
+					 (e) == EL_WALL_EMERALD_RED ||			\
+					 (e) == EL_WALL_EMERALD_PURPLE ||		\
+					 (e) == EL_WALL_PEARL ||			\
+					 (e) == EL_WALL_CRYSTAL)
+
 #define IS_EMC_PILLAR(e)		((e) >= EL_EMC_WALL_1 &&		\
 					 (e) <= EL_EMC_WALL_3)
 #define IS_SP_CHIP(e)			((e) == EL_SP_CHIP_SINGLE ||		\
@@ -4003,6 +4012,7 @@ struct LevelInfo
   boolean em_use_moves_not_seconds;	// EM style durations in moves instead of seconds
   boolean em_magic_wall_behavior;	// EM style behavior of BD/EM/DC style magic walls
   boolean dc_amoeba_behavior;		// DC style behavior (and speed) of EM style amoeba
+  boolean dc_keep_wall_content;		// DC style behavior when exploding wall with content
   boolean use_diggable_landmines;	// DC style behavior when digging traps and (DC) landmines
   boolean use_spring_bug;		// for compatibility with old levels
   boolean use_time_orb_bug;		// for compatibility with old levels

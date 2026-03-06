@@ -357,6 +357,11 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
   },
   {
     -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(33),
+    &li.dc_keep_wall_content,			FALSE
+  },
+  {
+    -1,						-1,
     TYPE_INTEGER,				CONF_VALUE_32_BIT(4),
     &li.bd_color[0],				GD_C64_COLOR_BLACK
   },
@@ -7994,6 +7999,9 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
 
   // Diamond Caves uses special (EM style) behavior (and different speed) for amoeba
   level->dc_amoeba_behavior = TRUE;
+
+  // Diamond Caves keeps the content of walls with gems in enemy (e.g. bug) explosions
+  level->dc_keep_wall_content = TRUE;
 
   // Diamond Caves II uses special behavior when digging (DC style) landmines
   level->use_diggable_landmines = TRUE;
