@@ -6106,11 +6106,11 @@ static int getMappedElement_DC1(int element)
       break;
 
     case 0x0e24:
-      element = EL_EMERALD;
+      element = EL_WALL_EMERALD;
       break;
 
     case 0x0e25:
-      element = EL_DIAMOND;
+      element = EL_WALL_DIAMOND;
       break;
 
     case 0x0e26:
