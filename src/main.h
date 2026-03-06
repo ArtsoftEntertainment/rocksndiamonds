@@ -812,6 +812,8 @@
 
 #define IS_ACID_POOL_OR_ACID(e)		(IS_ACID_POOL(e) || (e) == EL_ACID)
 
+#define IS_SLIPPERY_CAN_FALL(e)		(IS_SLIPPERY(e) && CAN_FALL(e))
+
 #define IS_EMC_PILLAR(e)		((e) >= EL_EMC_WALL_1 &&		\
 					 (e) <= EL_EMC_WALL_3)
 #define IS_SP_CHIP(e)			((e) == EL_SP_CHIP_SINGLE ||		\
@@ -3995,6 +3997,7 @@ struct LevelInfo
   int bd_color[MAX_LEVEL_COLORS];	// BD engine C64-style cave colors
   int bd_base_color[MAX_LEVEL_COLORS];	// BD engine C64-style cave base colors (for gradients)
 
+  boolean bd_slippery_prefer_left;	// BD style "elements prefer to slip left" behaviour
   boolean em_slippery_gems;		// EM style "gems slip from wall" behaviour
   boolean em_explodes_by_fire;		// EM style chain explosion behaviour
   boolean em_use_moves_not_seconds;	// EM style durations in moves instead of seconds

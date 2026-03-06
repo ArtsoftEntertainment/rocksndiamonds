@@ -4565,7 +4565,7 @@ void InitGame(void)
 	element_info[i].slippery_type = SLIPPERY_ANY_LEFT_RIGHT;
 
       // BD style elements prefer to slip down on the left side
-      if (game.emulation == EMU_BOULDERDASH)
+      if (game.emulation == EMU_BOULDERDASH || level.bd_slippery_prefer_left)
 	element_info[i].slippery_type = SLIPPERY_ANY_LEFT_RIGHT;
     }
   }

@@ -352,6 +352,11 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
   },
   {
     -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(32),
+    &li.bd_slippery_prefer_left,		FALSE
+  },
+  {
+    -1,						-1,
     TYPE_INTEGER,				CONF_VALUE_32_BIT(4),
     &li.bd_color[0],				GD_C64_COLOR_BLACK
   },
@@ -7975,6 +7980,10 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
   // Diamond Caves has the same (strange) behaviour as Emerald Mine that gems
   // can slip down from flat walls, like normal walls and steel walls
   level->em_slippery_gems = TRUE;
+
+  // Diamond Caves has the same behaviour as Boulder Dash that falling elements
+  // prefer to slip down to the left rather than the right, if both is possible
+  level->bd_slippery_prefer_left = TRUE;
 
   // Diamond Caves (also like Emerald Mine) uses "moves" (eight frames) instead
   // of seconds to specify the duration (running time) for certain game elements

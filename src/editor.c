@@ -851,6 +851,7 @@ enum
   GADGET_ID_BD_SHORT_EXPLOSIONS,
   GADGET_ID_BD_USE_KRISSZ_ENGINE,
   GADGET_ID_STICK_ELEMENT,
+  GADGET_ID_BD_SLIPPERY_PREFER_LEFT,
   GADGET_ID_EM_SLIPPERY_GEMS,
   GADGET_ID_EM_EXPLODES_BY_FIRE,
   GADGET_ID_EM_USE_MOVES_NOT_SECONDS,
@@ -1316,6 +1317,7 @@ enum
   ED_CHECKBUTTON_ID_BD_SHORT_EXPLOSIONS,
   ED_CHECKBUTTON_ID_BD_USE_KRISSZ_ENGINE,
   ED_CHECKBUTTON_ID_STICK_ELEMENT,
+  ED_CHECKBUTTON_ID_BD_SLIPPERY_PREFER_LEFT,
   ED_CHECKBUTTON_ID_EM_SLIPPERY_GEMS,
   ED_CHECKBUTTON_ID_EM_EXPLODES_BY_FIRE,
   ED_CHECKBUTTON_ID_EM_USE_MOVES_NOT_SECONDS,
@@ -4470,6 +4472,14 @@ static struct
     &stick_element_properties_window,
     NULL, NULL,
     "Stick this screen to edit content",	"Stick this screen to edit content"
+  },
+  {
+    ED_CHECKBUTTON_ID_BD_SLIPPERY_PREFER_LEFT,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(0),
+    GADGET_ID_BD_SLIPPERY_PREFER_LEFT,		GADGET_ID_NONE,
+    &level.bd_slippery_prefer_left,
+    NULL, NULL,
+    "Slip down to the left, if possible",	"Use BD/DC style slipping behaviour"
   },
   {
     ED_CHECKBUTTON_ID_EM_SLIPPERY_GEMS,
@@ -13647,6 +13657,7 @@ static boolean checkPropertiesConfig(int element)
       CAN_GROW(element) ||
       COULD_MOVE_INTO_ACID(element) ||
       MAYBE_DONT_COLLIDE_WITH(element) ||
+      IS_SLIPPERY_CAN_FALL(element) ||
       element == EL_BDX_SAND ||
       element == EL_BDX_ROCK ||
       element == EL_BDX_HEAVY_ROCK ||
@@ -14157,6 +14168,17 @@ static void DrawPropertiesConfig(void)
   if (properties_element == EL_BDX_NUT)
   {
     MapDrawingArea(ED_DRAWING_ID_BD_NUT_CONTENT);
+  }
+
+  // special case: elements prefer slipping left option only available in R'n'D game engine
+  if (IS_SLIPPERY_CAN_FALL(properties_element) && level.game_engine_type == GAME_ENGINE_TYPE_RND)
+  {
+    checkbutton_info[ED_CHECKBUTTON_ID_BD_SLIPPERY_PREFER_LEFT].y =
+      ED_ELEMENT_SETTINGS_XPOS((getScoreValueFromElement(properties_element) != NULL ? 1 : 0) +
+			       (IS_GEM(properties_element) ? 1 : 0) +
+			       (properties_element == EL_TIME_ORB_FULL ? 2 : 0));
+
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_BD_SLIPPERY_PREFER_LEFT);
   }
 
   // special case: slippery walls option for gems only available in R'n'D game engine
