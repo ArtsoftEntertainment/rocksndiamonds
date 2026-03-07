@@ -4295,6 +4295,7 @@ void InitGame(void)
     player->is_auto_moving = FALSE;
     player->is_digging = FALSE;
     player->is_snapping = FALSE;
+    player->is_snapping_pressed = FALSE;
     player->is_collecting = FALSE;
     player->is_pushing = FALSE;
     player->is_switching = FALSE;
@@ -12276,6 +12277,10 @@ static byte PlayerActions(struct PlayerInfo *player, byte player_action)
     if (button1)
     {
       SnapField(player, dx, dy);
+
+      // special case: allow dropping EM style dynamite using snap key
+      if (player->is_snapping_pressed && get_next_dropped_element(player) == EL_EM_DYNAMITE)
+	DropElement(player);
     }
     else
     {
@@ -12304,6 +12309,8 @@ static byte PlayerActions(struct PlayerInfo *player, byte player_action)
 
     if (player->MovPos == 0)	// needed for tape.playing
       player->is_moving = FALSE;
+
+    player->is_snapping_pressed = FALSE;
 
     player->is_dropping = FALSE;
     player->is_dropping_pressed = FALSE;
@@ -12595,7 +12602,7 @@ void AdvanceFrameAndPlayerCounters(int player_nr)
     if (player->drop_delay > 0)
       player->drop_delay--;
 
-    if (player->is_dropping_pressed)
+    if (player->is_dropping_pressed || player->is_snapping_pressed)
       player->drop_pressed_delay++;
 
     if (SHIELD_ON(player))
@@ -13976,6 +13983,7 @@ boolean MovePlayer(struct PlayerInfo *player, int dx, int dy)
     player->last_move_dir = player->MovDir;
     player->is_moving = TRUE;
     player->is_snapping = FALSE;
+    player->is_snapping_pressed = FALSE;
     player->is_switching = FALSE;
     player->is_dropping = FALSE;
     player->is_dropping_pressed = FALSE;
@@ -15835,6 +15843,8 @@ static boolean SnapField(struct PlayerInfo *player, int dx, int dy)
   int jx = player->jx, jy = player->jy;
   int x = jx + dx, y = jy + dy;
 
+  player->is_snapping_pressed = FALSE;
+
   if (player->MovPos != 0 && game.engine_version >= VERSION_IDENT(2,2,0,0))
     return FALSE;
 
@@ -15850,6 +15860,7 @@ static boolean SnapField(struct PlayerInfo *player, int dx, int dy)
       player->is_pushing = FALSE;
 
     player->is_snapping = FALSE;
+    player->is_snapping_pressed = TRUE;
 
     if (player->MovPos == 0)
     {

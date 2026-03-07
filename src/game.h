@@ -391,6 +391,7 @@ struct PlayerInfo
   boolean is_auto_moving;
   boolean is_digging;
   boolean is_snapping;
+  boolean is_snapping_pressed;
   boolean is_collecting;
   boolean is_pushing;
   boolean is_switching;
