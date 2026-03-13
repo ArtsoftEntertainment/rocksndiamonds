@@ -4489,7 +4489,7 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
   tmi->x = MENU_SCREEN_INFO_SPACE_LEFT;
   tmi->y = MENU_SCREEN_INFO_SPACE_TOP + getHeadlineSpacing();
   tmi->width  = SXSIZE - draw_xoffset - tmi->x - MENU_SCREEN_INFO_SPACE_RIGHT;
-  tmi->height = SYSIZE - draw_yoffset - tmi->y - MENU_SCREEN_INFO_SPACE_BOTTOM - 10;
+  tmi->height = SYSIZE - draw_yoffset - tmi->y - MENU_SCREEN_INFO_SPACE_BOTTOM;
   tmi->align = ALIGN_LEFT;
   tmi->valign = VALIGN_TOP;
   tmi->font = font_text;
