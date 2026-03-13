@@ -14597,6 +14597,7 @@ static void LoadMenuDesignSettingsFromFilename(char *filename)
     {
       { "menu.skip_headline.INFO",	&menu.skip_headline_info[i]	},
       { "menu.skip_footer.INFO",	&menu.skip_footer_info[i]	},
+      { "menu.use_scrollbar2.INFO",	&menu.use_scrollbar2_info[i]	},
       { "menu.left_spacing.INFO",	&menu.left_spacing_info[i]	},
       { "menu.middle_spacing.INFO",	&menu.middle_spacing_info[i]	},
       { "menu.right_spacing.INFO",	&menu.right_spacing_info[i]	},

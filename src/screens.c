@@ -4693,6 +4693,7 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
       menu.draw_yoffset_info[INFO_MODE_STORY]		= menu.draw_yoffset[GAME_MODE_STORY];
       menu.skip_headline_info[INFO_MODE_STORY]		= menu.skip_headline[GAME_MODE_STORY];
       menu.skip_footer_info[INFO_MODE_STORY]		= menu.skip_footer[GAME_MODE_STORY];
+      menu.use_scrollbar2_info[INFO_MODE_STORY]		= menu.use_scrollbar2[GAME_MODE_STORY];
       menu.left_spacing_info[INFO_MODE_STORY]		= menu.left_spacing[GAME_MODE_STORY];
       menu.right_spacing_info[INFO_MODE_STORY]		= menu.right_spacing[GAME_MODE_STORY];
       menu.top_spacing_info[INFO_MODE_STORY]		= menu.top_spacing[GAME_MODE_STORY];

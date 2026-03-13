@@ -3511,6 +3511,9 @@ struct MenuInfo
   boolean skip_footer[NUM_SPECIAL_GFX_ARGS];
   boolean skip_footer_info[NUM_SPECIAL_GFX_INFO_ARGS];
   boolean skip_footer_setup[NUM_SPECIAL_GFX_SETUP_ARGS];
+  boolean use_scrollbar2[NUM_SPECIAL_GFX_ARGS];
+  boolean use_scrollbar2_info[NUM_SPECIAL_GFX_INFO_ARGS];
+  boolean use_scrollbar2_setup[NUM_SPECIAL_GFX_SETUP_ARGS];
 
   int left_spacing[NUM_SPECIAL_GFX_ARGS];
   int left_spacing_info[NUM_SPECIAL_GFX_INFO_ARGS];
