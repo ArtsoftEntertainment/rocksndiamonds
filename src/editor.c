@@ -10932,9 +10932,26 @@ static void DrawEditModeWindow_PlayfieldOnly(void)
 
 static void ChangeEditModeWindow(int new_edit_mode)
 {
+  static int last_level_drawing_function = GADGET_ID_SINGLE_ITEMS;
+
   edit_mode = (new_edit_mode != edit_mode ? new_edit_mode : ED_MODE_DRAWING);
 
   DrawEditModeWindow();
+
+  if (new_edit_mode == ED_MODE_DRAWING)
+  {
+    // activate last drawing function when returning to drawing (playfield) screen
+    ClickOnGadget(level_editor_gadget[last_level_drawing_function], MB_LEFTBUTTON);
+  }
+  else
+  {
+    // store last drawing function when entering non-drawing screen ...
+    if (drawing_function != GADGET_ID_SINGLE_ITEMS)
+      last_level_drawing_function = drawing_function;
+
+    // ... and activate "single items" drawing mode on that screen
+    ClickOnGadget(level_editor_gadget[GADGET_ID_SINGLE_ITEMS], MB_LEFTBUTTON);
+  }
 }
 
 static boolean LevelChanged(void)
@@ -18419,7 +18436,6 @@ static void HandleColorPickerGadgets(struct GadgetInfo *gi)
 
 static void HandleControlButtons(struct GadgetInfo *gi)
 {
-  static int last_level_drawing_function = GADGET_ID_SINGLE_ITEMS;
   static int last_edit_mode = ED_MODE_DRAWING;
   static int last_custom_copy_mode = -1;
   static int last_button = 0;
@@ -18616,9 +18632,6 @@ static void HandleControlButtons(struct GadgetInfo *gi)
 	last_edit_mode = edit_mode;
 
 	ChangeEditModeWindow(ED_MODE_PROPERTIES);
-
-	last_level_drawing_function = drawing_function;
-	ClickOnGadget(level_editor_gadget[GADGET_ID_SINGLE_ITEMS], MB_LEFTBUTTON);
       }
       else if (properties_element != last_properties_element)
       {
@@ -18627,8 +18640,6 @@ static void HandleControlButtons(struct GadgetInfo *gi)
       else
       {
 	ChangeEditModeWindow(ED_MODE_DRAWING);
-
-	ClickOnGadget(level_editor_gadget[last_level_drawing_function], MB_LEFTBUTTON);
       }
       break;
 
