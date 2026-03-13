@@ -9477,6 +9477,19 @@ struct ConfigInfo image_config[] =
 
   { "menu.tile_size.INFO[ELEMENTS]",			"-1"				},
 
+  { "menu.skip_headline.SCOREINFO",			"false"				},
+  { "menu.skip_headline.INFO",				"false"				},
+  { "menu.skip_headline.INFO[TITLE]",			"false"				},
+  { "menu.skip_headline.INFO[ELEMENTS]",		"false"				},
+  { "menu.skip_headline.INFO[MUSIC]",			"false"				},
+  { "menu.skip_headline.INFO[CREDITS]",			"false"				},
+  { "menu.skip_headline.INFO[PROGRAM]",			"false"				},
+  { "menu.skip_headline.INFO[VERSION]",			"false"				},
+  { "menu.skip_headline.INFO[LEVELSET]",		"false"				},
+  { "menu.skip_headline.INFO[LEVEL]",			"false"				},
+  { "menu.skip_headline.STORY",				"false"				},
+  { "menu.skip_headline.SETUP[INPUT]",			"false"				},
+
   { "menu.left_spacing.SCOREINFO",			"16"				},
   { "menu.left_spacing.INFO",				"16"				},
   { "menu.left_spacing.INFO[TITLE]",			"16"				},

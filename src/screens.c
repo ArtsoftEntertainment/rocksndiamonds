@@ -1987,6 +1987,9 @@ static char *getInfoScreenSubtitle(int screen_nr, int num_screens, int use_globa
 
 static void DrawInfoScreen_Headline(int screen_nr, int num_screens, int use_global_screens)
 {
+  if (menu.skip_headline_info[info_mode])
+    return;
+
   char *info_text_title_1 = getInfoScreenTitle_Generic();
   char *info_text_title_2 = getInfoScreenSubtitle(screen_nr, num_screens, use_global_screens);
   boolean draw_story_headline = (info_mode == INFO_MODE_STORY && hasLevelStory());
@@ -4683,6 +4686,7 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
       // copy all ".STORY" settings to ".INFO[STORY]", which is internally used to show story
       menu.draw_xoffset_info[INFO_MODE_STORY]		= menu.draw_xoffset[GAME_MODE_STORY];
       menu.draw_yoffset_info[INFO_MODE_STORY]		= menu.draw_yoffset[GAME_MODE_STORY];
+      menu.skip_headline_info[INFO_MODE_STORY]		= menu.skip_headline[GAME_MODE_STORY];
       menu.left_spacing_info[INFO_MODE_STORY]		= menu.left_spacing[GAME_MODE_STORY];
       menu.right_spacing_info[INFO_MODE_STORY]		= menu.right_spacing[GAME_MODE_STORY];
       menu.top_spacing_info[INFO_MODE_STORY]		= menu.top_spacing[GAME_MODE_STORY];
