@@ -11842,12 +11842,15 @@ static void DrawEditorDoorContent(void)
   MapControlButtons();
 
   // when returning from test game to properties page, redraw toolbox gadgets
-  if (edit_mode == ED_MODE_PROPERTIES)
+  if (edit_mode != ED_MODE_DRAWING)
   {
+    // remove all toolbox gadgets that cannot be used in this edit mode
     UnmapLevelEditorToolboxDrawingGadgets();
     UnmapLevelEditorToolboxCustomGadgets();
 
-    MapLevelEditorToolboxCustomGadgetsIfNeeded();
+    // re-add special toolbox gadgets only when editing custom, group or empty elements
+    if (edit_mode == ED_MODE_PROPERTIES)
+      MapLevelEditorToolboxCustomGadgetsIfNeeded();
   }
 
   // draw all palette gadgets to editor doors
@@ -12952,6 +12955,10 @@ static void DrawLevelConfigWindow(void)
   SetAutomaticNumberOfGemsNeeded();
 
   UnmapLevelEditorFieldGadgets();
+
+  // remove all toolbox gadgets that cannot be used in this edit mode
+  UnmapLevelEditorToolboxDrawingGadgets();
+  UnmapLevelEditorToolboxCustomGadgets();
 
   SetMainBackgroundImage(IMG_BACKGROUND_EDITOR);
   ClearField();
@@ -14642,9 +14649,12 @@ static void DrawPropertiesWindow(void)
   CopyElementPropertiesToEditor(properties_element);
 
   UnmapLevelEditorFieldGadgets();
+
+  // remove all toolbox gadgets that cannot be used in this edit mode
   UnmapLevelEditorToolboxDrawingGadgets();
   UnmapLevelEditorToolboxCustomGadgets();
 
+  // re-add special toolbox gadgets only when editing custom, group or empty elements
   MapLevelEditorToolboxCustomGadgetsIfNeeded();
 
   SetMainBackgroundImage(IMG_BACKGROUND_EDITOR);
@@ -14673,6 +14683,10 @@ static void DrawPaletteWindow(void)
   int i;
 
   UnmapLevelEditorFieldGadgets();
+
+  // remove all toolbox gadgets that cannot be used in this edit mode
+  UnmapLevelEditorToolboxDrawingGadgets();
+  UnmapLevelEditorToolboxCustomGadgets();
 
   SetMainBackgroundImage(IMG_BACKGROUND_EDITOR);
   ClearField();
