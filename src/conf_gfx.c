@@ -7589,6 +7589,20 @@ struct ConfigInfo image_config[] =
   { "menu.scrollbar.active.ypos",			"10"				},
   { "menu.scrollbar.active.frames",			"1"				},
 
+  { "menu.scroll_up2",					UNDEFINED_FILENAME		},
+  { "menu.scroll_up2.clone_from",			"menu.button_up"		},
+  { "menu.scroll_up2.active",				UNDEFINED_FILENAME		},
+  { "menu.scroll_up2.active.clone_from",		"menu.button_up.active"		},
+  { "menu.scroll_down2",				UNDEFINED_FILENAME		},
+  { "menu.scroll_down2.clone_from",			"menu.button_down"		},
+  { "menu.scroll_down2.active",				UNDEFINED_FILENAME		},
+  { "menu.scroll_down2.active.clone_from",		"menu.button_down.active"	},
+
+  { "menu.scrollbar2",					UNDEFINED_FILENAME		},
+  { "menu.scrollbar2.clone_from",			"menu.scrollbar"		},
+  { "menu.scrollbar2.active",				UNDEFINED_FILENAME		},
+  { "menu.scrollbar2.active.clone_from",		"menu.scrollbar.active"		},
+
   { "gfx.game.panel.time_anim",				"RocksDoorMM.png"		},
   { "gfx.game.panel.time_anim.x",			"5"				},
   { "gfx.game.panel.time_anim.y",			"0"				},

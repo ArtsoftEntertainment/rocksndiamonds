@@ -11410,6 +11410,28 @@ static void CreateScreenScrollbuttons(void)
   int i;
 
   // these values are not constant, but can change at runtime
+  if (game_status == GAME_MODE_INFO && menu.use_scrollbar2_info[info_mode])
+  {
+    scrollbutton_info[0].gfx_unpressed = IMG_MENU_SCROLL_UP2;
+    scrollbutton_info[0].gfx_pressed   = IMG_MENU_SCROLL_UP2_ACTIVE;
+    scrollbutton_info[1].gfx_unpressed = IMG_MENU_SCROLL_DOWN2;
+    scrollbutton_info[1].gfx_pressed   = IMG_MENU_SCROLL_DOWN2_ACTIVE;
+
+    scrollbar_info[0].gfx_unpressed    = IMG_MENU_SCROLLBAR2;
+    scrollbar_info[0].gfx_pressed      = IMG_MENU_SCROLLBAR2_ACTIVE;
+  }
+  else
+  {
+    scrollbutton_info[0].gfx_unpressed = IMG_MENU_SCROLL_UP;
+    scrollbutton_info[0].gfx_pressed   = IMG_MENU_SCROLL_UP_ACTIVE;
+    scrollbutton_info[1].gfx_unpressed = IMG_MENU_SCROLL_DOWN;
+    scrollbutton_info[1].gfx_pressed   = IMG_MENU_SCROLL_DOWN_ACTIVE;
+
+    scrollbar_info[0].gfx_unpressed    = IMG_MENU_SCROLLBAR;
+    scrollbar_info[0].gfx_pressed      = IMG_MENU_SCROLLBAR_ACTIVE;
+  }
+
+  // these values are not constant, but can change at runtime
   scrollbutton_info[0].x = SC_SCROLL_UP_XPOS;
   scrollbutton_info[0].y = SC_SCROLL_UP_YPOS;
   scrollbutton_info[1].x = SC_SCROLL_DOWN_XPOS;
