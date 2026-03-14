@@ -5902,10 +5902,11 @@ void NewHighScore(int level_nr, boolean tape_saved)
   if (setup.ask_for_using_api_server)
   {
     setup.use_api_server =
-      Request("Upload your score and tape to the high score server?", REQ_ASK);
+      Request("Upload your score and tape to the high score server?", REQ_ASK | REQ_STAY_OPEN);
 
     if (!setup.use_api_server)
-      Request("Not using high score server! Use setup menu to enable again!", REQ_CONFIRM);
+      Request("Not using high score server! Use setup menu to enable again!",
+	      REQ_CONFIRM | REQ_STAY_OPEN);
 
     runtime.use_api_server = setup.use_api_server;
 
