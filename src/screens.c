@@ -4785,8 +4785,11 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
     }
 
     DrawInfoScreen_GenericScreen(screen_nr, num_screens, use_global_screens);
+
+    return;
   }
-  else if (info_mode == INFO_MODE_LEVEL && ABS(dx) == 1)
+
+  if (info_mode == INFO_MODE_LEVEL && ABS(dx) == 1)
   {
     HandleInfoScreen_SelectLevel(1, dx);
 
