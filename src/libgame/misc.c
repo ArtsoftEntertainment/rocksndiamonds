@@ -1030,6 +1030,9 @@ time_t getFileTimestampEpochSeconds(char *filename)
 
 static char *getLastPathSeparatorPtr(char *filename)
 {
+  if (filename == NULL)
+    return NULL;
+
   char *last_separator = strrchr(filename, CHAR_PATH_SEPARATOR_UNIX);
 
   if (last_separator == NULL)	// also try DOS/Windows variant
