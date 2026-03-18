@@ -754,6 +754,7 @@
 #define MUSICINFO_FILENAME		"musicinfo.conf"
 #define ARTWORKINFO_CACHE_FILE		"artworkinfo.cache"
 #define LEVELTEMPLATE_FILENAME		"template.level"
+#define TEXT_TEMPLATE_FILENAME		"template.txt"
 #define UPLOADED_FILENAME		".uploaded"
 #define LEVELFILE_EXTENSION		"level"
 #define TAPEFILE_EXTENSION		"tape"

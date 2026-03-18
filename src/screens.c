@@ -4451,6 +4451,53 @@ static void DrawInfoScreen_GenericText(struct WrappedTextInfo *wrapped_text,
   DrawWrappedText(x, y, wrapped_text, start_pos);
 }
 
+static void ReplaceTemplateTagsInTextBuffer(char **text)
+{
+  if (text == NULL || *text == NULL)
+    return;
+
+  char str_level_number[10];
+  char *str_level_number_ptr = str_level_number;
+
+  strcpy(str_level_number, int2str(level_nr, 0));
+
+  struct
+  {
+    char *tag;
+    char **value;
+  }
+  template[] =
+  {
+    { "__LEVEL_NUMBER__",	&str_level_number_ptr		},
+    { "__LEVEL_NUMBER_MAIN__",	&main_text_level_number		},
+    { "__LEVEL_NAME__",		&main_text_level_name		},
+    { "__LEVEL_AUTHOR__",	&main_text_level_author		},
+    { "__LEVELSET_NAME__",	&leveldir_current->name		},
+    { "__PLAYER_NAME__",	&setup.player_name		},
+  };
+  int i;
+
+  for (i = 0; i < ARRAY_SIZE(template); i++)
+  {
+    char *location = strstr(*text, template[i].tag);
+
+    if (location != NULL)
+    {
+      char *text_part_1 = *text;
+      char *text_part_2 = *(template[i].value);
+      char *text_part_3 = &location[strlen(template[i].tag)];
+
+      *location = '\0';
+
+      char *text_replaced = getStringCat3(text_part_1, text_part_2, text_part_3);
+
+      checked_free(*text);
+
+      *text = text_replaced;
+    }
+  }
+}
+
 static void SetWrappedText_GenericScreen(struct TitleMessageInfo *tmi,
                                          int screen_nr, int use_global_screens)
 {
@@ -4460,6 +4507,9 @@ static void SetWrappedText_GenericScreen(struct TitleMessageInfo *tmi,
                     GetTextBufferFromFile(filename, MAX_OUTPUT_LINES) :
                     getLatin1FromUTF8(buffer));
   int line_spacing = getMenuTextSpacing(menu.line_spacing_info[info_mode], tmi->font);
+
+  if (strEqual(getBaseNamePtr(filename), TEXT_TEMPLATE_FILENAME))
+    ReplaceTemplateTagsInTextBuffer(&raw_text);
 
   FreeWrappedText(wrapped_text);
 

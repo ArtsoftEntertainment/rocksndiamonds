@@ -1116,6 +1116,11 @@ char *getLevelStoryFilename(int level_nr)
   if (fileExists(filename))
     return filename;
 
+  // look for story template in the current level set's "docs/stories" sub-directory
+  filename = getPath3(getCurrentLevelDir(), stories_subdir, TEXT_TEMPLATE_FILENAME);
+  if (fileExists(filename))
+    return filename;
+
   return NULL;
 }
 
