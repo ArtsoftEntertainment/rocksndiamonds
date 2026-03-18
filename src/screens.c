@@ -4655,6 +4655,8 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
   static int screen_nr = 0;
   static int start_pos = 0;
   static boolean use_global_screens = FALSE;
+  static DelayCounter story_delay = { 3 * ONE_SECOND_DELAY };
+  static boolean is_story_template = FALSE;
   boolean position_set_by_scrollbar = (dx == 999);
 
   if (button == MB_MENU_INITIALIZE)
@@ -4758,7 +4760,12 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
 
       // determine number of level story screens
       if (hasLevelStory())
+      {
         num_screens = 1;
+
+	is_story_template =
+	  strEqual(getBaseNamePtr(getLevelStoryFilename(level_nr)), TEXT_TEMPLATE_FILENAME);
+      }
 
       text_no_info = "No level story available.";
     }
@@ -4786,8 +4793,13 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
 
     DrawInfoScreen_GenericScreen(screen_nr, num_screens, use_global_screens);
 
+    ResetDelayCounter(&story_delay);
+
     return;
   }
+
+  if (info_mode == INFO_MODE_STORY && is_story_template && DelayReached(&story_delay))
+    button = MB_MENU_CHOICE;
 
   if (info_mode == INFO_MODE_LEVEL && ABS(dx) == 1)
   {
