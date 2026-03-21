@@ -5024,6 +5024,45 @@ void DrawInfoScreen_FromInitGame(int nr)
   DrawInfoScreen_FromMainMenuOrInitGame(nr, GAME_MODE_PLAYING);
 }
 
+static boolean hasUniqueLevelName(void)
+{
+  char level_name[MAX_LEVEL_NAME_LEN + 1];
+
+  // check for special level set with valid "nameless level"
+  if (strEqual(leveldir_current->name, "BD2K3"))
+    return TRUE;
+
+  // check for empty native level name (resulting in generic level name)
+  if (strEqual(level.name_native, ""))
+    return FALSE;
+
+  // check for nameless level name
+  if (strEqual(level.name, NAMELESS_LEVEL_NAME))
+    return FALSE;
+
+  // check if level name is already displayed in the game panel
+  if (game.panel.level_name.x != -1 &&
+      game.panel.level_name.y != -1)
+    return FALSE;
+
+  // level name may be generically created from level number
+  sprintf(level_name, "Level %d", level_nr);
+
+  // check for generic level name
+  if (strEqual(level.name, level_name))
+    return FALSE;
+
+  // level name may be generically created from level number and level set name
+  snprintf(level_name, MAX_LEVEL_NAME_LEN, "%s Level %d", leveldir_current->name, level_nr);
+  level_name[MAX_LEVEL_NAME_LEN] = '\0';
+
+  // check for generic level name
+  if (strEqual(level.name, level_name))
+    return FALSE;
+
+  return TRUE;
+}
+
 boolean ShowIntroOrStoryScreen_FromInitGame(void)
 {
   boolean skip_level_intro =
@@ -5044,6 +5083,13 @@ boolean ShowIntroOrStoryScreen_FromInitGame(void)
   }
   else if (hasLevelIntro() && !skip_level_intro)
   {
+    char *filename = getLevelIntroFilename(level_nr);
+    boolean is_intro_template = strEqual(getBaseNamePtr(filename), INTRO_TEMPLATE_FILENAME);
+
+    // skip intro screen when using intro template file and level has no or generic level name
+    if (is_intro_template && !hasUniqueLevelName())
+      return FALSE;
+
     levelset.level_intro_shown[level_nr] = TRUE;
 
     DrawInfoScreen_FromInitGame(INFO_MODE_INTRO);
