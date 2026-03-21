@@ -3320,6 +3320,8 @@ static int LoadLevel_HEAD(File *file, int chunk_size, struct LevelInfo *level)
     level->name[i] = getFile8Bit(file);
   level->name[MAX_LEVEL_NAME_LEN] = 0;
 
+  strncpy(level->name_native, level->name, MAX_OUTPUT_LINESIZE);
+
   for (i = 0; i < LEVEL_SCORE_ELEMENTS; i++)
     level->score[i] = getFile8Bit(file);
 
@@ -5264,6 +5266,8 @@ static void CopyNativeLevel_SP_to_RND(struct LevelInfo *level)
   for (; j > 0; j--)
     if (level->name[j - 1] == ' ' && level->name[j] == '\0')
       level->name[j - 1] = '\0';
+
+  strncpy(level->name_native, level->name, MAX_OUTPUT_LINESIZE);
 
   level->gems_needed = header->InfotronsNeeded;
 
@@ -8458,11 +8462,15 @@ static void LoadLevelFromFileInfo_SB(struct LevelInfo *level,
   {
     strncpy(level->name, level_name, MAX_LEVEL_NAME_LEN);
     level->name[MAX_LEVEL_NAME_LEN] = '\0';
+
+    strncpy(level->name_native, level->name, MAX_OUTPUT_LINESIZE);
   }
   else if (*last_comment != '\0')
   {
     strncpy(level->name, last_comment, MAX_LEVEL_NAME_LEN);
     level->name[MAX_LEVEL_NAME_LEN] = '\0';
+
+    strncpy(level->name_native, level->name, MAX_OUTPUT_LINESIZE);
   }
   else
   {
