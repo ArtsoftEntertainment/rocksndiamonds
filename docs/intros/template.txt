@@ -1,0 +1,7 @@
+# .autowrap: true
+# .centered: true
+# .font: font.text_1
+Level __LEVEL_NUMBER__
+
+# .font: font.text_2
+__LEVEL_NAME__

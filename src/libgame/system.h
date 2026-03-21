@@ -715,6 +715,7 @@
 #define EDITOR_INFO_DIRECTORY		"editor"
 #define LEVELSET_INFO_DIRECTORY		"levelset"
 #define LEVEL_INFO_DIRECTORY		"levels"
+#define INTROS_DIRECTORY		"intros"
 #define STORIES_DIRECTORY		"stories"
 #define CACHE_DIRECTORY			"cache"
 #define CONF_DIRECTORY			"conf"
@@ -754,7 +755,8 @@
 #define MUSICINFO_FILENAME		"musicinfo.conf"
 #define ARTWORKINFO_CACHE_FILE		"artworkinfo.cache"
 #define LEVELTEMPLATE_FILENAME		"template.level"
-#define TEXT_TEMPLATE_FILENAME		"template.txt"
+#define INTRO_TEMPLATE_FILENAME		"template.txt"
+#define STORY_TEMPLATE_FILENAME		"template.txt"
 #define UPLOADED_FILENAME		".uploaded"
 #define LEVELFILE_EXTENSION		"level"
 #define TAPEFILE_EXTENSION		"tape"
@@ -1569,6 +1571,7 @@ struct SetupInternalInfo
   boolean info_version;
   boolean info_levelset;
   boolean info_level;
+  boolean info_intro;
   boolean info_story;
   boolean info_exit;
 };
@@ -1608,6 +1611,7 @@ struct SetupInfo
   boolean autorecord_after_replay;
   boolean auto_pause_on_start;
   boolean show_titlescreen;
+  boolean show_level_intro;
   boolean show_level_story;
   boolean quick_doors;
   boolean team_mode;
@@ -2030,6 +2034,7 @@ struct LevelSetInfo
 {
   int music[MAX_LEVELS];
 
+  boolean level_intro_shown[MAX_LEVELS];
   boolean level_story_shown[MAX_LEVELS];
 
   char *identifier;

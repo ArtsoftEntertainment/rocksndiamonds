@@ -27,7 +27,7 @@ void DrawScreenBeforeAddingSet(int);
 void DrawScreenAfterAddingSet(char *, int);
 void DrawInfoScreen_FromMainMenu(int);
 void DrawInfoScreen_FromInitGame(int);
-boolean ShowStoryScreen_FromInitGame(void);
+boolean ShowIntroOrStoryScreen_FromInitGame(void);
 
 void RedrawSetupScreenAfterFullscreenToggle(void);
 void RedrawSetupScreenAfterScreenRotation(int);
@@ -40,6 +40,7 @@ void HandleChooseLevelNr(int, int, int, int, int);
 void HandleHallOfFame(int, int, int, int, int);
 void HandleScoreInfo(int, int, int, int, int);
 void HandleInfoScreen(int, int, int, int, int);
+void HandleIntroScreen(int, int, int, int, int);
 void HandleStoryScreen(int, int, int, int, int);
 void HandleSetupScreen(int, int, int, int, int);
 void HandleTypeName(Key);

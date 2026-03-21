@@ -482,6 +482,7 @@ struct ConfigInfo sound_config[] =
   { "background.INFO[VERSION]",			UNDEFINED_FILENAME		},
   { "background.INFO[LEVELSET]",		UNDEFINED_FILENAME		},
   { "background.INFO[LEVEL]",			UNDEFINED_FILENAME		},
+  { "background.INTRO",				UNDEFINED_FILENAME		},
   { "background.STORY",				UNDEFINED_FILENAME		},
   { "background.SETUP",				UNDEFINED_FILENAME		},
 

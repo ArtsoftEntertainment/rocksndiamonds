@@ -1865,6 +1865,10 @@ void HandleButton(int mx, int my, int button, int button_nr)
       HandleInfoScreen(mx, my, 0, 0, button);
       break;
 
+    case GAME_MODE_INTRO:
+      HandleIntroScreen(mx, my, 0, 0, button);
+      break;
+
     case GAME_MODE_STORY:
       HandleStoryScreen(mx, my, 0, 0, button);
       break;
@@ -2610,6 +2614,7 @@ void HandleKey(Key key, int key_status)
     case GAME_MODE_LEVELNR:
     case GAME_MODE_SETUP:
     case GAME_MODE_INFO:
+    case GAME_MODE_INTRO:
     case GAME_MODE_STORY:
     case GAME_MODE_SCORES:
     case GAME_MODE_SCOREINFO:
@@ -2635,6 +2640,8 @@ void HandleKey(Key key, int key_status)
 	    HandleSetupScreen(0, 0, 0, 0, MB_MENU_CHOICE);
 	  else if (game_status == GAME_MODE_INFO)
 	    HandleInfoScreen(0, 0, 0, 0, (key == KSYM_space ? MB_MENU_CONTINUE : MB_MENU_CHOICE));
+	  else if (game_status == GAME_MODE_INTRO)
+	    HandleIntroScreen(0, 0, 0, 0, (key == KSYM_space ? MB_MENU_CONTINUE : MB_MENU_CHOICE));
 	  else if (game_status == GAME_MODE_STORY)
 	    HandleStoryScreen(0, 0, 0, 0, (key == KSYM_space ? MB_MENU_CONTINUE : MB_MENU_CHOICE));
 	  else if (game_status == GAME_MODE_SCORES)
@@ -2659,6 +2666,8 @@ void HandleKey(Key key, int key_status)
 	    HandleSetupScreen(0, 0, 0, 0, MB_MENU_LEAVE);
 	  else if (game_status == GAME_MODE_INFO)
 	    HandleInfoScreen(0, 0, 0, 0, MB_MENU_LEAVE);
+	  else if (game_status == GAME_MODE_INTRO)
+	    HandleIntroScreen(0, 0, 0, 0, MB_MENU_LEAVE);
 	  else if (game_status == GAME_MODE_STORY)
 	    HandleStoryScreen(0, 0, 0, 0, MB_MENU_LEAVE);
 	  else if (game_status == GAME_MODE_SCORES)
@@ -2678,6 +2687,8 @@ void HandleKey(Key key, int key_status)
 	    HandleSetupScreen(0, 0, 0, -1 * SCROLL_PAGE, MB_MENU_MARK);
 	  else if (game_status == GAME_MODE_INFO)
 	    HandleInfoScreen(0, 0, 0, -1 * SCROLL_PAGE, MB_MENU_MARK);
+	  else if (game_status == GAME_MODE_INTRO)
+	    HandleIntroScreen(0, 0, 0, -1 * SCROLL_PAGE, MB_MENU_MARK);
 	  else if (game_status == GAME_MODE_STORY)
 	    HandleStoryScreen(0, 0, 0, -1 * SCROLL_PAGE, MB_MENU_MARK);
 	  else if (game_status == GAME_MODE_SCORES)
@@ -2697,6 +2708,8 @@ void HandleKey(Key key, int key_status)
 	    HandleSetupScreen(0, 0, 0, +1 * SCROLL_PAGE, MB_MENU_MARK);
 	  else if (game_status == GAME_MODE_INFO)
 	    HandleInfoScreen(0, 0, 0, +1 * SCROLL_PAGE, MB_MENU_MARK);
+	  else if (game_status == GAME_MODE_INTRO)
+	    HandleIntroScreen(0, 0, 0, +1 * SCROLL_PAGE, MB_MENU_MARK);
 	  else if (game_status == GAME_MODE_STORY)
 	    HandleStoryScreen(0, 0, 0, +1 * SCROLL_PAGE, MB_MENU_MARK);
 	  else if (game_status == GAME_MODE_SCORES)
@@ -2934,6 +2947,7 @@ void HandleJoystick(void)
     case GAME_MODE_LEVELNR:
     case GAME_MODE_SETUP:
     case GAME_MODE_INFO:
+    case GAME_MODE_INTRO:
     case GAME_MODE_STORY:
     case GAME_MODE_SCORES:
     case GAME_MODE_SCOREINFO:
@@ -2955,6 +2969,8 @@ void HandleJoystick(void)
 	HandleSetupScreen(0,0,dx,dy, newbutton ? MB_MENU_CHOICE : MB_MENU_MARK);
       else if (game_status == GAME_MODE_INFO)
 	HandleInfoScreen(0,0,dx,dy, newbutton ? MB_MENU_CHOICE : MB_MENU_MARK);
+      else if (game_status == GAME_MODE_INTRO)
+	HandleIntroScreen(0,0,dx,dy, newbutton ? MB_MENU_CHOICE : MB_MENU_MARK);
       else if (game_status == GAME_MODE_STORY)
 	HandleStoryScreen(0,0,dx,dy, newbutton ? MB_MENU_CHOICE : MB_MENU_MARK);
       else if (game_status == GAME_MODE_SCORES)

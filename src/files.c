@@ -11932,6 +11932,7 @@ static struct TokenInfo global_setup_tokens[] =
   { TYPE_SWITCH,	&setup.autorecord_after_replay,		"autorecord_after_replay"	},
   { TYPE_SWITCH,	&setup.auto_pause_on_start,		"auto_pause_on_start"		},
   { TYPE_SWITCH,	&setup.show_titlescreen,		"show_titlescreen"		},
+  { TYPE_SWITCH_3,	&setup.show_level_intro,		"show_level_intro"		},
   { TYPE_SWITCH_3,	&setup.show_level_story,		"show_level_story"		},
   { TYPE_SWITCH,	&setup.quick_doors,			"quick_doors"			},
   { TYPE_SWITCH,	&setup.team_mode,			"team_mode"			},
@@ -12196,6 +12197,7 @@ static struct TokenInfo internal_setup_tokens[] =
   { TYPE_BOOLEAN,	&setup.internal.info_version,		"info_version"			},
   { TYPE_BOOLEAN,	&setup.internal.info_levelset,		"info_levelset"			},
   { TYPE_BOOLEAN,	&setup.internal.info_level,		"info_level"			},
+  { TYPE_BOOLEAN,	&setup.internal.info_intro,		"info_intro"			},
   { TYPE_BOOLEAN,	&setup.internal.info_story,		"info_story"			},
   { TYPE_BOOLEAN,	&setup.internal.info_exit,		"info_exit"			},
 };
@@ -12288,6 +12290,7 @@ static void setSetupInfoToDefaults(struct SetupInfo *si)
   si->autorecord_after_replay		= TRUE;
   si->auto_pause_on_start		= FALSE;
   si->show_titlescreen			= TRUE;
+  si->show_level_intro			= STATE_ONCE;
   si->show_level_story			= STATE_ONCE;
   si->quick_doors			= FALSE;
   si->team_mode				= FALSE;

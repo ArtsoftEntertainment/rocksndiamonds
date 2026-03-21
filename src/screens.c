@@ -38,9 +38,10 @@
 #define INFO_MODE_VERSION			6
 #define INFO_MODE_LEVELSET			7
 #define INFO_MODE_LEVEL				8
-#define INFO_MODE_STORY				9
+#define INFO_MODE_INTRO				9
+#define INFO_MODE_STORY				10
 
-#define MAX_INFO_MODES				10
+#define MAX_INFO_MODES				11
 
 // screens on the setup screen
 // (must match GFX_SPECIAL_ARG_SETUP_* values as defined in src/main.h)
@@ -117,6 +118,7 @@
 #define STR_INFO_VERSION			"Version Info"
 #define STR_INFO_LEVELSET			"Level Set Info"
 #define STR_INFO_LEVEL				"Level Info"
+#define STR_INFO_INTRO				"Level Intro"
 #define STR_INFO_STORY				"Level Story"
 #define STR_INFO_EXIT				"Exit"
 
@@ -1240,6 +1242,11 @@ static boolean hasLevelInfo(boolean from_info_menu)
 {
   return (getLevelInfoFilename(level_nr) != NULL ||
           getLevelInfoBuffer(from_info_menu) != NULL);
+}
+
+static boolean hasLevelIntro(void)
+{
+  return (getLevelIntroFilename(level_nr) != NULL);
 }
 
 static boolean hasLevelStory(void)
@@ -2953,6 +2960,13 @@ static void execInfoLevel(void)
   DrawInfoScreen();
 }
 
+static void execInfoIntro(void)
+{
+  info_mode = INFO_MODE_INTRO;
+
+  DrawInfoScreen();
+}
+
 static void execInfoStory(void)
 {
   info_mode = INFO_MODE_STORY;
@@ -2977,6 +2991,7 @@ static struct TokenInfo info_info_main[] =
   { TYPE_ENTER_SCREEN,	execInfoVersion,	STR_INFO_VERSION	},
   { TYPE_ENTER_SCREEN,	execInfoLevelSet,	STR_INFO_LEVELSET	},
   { TYPE_ENTER_SCREEN,	execInfoLevel,		STR_INFO_LEVEL		},
+  { TYPE_ENTER_SCREEN,	execInfoIntro,		STR_INFO_INTRO		},
   { TYPE_ENTER_SCREEN,	execInfoStory,		STR_INFO_STORY		},
   { TYPE_EMPTY,		NULL,			""			},
   { TYPE_LEAVE_MENU,	execExitInfo, 		STR_INFO_EXIT		},
@@ -4380,6 +4395,7 @@ static char *getInfoScreenTitle_Generic(void)
 	  info_mode == INFO_MODE_VERSION  ? STR_INFO_VERSION  :
 	  info_mode == INFO_MODE_LEVELSET ? STR_INFO_LEVELSET :
 	  info_mode == INFO_MODE_LEVEL    ? STR_INFO_LEVEL    :
+	  info_mode == INFO_MODE_INTRO    ? STR_INFO_INTRO    :
 	  info_mode == INFO_MODE_STORY    ? STR_INFO_STORY    :
 	  "");
 }
@@ -4393,6 +4409,7 @@ static int getInfoScreenBackgroundImage_Generic(void)
 	  info_mode == INFO_MODE_VERSION  ? IMG_BACKGROUND_INFO_VERSION  :
 	  info_mode == INFO_MODE_LEVELSET ? IMG_BACKGROUND_INFO_LEVELSET :
 	  info_mode == INFO_MODE_LEVEL    ? IMG_BACKGROUND_INFO_LEVEL    :
+	  info_mode == INFO_MODE_INTRO    ? IMG_BACKGROUND_INTRO         :
 	  info_mode == INFO_MODE_STORY    ? IMG_BACKGROUND_STORY         :
 	  IMG_BACKGROUND_INFO);
 }
@@ -4405,6 +4422,7 @@ static int getInfoScreenBackgroundSound_Generic(void)
 	  info_mode == INFO_MODE_VERSION  ? SND_BACKGROUND_INFO_VERSION  :
 	  info_mode == INFO_MODE_LEVELSET ? SND_BACKGROUND_INFO_LEVELSET :
 	  info_mode == INFO_MODE_LEVEL    ? SND_BACKGROUND_INFO_LEVEL    :
+	  info_mode == INFO_MODE_INTRO    ? SND_BACKGROUND_INTRO         :
 	  info_mode == INFO_MODE_STORY    ? SND_BACKGROUND_STORY         :
 	  SND_BACKGROUND_INFO);
 }
@@ -4417,6 +4435,7 @@ static int getInfoScreenBackgroundMusic_Generic(void)
 	  info_mode == INFO_MODE_VERSION  ? MUS_BACKGROUND_INFO_VERSION  :
 	  info_mode == INFO_MODE_LEVELSET ? MUS_BACKGROUND_INFO_LEVELSET :
 	  info_mode == INFO_MODE_LEVEL    ? MUS_BACKGROUND_INFO_LEVEL    :
+	  info_mode == INFO_MODE_INTRO    ? MUS_BACKGROUND_INTRO         :
 	  info_mode == INFO_MODE_STORY    ? MUS_BACKGROUND_STORY         :
 	  MUS_BACKGROUND_INFO);
 }
@@ -4427,6 +4446,7 @@ static char *getInfoScreenFilename_Generic(int nr, boolean global)
 	  info_mode == INFO_MODE_PROGRAM  ? getProgramInfoFilename(nr)      :
 	  info_mode == INFO_MODE_LEVELSET ? getLevelSetInfoFilename(nr)     :
 	  info_mode == INFO_MODE_LEVEL    ? getLevelInfoFilename(level_nr)  :
+	  info_mode == INFO_MODE_INTRO    ? getLevelIntroFilename(level_nr) :
 	  info_mode == INFO_MODE_STORY    ? getLevelStoryFilename(level_nr) :
 	  NULL);
 }
@@ -4508,7 +4528,8 @@ static void SetWrappedText_GenericScreen(struct TitleMessageInfo *tmi,
                     getLatin1FromUTF8(buffer));
   int line_spacing = getMenuTextSpacing(menu.line_spacing_info[info_mode], tmi->font);
 
-  if (strEqual(getBaseNamePtr(filename), TEXT_TEMPLATE_FILENAME))
+  if (strEqual(getBaseNamePtr(filename), INTRO_TEMPLATE_FILENAME) ||
+      strEqual(getBaseNamePtr(filename), STORY_TEMPLATE_FILENAME))
     ReplaceTemplateTagsInTextBuffer(&raw_text);
 
   FreeWrappedText(wrapped_text);
@@ -4553,6 +4574,7 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
   }
   else if (info_mode == INFO_MODE_LEVELSET ||
            info_mode == INFO_MODE_LEVEL ||
+           info_mode == INFO_MODE_INTRO ||
            info_mode == INFO_MODE_STORY)
   {
     tmi->autowrap = readme.autowrap;
@@ -4560,7 +4582,8 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
     tmi->parse_comments = readme.parse_comments;
 
     tmi->font = (info_mode == INFO_MODE_LEVELSET ? FONT_INFO_LEVELSET :
-                 info_mode == INFO_MODE_LEVEL    ? FONT_INFO_LEVEL    : FONT_INFO_STORY);
+                 info_mode == INFO_MODE_LEVEL    ? FONT_INFO_LEVEL    :
+                 info_mode == INFO_MODE_INTRO    ? FONT_INFO_INTRO    : FONT_INFO_STORY);
   }
 
   SetWrappedText_GenericScreen(tmi, screen_nr, use_global_screens);
@@ -4616,7 +4639,11 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
 
 static void DrawInfoScreen_Generic(void)
 {
-  if (info_mode == INFO_MODE_STORY)
+  if (info_mode == INFO_MODE_INTRO)
+  {
+    SetMainBackgroundImage(IMG_BACKGROUND_INTRO);
+  }
+  else if (info_mode == INFO_MODE_STORY)
   {
     SetMainBackgroundImage(IMG_BACKGROUND_STORY);
   }
@@ -4655,8 +4682,7 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
   static int screen_nr = 0;
   static int start_pos = 0;
   static boolean use_global_screens = FALSE;
-  static DelayCounter story_delay = { 3 * ONE_SECOND_DELAY };
-  static boolean is_story_template = FALSE;
+  static DelayCounter intro_delay = { 3 * ONE_SECOND_DELAY };
   boolean position_set_by_scrollbar = (dx == 999);
 
   if (button == MB_MENU_INITIALIZE)
@@ -4738,6 +4764,32 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
 
       text_no_info = "No level info available.";
     }
+    else if (info_mode == INFO_MODE_INTRO)
+    {
+      // copy all ".INTRO" settings to ".INFO[INTRO]", which is internally used to show intro
+      menu.draw_xoffset_info[INFO_MODE_INTRO]		= menu.draw_xoffset[GAME_MODE_INTRO];
+      menu.draw_yoffset_info[INFO_MODE_INTRO]		= menu.draw_yoffset[GAME_MODE_INTRO];
+      menu.skip_headline_info[INFO_MODE_INTRO]		= menu.skip_headline[GAME_MODE_INTRO];
+      menu.skip_footer_info[INFO_MODE_INTRO]		= menu.skip_footer[GAME_MODE_INTRO];
+      menu.use_scrollbar2_info[INFO_MODE_INTRO]		= menu.use_scrollbar2[GAME_MODE_INTRO];
+      menu.left_spacing_info[INFO_MODE_INTRO]		= menu.left_spacing[GAME_MODE_INTRO];
+      menu.right_spacing_info[INFO_MODE_INTRO]		= menu.right_spacing[GAME_MODE_INTRO];
+      menu.top_spacing_info[INFO_MODE_INTRO]		= menu.top_spacing[GAME_MODE_INTRO];
+      menu.bottom_spacing_info[INFO_MODE_INTRO]		= menu.bottom_spacing[GAME_MODE_INTRO];
+      menu.paragraph_spacing_info[INFO_MODE_INTRO]	= menu.paragraph_spacing[GAME_MODE_INTRO];
+      menu.headline1_spacing_info[INFO_MODE_INTRO]	= menu.headline1_spacing[GAME_MODE_INTRO];
+      menu.headline2_spacing_info[INFO_MODE_INTRO]	= menu.headline2_spacing[GAME_MODE_INTRO];
+      menu.line_spacing_info[INFO_MODE_INTRO]		= menu.line_spacing[GAME_MODE_INTRO];
+      menu.extra_spacing_info[INFO_MODE_INTRO]		= menu.extra_spacing[GAME_MODE_INTRO];
+
+      use_global_screens = FALSE;
+
+      // determine number of level intro screens
+      if (hasLevelIntro())
+        num_screens = 1;
+
+      text_no_info = "No level intro available.";
+    }
     else if (info_mode == INFO_MODE_STORY)
     {
       // copy all ".STORY" settings to ".INFO[STORY]", which is internally used to show story
@@ -4760,12 +4812,7 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
 
       // determine number of level story screens
       if (hasLevelStory())
-      {
         num_screens = 1;
-
-	is_story_template =
-	  strEqual(getBaseNamePtr(getLevelStoryFilename(level_nr)), TEXT_TEMPLATE_FILENAME);
-      }
 
       text_no_info = "No level story available.";
     }
@@ -4793,12 +4840,12 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
 
     DrawInfoScreen_GenericScreen(screen_nr, num_screens, use_global_screens);
 
-    ResetDelayCounter(&story_delay);
+    ResetDelayCounter(&intro_delay);
 
     return;
   }
 
-  if (info_mode == INFO_MODE_STORY && is_story_template && DelayReached(&story_delay))
+  if (info_mode == INFO_MODE_INTRO && DelayReached(&intro_delay))
     button = MB_MENU_CHOICE;
 
   if (info_mode == INFO_MODE_LEVEL && ABS(dx) == 1)
@@ -4913,6 +4960,8 @@ static void DrawInfoScreen(void)
     DrawInfoScreen_Generic();
   else if (info_mode == INFO_MODE_LEVEL)
     DrawInfoScreen_Generic();
+  else if (info_mode == INFO_MODE_INTRO)
+    DrawInfoScreen_Generic();
   else if (info_mode == INFO_MODE_STORY)
     DrawInfoScreen_Generic();
   else
@@ -4936,7 +4985,7 @@ static void DrawInfoScreen_FromMainMenuOrInitGame(int nr, boolean from_game_stat
   if (from_game_status == GAME_MODE_MAIN)
     SetGameStatus(GAME_MODE_INFO);
   else if (from_game_status == GAME_MODE_PLAYING)
-    SetGameStatus(GAME_MODE_STORY);
+    SetGameStatus(nr == INFO_MODE_INTRO ? GAME_MODE_INTRO : GAME_MODE_STORY);
   else
     return;
 
@@ -4975,20 +5024,34 @@ void DrawInfoScreen_FromInitGame(int nr)
   DrawInfoScreen_FromMainMenuOrInitGame(nr, GAME_MODE_PLAYING);
 }
 
-boolean ShowStoryScreen_FromInitGame(void)
+boolean ShowIntroOrStoryScreen_FromInitGame(void)
 {
-  if (!hasLevelStory())
-    return FALSE;
+  boolean skip_level_intro =
+    (setup.show_level_intro == STATE_FALSE ||
+     (setup.show_level_intro == STATE_ONCE && levelset.level_intro_shown[level_nr]));
+  boolean skip_level_story =
+    (setup.show_level_story == STATE_FALSE ||
+     (setup.show_level_story == STATE_ONCE && levelset.level_story_shown[level_nr]));
 
-  if (setup.show_level_story == STATE_FALSE ||
-      (setup.show_level_story == STATE_ONCE && levelset.level_story_shown[level_nr]))
-    return FALSE;
+  // level story always has precedence over level intro
+  if (hasLevelStory() && !skip_level_story)
+  {
+    levelset.level_story_shown[level_nr] = TRUE;
 
-  levelset.level_story_shown[level_nr] = TRUE;
+    DrawInfoScreen_FromInitGame(INFO_MODE_STORY);
 
-  DrawInfoScreen_FromInitGame(INFO_MODE_STORY);
+    return TRUE;
+  }
+  else if (hasLevelIntro() && !skip_level_intro)
+  {
+    levelset.level_intro_shown[level_nr] = TRUE;
 
-  return TRUE;
+    DrawInfoScreen_FromInitGame(INFO_MODE_INTRO);
+
+    return TRUE;
+  }
+
+  return FALSE;
 }
 
 static void HandleInfoScreen_SelectLevel(int step, int direction)
@@ -5025,6 +5088,7 @@ void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
                                      info_mode != INFO_MODE_PROGRAM &&
                                      info_mode != INFO_MODE_LEVELSET &&
                                      info_mode != INFO_MODE_LEVEL &&
+                                     info_mode != INFO_MODE_INTRO &&
                                      info_mode != INFO_MODE_STORY))
     button = MB_MENU_CHOICE;
 
@@ -5044,10 +5108,17 @@ void HandleInfoScreen(int mx, int my, int dx, int dy, int button)
     HandleInfoScreen_Generic(mx, my, dx, dy, button);
   else if (info_mode == INFO_MODE_LEVEL)
     HandleInfoScreen_Generic(mx, my, dx, dy, button);
+  else if (info_mode == INFO_MODE_INTRO)
+    HandleInfoScreen_Generic(mx, my, dx, dy, button);
   else if (info_mode == INFO_MODE_STORY)
     HandleInfoScreen_Generic(mx, my, dx, dy, button);
   else
     HandleInfoScreen_Main(mx, my, dx, dy, button);
+}
+
+void HandleIntroScreen(int mx, int my, int dx, int dy, int button)
+{
+  HandleInfoScreen(mx, my, dx, dy, button);
 }
 
 void HandleStoryScreen(int mx, int my, int dx, int dy, int button)
@@ -8675,6 +8746,7 @@ static struct
   { &setup.internal.info_version,		execInfoVersion			},
   { &setup.internal.info_levelset,		execInfoLevelSet		},
   { &setup.internal.info_level,			execInfoLevel			},
+  { &setup.internal.info_intro,			execInfoIntro			},
   { &setup.internal.info_story,			execInfoStory			},
   { &setup.internal.info_exit,			execExitInfo			},
 
@@ -8860,6 +8932,7 @@ static struct TokenInfo setup_info_graphics[] =
   { TYPE_SWITCH,	&setup.quick_switch,		"Quick Player Focus Switch:"	},
   { TYPE_SWITCH,	&setup.quick_doors,		"Quick Menu Doors:"		},
   { TYPE_SWITCH,	&setup.show_titlescreen,	"Show Title Screens:"		},
+  { TYPE_YES_NO_ONCE,	&setup.show_level_intro,	"Show Level Intros:"		},
   { TYPE_YES_NO_ONCE,	&setup.show_level_story,	"Show Level Stories:"		},
   { TYPE_SWITCH,	&setup.toons,			"Show Toons:"			},
   { TYPE_SWITCH,	&setup.small_game_graphics,	"Small Game Graphics:"		},
@@ -11931,6 +12004,8 @@ static void HandleScreenGadgets(struct GadgetInfo *gi)
 	HandleSetupScreen(0, 0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
       else if (game_status == GAME_MODE_INFO)
 	HandleInfoScreen(0, 0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
+      else if (game_status == GAME_MODE_INTRO)
+	HandleIntroScreen(0, 0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
       else if (game_status == GAME_MODE_STORY)
 	HandleStoryScreen(0, 0, 0, -1 * SCROLL_LINE, MB_MENU_MARK);
       else if (game_status == GAME_MODE_SCORES)
@@ -11948,6 +12023,8 @@ static void HandleScreenGadgets(struct GadgetInfo *gi)
 	HandleSetupScreen(0, 0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
       else if (game_status == GAME_MODE_INFO)
 	HandleInfoScreen(0, 0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
+      else if (game_status == GAME_MODE_INTRO)
+	HandleIntroScreen(0, 0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
       else if (game_status == GAME_MODE_STORY)
 	HandleStoryScreen(0, 0, 0, +1 * SCROLL_LINE, MB_MENU_MARK);
       else if (game_status == GAME_MODE_SCORES)
@@ -11965,6 +12042,8 @@ static void HandleScreenGadgets(struct GadgetInfo *gi)
 	HandleSetupScreen(0, 0, 999, gi->event.item_position, MB_MENU_INITIALIZE);
       else if (game_status == GAME_MODE_INFO)
 	HandleInfoScreen(0, 0, 999, gi->event.item_position, MB_MENU_INITIALIZE);
+      else if (game_status == GAME_MODE_INTRO)
+	HandleIntroScreen(0, 0, 999, gi->event.item_position, MB_MENU_INITIALIZE);
       else if (game_status == GAME_MODE_STORY)
 	HandleStoryScreen(0, 0, 999, gi->event.item_position, MB_MENU_INITIALIZE);
       else if (game_status == GAME_MODE_SCORES)

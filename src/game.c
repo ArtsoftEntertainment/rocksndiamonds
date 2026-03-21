@@ -4068,9 +4068,13 @@ void InitGame(void)
   int fade_mask = REDRAW_FIELD;
   boolean restarting = (game_status == GAME_MODE_PLAYING);
   boolean restarting_same_level = (restarting && level_nr == last_level_nr);
+  boolean level_intro = (game_status == GAME_MODE_INTRO);
   boolean level_story = (game_status == GAME_MODE_STORY);
+  boolean level_intro_or_story = (level_intro || level_story);
+  boolean level_intro_after_main = (level_intro && game_status_last_screen == GAME_MODE_MAIN);
   boolean level_story_after_main = (level_story && game_status_last_screen == GAME_MODE_MAIN);
-  boolean starting_from_main = (game_status == GAME_MODE_MAIN || level_story_after_main);
+  boolean level_intro_or_story_after_main = (level_intro_after_main || level_story_after_main);
+  boolean starting_from_main = (game_status == GAME_MODE_MAIN || level_intro_or_story_after_main);
   boolean last_game_engine_type_was_bd = (last_game_engine_type == GAME_ENGINE_TYPE_BD);
   boolean emulate_bd = TRUE;	// unless non-BOULDERDASH elements found
   boolean emulate_sp = TRUE;	// unless non-SUPAPLEX    elements found
@@ -4083,9 +4087,9 @@ void InitGame(void)
   // store current game engine type to be able to cover BD screen of last level later
   last_game_engine_type = level.game_engine_type;
 
-  // show level info before starting the game (if any exists)
-  if (!level_editor_test_game && !restarting_same_level && !level_story && !tape.playing)
-    if (ShowStoryScreen_FromInitGame())
+  // show level intro or story before starting the game (if any exists)
+  if (!level_editor_test_game && !restarting_same_level && !level_intro_or_story && !tape.playing)
+    if (ShowIntroOrStoryScreen_FromInitGame())
       return;
 
   // required to prevent handling game actions when moving doors (via "checkGameEnded()")

@@ -1019,6 +1019,15 @@ static char *getLevelInfoBasename(int level_nr)
   return basename;
 }
 
+static char *getLevelIntroBasename(int level_nr)
+{
+  static char basename[32];
+
+  sprintf(basename, "%03d.txt", level_nr);
+
+  return basename;
+}
+
 static char *getLevelStoryBasename(int level_nr)
 {
   static char basename[32];
@@ -1100,6 +1109,35 @@ char *getLevelInfoFilename(int level_nr)
   return NULL;
 }
 
+char *getLevelIntroFilename(int level_nr)
+{
+  char *basename = getLevelIntroBasename(level_nr);
+  static char *intros_subdir = NULL;
+  static char *filename = NULL;
+
+  if (intros_subdir == NULL)
+    intros_subdir = getPath2(DOCS_DIRECTORY, INTROS_DIRECTORY);
+
+  checked_free(filename);
+
+  // look for intro file in the current level set's "docs/intros" sub-directory
+  filename = getPath3(getCurrentLevelDir(), intros_subdir, basename);
+  if (fileExists(filename))
+    return filename;
+
+  // look for intro template in the current level set's "docs/intros" sub-directory
+  filename = getPath3(getCurrentLevelDir(), intros_subdir, INTRO_TEMPLATE_FILENAME);
+  if (fileExists(filename))
+    return filename;
+
+  // look for intro template in the game's base "docs/intros" sub-directory
+  filename = getPath3(options.base_directory, intros_subdir, INTRO_TEMPLATE_FILENAME);
+  if (fileExists(filename))
+    return filename;
+
+  return NULL;
+}
+
 char *getLevelStoryFilename(int level_nr)
 {
   char *basename = getLevelStoryBasename(level_nr);
@@ -1117,7 +1155,7 @@ char *getLevelStoryFilename(int level_nr)
     return filename;
 
   // look for story template in the current level set's "docs/stories" sub-directory
-  filename = getPath3(getCurrentLevelDir(), stories_subdir, TEXT_TEMPLATE_FILENAME);
+  filename = getPath3(getCurrentLevelDir(), stories_subdir, STORY_TEMPLATE_FILENAME);
   if (fileExists(filename))
     return filename;
 
@@ -5570,6 +5608,7 @@ void LoadLevelSetup_SeriesInfo(void)
     LevelStats_setPlayed(i, 0);
     LevelStats_setSolved(i, 0);
 
+    levelset.level_intro_shown[i] = FALSE;
     levelset.level_story_shown[i] = FALSE;
   }
 
