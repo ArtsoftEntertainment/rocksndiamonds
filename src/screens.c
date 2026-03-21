@@ -1981,7 +1981,7 @@ static char *getInfoScreenSubtitle(int screen_nr, int num_screens, int use_globa
     int max_text_len = max_text_width / getFontWidth(text_font);
     int max_name_len = max_text_len - text_format_len;
     char name_cut[max_name_len];
-    char *name_full = (draw_story_headline ? level.name_native :
+    char *name_full = (draw_story_headline && strlen(level.name_native) > 0 ? level.name_native :
                        use_global_screens ? getProgramTitleString() :
 		       leveldir_current->name);
 

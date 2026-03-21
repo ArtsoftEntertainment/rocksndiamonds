@@ -2538,7 +2538,7 @@ static void setLevelInfoToDefaults_Level(struct LevelInfo *level, boolean prepar
     level->author[i] = '\0';
 
   // set level name and level author to default values
-  strcpy(level->name_native, NAMELESS_LEVEL_NAME);
+  strcpy(level->name_native, "");	// detect nameless levels later
   strcpy(level->name, NAMELESS_LEVEL_NAME);
   strcpy(level->author, ANONYMOUS_NAME);
 
