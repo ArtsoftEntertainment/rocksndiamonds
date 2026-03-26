@@ -3514,6 +3514,9 @@ static void InitGameEngine(void)
   game.use_block_last_field_bug =
     (game.engine_version < VERSION_IDENT(3,1,1,0));
 
+  game.use_explosion_bug =
+    (game.engine_version < VERSION_IDENT(4,4,2,0));
+
   /* various special flags and settings for native Emerald Mine game engine */
 
   game_em.use_single_button =
@@ -6608,6 +6611,10 @@ static void Explode(int ex, int ey, int phase, int mode)
       int xx = x - ex + 1;
       int yy = y - ey + 1;
       int element;
+
+      // explode border fields separately if they are also marked to be exploded
+      if ((x != ex || y != ey) && ExplodeField[x][y] && !game.use_explosion_bug)
+	continue;
 
       if (!IN_LEV_FIELD(x, y) ||
 	  (mode & EX_TYPE_SINGLE_TILE && (x != ex || y != ey)) ||

@@ -230,6 +230,7 @@ struct GameInfo
   // (for the latest engine version, these flags should always be "FALSE")
   boolean use_change_when_pushing_bug;
   boolean use_block_last_field_bug;
+  boolean use_explosion_bug;
   boolean max_num_changes_per_frame;
   boolean use_reverse_scan_direction;
 
