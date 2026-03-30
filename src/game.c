@@ -3517,6 +3517,11 @@ static void InitGameEngine(void)
   game.use_explosion_bug =
     (game.engine_version < VERSION_IDENT(4,4,2,0));
 
+  /* various special flags and settings for native Boulder Dash game engine */
+
+  game_bd.use_fixed_hatching =
+    (game.engine_version >= VERSION_IDENT(4,2,0,0));
+
   /* various special flags and settings for native Emerald Mine game engine */
 
   game_em.use_single_button =

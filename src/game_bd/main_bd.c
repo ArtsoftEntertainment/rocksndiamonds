@@ -369,7 +369,12 @@ void InitGameEngine_BD(void)
   // Krissz engine: after loading cave, fix some cave timing values
   if (game_bd.game->use_krissz_engine)
   {
-    game_bd.game->cave->hatching_delay_frame++;		// add one game cycle
+    // adjust hatching delay according to old or new Krissz engine
+    if (!game_bd.game->cave->new_krissz_engine && game_bd.use_fixed_hatching)
+      game_bd.game->cave->hatching_delay_frame--;	// subtract one game cycle
+    else
+      game_bd.game->cave->hatching_delay_frame++;	// add one game cycle
+
     game_bd.game->cave->magic_wall_time++;		// add one millisecond
 
     // remove time for one game cycle from cave time (or add it for caves without time limit)

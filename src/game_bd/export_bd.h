@@ -64,6 +64,9 @@ struct GameInfo_BD
   // global lives and score over more than one game
   int global_lives;
   int global_score;
+
+  // flags to handle bugs in and changes between different engine versions
+  boolean use_fixed_hatching;
 };
 
 struct LevelInfo_BD
