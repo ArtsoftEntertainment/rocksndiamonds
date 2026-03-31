@@ -8003,6 +8003,33 @@ static void logic_globals(void)
     game_em.random = seed;
   }
 
+  if (game_em.use_emerald_dash_engine)
+  {
+    /* check if amoeba is enclosed or too large */
+
+    int amoeba_count = 0;
+    int max_amoeba_count = 200;
+    boolean amoeba_enclosed = TRUE;
+
+    for (y = lev.top; y < lev.bottom; y++)
+    {
+      for (x = lev.left; x < lev.right; x++)
+      {
+	if (is_amoeba[cave[x][y]])
+	  amoeba_count++;
+
+	if (Lamoeba_check(x, y) || cave[x][y] == Xdrip || cave[x][y] == Xdrip_fall)
+	  amoeba_enclosed = FALSE;
+      }
+    }
+
+    if (amoeba_enclosed || amoeba_count >= max_amoeba_count)
+      for (y = lev.top; y < lev.bottom; y++)
+	for (x = lev.left; x < lev.right; x++)
+	  if (is_amoeba[cave[x][y]] || cave[x][y] == Xdrip || cave[x][y] == Xdrip_fall)
+	    cave[x][y] = (amoeba_enclosed ? Xemerald : Xstone);
+  }
+
   /* handle explosions */
 
   for (y = lev.top; y < lev.bottom; y++)
