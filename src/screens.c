@@ -4590,9 +4590,11 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
 
   if (wrapped_text != NULL && wrapped_text->total_height > wrapped_text->max_height)
   {
+    boolean scrollbar_inside_text_area  = (menu.scrollbar_xoffset < SC_SCROLL_VERTICAL_XSIZE);
+    boolean scrollbar_wider_than_border = (menu.scrollbar_xoffset > SC_BORDER_RIGHT);
+
     // if scrollbar is inside text area (default), text must be re-wrapped
-    if (menu.scrollbar_xoffset < SC_SCROLL_VERTICAL_XSIZE ||
-        menu.scrollbar_xoffset > SC_BORDER_RIGHT)
+    if (scrollbar_inside_text_area || scrollbar_wider_than_border)
     {
       // re-wrap text with text width reduced by scroll bar width
       tmi->width -= SC_SCROLL_VERTICAL_XSIZE;
