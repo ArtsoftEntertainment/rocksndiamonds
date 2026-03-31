@@ -4280,6 +4280,44 @@ static void Lemerald_fall(int x, int y)
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
 
+    case Xbug_1_n:
+    case Xbug_1_e:
+    case Xbug_1_s:
+    case Xbug_1_w:
+    case Xbug_2_n:
+    case Xbug_2_e:
+    case Xbug_2_s:
+    case Xbug_2_w:
+      if (!game_em.use_emerald_dash_engine)
+	goto emerald_fall_default;
+
+      cave[x][y] = Yemerald_sB;
+      Lboom_next_new(x, y, Xblank);
+      cave[x][y+1] = Ybug_stone;
+      next[x][y+1] = Zbug;
+      Lboom_bug_old(x, y+1);
+      score += lev.bug_score;
+      return;
+
+    case Xtank_1_n:
+    case Xtank_1_e:
+    case Xtank_1_s:
+    case Xtank_1_w:
+    case Xtank_2_n:
+    case Xtank_2_e:
+    case Xtank_2_s:
+    case Xtank_2_w:
+      if (!game_em.use_emerald_dash_engine)
+	goto emerald_fall_default;
+
+      cave[x][y] = Yemerald_sB;
+      Lboom_next_new(x, y, Xblank);
+      cave[x][y+1] = Ytank_stone;
+      next[x][y+1] = Ztank;
+      Lboom_tank_old(x, y+1);
+      score += lev.tank_score;
+      return;
+
     case Xwonderwall:
       if (lev.wonderwall_time > 0)
       {
@@ -4294,6 +4332,8 @@ static void Lemerald_fall(int x, int y)
 	play_element_sound(x, y, SOUND_wonderfall, Xwonderwall);
 	return;
       }
+
+    emerald_fall_default:
 
     default:
       cave[x][y] = Xemerald;
