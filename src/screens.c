@@ -193,10 +193,10 @@
 #define MENU_SCREEN_START_YPOS			2
 #define MENU_TITLE_XPOS				MENU_TEXT_ALIGNED_XPOS(menu.text.title)
 #define MENU_TITLE_YPOS				MENU_TEXT_ALIGNED_YPOS(menu.text.title)
-#define MENU_TITLE1_XPOS			MENU_TEXT_ALIGNED_XPOS(menu.text.title_1)
-#define MENU_TITLE1_YPOS			MENU_TEXT_ALIGNED_YPOS(menu.text.title_1)
-#define MENU_TITLE2_XPOS			MENU_TEXT_ALIGNED_XPOS(menu.text.title_2)
-#define MENU_TITLE2_YPOS			MENU_TEXT_ALIGNED_YPOS(menu.text.title_2)
+#define MENU_TITLE_1_XPOS			MENU_TEXT_ALIGNED_XPOS(menu.text.title_1)
+#define MENU_TITLE_1_YPOS			MENU_TEXT_ALIGNED_YPOS(menu.text.title_1)
+#define MENU_TITLE_2_XPOS			MENU_TEXT_ALIGNED_XPOS(menu.text.title_2)
+#define MENU_TITLE_2_YPOS			MENU_TEXT_ALIGNED_YPOS(menu.text.title_2)
 #define MENU_TITLE_STORY_XPOS			MENU_TEXT_ALIGNED_XPOS(menu.text.title_story)
 #define MENU_TITLE_STORY_YPOS			MENU_TEXT_ALIGNED_YPOS(menu.text.title_story)
 #define MENU_FOOTER_XPOS			MENU_TEXT_ALIGNED_XPOS(menu.text.footer)
@@ -2014,9 +2014,9 @@ static void DrawInfoScreen_Headline(int screen_nr, int num_screens, int use_glob
   }
   else
   {
-    DrawTextSAligned(MENU_TITLE1_XPOS, MENU_TITLE1_YPOS, info_text_title_1,
+    DrawTextSAligned(MENU_TITLE_1_XPOS, MENU_TITLE_1_YPOS, info_text_title_1,
 		     FONT_TITLE_1, menu.text.title_1.align);
-    DrawTextSAligned(MENU_TITLE2_XPOS, MENU_TITLE2_YPOS, info_text_title_2,
+    DrawTextSAligned(MENU_TITLE_2_XPOS, MENU_TITLE_2_YPOS, info_text_title_2,
 		     FONT_TITLE_2, menu.text.title_2.align);
   }
 }
@@ -5709,7 +5709,7 @@ static void drawChooseTreeHeadExt(int type, char *title_string)
 {
   int y = (type == TREE_TYPE_SCORE_ENTRY ||
 	   type == TREE_TYPE_LEVELSET_DIR ||
-	   type == TREE_TYPE_LEVEL_NR ? MENU_TITLE1_YPOS : MENU_TITLE_YPOS);
+	   type == TREE_TYPE_LEVEL_NR ? MENU_TITLE_1_YPOS : MENU_TITLE_YPOS);
 
   DrawTextSCentered(y, FONT_TITLE_1, title_string);
 }
@@ -5764,7 +5764,7 @@ static void drawChooseTreeInfo(TreeInfo *ti)
 {
   int entry_pos = ti->cl_first + ti->cl_cursor;
   int last_redraw_mask = redraw_mask;
-  int ypos = MENU_TITLE2_YPOS;
+  int ypos = MENU_TITLE_2_YPOS;
   int font_nr = FONT_TITLE_2;
   int x;
 
@@ -11521,7 +11521,7 @@ static void CreateScreenMenubuttons(void)
       // use "mSY" here to place buttons (respect vertical draw offset)
       if (pos->y == -1)
 	y = (id == SCREEN_CTRL_ID_PREV_LEVEL2 ||
-	     id == SCREEN_CTRL_ID_NEXT_LEVEL2 ? mSY + MENU_TITLE1_YPOS : 0);
+	     id == SCREEN_CTRL_ID_NEXT_LEVEL2 ? mSY + MENU_TITLE_1_YPOS : 0);
     }
     else if (is_info_button)
     {
@@ -11538,7 +11538,7 @@ static void CreateScreenMenubuttons(void)
       // use "mSY" here to place buttons (respect vertical draw offset)
       if (pos->y == -1)
 	y = (id == SCREEN_CTRL_ID_PREV_LEVEL3 ||
-	     id == SCREEN_CTRL_ID_NEXT_LEVEL3 ? mSY + MENU_TITLE1_YPOS : 0);
+	     id == SCREEN_CTRL_ID_NEXT_LEVEL3 ? mSY + MENU_TITLE_1_YPOS : 0);
     }
 
     if (id == SCREEN_CTRL_ID_LEVELSET_INFO)
