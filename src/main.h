@@ -4028,6 +4028,7 @@ struct LevelInfo
   boolean em_explodes_by_fire;		// EM style chain explosion behaviour
   boolean em_use_moves_not_seconds;	// EM style durations in moves instead of seconds
   boolean em_magic_wall_behavior;	// EM style behavior of BD/EM/DC style magic walls
+  boolean em_use_emerald_dash_engine;	// EM engine uses Emerald Dash engine compatibility
   boolean dc_amoeba_behavior;		// DC style behavior (and speed) of EM style amoeba
   boolean dc_keep_wall_content;		// DC style behavior when exploding wall with content
   boolean dc_no_timeout_with_shield;	// DC style behavior of surviving timeout with shield

@@ -1805,6 +1805,8 @@ struct TreeInfo
   int bd_maximum_lives;		// maximum number of lives for BD games with multiple lives
   int bd_bonus_life_score;	// required score to add life for BD games with multiple lives
 
+  boolean em_use_emerald_dash_engine;	// for game engine compatibility with Emerald Dash
+
   int color;			// color to use on selection screen for this level
   char *class_desc;		// description of level series class
   int handicap_level;		// number of the lowest unsolved level

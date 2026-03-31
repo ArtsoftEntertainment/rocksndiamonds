@@ -362,6 +362,11 @@ static struct LevelFileConfigInfo chunk_config_INFO[] =
   },
   {
     -1,						-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(34),
+    &li.em_use_emerald_dash_engine,		FALSE
+  },
+  {
+    -1,						-1,
     TYPE_INTEGER,				CONF_VALUE_32_BIT(4),
     &li.bd_color[0],				GD_C64_COLOR_BLACK
   },
@@ -9228,6 +9233,10 @@ static void LoadLevel_InitNativeEngines(struct LevelInfo *level)
   // set flag for Krissz style BD game engine for specifically tagged level sets
   if (leveldir_current->bd_use_krissz_engine)
     level->bd_use_krissz_engine = TRUE;
+
+  // set flag for Emerald Dash style EM game engine for specifically tagged level sets
+  if (leveldir_current->em_use_emerald_dash_engine)
+    level->em_use_emerald_dash_engine = TRUE;
 
   if (level_file_info->type == LEVEL_FILE_TYPE_RND)
     CopyNativeLevel_RND_to_Native(level);

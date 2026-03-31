@@ -3093,6 +3093,7 @@ static struct TokenInfo levelinfo_tokens[] =
   { TYPE_INTEGER,	&ldi.bd_initial_lives,			"bd_initial_lives"		},
   { TYPE_INTEGER,	&ldi.bd_maximum_lives,			"bd_maximum_lives"		},
   { TYPE_INTEGER,	&ldi.bd_bonus_life_score,		"bd_bonus_life_score"		},
+  { TYPE_BOOLEAN,	&ldi.em_use_emerald_dash_engine,	"em_use_emerald_dash_engine"	},
 };
 
 static struct TokenInfo artworkinfo_tokens[] =
@@ -3240,6 +3241,8 @@ static void setTreeInfoToDefaults(TreeInfo *ti, int type)
     ti->bd_initial_lives = DEFAULT_BD_INITIAL_LIVES;
     ti->bd_maximum_lives = DEFAULT_BD_MAXIMUM_LIVES;
     ti->bd_bonus_life_score = DEFAULT_BD_BONUS_LIFE_SCORE;
+
+    ti->em_use_emerald_dash_engine = FALSE;
   }
 }
 
@@ -3335,6 +3338,8 @@ static void setTreeInfoToDefaultsFromParent(TreeInfo *ti, TreeInfo *parent)
     ti->bd_initial_lives = parent->bd_initial_lives;
     ti->bd_maximum_lives = parent->bd_maximum_lives;
     ti->bd_bonus_life_score = parent->bd_bonus_life_score;
+
+    ti->em_use_emerald_dash_engine = parent->em_use_emerald_dash_engine;
   }
 }
 
@@ -3416,6 +3421,8 @@ static TreeInfo *getTreeInfoCopy(TreeInfo *ti)
   ti_copy->bd_initial_lives	= ti->bd_initial_lives;
   ti_copy->bd_maximum_lives	= ti->bd_maximum_lives;
   ti_copy->bd_bonus_life_score	= ti->bd_bonus_life_score;
+
+  ti_copy->em_use_emerald_dash_engine = ti->em_use_emerald_dash_engine;
 
   ti_copy->color		= ti->color;
   ti_copy->class_desc		= getStringCopy(ti->class_desc);

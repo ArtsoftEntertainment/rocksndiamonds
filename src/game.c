@@ -3553,6 +3553,8 @@ static void InitGameEngine(void)
 
   game_em.use_wrap_around		= !use_old_em_engine;
 
+  game_em.use_emerald_dash_engine	= level.em_use_emerald_dash_engine;
+
   // --------------------------------------------------------------------------
 
   // set maximal allowed number of custom element changes per game frame
