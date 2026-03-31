@@ -7068,6 +7068,9 @@ static void Ldrip_fall(int x, int y)
 {
   int temp;
 
+  if (game_em.use_emerald_dash_engine)
+    goto drip_fall_default;
+
   switch (cave[x][y+1])
   {
     case Zplayer:
@@ -7114,6 +7117,8 @@ static void Ldrip_fall(int x, int y)
 	cave[x-1][y] = Xsplash_w;
       play_element_sound(x, y, SOUND_acid, Xacid_1);
       return;
+
+    drip_fall_default:
 
     default:
       switch (RANDOM(8))
