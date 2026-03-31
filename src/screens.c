@@ -186,14 +186,20 @@
 #define MAX_SETUP_TEXT_INPUT_LEN		28
 
 // for various menu stuff
+#define MENU_TEXT_ALIGNED_XPOS(t)		((t).x == -1 ? SXSIZE / 2 : (t).x)
 #define MENU_TEXT_ALIGNED_YPOS(t)		(ALIGNED_YPOS((t).y + ((t).y < 0 ? SYSIZE : 0),	\
 							      getFontHeight((t).font), (t).valign))
 #define MENU_SCREEN_START_XPOS			1
 #define MENU_SCREEN_START_YPOS			2
+#define MENU_TITLE_XPOS				MENU_TEXT_ALIGNED_XPOS(menu.text.title)
 #define MENU_TITLE_YPOS				MENU_TEXT_ALIGNED_YPOS(menu.text.title)
+#define MENU_TITLE1_XPOS			MENU_TEXT_ALIGNED_XPOS(menu.text.title_1)
 #define MENU_TITLE1_YPOS			MENU_TEXT_ALIGNED_YPOS(menu.text.title_1)
+#define MENU_TITLE2_XPOS			MENU_TEXT_ALIGNED_XPOS(menu.text.title_2)
 #define MENU_TITLE2_YPOS			MENU_TEXT_ALIGNED_YPOS(menu.text.title_2)
+#define MENU_TITLE_STORY_XPOS			MENU_TEXT_ALIGNED_XPOS(menu.text.title_story)
 #define MENU_TITLE_STORY_YPOS			MENU_TEXT_ALIGNED_YPOS(menu.text.title_story)
+#define MENU_FOOTER_XPOS			MENU_TEXT_ALIGNED_XPOS(menu.text.footer)
 #define MENU_FOOTER_YPOS			MENU_TEXT_ALIGNED_YPOS(menu.text.footer)
 #define MENU_INFO_FONT_TITLE			FONT_TEXT_1
 #define MENU_INFO_FONT_HEAD			FONT_TEXT_2
@@ -2003,12 +2009,15 @@ static void DrawInfoScreen_Headline(int screen_nr, int num_screens, int use_glob
 
   if (draw_story_headline)
   {
-    DrawTextSCentered(MENU_TITLE_STORY_YPOS, FONT_TITLE_STORY, info_text_title_2);
+    DrawTextSAligned(MENU_TITLE_STORY_XPOS, MENU_TITLE_STORY_YPOS, info_text_title_2,
+		     FONT_TITLE_STORY, menu.text.title_story.align);
   }
   else
   {
-    DrawTextSCentered(MENU_TITLE1_YPOS, FONT_TITLE_1, info_text_title_1);
-    DrawTextSCentered(MENU_TITLE2_YPOS, FONT_TITLE_2, info_text_title_2);
+    DrawTextSAligned(MENU_TITLE1_XPOS, MENU_TITLE1_YPOS, info_text_title_1,
+		     FONT_TITLE_1, menu.text.title_1.align);
+    DrawTextSAligned(MENU_TITLE2_XPOS, MENU_TITLE2_YPOS, info_text_title_2,
+		     FONT_TITLE_2, menu.text.title_2.align);
   }
 }
 
