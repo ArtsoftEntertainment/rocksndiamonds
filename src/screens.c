@@ -5085,9 +5085,14 @@ boolean ShowIntroOrStoryScreen_FromInitGame(void)
   {
     char *filename = getLevelIntroFilename(level_nr);
     boolean is_intro_template = strEqual(getBaseNamePtr(filename), INTRO_TEMPLATE_FILENAME);
+    boolean is_global_intro_template = strPrefix(filename, options.base_directory);
 
     // skip intro screen when using intro template file and level has no or generic level name
     if (is_intro_template && !hasUniqueLevelName())
+      return FALSE;
+
+    // skip intro screen when using global intro template file and using non-R'n'D game engine
+    if (is_global_intro_template && level.game_engine_type != GAME_ENGINE_TYPE_RND)
       return FALSE;
 
     levelset.level_intro_shown[level_nr] = TRUE;
