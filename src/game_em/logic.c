@@ -8026,6 +8026,9 @@ static void logic_globals(void)
       }
     }
 
+    if (lev.wonderwall_active)	/* active wonderwall turns amoeba to emeralds */
+      amoeba_enclosed = TRUE;
+
     if (amoeba_enclosed || amoeba_count >= max_amoeba_count)
       for (y = lev.top; y < lev.bottom; y++)
 	for (x = lev.left; x < lev.right; x++)
