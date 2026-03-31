@@ -7401,7 +7401,7 @@ static void Lpause(int x, int y)
   next[x][y] = Xblank;
 }
 
-static void Lamoeba(int x, int y)
+static boolean Lamoeba_check(int x, int y)
 {
   switch (cave[x][y])
   {
@@ -7425,8 +7425,16 @@ static void Lamoeba(int x, int y)
 	  is_amoeba[cave[x+1][y]] ||
 	  is_amoeba[cave[x][y+1]] ||
 	  is_amoeba[cave[x-1][y]])
-	cave[x][y] = Xdrip;
+	return TRUE;
   }
+
+  return FALSE;
+}
+
+static void Lamoeba(int x, int y)
+{
+  if (Lamoeba_check(x, y))
+    cave[x][y] = Xdrip;
 }
 
 static void Lboom_one(int x, int y, boolean by_dynamite)
