@@ -3536,6 +3536,9 @@ static void InitGameEngine(void)
   game_em.use_random_bug =
     (tape.property_bits & TAPE_PROPERTY_EM_RANDOM_BUG);
 
+  game_em.use_emerald_dash_engine =
+    (level.em_use_emerald_dash_engine && game.engine_version >= VERSION_IDENT(4,4,2,0));
+
   boolean use_old_em_engine = (game.engine_version < VERSION_IDENT(4,2,0,0));
   boolean use_old_em_random = (game.engine_version < VERSION_IDENT(4,4,1,4));
   boolean use_old_em_amoeba = (game.engine_version < VERSION_IDENT(4,4,1,4));
@@ -3552,8 +3555,6 @@ static void InitGameEngine(void)
   game_em.use_old_push_into_acid	= use_old_em_engine;
 
   game_em.use_wrap_around		= !use_old_em_engine;
-
-  game_em.use_emerald_dash_engine	= level.em_use_emerald_dash_engine;
 
   // --------------------------------------------------------------------------
 
