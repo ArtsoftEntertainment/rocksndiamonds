@@ -4288,8 +4288,8 @@ static void Lemerald_fall(int x, int y)
 	next[x][y] = Xblank;
 	if (is_blank[cave[x][y+2]])
 	{
-	  cave[x][y+2] = Ydiamond_s;
-	  next[x][y+2] = Xdiamond_fall;
+	  cave[x][y+2] = (game_em.use_emerald_dash_engine ? Ystone_s    : Ydiamond_s);
+	  next[x][y+2] = (game_em.use_emerald_dash_engine ? Xstone_fall : Xdiamond_fall);
 	}
 	play_element_sound(x, y, SOUND_wonderfall, Xwonderwall);
 	return;
