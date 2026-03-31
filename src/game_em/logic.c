@@ -164,7 +164,10 @@ static void Lboom_bug(int x, int y)
   if (game_em.use_old_explosions)
     next[x][y] = Zbug;
 
-  Lboom_generic(x, y, Xemerald, Xdiamond);
+  if (game_em.use_emerald_dash_engine)
+    Lboom_generic(x, y, Xemerald, Xemerald);
+  else
+    Lboom_generic(x, y, Xemerald, Xdiamond);
 
 #if PLAY_ELEMENT_SOUND
   play_element_sound(x, y, SOUND_boom, Xbug_1_n);
