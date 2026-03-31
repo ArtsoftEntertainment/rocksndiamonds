@@ -723,6 +723,7 @@ struct LOGIC
   boolean infinite;		/* flag for infinitely wide cave */
   boolean infinite_true;	/* flag for truely infinitely wide cave */
   boolean killed_out_of_time;	/* kill player due to time out */
+  boolean killed_voodoo_dead;	/* kill player due to killed voodoo player */
 
   int exit_x, exit_y;		/* kludge for playing player exit sound */
 

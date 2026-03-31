@@ -301,6 +301,9 @@ static boolean player_killed(struct PLAYER *ply)
   if (lev.killed_out_of_time && game.time_limit)
     return TRUE;
 
+  if (lev.killed_voodoo_dead)
+    return TRUE;
+
   switch (cave[x][y-1])
   {
     case Xbug_1_n:
@@ -3069,6 +3072,23 @@ static void Lbug_1_n(int x, int y)
     return;
   }
 
+  if (game_em.use_emerald_dash_engine &&
+      (cave[x][y-1] == Xbumper ||
+       cave[x][y-1] == Ybumper ||
+       cave[x+1][y] == Xbumper ||
+       cave[x+1][y] == Ybumper ||
+       cave[x][y+1] == Xbumper ||
+       cave[x][y+1] == Ybumper ||
+       cave[x-1][y] == Xbumper ||
+       cave[x-1][y] == Ybumper))
+  {
+    lev.killed_voodoo_dead = TRUE;
+    next[x][y] = Zboom;
+    Lboom_bug(x, y);
+
+    return;
+  }
+
   switch (cave[x+1][y])
   {
     case Zplayer:
@@ -3119,6 +3139,23 @@ static void Lbug_2_n(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
+    next[x][y] = Zboom;
+    Lboom_bug(x, y);
+
+    return;
+  }
+
+  if (game_em.use_emerald_dash_engine &&
+      (cave[x][y-1] == Xbumper ||
+       cave[x][y-1] == Ybumper ||
+       cave[x+1][y] == Xbumper ||
+       cave[x+1][y] == Ybumper ||
+       cave[x][y+1] == Xbumper ||
+       cave[x][y+1] == Ybumper ||
+       cave[x-1][y] == Xbumper ||
+       cave[x-1][y] == Ybumper))
+  {
+    lev.killed_voodoo_dead = TRUE;
     next[x][y] = Zboom;
     Lboom_bug(x, y);
 
@@ -3199,6 +3236,23 @@ static void Lbug_1_e(int x, int y)
     return;
   }
 
+  if (game_em.use_emerald_dash_engine &&
+      (cave[x][y-1] == Xbumper ||
+       cave[x][y-1] == Ybumper ||
+       cave[x+1][y] == Xbumper ||
+       cave[x+1][y] == Ybumper ||
+       cave[x][y+1] == Xbumper ||
+       cave[x][y+1] == Ybumper ||
+       cave[x-1][y] == Xbumper ||
+       cave[x-1][y] == Ybumper))
+  {
+    lev.killed_voodoo_dead = TRUE;
+    next[x][y] = Zboom;
+    Lboom_bug(x, y);
+
+    return;
+  }
+
   switch (cave[x][y+1])
   {
     case Zplayer:
@@ -3249,6 +3303,23 @@ static void Lbug_2_e(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
+    next[x][y] = Zboom;
+    Lboom_bug(x, y);
+
+    return;
+  }
+
+  if (game_em.use_emerald_dash_engine &&
+      (cave[x][y-1] == Xbumper ||
+       cave[x][y-1] == Ybumper ||
+       cave[x+1][y] == Xbumper ||
+       cave[x+1][y] == Ybumper ||
+       cave[x][y+1] == Xbumper ||
+       cave[x][y+1] == Ybumper ||
+       cave[x-1][y] == Xbumper ||
+       cave[x-1][y] == Ybumper))
+  {
+    lev.killed_voodoo_dead = TRUE;
     next[x][y] = Zboom;
     Lboom_bug(x, y);
 
@@ -3329,6 +3400,23 @@ static void Lbug_1_s(int x, int y)
     return;
   }
 
+  if (game_em.use_emerald_dash_engine &&
+      (cave[x][y-1] == Xbumper ||
+       cave[x][y-1] == Ybumper ||
+       cave[x+1][y] == Xbumper ||
+       cave[x+1][y] == Ybumper ||
+       cave[x][y+1] == Xbumper ||
+       cave[x][y+1] == Ybumper ||
+       cave[x-1][y] == Xbumper ||
+       cave[x-1][y] == Ybumper))
+  {
+    lev.killed_voodoo_dead = TRUE;
+    next[x][y] = Zboom;
+    Lboom_bug(x, y);
+
+    return;
+  }
+
   switch (cave[x-1][y])
   {
     case Zplayer:
@@ -3379,6 +3467,23 @@ static void Lbug_2_s(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
+    next[x][y] = Zboom;
+    Lboom_bug(x, y);
+
+    return;
+  }
+
+  if (game_em.use_emerald_dash_engine &&
+      (cave[x][y-1] == Xbumper ||
+       cave[x][y-1] == Ybumper ||
+       cave[x+1][y] == Xbumper ||
+       cave[x+1][y] == Ybumper ||
+       cave[x][y+1] == Xbumper ||
+       cave[x][y+1] == Ybumper ||
+       cave[x-1][y] == Xbumper ||
+       cave[x-1][y] == Ybumper))
+  {
+    lev.killed_voodoo_dead = TRUE;
     next[x][y] = Zboom;
     Lboom_bug(x, y);
 
@@ -3459,6 +3564,23 @@ static void Lbug_1_w(int x, int y)
     return;
   }
 
+  if (game_em.use_emerald_dash_engine &&
+      (cave[x][y-1] == Xbumper ||
+       cave[x][y-1] == Ybumper ||
+       cave[x+1][y] == Xbumper ||
+       cave[x+1][y] == Ybumper ||
+       cave[x][y+1] == Xbumper ||
+       cave[x][y+1] == Ybumper ||
+       cave[x-1][y] == Xbumper ||
+       cave[x-1][y] == Ybumper))
+  {
+    lev.killed_voodoo_dead = TRUE;
+    next[x][y] = Zboom;
+    Lboom_bug(x, y);
+
+    return;
+  }
+
   switch (cave[x][y-1])
   {
     case Zplayer:
@@ -3509,6 +3631,23 @@ static void Lbug_2_w(int x, int y)
       is_amoeba[cave[x][y+1]] ||
       is_amoeba[cave[x-1][y]])
   {
+    next[x][y] = Zboom;
+    Lboom_bug(x, y);
+
+    return;
+  }
+
+  if (game_em.use_emerald_dash_engine &&
+      (cave[x][y-1] == Xbumper ||
+       cave[x][y-1] == Ybumper ||
+       cave[x+1][y] == Xbumper ||
+       cave[x+1][y] == Ybumper ||
+       cave[x][y+1] == Xbumper ||
+       cave[x][y+1] == Ybumper ||
+       cave[x-1][y] == Xbumper ||
+       cave[x-1][y] == Ybumper))
+  {
+    lev.killed_voodoo_dead = TRUE;
     next[x][y] = Zboom;
     Lboom_bug(x, y);
 
@@ -3589,6 +3728,23 @@ static void Ltank_1_n(int x, int y)
     return;
   }
 
+  if (game_em.use_emerald_dash_engine &&
+      (cave[x][y-1] == Xbumper ||
+       cave[x][y-1] == Ybumper ||
+       cave[x+1][y] == Xbumper ||
+       cave[x+1][y] == Ybumper ||
+       cave[x][y+1] == Xbumper ||
+       cave[x][y+1] == Ybumper ||
+       cave[x-1][y] == Xbumper ||
+       cave[x-1][y] == Ybumper))
+  {
+    lev.killed_voodoo_dead = TRUE;
+    next[x][y] = Zboom;
+    Lboom_bug(x, y);
+
+    return;
+  }
+
   switch (cave[x-1][y])
   {
     case Zplayer:
@@ -3641,6 +3797,23 @@ static void Ltank_2_n(int x, int y)
   {
     next[x][y] = Zboom;
     Lboom_tank(x, y);
+
+    return;
+  }
+
+  if (game_em.use_emerald_dash_engine &&
+      (cave[x][y-1] == Xbumper ||
+       cave[x][y-1] == Ybumper ||
+       cave[x+1][y] == Xbumper ||
+       cave[x+1][y] == Ybumper ||
+       cave[x][y+1] == Xbumper ||
+       cave[x][y+1] == Ybumper ||
+       cave[x-1][y] == Xbumper ||
+       cave[x-1][y] == Ybumper))
+  {
+    lev.killed_voodoo_dead = TRUE;
+    next[x][y] = Zboom;
+    Lboom_bug(x, y);
 
     return;
   }
@@ -3719,6 +3892,23 @@ static void Ltank_1_e(int x, int y)
     return;
   }
 
+  if (game_em.use_emerald_dash_engine &&
+      (cave[x][y-1] == Xbumper ||
+       cave[x][y-1] == Ybumper ||
+       cave[x+1][y] == Xbumper ||
+       cave[x+1][y] == Ybumper ||
+       cave[x][y+1] == Xbumper ||
+       cave[x][y+1] == Ybumper ||
+       cave[x-1][y] == Xbumper ||
+       cave[x-1][y] == Ybumper))
+  {
+    lev.killed_voodoo_dead = TRUE;
+    next[x][y] = Zboom;
+    Lboom_bug(x, y);
+
+    return;
+  }
+
   switch (cave[x][y-1])
   {
     case Zplayer:
@@ -3771,6 +3961,23 @@ static void Ltank_2_e(int x, int y)
   {
     next[x][y] = Zboom;
     Lboom_tank(x, y);
+
+    return;
+  }
+
+  if (game_em.use_emerald_dash_engine &&
+      (cave[x][y-1] == Xbumper ||
+       cave[x][y-1] == Ybumper ||
+       cave[x+1][y] == Xbumper ||
+       cave[x+1][y] == Ybumper ||
+       cave[x][y+1] == Xbumper ||
+       cave[x][y+1] == Ybumper ||
+       cave[x-1][y] == Xbumper ||
+       cave[x-1][y] == Ybumper))
+  {
+    lev.killed_voodoo_dead = TRUE;
+    next[x][y] = Zboom;
+    Lboom_bug(x, y);
 
     return;
   }
@@ -3849,6 +4056,23 @@ static void Ltank_1_s(int x, int y)
     return;
   }
 
+  if (game_em.use_emerald_dash_engine &&
+      (cave[x][y-1] == Xbumper ||
+       cave[x][y-1] == Ybumper ||
+       cave[x+1][y] == Xbumper ||
+       cave[x+1][y] == Ybumper ||
+       cave[x][y+1] == Xbumper ||
+       cave[x][y+1] == Ybumper ||
+       cave[x-1][y] == Xbumper ||
+       cave[x-1][y] == Ybumper))
+  {
+    lev.killed_voodoo_dead = TRUE;
+    next[x][y] = Zboom;
+    Lboom_bug(x, y);
+
+    return;
+  }
+
   switch (cave[x+1][y])
   {
     case Zplayer:
@@ -3901,6 +4125,23 @@ static void Ltank_2_s(int x, int y)
   {
     next[x][y] = Zboom;
     Lboom_tank(x, y);
+
+    return;
+  }
+
+  if (game_em.use_emerald_dash_engine &&
+      (cave[x][y-1] == Xbumper ||
+       cave[x][y-1] == Ybumper ||
+       cave[x+1][y] == Xbumper ||
+       cave[x+1][y] == Ybumper ||
+       cave[x][y+1] == Xbumper ||
+       cave[x][y+1] == Ybumper ||
+       cave[x-1][y] == Xbumper ||
+       cave[x-1][y] == Ybumper))
+  {
+    lev.killed_voodoo_dead = TRUE;
+    next[x][y] = Zboom;
+    Lboom_bug(x, y);
 
     return;
   }
@@ -3979,6 +4220,23 @@ static void Ltank_1_w(int x, int y)
     return;
   }
 
+  if (game_em.use_emerald_dash_engine &&
+      (cave[x][y-1] == Xbumper ||
+       cave[x][y-1] == Ybumper ||
+       cave[x+1][y] == Xbumper ||
+       cave[x+1][y] == Ybumper ||
+       cave[x][y+1] == Xbumper ||
+       cave[x][y+1] == Ybumper ||
+       cave[x-1][y] == Xbumper ||
+       cave[x-1][y] == Ybumper))
+  {
+    lev.killed_voodoo_dead = TRUE;
+    next[x][y] = Zboom;
+    Lboom_bug(x, y);
+
+    return;
+  }
+
   switch (cave[x][y+1])
   {
     case Zplayer:
@@ -4031,6 +4289,23 @@ static void Ltank_2_w(int x, int y)
   {
     next[x][y] = Zboom;
     Lboom_tank(x, y);
+
+    return;
+  }
+
+  if (game_em.use_emerald_dash_engine &&
+      (cave[x][y-1] == Xbumper ||
+       cave[x][y-1] == Ybumper ||
+       cave[x+1][y] == Xbumper ||
+       cave[x+1][y] == Ybumper ||
+       cave[x][y+1] == Xbumper ||
+       cave[x][y+1] == Ybumper ||
+       cave[x-1][y] == Xbumper ||
+       cave[x-1][y] == Ybumper))
+  {
+    lev.killed_voodoo_dead = TRUE;
+    next[x][y] = Zboom;
+    Lboom_bug(x, y);
 
     return;
   }

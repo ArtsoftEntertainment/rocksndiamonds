@@ -369,6 +369,7 @@ void prepare_em_level(void)
   lev.wonderwall_active = cav.wonderwall_active;
 
   lev.killed_out_of_time = FALSE;
+  lev.killed_voodoo_dead = FALSE;
 
   lev.num_eater_arrays = cav.num_eater_arrays;
   lev.num_ball_arrays  = cav.num_ball_arrays;
