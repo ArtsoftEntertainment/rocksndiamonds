@@ -565,6 +565,14 @@ static void kill_player(struct PLAYER *ply)
 #endif
 
     default:
+      if (lev.killed_voodoo_dead)
+      {
+	cave[x-1][y] = Xchain;
+	cave[x+1][y] = Xchain;
+	cave[x][y-1] = Xchain;
+	cave[x][y+1] = Xchain;
+      }
+
       cave[x][y] = Xboom_1;
       boom[x][y] = Xblank;
       break;
