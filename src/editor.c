@@ -850,6 +850,7 @@ enum
   GADGET_ID_BD_SCAN_FIRST_AND_LAST_ROW,
   GADGET_ID_BD_SHORT_EXPLOSIONS,
   GADGET_ID_BD_USE_KRISSZ_ENGINE,
+  GADGET_ID_EM_USE_EMERALD_DASH_ENGINE,
   GADGET_ID_STICK_ELEMENT,
   GADGET_ID_BD_SLIPPERY_PREFER_LEFT,
   GADGET_ID_EM_SLIPPERY_GEMS,
@@ -1318,6 +1319,7 @@ enum
   ED_CHECKBUTTON_ID_BD_SCAN_FIRST_AND_LAST_ROW,
   ED_CHECKBUTTON_ID_BD_SHORT_EXPLOSIONS,
   ED_CHECKBUTTON_ID_BD_USE_KRISSZ_ENGINE,
+  ED_CHECKBUTTON_ID_EM_USE_EMERALD_DASH_ENGINE,
   ED_CHECKBUTTON_ID_STICK_ELEMENT,
   ED_CHECKBUTTON_ID_BD_SLIPPERY_PREFER_LEFT,
   ED_CHECKBUTTON_ID_EM_SLIPPERY_GEMS,
@@ -4465,6 +4467,14 @@ static struct
     &level.bd_use_krissz_engine,
     NULL, NULL,
     "Krissz Engine compatibility",		"Use Krissz Engine style game behavior"
+  },
+  {
+    ED_CHECKBUTTON_ID_EM_USE_EMERALD_DASH_ENGINE,
+    ED_LEVEL_SETTINGS_XPOS(0),			ED_LEVEL_SETTINGS_YPOS(14),
+    GADGET_ID_EM_USE_EMERALD_DASH_ENGINE,	GADGET_ID_NONE,
+    &level.em_use_emerald_dash_engine,
+    NULL, NULL,
+    "Emerald Dash compatibility",		"Use Emerald Dash style game behavior"
   },
 
   // ---------- element settings: configure (various elements) ----------------
@@ -12446,6 +12456,10 @@ static void DrawLevelConfigLevel(void)
   // draw text input gadgets
   for (i = ED_TEXTINPUT_ID_LEVEL_FIRST; i <= ED_TEXTINPUT_ID_LEVEL_LAST; i++)
     MapTextInputGadget(i);
+
+  // special case: show checkbox for Emerald Dash compatibility when using EM game engine
+  if (level.game_engine_type == GAME_ENGINE_TYPE_EM)
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_EM_USE_EMERALD_DASH_ENGINE);
 }
 
 static char *getLevelsetSubdirFromSaveMode(int save_mode)
