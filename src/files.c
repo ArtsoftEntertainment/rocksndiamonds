@@ -11169,6 +11169,7 @@ void DumpTape(struct TapeInfo *tape)
   Print("\n");
 
   Print("- random seed: %d\n", tape->random_seed);
+  Print("- number of players: %d\n", tape->num_participating_players);
 
   PrintLine("-", 79);
 
