@@ -10205,6 +10205,66 @@ boolean SaveLevelChecked(int nr)
   return level_saved;
 }
 
+static int getPlayerBitFromElement(int element)
+{
+  if (element >= EL_PLAYER_1 && element <= EL_PLAYER_4)
+    return 1 << (element - EL_PLAYER_1);
+  else if (element == EL_SP_MURPHY || element == EL_SOKOBAN_FIELD_PLAYER)
+    return 1;
+  else
+    return 0;
+}
+
+static int getNumberOfPlayersInLevel(struct LevelInfo *level)
+{
+  int players_bitmask = 0;
+  int num_players = 0;
+  int i, j, x, y;
+
+  for (x = 0; x < level->fieldx; x++)
+    for (y = 0; y < level->fieldy; y++)
+      players_bitmask |= getPlayerBitFromElement(level->field[x][y]);
+
+  if (level->game_engine_type == GAME_ENGINE_TYPE_RND)
+  {
+    for (i = 0; i < level->num_yamyam_contents; i++)
+      for (x = 0; x < 3; x++)
+	for (y = 0; y < 3; y++)
+	  players_bitmask |= getPlayerBitFromElement(level->yamyam_content[i].e[x][y]);
+
+    for (i = 0; i < level->num_ball_contents; i++)
+      for (x = 0; x < 3; x++)
+	for (y = 0; y < 3; y++)
+	  players_bitmask |= getPlayerBitFromElement(level->ball_content[i].e[x][y]);
+
+    for (i = 0; i < NUM_CUSTOM_ELEMENTS; i++)
+    {
+      struct ElementInfo *ei = &element_info[EL_CUSTOM_START + i];
+
+      for (x = 0; x < 3; x++)
+        for (y = 0; y < 3; y++)
+          players_bitmask |= getPlayerBitFromElement(ei->content.e[x][y]);
+
+      for (j = 0; j < ei->num_change_pages; j++)
+      {
+	struct ElementChangeInfo *change = &ei->change_page[j];
+
+	players_bitmask |= getPlayerBitFromElement(change->target_element);
+
+	for (x = 0; x < 3; x++)
+	  for (y = 0; y < 3; y++)
+	    players_bitmask |= getPlayerBitFromElement(change->target_content.e[x][y]);
+      }
+    }
+  }
+
+  for (i = 0; i < MAX_PLAYERS; i++)
+    if (players_bitmask & (1 << i))
+      num_players++;
+
+  return num_players;
+}
+
 void DumpLevel(struct LevelInfo *level)
 {
   if (level->no_level_file || level->no_valid_file)
@@ -10215,6 +10275,7 @@ void DumpLevel(struct LevelInfo *level)
   }
 
   char *time_unit = (level->em_use_moves_not_seconds ? "moves" : "seconds");
+  int num_players = getNumberOfPlayersInLevel(level);
 
   PrintLine("-", 79);
   Print("Level xxx (file version %s, game version %s)\n",
@@ -10244,6 +10305,7 @@ void DumpLevel(struct LevelInfo *level)
   Print("use spring bug: %s\n", (level->use_spring_bug ? "yes" : "no"));
   Print("use step counter: %s\n", (level->use_step_counter ? "yes" : "no"));
   Print("rate time over score: %s\n", (level->rate_time_over_score ? "yes" : "no"));
+  Print("number of players: %d\n", num_players);
 
   if (options.debug)
   {
