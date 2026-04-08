@@ -35,6 +35,7 @@ char *getLocalLevelTemplateFilename(void);
 char *getGlobalLevelTemplateFilename(void);
 
 int getMappedElement(int);
+int getNumberOfPlayersInLevel(struct LevelInfo *);
 
 void LoadLevelFromFilename(struct LevelInfo *, char *);
 void LoadLevel(int);

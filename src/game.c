@@ -3344,6 +3344,10 @@ static void InitGameEngine(void)
     game.team_mode = (num_players > 1);
   }
 
+  // always use single-player game mode for levels containing only one player
+  if (getNumberOfPlayersInLevel(&level) < 2)
+    game.team_mode = FALSE;
+
   // set flag if sticky movement input should be used (BD engine only)
   game.sticky_movement_input = (tape.playing ? tape.sticky_movement_input :
 				level.game_engine_type == GAME_ENGINE_TYPE_BD ?

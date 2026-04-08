@@ -10215,7 +10215,7 @@ static int getPlayerBitFromElement(int element)
     return 0;
 }
 
-static int getNumberOfPlayersInLevel(struct LevelInfo *level)
+int getNumberOfPlayersInLevel(struct LevelInfo *level)
 {
   int players_bitmask = 0;
   int num_players = 0;
