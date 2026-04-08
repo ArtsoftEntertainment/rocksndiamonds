@@ -5876,8 +5876,17 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 
       ti = setHallOfFameActiveEntry(ti_ptr);
 
-      if (button != MB_MENU_INITIALIZE)
-	drawChooseTreeScreen(ti);
+      // force remapping optional gadgets (especially scroll bar)
+      UnmapScreenTreeGadgets();
+
+      // redraw complete high score screen, as scroll bars may have changed
+      ClearField();
+
+      // redraw level selection buttons (which have just been erased)
+      RedrawScreenMenuGadgets(SCREEN_MASK_SCORES);
+
+      // redraw everything else
+      HandleChooseTree(0, 0, 0, 0, MB_MENU_INITIALIZE, ti_ptr);
     }
   }
 
