@@ -457,7 +457,8 @@ static boolean SetRequest_ApiGetScore(struct HttpRequest *request, void *data_ra
 	   "  \"levelset_name\":        \"%s\",\n"
 	   "  \"level_nr\":             \"%d\",\n"
 	   "  \"level_namespace\":      \"%s\",\n"
-	   "  \"level_identcode\":      \"%s\"\n"
+	   "  \"level_identcode\":      \"%s\",\n"
+	   "  \"team_mode\":            \"%d\"\n"
 	   "}\n",
 	   getPasswordJSON(setup.api_server_password),
 	   getProgramRealVersionString(),
@@ -466,7 +467,8 @@ static boolean SetRequest_ApiGetScore(struct HttpRequest *request, void *data_ra
 	   levelset_name,
 	   level_nr,
 	   level_namespace,
-	   level_identcode);
+	   level_identcode,
+	   setup.team_mode);
 
   checked_free(levelset_identifier);
   checked_free(levelset_name);
