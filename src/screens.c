@@ -1672,6 +1672,11 @@ static void DrawMenuText(struct TextPosInfo tpi, char *text)
   DrawTextSAligned(xpos, ypos, text, tpi.font, tpi.align);
 }
 
+static void DrawMenuFooter(char *text)
+{
+  DrawMenuText(menu.text.footer, text);
+}
+
 static void DrawPressedGraphicThruMask(int dst_x, int dst_y,
 				       int graphic, boolean pressed)
 {
@@ -2031,7 +2036,7 @@ static void DrawInfoScreen_Footer(char *text_footer)
   if (menu.skip_footer_info[info_mode])
     return;
 
-  DrawMenuText(menu.text.footer, text_footer);
+  DrawMenuFooter(text_footer);
 }
 
 static void DrawTitleScreenImage(int nr, boolean initial)
@@ -6766,7 +6771,7 @@ static void DrawScoreInfo_Content(int entry_nr)
 
   select_y2 = SY + ystart;
 
-  DrawMenuText(menu.text.footer, "Press any key or button to go back");
+  DrawMenuFooter("Press any key or button to go back");
 
   AdjustScoreInfoButtons_SelectScore(select_x, select_y1, select_y2);
   AdjustScoreInfoButtons_PlayTape(play_x, play_y, play_visible);
@@ -8594,7 +8599,7 @@ static void ToggleNetworkModeIfNeeded(void)
   else
     DisconnectFromNetworkServer();
 
-  DrawMenuText(menu.text.footer, "Press any key or button for setup menu");
+  DrawMenuFooter("Press any key or button for setup menu");
 
   WaitForEventToContinue();
 
