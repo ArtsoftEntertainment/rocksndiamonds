@@ -3653,7 +3653,7 @@ static int getHeadlineSpacing(void)
 void DrawInfoScreen_NotAvailable(char *text_title, char *text_error)
 {
   int font_error = FONT_TEXT_2;
-  int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART + getHeadlineSpacing();
+  int ystart = mSY - SY + MENU_SCREEN_INFO_YSTART + getHeadlineSpacing();
 
   SetMainBackgroundImageIfDefined(IMG_BACKGROUND_INFO);
 
@@ -3998,7 +3998,7 @@ void HandleInfoScreen_Music(int dx, int dy, int button)
   int font_text  = MENU_INFO_FONT_TEXT;
   int spacing_head = menu.headline2_spacing_info[info_mode];
   int ystep_head = getMenuTextStep(spacing_head,  font_head);
-  int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART;
+  int ystart = mSY - SY + MENU_SCREEN_INFO_YSTART;
 
   if (button == MB_MENU_INITIALIZE)
   {
@@ -4836,7 +4836,7 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
     if (num_screens == 0)
     {
       int font_title = MENU_INFO_FONT_TITLE;
-      int ystart  = mSY - SY + MENU_SCREEN_INFO_YSTART;
+      int ystart = mSY - SY + MENU_SCREEN_INFO_YSTART;
 
       ClearField();
 
@@ -8578,7 +8578,7 @@ static void execOfferUploadTapes(void)
 static void ToggleNetworkModeIfNeeded(void)
 {
   int font_title = FONT_TITLE_1;
-  int ystart  = MENU_TITLE_YPOS;
+  int ystart = MENU_TITLE_YPOS;
   char *text = (setup.network_mode ? "Start Network" : "Stop Network");
 
   if (setup.network_mode == network.enabled)
