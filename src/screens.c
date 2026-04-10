@@ -1665,6 +1665,17 @@ static void InitializeMainControls(void)
   }
 }
 
+static void DrawMenuText(struct TextPosInfo tpi, char *text)
+{
+  if (tpi.x == -1 && tpi.y == -1)
+    return;
+
+  int xpos = MENU_TEXT_ALIGNED_XPOS(tpi);
+  int ypos = MENU_TEXT_ALIGNED_YPOS(tpi);
+
+  DrawTextSAligned(xpos, ypos, text, tpi.font, tpi.align);
+}
+
 static void DrawPressedGraphicThruMask(int dst_x, int dst_y,
 				       int graphic, boolean pressed)
 {
