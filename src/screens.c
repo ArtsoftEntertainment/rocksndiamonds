@@ -2021,15 +2021,12 @@ static void DrawInfoScreen_Headline(int screen_nr, int num_screens, int use_glob
 
   if (draw_story_headline)
   {
-    DrawTextSAligned(MENU_TITLE_STORY_XPOS, MENU_TITLE_STORY_YPOS, info_text_title_2,
-		     FONT_TITLE_STORY, menu.text.title_story.align);
+    DrawMenuText(menu.text.title_story, info_text_title_2);
   }
   else
   {
-    DrawTextSAligned(MENU_TITLE_1_XPOS, MENU_TITLE_1_YPOS, info_text_title_1,
-		     FONT_TITLE_1, menu.text.title_1.align);
-    DrawTextSAligned(MENU_TITLE_2_XPOS, MENU_TITLE_2_YPOS, info_text_title_2,
-		     FONT_TITLE_2, menu.text.title_2.align);
+    DrawMenuText(menu.text.title_1, info_text_title_1);
+    DrawMenuText(menu.text.title_2, info_text_title_2);
   }
 }
 
