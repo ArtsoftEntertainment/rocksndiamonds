@@ -9715,7 +9715,7 @@ static void DrawSetupScreen_Generic(void)
   // use modified setup info without setup entries marked as hidden
   setup_info = getSetupInfoFinal(setup_info);
 
-  DrawTextSCentered(MENU_TITLE_YPOS, FONT_TITLE_1, title_string);
+  DrawMenuText(menu.text.title, title_string);
 
   // determine maximal number of setup entries that can be displayed on screen
   num_setup_info = 0;
@@ -9757,7 +9757,7 @@ static void DrawSetupScreen_Input(void)
 
   setup_info = getSetupInfoFinal(setup_info_input);
 
-  DrawTextSCentered(MENU_TITLE_YPOS, FONT_TITLE_1, STR_SETUP_INPUT);
+  DrawMenuText(menu.text.title, STR_SETUP_INPUT);
 
   for (i = 0; setup_info[i].type != 0; i++)
   {
@@ -10088,7 +10088,7 @@ static boolean CustomizeKeyboardMain(int player_nr)
 
   ClearField();
 
-  DrawTextSCentered(MENU_TITLE_YPOS, FONT_TITLE_1, "Keyboard Input");
+  DrawMenuText(menu.text.title, "Keyboard Input");
 
   step_nr = 0;
   DrawText(mSX, mSY + (2 + 2 * step_nr) * 32,
