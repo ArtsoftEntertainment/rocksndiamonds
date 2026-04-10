@@ -382,6 +382,7 @@ static void execOfferUploadTapes(void);
 static void execSaveAndExitSetup(void);
 
 static void DrawHallOfFame_setScoreEntries(void);
+static void HandleHallOfFame_ForceRedraw(TreeInfo **);
 static void HandleHallOfFame_SelectLevel(int, int);
 static void HandleInfoScreen_SelectLevel(int, int);
 static char *getHallOfFameRankText(int, int);
@@ -5876,17 +5877,8 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
 
       ti = setHallOfFameActiveEntry(ti_ptr);
 
-      // force remapping optional gadgets (especially scroll bar)
-      UnmapScreenTreeGadgets();
-
       // redraw complete high score screen, as scroll bars may have changed
-      ClearField();
-
-      // redraw level selection buttons (which have just been erased)
-      RedrawScreenMenuGadgets(SCREEN_MASK_SCORES);
-
-      // redraw everything else
-      HandleChooseTree(0, 0, 0, 0, MB_MENU_INITIALIZE, ti_ptr);
+      HandleHallOfFame_ForceRedraw(ti_ptr);
     }
   }
 
@@ -6609,6 +6601,21 @@ static char *getHallOfFameTapeDateText(struct ScoreEntry *entry)
   return tape_date;
 }
 
+static void HandleHallOfFame_ForceRedraw(TreeInfo **ti_ptr)
+{
+  // force remapping optional gadgets (as scroll bars may have changed)
+  UnmapScreenTreeGadgets();
+
+  // clear screen
+  ClearField();
+
+  // force redrawing level selection buttons after clearing screen
+  RedrawScreenMenuGadgets(SCREEN_MASK_SCORES);
+
+  // redraw everything else
+  HandleChooseTree(0, 0, 0, 0, MB_MENU_INITIALIZE, ti_ptr);
+}
+
 static void HandleHallOfFame_SelectLevel(int step, int direction)
 {
   int old_level_nr = scores.last_level_nr;
@@ -6636,16 +6643,8 @@ static void HandleHallOfFame_SelectLevel(int step, int direction)
 
     if (game_status == GAME_MODE_SCORES)
     {
-      // force remapping optional gadgets (especially scroll bar)
-      UnmapScreenTreeGadgets();
-
       // redraw complete high score screen, as sub-title has changed
-      ClearField();
-
-      // redraw level selection buttons (which have just been erased)
-      RedrawScreenMenuGadgets(SCREEN_MASK_SCORES);
-
-      HandleChooseTree(0, 0, 0, 0, MB_MENU_INITIALIZE, &score_entry_current);
+      HandleHallOfFame_ForceRedraw(&score_entry_current);
     }
     else
     {
