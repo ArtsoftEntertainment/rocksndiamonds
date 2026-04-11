@@ -1665,15 +1665,24 @@ static void InitializeMainControls(void)
   }
 }
 
-static void DrawMenuText(struct TextPosInfo tpi, char *text)
+static void DrawMenuText(struct TextPosInfo tpi, char *format, ...)
 {
   if (tpi.x == -1 && tpi.y == -1)
     return;
 
   int xpos = MENU_TEXT_ALIGNED_XPOS(tpi);
   int ypos = MENU_TEXT_ALIGNED_YPOS(tpi);
+  char buffer[MAX_OUTPUT_LINESIZE + 1];
+  va_list ap;
 
-  DrawTextSAligned(xpos, ypos, text, tpi.font, tpi.align);
+  va_start(ap, format);
+  vsprintf(buffer, format, ap);
+  va_end(ap);
+
+  if (strlen(buffer) > MAX_OUTPUT_LINESIZE)
+    Fail("string too long in DrawMenuText() -- aborting");
+
+  DrawTextSAligned(xpos, ypos, buffer, tpi.font, tpi.align);
 }
 
 static void DrawMenuTitleNr(int nr, char *text)
@@ -5784,16 +5793,15 @@ static void drawChooseTreeInfo(TreeInfo *ti)
 {
   int entry_pos = ti->cl_first + ti->cl_cursor;
   int last_redraw_mask = redraw_mask;
-  int ypos = MENU_TITLE_2_YPOS;
-  int font_nr = FONT_TITLE_2;
+  int ypos = MENU_TEXT_ALIGNED_YPOS(menu.text.title_2);
+  int font_nr = menu.text.title_2.font;
   int x;
 
   if (ti->type == TREE_TYPE_LEVEL_NR)
-    DrawTextFCentered(ypos, font_nr, leveldir_current->name);
+    DrawMenuText(menu.text.title_2, leveldir_current->name);
 
   if (ti->type == TREE_TYPE_SCORE_ENTRY)
-    DrawTextFCentered(ypos, font_nr, "HighScores of Level %d",
-		      scores.last_level_nr);
+    DrawMenuText(menu.text.title_2, "HighScores of Level %d", scores.last_level_nr);
 
   if (ti->type != TREE_TYPE_LEVELSET_DIR)
     return;
@@ -5804,15 +5812,12 @@ static void drawChooseTreeInfo(TreeInfo *ti)
   DrawBackgroundForFont(SX, SY + ypos, SXSIZE, getFontHeight(font_nr), font_nr);
 
   if (node->parent_link)
-    DrawTextFCentered(ypos, font_nr, "leave \"%s\"",
-		      node->node_parent->name);
+    DrawMenuText(menu.text.title_2, "leave \"%s\"", node->node_parent->name);
   else if (node->level_group)
-    DrawTextFCentered(ypos, font_nr, "enter \"%s\"",
-		      node->name);
+    DrawMenuText(menu.text.title_2, "enter \"%s\"", node->name);
   else if (ti->type == TREE_TYPE_LEVELSET_DIR)
-    DrawTextFCentered(ypos, font_nr, "%3d %s (%s)",
-		      node->levels, (node->levels > 1 ? "levels" : "level"),
-		      node->class_desc);
+    DrawMenuText(menu.text.title_2, "%3d %s (%s)", node->levels,
+		 (node->levels > 1 ? "levels" : "level"), node->class_desc);
 
   // let BackToFront() redraw only what is needed
   redraw_mask = last_redraw_mask;
