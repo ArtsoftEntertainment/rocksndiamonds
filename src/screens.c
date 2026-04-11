@@ -191,6 +191,10 @@
 							      getFontHeight((t).font), (t).valign))
 #define MENU_SCREEN_START_XPOS			1
 #define MENU_SCREEN_START_YPOS			2
+#define MENU_TITLE				0
+#define MENU_TITLE_1				1
+#define MENU_TITLE_2				2
+#define MENU_TITLE_STORY			3
 #define MENU_TITLE_XPOS				MENU_TEXT_ALIGNED_XPOS(menu.text.title)
 #define MENU_TITLE_YPOS				MENU_TEXT_ALIGNED_YPOS(menu.text.title)
 #define MENU_TITLE_1_XPOS			MENU_TEXT_ALIGNED_XPOS(menu.text.title_1)
@@ -1672,6 +1676,18 @@ static void DrawMenuText(struct TextPosInfo tpi, char *text)
   DrawTextSAligned(xpos, ypos, text, tpi.font, tpi.align);
 }
 
+static void DrawMenuTitleNr(int nr, char *text)
+{
+  DrawMenuText(nr == MENU_TITLE_1 ?	menu.text.title_1 :
+	       nr == MENU_TITLE_2 ?	menu.text.title_2 :
+	       nr == MENU_TITLE_STORY ?	menu.text.title_story : menu.text.title, text);
+}
+
+static void DrawMenuTitle(char *text)
+{
+  DrawMenuText(menu.text.title, text);
+}
+
 static void DrawMenuFooter(char *text)
 {
   DrawMenuText(menu.text.footer, text);
@@ -2022,12 +2038,12 @@ static void DrawInfoScreen_Headline(int screen_nr, int num_screens, int use_glob
 
   if (draw_story_headline)
   {
-    DrawMenuText(menu.text.title_story, info_text_title_2);
+    DrawMenuTitleNr(MENU_TITLE_STORY, info_text_title_2);
   }
   else
   {
-    DrawMenuText(menu.text.title_1, info_text_title_1);
-    DrawMenuText(menu.text.title_2, info_text_title_2);
+    DrawMenuTitleNr(MENU_TITLE_1, info_text_title_1);
+    DrawMenuTitleNr(MENU_TITLE_2, info_text_title_2);
   }
 }
 
@@ -3267,7 +3283,7 @@ static void DrawInfoScreen_Main(void)
 
   OpenDoor(GetDoorState() | DOOR_NO_DELAY | DOOR_FORCE_REDRAW);
 
-  DrawTextSCentered(MENU_TITLE_YPOS, FONT_TITLE_1, getConfigProgramString(TEXT_ID_TITLE_INFO));
+  DrawMenuTitle(getConfigProgramString(TEXT_ID_TITLE_INFO));
 
   info_info = info_info_main;
 
@@ -5711,11 +5727,11 @@ static void drawChooseTreeText(TreeInfo *ti, int y, boolean active)
 
 static void drawChooseTreeHeadExt(int type, char *title_string)
 {
-  int y = (type == TREE_TYPE_SCORE_ENTRY ||
-	   type == TREE_TYPE_LEVELSET_DIR ||
-	   type == TREE_TYPE_LEVEL_NR ? MENU_TITLE_1_YPOS : MENU_TITLE_YPOS);
+  int nr = (type == TREE_TYPE_SCORE_ENTRY ||
+	    type == TREE_TYPE_LEVELSET_DIR ||
+	    type == TREE_TYPE_LEVEL_NR ? MENU_TITLE_1 : MENU_TITLE);
 
-  DrawTextSCentered(y, FONT_TITLE_1, title_string);
+  DrawMenuTitleNr(nr, title_string);
 }
 
 static void drawChooseTreeHead(TreeInfo *ti)
@@ -8577,8 +8593,6 @@ static void execOfferUploadTapes(void)
 
 static void ToggleNetworkModeIfNeeded(void)
 {
-  int font_title = FONT_TITLE_1;
-  int ystart = MENU_TITLE_YPOS;
   char *text = (setup.network_mode ? "Start Network" : "Stop Network");
 
   if (setup.network_mode == network.enabled)
@@ -8590,7 +8604,7 @@ static void ToggleNetworkModeIfNeeded(void)
 
   ClearField();
 
-  DrawTextSCentered(ystart, font_title, text);
+  DrawMenuTitle(text);
 
   FadeIn(REDRAW_ALL);
 
@@ -9705,7 +9719,7 @@ static void DrawSetupScreen_Generic(void)
   // use modified setup info without setup entries marked as hidden
   setup_info = getSetupInfoFinal(setup_info);
 
-  DrawMenuText(menu.text.title, title_string);
+  DrawMenuTitle(title_string);
 
   // determine maximal number of setup entries that can be displayed on screen
   num_setup_info = 0;
@@ -9747,7 +9761,7 @@ static void DrawSetupScreen_Input(void)
 
   setup_info = getSetupInfoFinal(setup_info_input);
 
-  DrawMenuText(menu.text.title, STR_SETUP_INPUT);
+  DrawMenuTitle(STR_SETUP_INPUT);
 
   for (i = 0; setup_info[i].type != 0; i++)
   {
@@ -10078,7 +10092,7 @@ static boolean CustomizeKeyboardMain(int player_nr)
 
   ClearField();
 
-  DrawMenuText(menu.text.title, "Keyboard Input");
+  DrawMenuTitle("Keyboard Input");
 
   step_nr = 0;
   DrawText(mSX, mSY + (2 + 2 * step_nr) * 32,
@@ -10722,7 +10736,8 @@ static boolean ConfigureVirtualButtonsMain(void)
 
   ClearField();
 
-  DrawTextSCentered(MENU_TITLE_YPOS, FONT_TITLE_1, "Virtual Buttons");
+  DrawMenuTitle("Virtual Buttons");
+
   DrawTextSCentered(ypos1, font_nr, "Select tiles to");
   DrawTextSCentered(ypos2, font_nr, customize_step_text[step_nr]);
 
@@ -10918,7 +10933,8 @@ static boolean ConfigureVirtualButtonsMain(void)
 
 	ClearField();
 
-	DrawTextSCentered(MENU_TITLE_YPOS, FONT_TITLE_1, "Virtual Buttons");
+	DrawMenuTitle("Virtual Buttons");
+
 	DrawTextSCentered(ypos1, font_nr, "Select tiles to");
 	DrawTextSCentered(ypos2, font_nr, customize_step_text[step_nr]);
       }
