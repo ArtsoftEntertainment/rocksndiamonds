@@ -5791,17 +5791,18 @@ static void drawChooseTreeList(TreeInfo *ti)
 
 static void drawChooseTreeInfo(TreeInfo *ti)
 {
+  struct TextPosInfo *tpi = &menu.text.title_2;
   int entry_pos = ti->cl_first + ti->cl_cursor;
   int last_redraw_mask = redraw_mask;
-  int ypos = MENU_TEXT_ALIGNED_YPOS(menu.text.title_2);
-  int font_nr = menu.text.title_2.font;
+  int ypos = MENU_TEXT_ALIGNED_YPOS(*tpi);
+  int font_nr = tpi->font;
   int x;
 
   if (ti->type == TREE_TYPE_LEVEL_NR)
-    DrawMenuText(&menu.text.title_2, leveldir_current->name);
+    DrawMenuText(tpi, leveldir_current->name);
 
   if (ti->type == TREE_TYPE_SCORE_ENTRY)
-    DrawMenuText(&menu.text.title_2, "HighScores of Level %d", scores.last_level_nr);
+    DrawMenuText(tpi, "HighScores of Level %d", scores.last_level_nr);
 
   if (ti->type != TREE_TYPE_LEVELSET_DIR)
     return;
@@ -5812,12 +5813,12 @@ static void drawChooseTreeInfo(TreeInfo *ti)
   DrawBackgroundForFont(SX, SY + ypos, SXSIZE, getFontHeight(font_nr), font_nr);
 
   if (node->parent_link)
-    DrawMenuText(&menu.text.title_2, "leave \"%s\"", node->node_parent->name);
+    DrawMenuText(tpi, "leave \"%s\"", node->node_parent->name);
   else if (node->level_group)
-    DrawMenuText(&menu.text.title_2, "enter \"%s\"", node->name);
+    DrawMenuText(tpi, "enter \"%s\"", node->name);
   else if (ti->type == TREE_TYPE_LEVELSET_DIR)
-    DrawMenuText(&menu.text.title_2, "%3d %s (%s)", node->levels,
-		 (node->levels > 1 ? "levels" : "level"), node->class_desc);
+    DrawMenuText(tpi, "%3d %s (%s)", node->levels, (node->levels > 1 ? "levels" : "level"),
+		 node->class_desc);
 
   // let BackToFront() redraw only what is needed
   redraw_mask = last_redraw_mask;
