@@ -1665,13 +1665,13 @@ static void InitializeMainControls(void)
   }
 }
 
-static void DrawMenuText(struct TextPosInfo tpi, char *format, ...)
+static void DrawMenuText(struct TextPosInfo *tpi, char *format, ...)
 {
-  if (tpi.x == -1 && tpi.y == -1)
+  if (tpi->x == -1 && tpi->y == -1)
     return;
 
-  int xpos = MENU_TEXT_ALIGNED_XPOS(tpi);
-  int ypos = MENU_TEXT_ALIGNED_YPOS(tpi);
+  int xpos = MENU_TEXT_ALIGNED_XPOS(*tpi);
+  int ypos = MENU_TEXT_ALIGNED_YPOS(*tpi);
   char buffer[MAX_OUTPUT_LINESIZE + 1];
   va_list ap;
 
@@ -1682,24 +1682,24 @@ static void DrawMenuText(struct TextPosInfo tpi, char *format, ...)
   if (strlen(buffer) > MAX_OUTPUT_LINESIZE)
     Fail("string too long in DrawMenuText() -- aborting");
 
-  DrawTextSAligned(xpos, ypos, buffer, tpi.font, tpi.align);
+  DrawTextSAligned(xpos, ypos, buffer, tpi->font, tpi->align);
 }
 
 static void DrawMenuTitleNr(int nr, char *text)
 {
-  DrawMenuText(nr == MENU_TITLE_1 ?	menu.text.title_1 :
-	       nr == MENU_TITLE_2 ?	menu.text.title_2 :
-	       nr == MENU_TITLE_STORY ?	menu.text.title_story : menu.text.title, text);
+  DrawMenuText(nr == MENU_TITLE_1 ?	&menu.text.title_1 :
+	       nr == MENU_TITLE_2 ?	&menu.text.title_2 :
+	       nr == MENU_TITLE_STORY ?	&menu.text.title_story : &menu.text.title, text);
 }
 
 static void DrawMenuTitle(char *text)
 {
-  DrawMenuText(menu.text.title, text);
+  DrawMenuText(&menu.text.title, text);
 }
 
 static void DrawMenuFooter(char *text)
 {
-  DrawMenuText(menu.text.footer, text);
+  DrawMenuText(&menu.text.footer, text);
 }
 
 static void DrawPressedGraphicThruMask(int dst_x, int dst_y,
@@ -5798,10 +5798,10 @@ static void drawChooseTreeInfo(TreeInfo *ti)
   int x;
 
   if (ti->type == TREE_TYPE_LEVEL_NR)
-    DrawMenuText(menu.text.title_2, leveldir_current->name);
+    DrawMenuText(&menu.text.title_2, leveldir_current->name);
 
   if (ti->type == TREE_TYPE_SCORE_ENTRY)
-    DrawMenuText(menu.text.title_2, "HighScores of Level %d", scores.last_level_nr);
+    DrawMenuText(&menu.text.title_2, "HighScores of Level %d", scores.last_level_nr);
 
   if (ti->type != TREE_TYPE_LEVELSET_DIR)
     return;
@@ -5812,11 +5812,11 @@ static void drawChooseTreeInfo(TreeInfo *ti)
   DrawBackgroundForFont(SX, SY + ypos, SXSIZE, getFontHeight(font_nr), font_nr);
 
   if (node->parent_link)
-    DrawMenuText(menu.text.title_2, "leave \"%s\"", node->node_parent->name);
+    DrawMenuText(&menu.text.title_2, "leave \"%s\"", node->node_parent->name);
   else if (node->level_group)
-    DrawMenuText(menu.text.title_2, "enter \"%s\"", node->name);
+    DrawMenuText(&menu.text.title_2, "enter \"%s\"", node->name);
   else if (ti->type == TREE_TYPE_LEVELSET_DIR)
-    DrawMenuText(menu.text.title_2, "%3d %s (%s)", node->levels,
+    DrawMenuText(&menu.text.title_2, "%3d %s (%s)", node->levels,
 		 (node->levels > 1 ? "levels" : "level"), node->class_desc);
 
   // let BackToFront() redraw only what is needed
