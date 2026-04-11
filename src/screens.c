@@ -5800,8 +5800,7 @@ static void drawChooseTreeInfo(TreeInfo *ti)
 
   if (ti->type == TREE_TYPE_LEVEL_NR)
     DrawMenuText(tpi, leveldir_current->name);
-
-  if (ti->type == TREE_TYPE_SCORE_ENTRY)
+  else if (ti->type == TREE_TYPE_SCORE_ENTRY)
     DrawMenuText(tpi, "HighScores of Level %d", scores.last_level_nr);
 
   if (ti->type != TREE_TYPE_LEVELSET_DIR)
