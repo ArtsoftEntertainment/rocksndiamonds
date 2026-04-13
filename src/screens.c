@@ -5808,6 +5808,7 @@ static void drawChooseTreeInfo(TreeInfo *ti)
 
   TreeInfo *node_first = getTreeInfoFirstGroupEntry(ti);
   TreeInfo *node = getTreeInfoFromPos(node_first, entry_pos);
+  char *format_levels = (tpi->align == ALIGN_CENTER ? "%3d %s (%s)" : "%d %s (%s)");
   char *text_levels = (node->levels > 1 ? "levels" : "level");
 
   DrawBackgroundForFont(SX, SY + ypos, SXSIZE, getFontHeight(font_nr), font_nr);
@@ -5817,7 +5818,7 @@ static void drawChooseTreeInfo(TreeInfo *ti)
   else if (node->level_group)
     DrawMenuText(tpi, "enter \"%s\"", node->name);
   else if (ti->type == TREE_TYPE_LEVELSET_DIR)
-    DrawMenuText(tpi, "%3d %s (%s)", node->levels, text_levels, node->class_desc);
+    DrawMenuText(tpi, format_levels, node->levels, text_levels, node->class_desc);
 
   // let BackToFront() redraw only what is needed
   redraw_mask = last_redraw_mask;
