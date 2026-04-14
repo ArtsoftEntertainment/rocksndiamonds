@@ -4580,7 +4580,7 @@ static void SetWrappedText_GenericScreen(struct TitleMessageInfo *tmi,
   checked_free(raw_text);
 }
 
-static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use_global_screens)
+static void DrawInfoScreen_GenericScreenExt(int screen_nr, int num_screens, int use_global_screens)
 {
   static struct TitleMessageInfo tmi_info;
   struct TitleMessageInfo *tmi = &tmi_info;
@@ -4676,6 +4676,19 @@ static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use
   // redraw level selection buttons (which have just been erased)
   if (info_mode == INFO_MODE_LEVEL)
     RedrawScreenMenuGadgets(SCREEN_MASK_INFO);
+}
+
+static void DrawInfoScreen_GenericScreen(int screen_nr, int num_screens, int use_global_screens)
+{
+  // force INTRO or STORY font on intro/story screen
+  if (info_mode == INFO_MODE_INTRO || info_mode == INFO_MODE_STORY)
+    SetFontStatus(info_mode == INFO_MODE_INTRO ? GAME_MODE_INTRO : GAME_MODE_STORY);
+
+  DrawInfoScreen_GenericScreenExt(screen_nr, num_screens, use_global_screens);
+
+  // reset INTRO or STORY font on intro/story screen
+  if (info_mode == INFO_MODE_INTRO || info_mode == INFO_MODE_STORY)
+    ResetFontStatus();
 }
 
 static void DrawInfoScreen_Generic(void)
