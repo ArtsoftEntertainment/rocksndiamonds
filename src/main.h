@@ -3543,6 +3543,9 @@ struct MenuInfo
   int headline2_spacing[NUM_SPECIAL_GFX_ARGS];
   int headline2_spacing_info[NUM_SPECIAL_GFX_INFO_ARGS];
   int headline2_spacing_setup[NUM_SPECIAL_GFX_SETUP_ARGS];
+  int line_height[NUM_SPECIAL_GFX_ARGS];
+  int line_height_info[NUM_SPECIAL_GFX_INFO_ARGS];
+  int line_height_setup[NUM_SPECIAL_GFX_SETUP_ARGS];
   int line_spacing[NUM_SPECIAL_GFX_ARGS];
   int line_spacing_info[NUM_SPECIAL_GFX_INFO_ARGS];
   int line_spacing_setup[NUM_SPECIAL_GFX_SETUP_ARGS];

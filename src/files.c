@@ -14689,6 +14689,7 @@ static void LoadMenuDesignSettingsFromFilename(char *filename)
       { "menu.paragraph_spacing.INFO",	&menu.paragraph_spacing_info[i]	},
       { "menu.headline1_spacing.INFO",	&menu.headline1_spacing_info[i]	},
       { "menu.headline2_spacing.INFO",	&menu.headline2_spacing_info[i]	},
+      { "menu.line_height.INFO",	&menu.line_height_info[i]	},
       { "menu.line_spacing.INFO",	&menu.line_spacing_info[i]	},
       { "menu.extra_spacing.INFO",	&menu.extra_spacing_info[i]	},
     };
