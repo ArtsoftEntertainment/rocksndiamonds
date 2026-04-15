@@ -9541,8 +9541,8 @@ struct ConfigInfo image_config[] =
 
   { "menu.left_spacing.NAMES",				"0"				},
   { "menu.left_spacing.LEVELS",				"0"				},
+  { "menu.left_spacing.LEVELNR",			"0"				},
   { "menu.left_spacing.SCORES",				"0"				},
-  { "menu.left_spacing.SCOREINFO",			"0"				},
   { "menu.left_spacing.SCOREINFO",			"16"				},
   { "menu.left_spacing.INFO",				"16"				},
   { "menu.left_spacing.INFO[TITLE]",			"16"				},
