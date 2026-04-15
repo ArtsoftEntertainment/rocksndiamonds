@@ -8102,7 +8102,7 @@ struct ConfigInfo image_config[] =
   { "font.text_4.SETUP",				UNDEFINED_FILENAME		},
   { "font.text_4.SETUP.clone_from",			"font.text_4.LEVELS"		},
   { "font.text_4.NAMES",				UNDEFINED_FILENAME		},
-  { "font.text_4.NAMES.clone_from",			"font.menu_1.active"		},
+  { "font.text_4.NAMES.clone_from",			"font.input_1.active.MAIN"	},
   { "font.text_4.INFO",					UNDEFINED_FILENAME		},
   { "font.text_4.INFO.clone_from",			"font.text_4"			},
   { "font.text_4.SCORES",				"RocksFontMedium.png"		},
