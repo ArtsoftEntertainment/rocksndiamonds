@@ -3607,8 +3607,8 @@ static boolean inGfxField_FontHeight(struct TextPosInfo *pos)
   if (pos->x == -1 && pos->y == -1)	// marked as outside viewport
     return FALSE;
 
-  int x = SX + pos->x;
-  int y = SY + pos->y + getFontHeight(pos->font);
+  int x = SX + pos->x + getFontDrawOffsetX(pos->font);
+  int y = SY + pos->y + getFontDrawOffsetY(pos->font) + getFontHeight(pos->font);
 
   if (!IN_GFX_FIELD_FULL(x, y))
     return FALSE;
