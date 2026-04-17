@@ -2075,9 +2075,6 @@ static void DrawInfoScreen_Headline(int screen_nr, int num_screens, int use_glob
 
 static void DrawInfoScreen_Footer(char *text_footer)
 {
-  if (menu.skip_footer_info[info_mode])
-    return;
-
   DrawMenuFooter(text_footer);
 }
 
@@ -4839,7 +4836,6 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
       menu.draw_xoffset_info[INFO_MODE_INTRO]		= menu.draw_xoffset[GAME_MODE_INTRO];
       menu.draw_yoffset_info[INFO_MODE_INTRO]		= menu.draw_yoffset[GAME_MODE_INTRO];
       menu.skip_headline_info[INFO_MODE_INTRO]		= menu.skip_headline[GAME_MODE_INTRO];
-      menu.skip_footer_info[INFO_MODE_INTRO]		= menu.skip_footer[GAME_MODE_INTRO];
       menu.left_spacing_info[INFO_MODE_INTRO]		= menu.left_spacing[GAME_MODE_INTRO];
       menu.right_spacing_info[INFO_MODE_INTRO]		= menu.right_spacing[GAME_MODE_INTRO];
       menu.top_spacing_info[INFO_MODE_INTRO]		= menu.top_spacing[GAME_MODE_INTRO];
@@ -4864,7 +4860,6 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
       menu.draw_xoffset_info[INFO_MODE_STORY]		= menu.draw_xoffset[GAME_MODE_STORY];
       menu.draw_yoffset_info[INFO_MODE_STORY]		= menu.draw_yoffset[GAME_MODE_STORY];
       menu.skip_headline_info[INFO_MODE_STORY]		= menu.skip_headline[GAME_MODE_STORY];
-      menu.skip_footer_info[INFO_MODE_STORY]		= menu.skip_footer[GAME_MODE_STORY];
       menu.left_spacing_info[INFO_MODE_STORY]		= menu.left_spacing[GAME_MODE_STORY];
       menu.right_spacing_info[INFO_MODE_STORY]		= menu.right_spacing[GAME_MODE_STORY];
       menu.top_spacing_info[INFO_MODE_STORY]		= menu.top_spacing[GAME_MODE_STORY];
