@@ -3509,10 +3509,6 @@ struct MenuInfo
   int list_entry_size_info[NUM_SPECIAL_GFX_INFO_ARGS];
   int tile_size_info[NUM_SPECIAL_GFX_INFO_ARGS];
 
-  boolean skip_headline[NUM_SPECIAL_GFX_ARGS];
-  boolean skip_headline_info[NUM_SPECIAL_GFX_INFO_ARGS];
-  boolean skip_headline_setup[NUM_SPECIAL_GFX_SETUP_ARGS];
-
   int left_spacing[NUM_SPECIAL_GFX_ARGS];
   int left_spacing_info[NUM_SPECIAL_GFX_INFO_ARGS];
   int left_spacing_setup[NUM_SPECIAL_GFX_SETUP_ARGS];
