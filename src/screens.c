@@ -320,9 +320,6 @@
 #define SCREEN_MASK_INFO			(1 << 9)
 
 // graphic position and size values for buttons and scrollbars
-#define SC_MENUBUTTON_XSIZE			TILEX
-#define SC_MENUBUTTON_YSIZE			TILEY
-
 #define SC_SCROLLBUTTON_XSIZE			TILEX
 #define SC_SCROLLBUTTON_YSIZE			TILEY
 
@@ -5554,7 +5551,7 @@ static int getAlignXOffsetFromTreeInfo(TreeInfo *ti)
   boolean scrollbar_needed = (num_entries > NUM_MENU_ENTRIES_ON_SCREEN);
   int font_nr = MENU_CHOOSE_TREE_FONT(FC_RED);
   int text_width = max_text_size * getFontWidth(font_nr);
-  int button_width = SC_MENUBUTTON_XSIZE;
+  int button_width = MENU_BUTTON_WIDTH;
   int scrollbar_xpos = SC_SCROLLBAR_XPOS + menu.scrollbar_xoffset;
   int screen_width = (scrollbar_needed ? scrollbar_xpos : SXSIZE);
   int align = menu.list_setup[SETUP_MODE_CHOOSE_OTHER].align;
