@@ -14639,7 +14639,17 @@ static void LoadMenuDesignSettingsFromFilename(char *filename)
       { "menu.draw_yoffset.INFO",	&menu.draw_yoffset_info[i]	},
       { "menu.list_size.INFO",		&menu.list_size_info[i]		},
       { "menu.list_entry_size.INFO",	&menu.list_entry_size_info[i]	},
-      { "menu.tile_size.INFO",		&menu.tile_size_info[i]		}
+      { "menu.tile_size.INFO",		&menu.tile_size_info[i]		},
+      { "menu.left_spacing.INFO",	&menu.left_spacing_info[i]	},
+      { "menu.middle_spacing.INFO",	&menu.middle_spacing_info[i]	},
+      { "menu.right_spacing.INFO",	&menu.right_spacing_info[i]	},
+      { "menu.top_spacing.INFO",	&menu.top_spacing_info[i]	},
+      { "menu.bottom_spacing.INFO",	&menu.bottom_spacing_info[i]	},
+      { "menu.paragraph_spacing.INFO",	&menu.paragraph_spacing_info[i]	},
+      { "menu.headline1_spacing.INFO",	&menu.headline1_spacing_info[i]	},
+      { "menu.headline2_spacing.INFO",	&menu.headline2_spacing_info[i]	},
+      { "menu.line_spacing.INFO",	&menu.line_spacing_info[i]	},
+      { "menu.extra_spacing.INFO",	&menu.extra_spacing_info[i]	}
     };
 
     for (j = 0; j < ARRAY_SIZE(menu_config); j++)
@@ -14660,35 +14670,6 @@ static void LoadMenuDesignSettingsFromFilename(char *filename)
     {
       { "menu.draw_xoffset.SETUP",	&menu.draw_xoffset_setup[i]	},
       { "menu.draw_yoffset.SETUP",	&menu.draw_yoffset_setup[i]	}
-    };
-
-    for (j = 0; j < ARRAY_SIZE(menu_config); j++)
-    {
-      char *token = menu_config[j].token;
-      char *value = getHashEntry(setup_file_hash, token);
-
-      if (value != NULL)
-        *menu_config[j].value = get_integer_from_string(value);
-    }
-  }
-
-  // special case: initialize with default values that may be overwritten
-  // (eg, init "menu.line_spacing.INFO[XXX]" from "menu.line_spacing.INFO")
-  for (i = 0; i < NUM_SPECIAL_GFX_INFO_ARGS; i++)
-  {
-    struct TokenIntPtrInfo menu_config[] =
-    {
-      { "menu.left_spacing.INFO",	&menu.left_spacing_info[i]	},
-      { "menu.middle_spacing.INFO",	&menu.middle_spacing_info[i]	},
-      { "menu.right_spacing.INFO",	&menu.right_spacing_info[i]	},
-      { "menu.top_spacing.INFO",	&menu.top_spacing_info[i]	},
-      { "menu.bottom_spacing.INFO",	&menu.bottom_spacing_info[i]	},
-      { "menu.paragraph_spacing.INFO",	&menu.paragraph_spacing_info[i]	},
-      { "menu.headline1_spacing.INFO",	&menu.headline1_spacing_info[i]	},
-      { "menu.headline2_spacing.INFO",	&menu.headline2_spacing_info[i]	},
-      { "menu.list_entry_size.INFO",	&menu.list_entry_size_info[i]	},
-      { "menu.line_spacing.INFO",	&menu.line_spacing_info[i]	},
-      { "menu.extra_spacing.INFO",	&menu.extra_spacing_info[i]	},
     };
 
     for (j = 0; j < ARRAY_SIZE(menu_config); j++)
