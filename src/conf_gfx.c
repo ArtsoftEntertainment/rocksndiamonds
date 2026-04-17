@@ -9556,7 +9556,7 @@ struct ConfigInfo image_config[] =
   { "menu.left_spacing.INTRO",				"16"				},
   { "menu.left_spacing.STORY",				"16"				},
   { "menu.left_spacing.SETUP",				"0"				},
-  { "menu.left_spacing.SETUP[INPUT]",			"16"				},
+  { "menu.left_spacing.SETUP[INPUT]",			"0"				},
 
   { "menu.middle_spacing.SCOREINFO",			"32"				},
   { "menu.middle_spacing.INFO[ELEMENTS]",		"16"				},
@@ -9579,7 +9579,7 @@ struct ConfigInfo image_config[] =
   { "menu.right_spacing.INTRO",				"16"				},
   { "menu.right_spacing.STORY",				"16"				},
   { "menu.right_spacing.SETUP",				"0"				},
-  { "menu.right_spacing.SETUP[INPUT]",			"16"				},
+  { "menu.right_spacing.SETUP[INPUT]",			"0"				},
 
   { "menu.top_spacing.NAMES",				"64"				},
   { "menu.top_spacing.LEVELS",				"64"				},
@@ -9598,7 +9598,7 @@ struct ConfigInfo image_config[] =
   { "menu.top_spacing.INTRO",				"96"				},
   { "menu.top_spacing.STORY",				"96"				},
   { "menu.top_spacing.SETUP",				"64"				},
-  { "menu.top_spacing.SETUP[INPUT]",			"96"				},
+  { "menu.top_spacing.SETUP[INPUT]",			"64"				},
 
   { "menu.bottom_spacing.NAMES",			"0"				},
   { "menu.bottom_spacing.LEVELS",			"0"				},
@@ -9617,7 +9617,7 @@ struct ConfigInfo image_config[] =
   { "menu.bottom_spacing.INTRO",			"48"				},
   { "menu.bottom_spacing.STORY",			"48"				},
   { "menu.bottom_spacing.SETUP",			"0"				},
-  { "menu.bottom_spacing.SETUP[INPUT]",			"48"				},
+  { "menu.bottom_spacing.SETUP[INPUT]",			"0"				},
 
   { "menu.paragraph_spacing.SCOREINFO",			"-2"				},
   { "menu.paragraph_spacing.INFO",			"-3"				},
