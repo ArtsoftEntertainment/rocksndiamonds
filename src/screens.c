@@ -296,8 +296,15 @@
 
 #define NUM_SCREEN_GADGETS			27
 
+#define SC_ID_SCROLL_UP				0
+#define SC_ID_SCROLL_DOWN			1
+
 #define NUM_SCREEN_SCROLLBUTTONS		2
+
+#define SC_ID_SCROLL_VERTICAL			0
+
 #define NUM_SCREEN_SCROLLBARS			1
+
 #define NUM_SCREEN_TEXTINPUT			1
 
 #define SCREEN_MASK_MAIN			(1 << 0)
@@ -11658,10 +11665,10 @@ static void CreateScreenScrollbuttons(void)
   int i;
 
   // these values are not constant, but can change at runtime
-  scrollbutton_info[0].x = SC_SCROLL_UP_XPOS;
-  scrollbutton_info[0].y = SC_SCROLL_UP_YPOS;
-  scrollbutton_info[1].x = SC_SCROLL_DOWN_XPOS;
-  scrollbutton_info[1].y = SC_SCROLL_DOWN_YPOS;
+  scrollbutton_info[SC_ID_SCROLL_UP].x   = SC_SCROLL_UP_XPOS;
+  scrollbutton_info[SC_ID_SCROLL_UP].y   = SC_SCROLL_UP_YPOS;
+  scrollbutton_info[SC_ID_SCROLL_DOWN].x = SC_SCROLL_DOWN_XPOS;
+  scrollbutton_info[SC_ID_SCROLL_DOWN].y = SC_SCROLL_DOWN_YPOS;
 
   for (i = 0; i < NUM_SCREEN_SCROLLBUTTONS; i++)
   {
@@ -11720,10 +11727,10 @@ static void CreateScreenScrollbars(void)
   int i;
 
   // these values are not constant, but can change at runtime
-  scrollbar_info[0].x = SC_SCROLL_VERTICAL_XPOS;
-  scrollbar_info[0].y = SC_SCROLL_VERTICAL_YPOS;
-  scrollbar_info[0].width  = SC_SCROLL_VERTICAL_XSIZE;
-  scrollbar_info[0].height = SC_SCROLL_VERTICAL_YSIZE;
+  scrollbar_info[SC_ID_SCROLL_VERTICAL].x      = SC_SCROLL_VERTICAL_XPOS;
+  scrollbar_info[SC_ID_SCROLL_VERTICAL].y      = SC_SCROLL_VERTICAL_YPOS;
+  scrollbar_info[SC_ID_SCROLL_VERTICAL].width  = SC_SCROLL_VERTICAL_XSIZE;
+  scrollbar_info[SC_ID_SCROLL_VERTICAL].height = SC_SCROLL_VERTICAL_YSIZE;
 
   for (i = 0; i < NUM_SCREEN_SCROLLBARS; i++)
   {
