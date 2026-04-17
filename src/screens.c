@@ -212,7 +212,7 @@
 #define MENU_TOP_SPACING			(menu.top_spacing[DRAW_MODE(game_status)])
 #define MENU_BOTTOM_SPACING			(menu.bottom_spacing[DRAW_MODE(game_status)])
 #define MENU_LINE_HEIGHT			(menu.line_height[DRAW_MODE(game_status)])
-#define MENU_ENTRY_HEIGHT			MAX(1, MENU_LINE_HEIGHT)
+#define MENU_ENTRY_HEIGHT			(MENU_LINE_HEIGHT > 0 ? MENU_LINE_HEIGHT : 32)
 
 #define MENU_SCREEN_START_X_RAW			(MENU_LEFT_SPACING)
 #define MENU_SCREEN_START_Y_RAW			(MENU_TOP_SPACING)
