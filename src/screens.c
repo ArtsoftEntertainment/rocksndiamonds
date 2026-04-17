@@ -1715,6 +1715,14 @@ static void DrawMenuFooter(char *text)
   DrawMenuText(&menu.text.footer, text);
 }
 
+static void DrawMenuTextXY(int xpos, int ypos, char *text, int font_nr)
+{
+  int x = mSX + MENU_SCREEN_START_X_RAW + xpos * MENU_BUTTON_WIDTH;
+  int y = mSY + MENU_SCREEN_START_Y_RAW + ypos * MENU_ENTRY_HEIGHT;
+
+  DrawText(x, y, text, font_nr);
+}
+
 static void DrawPressedGraphicThruMask(int dst_x, int dst_y,
 				       int graphic, boolean pressed)
 {
@@ -9871,13 +9879,21 @@ static void drawPlayerSetupInputInfo(int player_nr, boolean active)
 
   custom_key = setup.input[player_nr].key;
 
-  DrawText(mSX + 11 * 32, mSY + 2 * 32, int2str(player_nr + 1, 1),
-	   FONT_INPUT_1_ACTIVE);
+  struct GadgetInfo *gi_prev = screen_gadget[SCREEN_CTRL_ID_PREV_PLAYER];
+  struct GadgetInfo *gi_next = screen_gadget[SCREEN_CTRL_ID_NEXT_PLAYER];
+  int graphic_player = PLAYER_NR_GFX(IMG_PLAYER_1, player_nr);
+  int font_player_nr = FONT_INPUT_1_ACTIVE;
+  int sx_player_nr_raw = gi_prev->x + gi_prev->width;
+  int space_player_nr = gi_next->x - sx_player_nr_raw;
+  int sx_player_nr = sx_player_nr_raw + (space_player_nr - getFontWidth(font_player_nr)) / 2;
+  int sy_player_nr = gi_prev->y;
+  int sx_player = gi_prev->x - 2 * TILEX;
+  int sy_player = gi_prev->y;
 
-  ClearRectangleOnBackground(drawto, mSX + 8 * TILEX, mSY + 2 * TILEY,
-			     TILEX, TILEY);
-  DrawFixedGraphicThruMaskExt(drawto, mSX + 8 * TILEX, mSY + 2 * TILEY,
-			      PLAYER_NR_GFX(IMG_PLAYER_1, player_nr), 0);
+  DrawText(sx_player_nr, sy_player_nr, int2str(player_nr + 1, 1), font_player_nr);
+
+  ClearRectangleOnBackground(drawto, sx_player, sy_player, TILEX, TILEY);
+  DrawFixedGraphicThruMaskExt(drawto, sx_player, sy_player, graphic_player, 0);
 
   if (setup.input[player_nr].use_joystick)
   {
@@ -9887,43 +9903,40 @@ static void drawPlayerSetupInputInfo(int player_nr, boolean active)
     char *text = joystick_name[joystick_nr];
     int font_nr = (joystick_active ? font_nr_on : font_nr_off);
 
-    DrawText(mSX + 8 * 32, mSY + 3 * 32, text, font_nr);
-    DrawText(mSX + 32, mSY + 4 * 32, "Configure", font_nr_menu);
+    DrawMenuTextXY(8, 1, text, font_nr);
+    DrawMenuTextXY(1, 2, "Configure", font_nr_menu);
   }
   else
   {
-    DrawText(mSX + 8 * 32, mSY + 3 * 32, "Keyboard ", font_nr_on);
-    DrawText(mSX + 1 * 32, mSY + 4 * 32, "Customize", font_nr_menu);
+    DrawMenuTextXY(8, 1, "Keyboard ", font_nr_on);
+    DrawMenuTextXY(1, 2, "Customize", font_nr_menu);
   }
 
   // skip skippable setup entries if menu list size is less than required
   if (MAX_MENU_ENTRIES_ON_SCREEN < SETUPINPUT_SCREEN_MIN_LIST_SIZE)
     pos = 3;
   else
-    DrawText(mSX + 32, mSY + 5 * 32, "Actual Settings:", font_nr_info);
+    DrawMenuTextXY(1, 3, "Actual Settings:", font_nr_info);
 
   drawCursorXY(1, pos + 0, IMG_MENU_BUTTON_LEFT);
   drawCursorXY(1, pos + 1, IMG_MENU_BUTTON_RIGHT);
   drawCursorXY(1, pos + 2, IMG_MENU_BUTTON_UP);
   drawCursorXY(1, pos + 3, IMG_MENU_BUTTON_DOWN);
 
-  DrawText(mSX + 2 * 32, mSY + (pos + 2) * 32, ":", font_nr_name);
-  DrawText(mSX + 2 * 32, mSY + (pos + 3) * 32, ":", font_nr_name);
-  DrawText(mSX + 2 * 32, mSY + (pos + 4) * 32, ":", font_nr_name);
-  DrawText(mSX + 2 * 32, mSY + (pos + 5) * 32, ":", font_nr_name);
-  DrawText(mSX + 1 * 32, mSY + (pos + 6) * 32, "Snap Field:", font_nr_name);
-  DrawText(mSX + 1 * 32, mSY + (pos + 8) * 32, "Drop Element:", font_nr_name);
+  DrawMenuTextXY(2, pos + 0, ":", font_nr_name);
+  DrawMenuTextXY(2, pos + 1, ":", font_nr_name);
+  DrawMenuTextXY(2, pos + 2, ":", font_nr_name);
+  DrawMenuTextXY(2, pos + 3, ":", font_nr_name);
+  DrawMenuTextXY(1, pos + 4, "Snap Field:", font_nr_name);
+  DrawMenuTextXY(1, pos + 6, "Drop Element:", font_nr_name);
 
   for (i = 0; i < 6; i++)
   {
-    int ypos = (pos + 2) + i + (i > 3 ? i - 3 : 0);
+    int ypos = pos + i + (i > 3 ? i - 3 : 0);
 
-    DrawText(mSX + 3 * 32, mSY + ypos * 32,
-	     "              ", font_nr_on);
-    DrawText(mSX + 3 * 32, mSY + ypos * 32,
-	     (setup.input[player_nr].use_joystick ?
-	      custom[i].text :
-	      getKeyNameFromKey(*custom[i].key)), font_nr_on);
+    DrawMenuTextXY(3, ypos, "              ", font_nr_on);
+    DrawMenuTextXY(3, ypos, (setup.input[player_nr].use_joystick ? custom[i].text :
+			     getKeyNameFromKey(*custom[i].key)), font_nr_on);
   }
 }
 
