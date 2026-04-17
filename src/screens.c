@@ -179,6 +179,7 @@
 #define SETUPINPUT_SCREEN_POS_EMPTY1		3
 #define SETUPINPUT_SCREEN_POS_EMPTY2		12
 #define SETUPINPUT_SCREEN_POS_END		13
+#define SETUPINPUT_SCREEN_MIN_LIST_SIZE		14
 
 #define MENU_SETUP_FONT_TITLE			FONT_TEXT_1
 #define MENU_SETUP_FONT_TEXT			FONT_TITLE_2
@@ -9606,8 +9607,8 @@ static struct TokenInfo *getSetupInfoFinal(struct TokenInfo *setup_info_orig)
     if (hideSetupEntry(setup_info_orig[i].value))
       continue;
 
-    // skip skippable setup entries if screen is lower than usual
-    if (SCR_FIELDY < SCR_FIELDY_DEFAULT &&
+    // skip skippable setup entries if menu list size is less than required
+    if (MAX_MENU_ENTRIES_ON_SCREEN < SETUPINPUT_SCREEN_MIN_LIST_SIZE &&
 	setup_info_orig[i].type == TYPE_SKIPPABLE)
       continue;
 
@@ -9895,10 +9896,11 @@ static void drawPlayerSetupInputInfo(int player_nr, boolean active)
     DrawText(mSX + 1 * 32, mSY + 4 * 32, "Customize", font_nr_menu);
   }
 
-  if (SCR_FIELDY >= SCR_FIELDY_DEFAULT)
-    DrawText(mSX + 32, mSY + 5 * 32, "Actual Settings:", font_nr_info);
-  else
+  // skip skippable setup entries if menu list size is less than required
+  if (MAX_MENU_ENTRIES_ON_SCREEN < SETUPINPUT_SCREEN_MIN_LIST_SIZE)
     pos = 3;
+  else
+    DrawText(mSX + 32, mSY + 5 * 32, "Actual Settings:", font_nr_info);
 
   drawCursorXY(1, pos + 0, IMG_MENU_BUTTON_LEFT);
   drawCursorXY(1, pos + 1, IMG_MENU_BUTTON_RIGHT);
@@ -9956,7 +9958,8 @@ void HandleSetupScreen_Input(int mx, int my, int dx, int dy, int button)
   int pos_empty2 = SETUPINPUT_SCREEN_POS_EMPTY2;
   int pos_end    = SETUPINPUT_SCREEN_POS_END;
 
-  if (SCR_FIELDY < SCR_FIELDY_DEFAULT)
+  // skip skippable setup entries if menu list size is less than required
+  if (MAX_MENU_ENTRIES_ON_SCREEN < SETUPINPUT_SCREEN_MIN_LIST_SIZE)
   {
     int i;
 
