@@ -243,6 +243,10 @@
 #define MAX_MENU_TEXT_LENGTH_BIG		13
 #define MAX_MENU_TEXT_LENGTH_MEDIUM		(MAX_MENU_TEXT_LENGTH_BIG * 2)
 
+#define NUM_MENU_ENTRIES_ON_SCREEN		(menu.list_size[game_status] > 2 ?	\
+						 menu.list_size[game_status] :		\
+						 MAX_MENU_ENTRIES_ON_SCREEN)
+
 // screen gadget identifiers
 #define SCREEN_CTRL_ID_PREV_LEVEL		0
 #define SCREEN_CTRL_ID_NEXT_LEVEL		1
@@ -813,10 +817,6 @@ static int align_yoffset = 0;
 
 #define amSX			(mSX + align_xoffset)
 #define amSY			(mSY + align_yoffset)
-
-#define NUM_MENU_ENTRIES_ON_SCREEN (menu.list_size[game_status] > 2 ?	\
-				    menu.list_size[game_status] :	\
-				    MAX_MENU_ENTRIES_ON_SCREEN)
 
 #define IN_VIS_MENU(x, y)	IN_FIELD(x, y, SCR_FIELDX, NUM_MENU_ENTRIES_ON_SCREEN)
 
