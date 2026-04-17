@@ -3506,7 +3506,9 @@ struct MenuInfo
 
   int list_size[NUM_SPECIAL_GFX_ARGS];
   int list_size_info[NUM_SPECIAL_GFX_INFO_ARGS];
+  int list_entry_size[NUM_SPECIAL_GFX_ARGS];
   int list_entry_size_info[NUM_SPECIAL_GFX_INFO_ARGS];
+  int list_entry_size_setup[NUM_SPECIAL_GFX_SETUP_ARGS];
   int tile_size_info[NUM_SPECIAL_GFX_INFO_ARGS];
 
   int left_spacing[NUM_SPECIAL_GFX_ARGS];
@@ -3533,9 +3535,6 @@ struct MenuInfo
   int headline2_spacing[NUM_SPECIAL_GFX_ARGS];
   int headline2_spacing_info[NUM_SPECIAL_GFX_INFO_ARGS];
   int headline2_spacing_setup[NUM_SPECIAL_GFX_SETUP_ARGS];
-  int line_height[NUM_SPECIAL_GFX_ARGS];
-  int line_height_info[NUM_SPECIAL_GFX_INFO_ARGS];
-  int line_height_setup[NUM_SPECIAL_GFX_SETUP_ARGS];
   int line_spacing[NUM_SPECIAL_GFX_ARGS];
   int line_spacing_info[NUM_SPECIAL_GFX_INFO_ARGS];
   int line_spacing_setup[NUM_SPECIAL_GFX_SETUP_ARGS];
