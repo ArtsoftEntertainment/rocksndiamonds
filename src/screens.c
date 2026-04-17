@@ -11697,10 +11697,6 @@ static void CreateScreenScrollbuttons(void)
     if (x > SX + SC_SCROLL_UP_FULL_XPOS)
       x = SX + SC_SCROLL_UP_FULL_XPOS;
 
-    if (id == SCREEN_CTRL_ID_SCROLL_DOWN)
-      y = mSY + (SC_SCROLL_VERTICAL_YPOS +
-		 (NUM_MENU_ENTRIES_ON_SCREEN - 2) * SC_SCROLLBUTTON_YSIZE);
-
     gfx_unpressed = scrollbutton_info[i].gfx_unpressed;
     gfx_pressed   = scrollbutton_info[i].gfx_pressed;
     gd_bitmap_unpressed = graphic_info[gfx_unpressed].bitmap;
@@ -11766,9 +11762,6 @@ static void CreateScreenScrollbars(void)
     // correct scrollbar position if placed outside menu (playfield) area
     if (x > SX + SC_SCROLL_VERTICAL_FULL_XPOS)
       x = SX + SC_SCROLL_VERTICAL_FULL_XPOS;
-
-    if (id == SCREEN_CTRL_ID_SCROLL_VERTICAL)
-      height = (NUM_MENU_ENTRIES_ON_SCREEN - 2) * SC_SCROLLBUTTON_YSIZE;
 
     items_max = num_page_entries;
     items_visible = num_page_entries;
