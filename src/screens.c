@@ -4840,7 +4840,6 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
       menu.draw_yoffset_info[INFO_MODE_INTRO]		= menu.draw_yoffset[GAME_MODE_INTRO];
       menu.skip_headline_info[INFO_MODE_INTRO]		= menu.skip_headline[GAME_MODE_INTRO];
       menu.skip_footer_info[INFO_MODE_INTRO]		= menu.skip_footer[GAME_MODE_INTRO];
-      menu.use_scrollbar2_info[INFO_MODE_INTRO]		= menu.use_scrollbar2[GAME_MODE_INTRO];
       menu.left_spacing_info[INFO_MODE_INTRO]		= menu.left_spacing[GAME_MODE_INTRO];
       menu.right_spacing_info[INFO_MODE_INTRO]		= menu.right_spacing[GAME_MODE_INTRO];
       menu.top_spacing_info[INFO_MODE_INTRO]		= menu.top_spacing[GAME_MODE_INTRO];
@@ -4866,7 +4865,6 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
       menu.draw_yoffset_info[INFO_MODE_STORY]		= menu.draw_yoffset[GAME_MODE_STORY];
       menu.skip_headline_info[INFO_MODE_STORY]		= menu.skip_headline[GAME_MODE_STORY];
       menu.skip_footer_info[INFO_MODE_STORY]		= menu.skip_footer[GAME_MODE_STORY];
-      menu.use_scrollbar2_info[INFO_MODE_STORY]		= menu.use_scrollbar2[GAME_MODE_STORY];
       menu.left_spacing_info[INFO_MODE_STORY]		= menu.left_spacing[GAME_MODE_STORY];
       menu.right_spacing_info[INFO_MODE_STORY]		= menu.right_spacing[GAME_MODE_STORY];
       menu.top_spacing_info[INFO_MODE_STORY]		= menu.top_spacing[GAME_MODE_STORY];
@@ -11668,28 +11666,6 @@ static void CreateScreenScrollbuttons(void)
   struct GadgetInfo *gi;
   unsigned int event_mask;
   int i;
-
-  // these values are not constant, but can change at runtime
-  if (game_status == GAME_MODE_INFO && menu.use_scrollbar2_info[info_mode])
-  {
-    scrollbutton_info[0].gfx_unpressed = IMG_MENU_SCROLL_UP2;
-    scrollbutton_info[0].gfx_pressed   = IMG_MENU_SCROLL_UP2_ACTIVE;
-    scrollbutton_info[1].gfx_unpressed = IMG_MENU_SCROLL_DOWN2;
-    scrollbutton_info[1].gfx_pressed   = IMG_MENU_SCROLL_DOWN2_ACTIVE;
-
-    scrollbar_info[0].gfx_unpressed    = IMG_MENU_SCROLLBAR2;
-    scrollbar_info[0].gfx_pressed      = IMG_MENU_SCROLLBAR2_ACTIVE;
-  }
-  else
-  {
-    scrollbutton_info[0].gfx_unpressed = IMG_MENU_SCROLL_UP;
-    scrollbutton_info[0].gfx_pressed   = IMG_MENU_SCROLL_UP_ACTIVE;
-    scrollbutton_info[1].gfx_unpressed = IMG_MENU_SCROLL_DOWN;
-    scrollbutton_info[1].gfx_pressed   = IMG_MENU_SCROLL_DOWN_ACTIVE;
-
-    scrollbar_info[0].gfx_unpressed    = IMG_MENU_SCROLLBAR;
-    scrollbar_info[0].gfx_pressed      = IMG_MENU_SCROLLBAR_ACTIVE;
-  }
 
   // these values are not constant, but can change at runtime
   scrollbutton_info[0].x = SC_SCROLL_UP_XPOS;
