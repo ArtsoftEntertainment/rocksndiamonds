@@ -189,8 +189,6 @@
 #define MENU_TEXT_ALIGNED_XPOS(t)		((t).x == -1 ? SXSIZE / 2 : (t).x)
 #define MENU_TEXT_ALIGNED_YPOS(t)		(ALIGNED_YPOS((t).y + ((t).y < 0 ? SYSIZE : 0),	\
 							      getFontHeight((t).font), (t).valign))
-#define MENU_SCREEN_START_XPOS			1
-#define MENU_SCREEN_START_YPOS			2
 #define MENU_TITLE				0
 #define MENU_TITLE_1				1
 #define MENU_TITLE_2				2
@@ -206,6 +204,20 @@
 #define MENU_INFO_FONT_TITLE			FONT_TEXT_1
 #define MENU_INFO_FONT_HEAD			FONT_TEXT_2
 #define MENU_INFO_FONT_TEXT			FONT_TEXT_3
+#define MENU_BUTTON_WIDTH			(graphic_info[IMG_MENU_BUTTON].width)
+#define MENU_BUTTON_HEIGHT			(graphic_info[IMG_MENU_BUTTON].height)
+#define MENU_LEFT_SPACING			(menu.left_spacing[DRAW_MODE(game_status)])
+#define MENU_RIGHT_SPACING			(menu.right_spacing[DRAW_MODE(game_status)])
+#define MENU_TOP_SPACING			(menu.top_spacing[DRAW_MODE(game_status)])
+#define MENU_BOTTOM_SPACING			(menu.bottom_spacing[DRAW_MODE(game_status)])
+#define MENU_LINE_HEIGHT			(menu.line_height[DRAW_MODE(game_status)])
+#define MENU_ENTRY_HEIGHT			MAX(1, MENU_LINE_HEIGHT)
+
+#define MENU_SCREEN_START_X_RAW			(MENU_LEFT_SPACING)
+#define MENU_SCREEN_START_Y_RAW			(MENU_TOP_SPACING)
+#define MENU_SCREEN_START_X			(MENU_SCREEN_START_X_RAW + MENU_BUTTON_WIDTH)
+#define MENU_SCREEN_START_Y			(MENU_SCREEN_START_Y_RAW)
+
 #define MENU_INFO_SPACE_HEAD			(menu.headline2_spacing_info[info_mode])
 #define MENU_SCREEN_INFO_SPACE_LEFT		(menu.left_spacing_info[info_mode])
 #define MENU_SCREEN_INFO_SPACE_MIDDLE		(menu.middle_spacing_info[info_mode])
@@ -239,13 +251,15 @@
 				 menu.list_size_info[GFX_SPECIAL_ARG_INFO_ELEMENTS] :		\
 				 DEFAULT_INFO_ELEMENTS)
 #define NUM_INFO_ELEMENTS_ON_SCREEN		MIN(NUM_INFO_ELEMENTS_FROM_CONF, MAX_INFO_ELEMENTS)
-#define MAX_MENU_ENTRIES_ON_SCREEN		(SCR_FIELDY - MENU_SCREEN_START_YPOS)
+#define MAX_MENU_LIST_HEIGHT			(SYSIZE - MENU_TOP_SPACING - MENU_BOTTOM_SPACING)
+#define MAX_MENU_ENTRIES_ON_SCREEN		(MAX_MENU_LIST_HEIGHT / MENU_ENTRY_HEIGHT)
 #define MAX_MENU_TEXT_LENGTH_BIG		13
 #define MAX_MENU_TEXT_LENGTH_MEDIUM		(MAX_MENU_TEXT_LENGTH_BIG * 2)
 
 #define NUM_MENU_ENTRIES_ON_SCREEN		(menu.list_size[game_status] > 2 ?	\
 						 menu.list_size[game_status] :		\
 						 MAX_MENU_ENTRIES_ON_SCREEN)
+#define MENU_LIST_HEIGHT			(NUM_MENU_ENTRIES_ON_SCREEN * MENU_ENTRY_HEIGHT)
 
 // screen gadget identifiers
 #define SCREEN_CTRL_ID_PREV_LEVEL		0
@@ -310,12 +324,11 @@
 #define SC_SCROLLBAR_FULL_XPOS			(SXSIZE - SC_SCROLLBUTTON_XSIZE + SC_BORDER_RIGHT)
 
 #define SC_SCROLL_VERTICAL_XSIZE		SC_SCROLLBUTTON_XSIZE
-#define SC_SCROLL_VERTICAL_YSIZE		((NUM_MENU_ENTRIES_ON_SCREEN - 2) * \
-						 SC_SCROLLBUTTON_YSIZE)
+#define SC_SCROLL_VERTICAL_YSIZE		(MENU_LIST_HEIGHT - 2 * SC_SCROLLBUTTON_YSIZE)
 
 #define SC_SCROLL_UP_XPOS			SC_SCROLLBAR_XPOS
 #define SC_SCROLL_UP_FULL_XPOS			SC_SCROLLBAR_FULL_XPOS
-#define SC_SCROLL_UP_YPOS			(2 * SC_SCROLLBUTTON_YSIZE)
+#define SC_SCROLL_UP_YPOS			MENU_TOP_SPACING
 
 #define SC_SCROLL_VERTICAL_XPOS			SC_SCROLLBAR_XPOS
 #define SC_SCROLL_VERTICAL_FULL_XPOS		SC_SCROLLBAR_FULL_XPOS
@@ -818,8 +831,7 @@ static int align_yoffset = 0;
 #define amSX			(mSX + align_xoffset)
 #define amSY			(mSY + align_yoffset)
 
-#define IN_VIS_MENU(x, y)	IN_FIELD(x, y, SCR_FIELDX, NUM_MENU_ENTRIES_ON_SCREEN)
-
+#define IN_VIS_MENU(x, y)	IN_FIELD(x, y, (SXSIZE + 31) / 32, NUM_MENU_ENTRIES_ON_SCREEN)
 
 // title display and control definitions
 
@@ -1907,20 +1919,18 @@ static void clearMenuListArea(void)
     scrollbar_xpos = SX + SC_SCROLLBAR_FULL_XPOS;
 
   // clear menu list area, but not title or scrollbar
-  DrawBackground(mSX, mSY + MENU_SCREEN_START_YPOS * 32,
-                 scrollbar_xpos - mSX, NUM_MENU_ENTRIES_ON_SCREEN * 32);
+  DrawBackground(mSX, mSY + MENU_SCREEN_START_Y, scrollbar_xpos - mSX, MENU_LIST_HEIGHT);
 
   // special compatibility handling for "Snake Bite" graphics set
   if (strPrefix(leveldir_current->identifier, "snake_bite"))
-    ClearRectangle(drawto, mSX, mSY + MENU_SCREEN_START_YPOS * 32,
-		   scrollbar_xpos - mSX, NUM_MENU_ENTRIES_ON_SCREEN * 32);
+    ClearRectangle(drawto, mSX, mSY + MENU_SCREEN_START_Y, scrollbar_xpos - mSX, MENU_LIST_HEIGHT);
 }
 
 static void drawCursorExt(int xpos, int ypos, boolean active, int graphic)
 {
   static int cursor_array[MAX_LEV_FIELDY];
-  int x = amSX + TILEX * xpos;
-  int y = amSY + TILEY * (MENU_SCREEN_START_YPOS + ypos);
+  int x = amSX + MENU_SCREEN_START_X_RAW + xpos * MENU_BUTTON_WIDTH;
+  int y = amSY + MENU_SCREEN_START_Y_RAW + ypos * MENU_ENTRY_HEIGHT;
 
   if (xpos == 0)
   {
@@ -1967,18 +1977,16 @@ static int getChooseTreeEditXPos(int pos)
   boolean has_scrollbar = screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL]->mapped;
   int font_nr = getChooseTreeEditFont(FALSE);
   int width = getTextWidth(STR_CHOOSE_TREE_EDIT, font_nr);
-  int xoffset_scrollbar = (has_scrollbar ? -1 : 0);
-  int xoffset_edit_text = width / TILEX;
-  int xpos = SCR_FIELDX - xoffset_edit_text + xoffset_scrollbar;
-  int sx = amSX + xpos * TILEX;
+  int mx_scrollbar = screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL]->x;
+  int mx_right_border = (has_scrollbar ? mx_scrollbar : SX + SXSIZE);
+  int sx = amSX - SX + mx_right_border - width;
 
   return (pos == POS_RIGHT ? sx + width - 1 : sx);
 }
 
-static int getChooseTreeEditYPos(int ypos_raw)
+static int getChooseTreeEditYPos(int ypos)
 {
-  int ypos = MENU_SCREEN_START_YPOS + ypos_raw;
-  int sy = amSY + ypos * TILEY;
+  int sy = amSY + MENU_SCREEN_START_Y + ypos * MENU_ENTRY_HEIGHT;
 
   return sy;
 }
@@ -3144,8 +3152,8 @@ static void DrawCursorAndText_Menu_Ext(struct TokenInfo *token_info,
 {
   int pos = (menu_info_pos_raw < 0 ? screen_pos : menu_info_pos_raw);
   struct TokenInfo *ti = &token_info[pos];
-  int xpos = MENU_SCREEN_START_XPOS;
-  int ypos = MENU_SCREEN_START_YPOS + screen_pos;
+  int x = MENU_SCREEN_START_X;
+  int y = MENU_SCREEN_START_Y + screen_pos * MENU_ENTRY_HEIGHT;
   int font_nr = getMenuTextFont(ti->type);
 
   if (setup_mode == SETUP_MODE_INPUT)
@@ -3154,7 +3162,7 @@ static void DrawCursorAndText_Menu_Ext(struct TokenInfo *token_info,
   if (active)
     font_nr = FONT_ACTIVE(font_nr);
 
-  DrawText(mSX + xpos * 32, mSY + ypos * 32, ti->text, font_nr);
+  DrawText(mSX + x, mSY + y, ti->text, font_nr);
 
   if (ti->type & ~TYPE_SKIP_ENTRY)
     drawCursor(screen_pos, active);
@@ -3222,10 +3230,8 @@ static void drawMenuInfoList(int first_entry, int num_page_entries,
       if (gadget_id != -1)
       {
 	struct GadgetInfo *gi = screen_gadget[gadget_id];
-	int xpos = MENU_SCREEN_START_XPOS;
-	int ypos = MENU_SCREEN_START_YPOS + i;
-	int x = mSX + xpos * 32;
-	int y = mSY + ypos * 32;
+	int x = mSX + MENU_SCREEN_START_X;
+	int y = mSY + MENU_SCREEN_START_Y + i * MENU_ENTRY_HEIGHT;
 
 	ModifyGadget(gi, GDI_X, x, GDI_Y, y, GDI_END);
       }
@@ -3417,7 +3423,7 @@ static void HandleMenuScreen(int mx, int my, int dx, int dy, int button,
   if (mx || my)		// mouse input
   {
     x = (mx - mSX) / 32;
-    y = (my - mSY) / 32 - MENU_SCREEN_START_YPOS;
+    y = (my - mSY - MENU_SCREEN_START_Y) / MENU_ENTRY_HEIGHT;
   }
   else if (dx || dy)	// keyboard or scrollbar/scrollbutton input
   {
@@ -5280,16 +5286,16 @@ static void getTypeNameValues(char *name, struct TextPosInfo *pos, int *xpos)
     int first_entry = ti->cl_first;
     int entry_pos = first_entry + ti->cl_cursor;
     TreeInfo *node_first = getTreeInfoFirstGroupEntry(ti);
-    int xpos = MENU_SCREEN_START_XPOS;
-    int ypos = MENU_SCREEN_START_YPOS + ti->cl_cursor;
+    int x = MENU_SCREEN_START_X;
+    int y = MENU_SCREEN_START_Y + ti->cl_cursor * MENU_ENTRY_HEIGHT;
 
     type_name_node = getTreeInfoFromPos(node_first, entry_pos);
     type_name_nr = entry_pos;
 
     strcpy(name, type_name_node->name);
 
-    pos->x = xpos * 32;
-    pos->y = ypos * 32;
+    pos->x = x;
+    pos->y = y;
     pos->width = MAX_PLAYER_NAME_LEN * 32;
   }
   else
@@ -5676,10 +5682,8 @@ static void drawChooseTreeText(TreeInfo *ti, int y, boolean active)
   TreeInfo *node = getTreeInfoFromPos(node_first, entry_pos);
   int font_nr = getChooseTreeFont(node, active);
   int font_xoffset = getFontDrawOffsetX(font_nr);
-  int xpos = MENU_SCREEN_START_XPOS;
-  int ypos = MENU_SCREEN_START_YPOS + y;
-  int startdx = xpos * 32;
-  int startdy = ypos * 32;
+  int startdx = MENU_SCREEN_START_X;
+  int startdy = MENU_SCREEN_START_Y + y * MENU_ENTRY_HEIGHT;
   int startx = amSX + startdx;
   int starty = amSY + startdy;
   int startx_text = startx + font_xoffset;
@@ -6045,7 +6049,7 @@ static void HandleChooseTree(int mx, int my, int dx, int dy, int button,
   if (mx || my)		// mouse input
   {
     x = (mx - amSX) / 32;
-    y = (my - amSY) / 32 - MENU_SCREEN_START_YPOS;
+    y = (my - amSY - MENU_SCREEN_START_Y) / MENU_ENTRY_HEIGHT;
 
     if (game_status == GAME_MODE_NAMES)
       drawChooseTreeEdit(ti->cl_cursor, FALSE);
@@ -9398,25 +9402,25 @@ static void drawSetupValue(int screen_pos, int setup_info_pos_raw)
   int mx_right_border = MIN(scrollbar_needed ? mx_scrollbar : SX + SXSIZE, SX + SXSIZE);
   int mx_value_startx = mx_right_border - max_value_width;
   int font_draw_xoffset_old = -1;
-  int menu_screen_value_xpos = (mx_value_startx - mSX) / 32;
-  int xpos = menu_screen_value_xpos;
-  int ypos = MENU_SCREEN_START_YPOS + screen_pos;
+  int menu_screen_value_x = mx_value_startx - mSX;
+  int x = menu_screen_value_x;
+  int y = MENU_SCREEN_START_Y + screen_pos * MENU_ENTRY_HEIGHT;
 
   if (value_string == NULL)
     return;
 
   if (type & TYPE_KEY)
   {
-    xpos = MENU_SCREEN_START_XPOS;
+    x = MENU_SCREEN_START_X;
 
     if (type & TYPE_QUERY)
       value_string = "<press key>";
   }
   else if (type & TYPE_STRING)
   {
-    int max_value_len = (SXSIZE - 2 * TILEX) / font_width_default;
+    int max_value_len = (SXSIZE - 2 * MENU_BUTTON_WIDTH) / font_width_default;
 
-    xpos = MENU_SCREEN_START_XPOS;
+    x = MENU_SCREEN_START_X;
 
     if (strlen(value_string) > max_value_len)
       value_string[max_value_len] = '\0';
@@ -9428,11 +9432,11 @@ static void drawSetupValue(int screen_pos, int setup_info_pos_raw)
     value_string = getSetupValue(TYPE_INTEGER, (void *)&displayed_player_nr);
   }
 
-  int startx = mSX + xpos * 32;
-  int starty = mSY + ypos * 32;
+  int startx = mSX + x;
+  int starty = mSY + y;
 
   // always use narrow font for setup values on right screen side
-  if (xpos > MENU_SCREEN_START_XPOS)
+  if (x > MENU_SCREEN_START_X)
     font_nr = font_nr_narrow;
 
   struct FontBitmapInfo *font = getFontBitmapInfo(font_nr);
@@ -9444,8 +9448,7 @@ static void drawSetupValue(int screen_pos, int setup_info_pos_raw)
   // special compatibility handling for "jue0" graphics set
   if (strPrefix(artwork.gfx_current_identifier, "jue0"))
   {
-    int max_menu_text_length_big = (menu_screen_value_xpos -
-				    MENU_SCREEN_START_XPOS);
+    int max_menu_text_length_big = (menu_screen_value_x - MENU_SCREEN_START_X) / 32;
     int max_menu_text_length_medium = max_menu_text_length_big * 2;
     int text_font_nr = getMenuTextFont(FONT_MENU_2);
     int text_font_xoffset = getFontDrawOffsetX(text_font_nr);
@@ -9992,7 +9995,7 @@ void HandleSetupScreen_Input(int mx, int my, int dx, int dy, int button)
   if (mx || my)		// mouse input
   {
     x = (mx - mSX) / 32;
-    y = (my - mSY) / 32 - MENU_SCREEN_START_YPOS;
+    y = (my - mSY - MENU_SCREEN_START_Y) / MENU_ENTRY_HEIGHT;
   }
   else if (dx || dy)	// keyboard input
   {
