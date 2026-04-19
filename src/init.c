@@ -1486,6 +1486,11 @@ static void set_graphic_parameters_ext(int graphic, int *parameter, Bitmap **src
   g->bitmaps = src_bitmaps;
   g->bitmap = src_bitmap;
 
+  // special case: set different default value for scrollbar border size
+  if (graphic == IMG_MENU_SCROLLBAR ||
+      graphic == IMG_MENU_SCROLLBAR_ACTIVE)
+    g->border_size = 14;		// default scrollbar border size
+
   // optional zoom factor for scaling up the image to a larger size
   if (parameter[GFX_ARG_SCALE_UP_FACTOR] != ARG_UNDEFINED_VALUE)
     g->scale_up_factor = parameter[GFX_ARG_SCALE_UP_FACTOR];

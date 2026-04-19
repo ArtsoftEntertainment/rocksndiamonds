@@ -7584,10 +7584,12 @@ struct ConfigInfo image_config[] =
   { "menu.scrollbar.xpos",				"8"				},
   { "menu.scrollbar.ypos",				"10"				},
   { "menu.scrollbar.frames",				"1"				},
+  { "menu.scrollbar.border_size",			"14"				},
   { "menu.scrollbar.active",				"RocksDC.png"			},
   { "menu.scrollbar.active.xpos",			"9"				},
   { "menu.scrollbar.active.ypos",			"10"				},
   { "menu.scrollbar.active.frames",			"1"				},
+  { "menu.scrollbar.active.border_size",		"14"				},
 
   { "gfx.game.panel.time_anim",				"RocksDoorMM.png"		},
   { "gfx.game.panel.time_anim.x",			"5"				},

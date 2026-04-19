@@ -346,7 +346,7 @@
 #define SC_SCROLL_DOWN_YPOS			(SC_SCROLL_VERTICAL_YPOS + \
 						 SC_SCROLL_VERTICAL_YSIZE)
 
-#define SC_BORDER_SIZE				14
+#define SC_BORDER_SIZE				(graphic_info[IMG_MENU_SCROLLBAR].border_size)
 
 
 // forward declarations of internal functions
