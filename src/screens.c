@@ -320,8 +320,8 @@
 #define SCREEN_MASK_INFO			(1 << 9)
 
 // graphic position and size values for buttons and scrollbars
-#define SC_SCROLLBUTTON_XSIZE			TILEX
-#define SC_SCROLLBUTTON_YSIZE			TILEY
+#define SC_SCROLLBUTTON_XSIZE			(graphic_info[IMG_MENU_SCROLL_UP].width)
+#define SC_SCROLLBUTTON_YSIZE			(graphic_info[IMG_MENU_SCROLL_UP].height)
 
 #define SC_BORDER_LEFT				(SX - REAL_SX)
 #define SC_BORDER_RIGHT				(FULL_SXSIZE - SXSIZE - SC_BORDER_LEFT)
