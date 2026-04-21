@@ -119,7 +119,12 @@ static int getFontCharPosition(int font_nr, char c)
 
   // this allows dynamic special characters together with special font
   if (font_pos < 0 || font_pos >= font->num_chars)
+  {
+    Warn("cannot find character '%c' (0x%02x) in font '%s' -- position %d out of bounds",
+	 c, (unsigned char)c, gfx.get_token_from_font_function(font_nr), font_pos);
+
     font_pos = 0;
+  }
 
   return font_pos;
 }
