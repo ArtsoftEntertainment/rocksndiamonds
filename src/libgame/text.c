@@ -110,7 +110,7 @@ static int getFontCharPosition(int font_nr, char c)
   int font_pos = (unsigned char)c - 32;
 
   // map some special characters to their ascii values in default font
-  if (font->num_chars == DEFAULT_NUM_CHARS_PER_FONT)
+  if (font->num_chars <= DEFAULT_NUM_CHARS_PER_FONT)
     font_pos = MAP_FONT_ASCII(c) - 32;
   else if (font->num_chars == NUM_CHARS_PER_FONT_EXT)
     font_pos = MAP_FONT_ASCII_EXT(c) - 32;

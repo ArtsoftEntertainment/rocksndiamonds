@@ -112,11 +112,12 @@
 				 (c) -  CHAR_BYTE_BDX_FIRST  + 139 :	\
 				 (c))
 
-// 64 regular ordered ASCII characters, 6 special characters, 1 cursor char.
 #define MIN_NUM_CHARS_PER_FONT			64
 #define NUM_CHARS_PER_FONT_EXT			112
 #define NUM_CHARS_PER_FONT_BDX			128
-#define DEFAULT_NUM_CHARS_PER_FONT		(MIN_NUM_CHARS_PER_FONT + 6 +1)
+
+// 64 regular ordered ASCII characters plus up to 16 special characters
+#define DEFAULT_NUM_CHARS_PER_FONT		(MIN_NUM_CHARS_PER_FONT + 16)
 #define DEFAULT_NUM_CHARS_PER_LINE		16
 
 
