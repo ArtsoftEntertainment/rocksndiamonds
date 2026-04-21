@@ -44,6 +44,7 @@
 #define CHAR_BYTE_DEGREE	((char)0xb0)
 #define CHAR_BYTE_CURSOR	((char)0xa0)
 #define CHAR_BYTE_ACUTE		((char)0xb4)
+#define CHAR_BYTE_SECTION	((char)0xa7)
 
 // special character mapping for BDX fonts
 #define CHAR_BYTE_BDX_FIRST	((char)0xb1)
@@ -74,6 +75,7 @@
 				 (c) == CHAR_BYTE_DEGREE     ? 100 :	\
 				 (c) == CHAR_BYTE_REGISTERED ? 101 :	\
 				 (c) == FONT_ASCII_CURSOR    ? 102 :	\
+				 (c) == CHAR_BYTE_SECTION    ? 108 :	\
 				 (c) == FONT_ASCII_BUTTON    ? 109 :	\
 				 (c) == FONT_ASCII_UP	     ? 110 :	\
 				 (c) == FONT_ASCII_DOWN	     ? 111 :	\
@@ -90,6 +92,7 @@
 				 (c) == CHAR_BYTE_UMLAUT_o   ? 136 :	\
 				 (c) == CHAR_BYTE_UMLAUT_u   ? 137 :	\
 				 (c) == CHAR_BYTE_SHARP_S    ? 138 :	\
+				 (c) == CHAR_BYTE_SECTION    ? 140 :	\
 				 (c) == FONT_ASCII_BUTTON    ? 141 :	\
 				 (c) == FONT_ASCII_UP	     ? 142 :	\
 				 (c) == FONT_ASCII_DOWN	     ? 143 :	\
