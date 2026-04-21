@@ -123,7 +123,8 @@ static int getFontCharPosition(int font_nr, char c)
     Warn("cannot find character '%c' (0x%02x) in font '%s' -- position %d out of bounds",
 	 c, (unsigned char)c, gfx.get_token_from_font_function(font_nr), font_pos);
 
-    font_pos = 0;
+    // if position in font invalid, show question mark instead of empty space
+    font_pos = ('?' - 32 < font->num_chars ? '?' - 32 : 0);
   }
 
   return font_pos;
