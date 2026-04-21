@@ -2060,6 +2060,9 @@ static char *getInfoScreenSubtitle(int screen_nr, int num_screens, int use_globa
 
 static void DrawInfoScreen_Headline(int screen_nr, int num_screens, int use_global_screens)
 {
+  if (info_mode == INFO_MODE_INTRO)
+    return;
+
   char *info_text_title_1 = getInfoScreenTitle_Generic();
   char *info_text_title_2 = getInfoScreenSubtitle(screen_nr, num_screens, use_global_screens);
   boolean draw_story_headline = (info_mode == INFO_MODE_STORY && hasLevelStory());
