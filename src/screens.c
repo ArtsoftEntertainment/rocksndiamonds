@@ -283,19 +283,20 @@
 #define SCREEN_CTRL_ID_LEVELSET_INFO		16
 #define SCREEN_CTRL_ID_LEVEL_INFO		17
 #define SCREEN_CTRL_ID_SWITCH_ECS_AGA		18
-#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE		19
-#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE		20
-#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE2		21
-#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE2		22
+#define SCREEN_CTRL_ID_SWITCH_TEAM_MODE		19
+#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE		20
+#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE		21
+#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE2		22
+#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE2		23
 
-#define NUM_SCREEN_MENUBUTTONS			23
+#define NUM_SCREEN_MENUBUTTONS			24
 
-#define SCREEN_CTRL_ID_SCROLL_UP		23
-#define SCREEN_CTRL_ID_SCROLL_DOWN		24
-#define SCREEN_CTRL_ID_SCROLL_VERTICAL		25
-#define SCREEN_CTRL_ID_NETWORK_SERVER		26
+#define SCREEN_CTRL_ID_SCROLL_UP		24
+#define SCREEN_CTRL_ID_SCROLL_DOWN		25
+#define SCREEN_CTRL_ID_SCROLL_VERTICAL		26
+#define SCREEN_CTRL_ID_NETWORK_SERVER		27
 
-#define NUM_SCREEN_GADGETS			27
+#define NUM_SCREEN_GADGETS			28
 
 #define SC_ID_SCROLL_UP				0
 #define SC_ID_SCROLL_DOWN			1
@@ -2657,12 +2658,21 @@ void HandleTitleScreen(int mx, int my, int dx, int dy, int button)
   }
 }
 
-static void HandleMainMenu_ToggleTeamMode(void)
+static void HandleMainMenu_ToggleTeamMode(boolean toggled_by_gadget)
 {
   setup.team_mode = !setup.team_mode;
 
   InitializeMainControls();
-  DrawCursorAndText_Main(MAIN_CONTROL_NAME, TRUE, FALSE);
+
+  if (!toggled_by_gadget)
+  {
+    struct GadgetInfo *gi = screen_gadget[SCREEN_CTRL_ID_SWITCH_TEAM_MODE];
+
+    if (gi->mapped)
+      ModifyGadget(gi, GDI_CHECKED, setup.team_mode, GDI_END);
+
+    DrawCursorAndText_Main(MAIN_CONTROL_NAME, TRUE, FALSE);
+  }
 
   DrawPreviewPlayers();
 
@@ -2834,7 +2844,7 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
 	if (choice == MAIN_CONTROL_NAME)
 	{
 	  // special case: cursor left or right pressed -- toggle team mode
-	  HandleMainMenu_ToggleTeamMode();
+	  HandleMainMenu_ToggleTeamMode(FALSE);
 	}
 	else if (choice != MAIN_CONTROL_INFO &&
 		 choice != MAIN_CONTROL_SETUP)
@@ -2853,7 +2863,7 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
 	    insideTextPosRect(main_controls[i].pos_text, mx - mSX, my - mSY))
 	{
 	  // special case: menu text "name/team" clicked -- toggle team mode
-	  HandleMainMenu_ToggleTeamMode();
+	  HandleMainMenu_ToggleTeamMode(FALSE);
 	}
 	else
 	{
@@ -11372,6 +11382,14 @@ static struct
     FALSE, "switch old/new graphics"
   },
   {
+    IMG_MENU_BUTTON_SWITCH_TEAM_MODE, IMG_MENU_BUTTON_SWITCH_TEAM_MODE_ACTIVE, -1,
+    &menu.main.button.switch_team_mode, &setup.team_mode,
+    SCREEN_CTRL_ID_SWITCH_TEAM_MODE,
+    SCREEN_MASK_MAIN,
+    GD_EVENT_PRESSED,
+    FALSE, "switch single/team mode"
+  },
+  {
     IMG_MENU_BUTTON_TOUCH_BACK, IMG_MENU_BUTTON_TOUCH_BACK, -1,
     &menu.setup.button.touch_back, NULL,
     SCREEN_CTRL_ID_TOUCH_PREV_PAGE,
@@ -12073,6 +12091,10 @@ static void HandleScreenGadgets(struct GadgetInfo *gi)
       setup.prefer_aga_graphics = !setup.prefer_aga_graphics;
       SaveSetupIfNeeded();
       DrawMainMenu();
+      break;
+
+    case SCREEN_CTRL_ID_SWITCH_TEAM_MODE:
+      HandleMainMenu_ToggleTeamMode(TRUE);
       break;
 
     case SCREEN_CTRL_ID_TOUCH_PREV_PAGE:

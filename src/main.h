@@ -3370,7 +3370,9 @@ struct MenuMainButtonInfo
 
   struct MenuPosInfo levelset_info;
   struct MenuPosInfo level_info;
+
   struct MenuPosInfo switch_ecs_aga;
+  struct MenuPosInfo switch_team_mode;
 };
 
 struct MenuMainTextInfo
