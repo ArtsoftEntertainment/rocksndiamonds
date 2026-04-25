@@ -9699,6 +9699,15 @@ struct ConfigInfo image_config[] =
   { "menu.text.footer.valign",				"bottom"			},
   { "menu.text.footer.font",				"font.footer"			},
 
+  { "main.button.name.pos",				"-1"				},
+  { "main.button.levels.pos",				"-1"				},
+  { "main.button.scores.pos",				"-1"				},
+  { "main.button.editor.pos",				"-1"				},
+  { "main.button.info.pos",				"-1"				},
+  { "main.button.game.pos",				"-1"				},
+  { "main.button.setup.pos",				"-1"				},
+  { "main.button.quit.pos",				"-1"				},
+
   { "main.button.name.x",				"0"				},
   { "main.button.name.y",				"64"				},
   { "main.button.levels.x",				"0"				},

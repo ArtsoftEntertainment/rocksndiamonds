@@ -2855,9 +2855,22 @@ void HandleMainMenu(int mx, int my, int dx, int dy, int button)
   {
     if (dx > 0 && (choice == MAIN_CONTROL_INFO ||
 		   choice == MAIN_CONTROL_SETUP))
+    {
       button = MB_MENU_CHOICE;
+    }
     else if (dy)
-      pos = choice + dy;
+    {
+      if (main_controls[choice].pos_button->pos != -1)
+      {
+	for (i = MAIN_CONTROL_NAME; i <= MAIN_CONTROL_QUIT; i++)
+	  if (main_controls[i].pos_button->pos == main_controls[choice].pos_button->pos + dy)
+	    pos = i;
+      }
+      else
+      {
+	pos = choice + dy;
+      }
+    }
   }
 
   if (pos == MAIN_CONTROL_FIRST_LEVEL && !button)

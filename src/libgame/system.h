@@ -1986,6 +1986,7 @@ struct MenuPosInfo
   int x, y;
   int width, height;
   int align, valign;
+  int pos;
 };
 
 struct DoorPartPosInfo
