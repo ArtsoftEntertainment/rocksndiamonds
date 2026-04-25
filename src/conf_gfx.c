@@ -7594,6 +7594,9 @@ struct ConfigInfo image_config[] =
   { "menu.scrollbar.active.frames",			"1"				},
   { "menu.scrollbar.active.border_size",		"14"				},
 
+  { "menu.info_level_solved",				UNDEFINED_FILENAME		},
+  { "menu.info_level_solved.active",			UNDEFINED_FILENAME		},
+
   { "gfx.game.panel.time_anim",				"RocksDoorMM.png"		},
   { "gfx.game.panel.time_anim.x",			"5"				},
   { "gfx.game.panel.time_anim.y",			"0"				},
@@ -9880,12 +9883,27 @@ struct ConfigInfo image_config[] =
   { "main.text.title_3.align",				"center"			},
   { "main.text.title_3.valign",				"top"				},
   { "main.text.title_3.font",				"font.title_2"			},
+  { "main.text.games_played.x",				"-1"				},
+  { "main.text.games_played.y",				"-1"				},
+  { "main.text.games_played.align",			"left"				},
+  { "main.text.games_played.valign",			"top"				},
+  { "main.text.games_played.digits",			"-1"				},
+  { "main.text.games_played.font",			"font.text_3"			},
+  { "main.text.games_solved.x",				"-1"				},
+  { "main.text.games_solved.y",				"-1"				},
+  { "main.text.games_solved.align",			"left"				},
+  { "main.text.games_solved.valign",			"top"				},
+  { "main.text.games_solved.digits",			"-1"				},
+  { "main.text.games_solved.font",			"font.text_3"			},
 
   { "main.input.name.x",				"-1"				},
   { "main.input.name.y",				"-1"				},
   { "main.input.name.align",				"left"				},
   { "main.input.name.valign",				"top"				},
   { "main.input.name.font",				"font.input_1"			},
+
+  { "main.info.level_solved.x",				"-1"				},
+  { "main.info.level_solved.y",				"-1"				},
 
   { "main.network_players.x",				"68"				},
   { "main.network_players.y",				"448"				},

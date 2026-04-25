@@ -3375,6 +3375,11 @@ struct MenuMainButtonInfo
   struct MenuPosInfo switch_team_mode;
 };
 
+struct MenuMainInfoInfo
+{
+  struct MenuPosInfo level_solved;
+};
+
 struct MenuMainTextInfo
 {
   struct TextPosInfo name;
@@ -3400,6 +3405,8 @@ struct MenuMainTextInfo
   struct TextPosInfo title_1;
   struct TextPosInfo title_2;
   struct TextPosInfo title_3;
+  struct TextPosInfo games_played;
+  struct TextPosInfo games_solved;
 };
 
 struct MenuMainInputInfo
@@ -3410,6 +3417,7 @@ struct MenuMainInputInfo
 struct MenuMainInfo
 {
   struct MenuMainButtonInfo button;
+  struct MenuMainInfoInfo info;
   struct MenuMainTextInfo text;
   struct MenuMainInputInfo input;
 

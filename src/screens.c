@@ -887,10 +887,15 @@ struct TitleControlInfo title_controls[MAX_NUM_TITLE_SCREENS];
 #define MAIN_CONTROL_TITLE_1			21
 #define MAIN_CONTROL_TITLE_2			22
 #define MAIN_CONTROL_TITLE_3			23
+#define MAIN_CONTROL_GAMES_PLAYED		24
+#define MAIN_CONTROL_GAMES_SOLVED		25
+#define MAIN_CONTROL_LEVEL_SOLVED		26
 
 static char str_main_text_first_level[10];
 static char str_main_text_last_level[10];
 static char str_main_text_level_number[10];
+static char str_main_text_games_played[10];
+static char str_main_text_games_solved[10];
 
 static char network_server_hostname[MAX_SETUP_TEXT_INPUT_LEN + 1];
 
@@ -911,6 +916,8 @@ static char *main_text_level_year		= NULL;
 static char *main_text_level_imported_from	= NULL;
 static char *main_text_level_imported_by	= NULL;
 static char *main_text_level_tested_by		= NULL;
+static char *main_text_games_played		= str_main_text_games_played;
+static char *main_text_games_solved		= str_main_text_games_solved;
 static char *main_text_title_1			= NULL;
 static char *main_text_title_2			= NULL;
 static char *main_text_title_3			= NULL;
@@ -1078,6 +1085,24 @@ static struct MainControlInfo main_controls[] =
     MAIN_CONTROL_TITLE_3,
     NULL,				-1,
     &menu.main.text.title_3,		&main_text_title_3,
+    NULL,				NULL,
+  },
+  {
+    MAIN_CONTROL_GAMES_PLAYED,
+    NULL,				-1,
+    &menu.main.text.games_played,	&main_text_games_played,
+    NULL,				NULL,
+  },
+  {
+    MAIN_CONTROL_GAMES_SOLVED,
+    NULL,				-1,
+    &menu.main.text.games_solved,	&main_text_games_solved,
+    NULL,				NULL,
+  },
+  {
+    MAIN_CONTROL_LEVEL_SOLVED,
+    &menu.main.info.level_solved,	IMG_MENU_INFO_LEVEL_SOLVED,
+    NULL,				NULL,
     NULL,				NULL,
   },
 
@@ -1553,6 +1578,8 @@ static void InitializeMainControls(void)
   int size_first_level  = menu.main.text.first_level.size;
   int size_last_level   = menu.main.text.last_level.size;
   int size_level_number = menu.main.text.level_number.size;
+  int size_games_played = menu.main.text.games_played.size;
+  int size_games_solved = menu.main.text.games_solved.size;
   int i;
 
   // special case: align formatting of first and last level number
@@ -1584,6 +1611,8 @@ static void InitializeMainControls(void)
   strcpy(main_text_first_level,  int2str(leveldir_current->first_level, size_first_level));
   strcpy(main_text_last_level,   int2str(leveldir_current->last_level,  size_last_level));
   strcpy(main_text_level_number, int2str(level_nr,                      size_level_number));
+  strcpy(main_text_games_played, int2str(level_stats[level_nr].played,  size_games_played));
+  strcpy(main_text_games_solved, int2str(level_stats[level_nr].solved,  size_games_solved));
 
   main_text_level_year		= leveldir_current->year;
   main_text_level_imported_from	= leveldir_current->imported_from;
@@ -1794,6 +1823,9 @@ static void DrawCursorAndText_Main_Ext(int nr, boolean active_text,
       {
 	font_input = FONT_ACTIVE(font_input);
       }
+
+      if (mci->nr == MAIN_CONTROL_LEVEL_SOLVED && level_stats[level_nr].solved > 0)
+	button_graphic = IMG_MENU_INFO_LEVEL_SOLVED_ACTIVE;
 
       if (visibleMenuPos(pos_button))
       {
@@ -2743,6 +2775,12 @@ static void HandleMainMenu_SelectLevel(int step, int direction,
     DrawText(mSX + mci->pos_text->x, mSY + mci->pos_text->y,
 	     int2str(level_nr, menu.main.text.level_number.size),
 	     mci->pos_text->font);
+
+    InitializeMainControls();
+
+    DrawCursorAndText_Main(MAIN_CONTROL_GAMES_PLAYED, FALSE, FALSE);
+    DrawCursorAndText_Main(MAIN_CONTROL_GAMES_SOLVED, FALSE, FALSE);
+    DrawCursorAndText_Main(MAIN_CONTROL_LEVEL_SOLVED, FALSE, FALSE);
 
     LoadLevel(level_nr);
     DrawPreviewLevelInitial();
