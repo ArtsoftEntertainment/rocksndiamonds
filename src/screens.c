@@ -1651,6 +1651,10 @@ static void InitializeMainControls(void)
       // calculate text size -- needed for text alignment
       boolean calculate_text_size = (text != NULL);
 
+      // needed for redrawing background under main menu text
+      if (pos_text->width > 0)
+	pos_text->width_old = pos_text->width;
+
       if (pos_text->width == -1 || calculate_text_size)
 	pos_text->width = text_width;
       if (pos_text->height == -1 || calculate_text_size)
@@ -1668,6 +1672,10 @@ static void InitializeMainControls(void)
 
     if (pos_input != NULL)		// (x/y may be -1/-1 here)
     {
+      // needed for redrawing background under main menu text
+      if (pos_input->width > 0)
+	pos_input->width_old = pos_input->width;
+
       if (visibleTextPos(pos_text))
       {
 	if (pos_input->x == -1)
@@ -1744,6 +1752,17 @@ static void DrawPressedGraphicThruMask(int dst_x, int dst_y,
 		   g->width, g->height, dst_x, dst_y);
 }
 
+static void DrawCursorAndText_Main_DrawBackground(struct TextPosInfo *pos)
+{
+  // use the old width of the previously drawn text to redraw background
+  // (this is required if the old text was longer than the current text)
+
+  int x = mSX + ALIGNED_XPOS(pos->x, pos->width_old, pos->align);
+  int y = mSY + ALIGNED_YPOS(pos->y, pos->height,    pos->valign);
+
+  DrawBackgroundForFont(x, y, pos->width_old, pos->height, pos->font);
+}
+
 static void DrawCursorAndText_Main_Ext(int nr, boolean active_text,
 				       boolean active_input,
 				       boolean pressed_button)
@@ -1792,10 +1811,9 @@ static void DrawCursorAndText_Main_Ext(int nr, boolean active_text,
 	int x = mSX + ALIGNED_TEXT_XPOS(pos);
 	int y = mSY + ALIGNED_TEXT_YPOS(pos);
 
-#if 1
-	// (check why/if this is needed)
-	DrawBackgroundForFont(x, y, pos->width, pos->height, font_text);
-#endif
+	// needed for redrawing background under main menu text
+	DrawCursorAndText_Main_DrawBackground(pos);
+
 	DrawText(x, y, text, font_text);
       }
 
@@ -1805,10 +1823,9 @@ static void DrawCursorAndText_Main_Ext(int nr, boolean active_text,
 	int x = mSX + ALIGNED_TEXT_XPOS(pos);
 	int y = mSY + ALIGNED_TEXT_YPOS(pos);
 
-#if 1
-	// (check why/if this is needed)
-	DrawBackgroundForFont(x, y, pos->width, pos->height, font_input);
-#endif
+	// needed for redrawing background under main menu text
+	DrawCursorAndText_Main_DrawBackground(pos);
+
 	DrawText(x, y, input, font_input);
       }
     }

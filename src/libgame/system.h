@@ -2005,6 +2005,7 @@ struct TextPosInfo
   int xoffset2;			// special case for various offsets for drawing
   int yoffset;			// special case for various offsets for drawing
   int yoffset2;			// special case for various offsets for drawing
+  int width_old;		// needed for redrawing background under main menu text
   int width, height;
   int align, valign;
   int size;			// also used for suffix ".digits"
