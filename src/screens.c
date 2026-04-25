@@ -891,11 +891,11 @@ struct TitleControlInfo title_controls[MAX_NUM_TITLE_SCREENS];
 #define MAIN_CONTROL_GAMES_SOLVED		25
 #define MAIN_CONTROL_LEVEL_SOLVED		26
 
-static char str_main_text_first_level[10];
-static char str_main_text_last_level[10];
-static char str_main_text_level_number[10];
-static char str_main_text_games_played[10];
-static char str_main_text_games_solved[10];
+static char str_main_text_first_level[ MAX_NUMBER_LEN + 1];
+static char str_main_text_last_level[  MAX_NUMBER_LEN + 1];
+static char str_main_text_level_number[MAX_NUMBER_LEN + 1];
+static char str_main_text_games_played[MAX_NUMBER_LEN + 1];
+static char str_main_text_games_solved[MAX_NUMBER_LEN + 1];
 
 static char network_server_hostname[MAX_SETUP_TEXT_INPUT_LEN + 1];
 
@@ -4593,7 +4593,7 @@ static void ReplaceTemplateTagsInTextBuffer(char **text)
   if (text == NULL || *text == NULL)
     return;
 
-  char str_level_number[10];
+  char str_level_number[MAX_NUMBER_LEN + 1];
   char *str_level_number_ptr = str_level_number;
 
   strcpy(str_level_number, int2str(level_nr, 0));
@@ -6655,7 +6655,7 @@ void DrawHallOfFame(int nr)
 
 static char *getHallOfFameRankText(int nr, int size)
 {
-  static char rank_text[10];
+  static char rank_text[MAX_NUMBER_LEN + 1];
   boolean forced = (scores.force_last_added && nr == scores.last_added);
   char *rank_text_raw = (forced ? "???" : int2str(nr + 1, size));
 
@@ -6666,7 +6666,7 @@ static char *getHallOfFameRankText(int nr, int size)
 
 static char *getHallOfFameTimeText(int nr)
 {
-  static char score_text[10];
+  static char score_text[MAX_NUMBER_LEN + 1];
   int time_seconds = scores.entry[nr].time / FRAMES_PER_SECOND;
   int mm = (time_seconds / 60) % 60;
   int ss = (time_seconds % 60);

@@ -483,14 +483,14 @@ void FailWithHelp(char *format, ...)
 
 char *int2str(int number, int size)
 {
-  static char shift_array[10][40];
+  static char shift_array[10][2 * MAX_NUMBER_LEN];
   static int shift_counter = 0;
   char *s = shift_array[shift_counter];
 
   shift_counter = (shift_counter + 1) % 10;
 
-  if (size > 20)
-    size = 20;
+  if (size > MAX_NUMBER_LEN)
+    size = MAX_NUMBER_LEN;
 
   if (size > 0)
   {

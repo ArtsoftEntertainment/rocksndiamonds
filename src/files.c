@@ -11869,7 +11869,7 @@ static void LoadServerScoreFromCache(int nr)
 
     for (j = 0; score_mapping[j].value != NULL; j++)
     {
-      char token[10];
+      char token[MAX_NUMBER_LEN + 1];
 
       sprintf(token, "%02d.%d", i, j);
 

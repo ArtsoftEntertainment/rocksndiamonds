@@ -563,6 +563,9 @@
 #define MAX_FILENAME_LEN		256
 #define MAX_LINE_LEN			1024
 
+// values for number string length
+#define MAX_NUMBER_LEN			20
+
 // fundamental game speed values
 #define ONE_SECOND_DELAY		1000	// delay value for one second
 #define MENU_FRAME_DELAY		20	// frame delay in milliseconds

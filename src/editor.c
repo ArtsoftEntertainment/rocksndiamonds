@@ -3256,7 +3256,7 @@ static struct ValueTextInfo options_action_arg_inventory[] =
   { -1,					NULL				}
 };
 
-static char options_change_page_strings[MAX_CHANGE_PAGES][10];
+static char options_change_page_strings[MAX_CHANGE_PAGES][MAX_NUMBER_LEN + 1];
 static struct ValueTextInfo options_change_page[MAX_CHANGE_PAGES + 1] =
 {
   { -1,					NULL				}
