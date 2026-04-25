@@ -2766,18 +2766,13 @@ static void HandleMainMenu_SelectLevel(int step, int direction,
 
   if (new_level_nr != old_level_nr)
   {
-    struct MainControlInfo *mci = getMainControlInfo(MAIN_CONTROL_LEVEL_NUMBER);
-
     PlaySound(SND_MENU_ITEM_SELECTING);
 
     level_nr = new_level_nr;
 
-    DrawText(mSX + mci->pos_text->x, mSY + mci->pos_text->y,
-	     int2str(level_nr, menu.main.text.level_number.size),
-	     mci->pos_text->font);
-
     InitializeMainControls();
 
+    DrawCursorAndText_Main(MAIN_CONTROL_LEVEL_NUMBER, FALSE, FALSE);
     DrawCursorAndText_Main(MAIN_CONTROL_GAMES_PLAYED, FALSE, FALSE);
     DrawCursorAndText_Main(MAIN_CONTROL_GAMES_SOLVED, FALSE, FALSE);
     DrawCursorAndText_Main(MAIN_CONTROL_LEVEL_SOLVED, FALSE, FALSE);
