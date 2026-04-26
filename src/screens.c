@@ -11822,6 +11822,10 @@ static void CreateScreenScrollbars(void)
     int gd_x1, gd_x2, gd_y1, gd_y2;
     struct GadgetInfo *gi;
     int items_max, items_visible, item_position;
+    int wheel_x = SX;
+    int wheel_y = SY;
+    int wheel_width  = SXSIZE;
+    int wheel_height = SYSIZE;
     unsigned int event_mask;
     int num_page_entries = NUM_MENU_ENTRIES_ON_SCREEN;
     int id = scrollbar_info[i].gadget_id;
@@ -11862,10 +11866,10 @@ static void CreateScreenScrollbars(void)
 		      GDI_SCROLLBAR_ITEMS_MAX, items_max,
 		      GDI_SCROLLBAR_ITEMS_VISIBLE, items_visible,
 		      GDI_SCROLLBAR_ITEM_POSITION, item_position,
-		      GDI_WHEEL_AREA_X, SX,
-		      GDI_WHEEL_AREA_Y, SY,
-		      GDI_WHEEL_AREA_WIDTH, SXSIZE,
-		      GDI_WHEEL_AREA_HEIGHT, SYSIZE,
+		      GDI_WHEEL_AREA_X, wheel_x,
+		      GDI_WHEEL_AREA_Y, wheel_y,
+		      GDI_WHEEL_AREA_WIDTH, wheel_width,
+		      GDI_WHEEL_AREA_HEIGHT, wheel_height,
 		      GDI_STATE, GD_BUTTON_UNPRESSED,
 		      GDI_DESIGN_UNPRESSED, gd_bitmap_unpressed, gd_x1, gd_y1,
 		      GDI_DESIGN_PRESSED, gd_bitmap_pressed, gd_x2, gd_y2,
