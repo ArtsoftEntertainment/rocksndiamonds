@@ -11824,7 +11824,7 @@ static void CreateScreenScrollbars(void)
     int items_max, items_visible, item_position;
     int wheel_x = SX;
     int wheel_y = SY;
-    int wheel_width  = SXSIZE;
+    int wheel_width  = SXSIZE + menu.scrollbar_xoffset;
     int wheel_height = SYSIZE;
     unsigned int event_mask;
     int num_page_entries = NUM_MENU_ENTRIES_ON_SCREEN;
