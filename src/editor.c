@@ -10909,6 +10909,16 @@ static void ResetUndoBuffer(void)
   level.changed = FALSE;
 }
 
+static void DrawSettingsHeadline(char *text)
+{
+  int font_nr = FONT_TITLE_1;
+  struct MenuPosInfo *pos = &editor.settings.headline;
+  int sx = SX + ALIGNED_XPOS(pos->x, getTextWidth(text, font_nr), pos->align);
+  int sy = SY + pos->y;
+
+  DrawText(sx, sy, text, font_nr);
+}
+
 static void DrawEditModeWindowExt(boolean remap_toolbox_gadgets)
 {
   if (remap_toolbox_gadgets)
@@ -12952,12 +12962,6 @@ static void DrawLevelConfigWindow(void)
     return;
   }
 
-  char *text = "Global Settings";
-  int font_nr = FONT_TITLE_1;
-  struct MenuPosInfo *pos = &editor.settings.headline;
-  int sx = SX + ALIGNED_XPOS(pos->x, getTextWidth(text, font_nr), pos->align);
-  int sy = SY + pos->y;
-
   stick_element_properties_window = FALSE;
 
   // make sure that previous level config edit mode exists for this level
@@ -12976,7 +12980,7 @@ static void DrawLevelConfigWindow(void)
   SetMainBackgroundImage(IMG_BACKGROUND_EDITOR);
   ClearField();
 
-  DrawText(sx, sy, text, font_nr);
+  DrawSettingsHeadline("Global Settings");
 
   DrawLevelConfigTabulatorGadgets();
 
@@ -14636,11 +14640,6 @@ static void DrawPropertiesWindow(void)
   int y1 = editor.settings.element_graphic.y + element_border;
   int x2 = (editor.settings.element_name.x == -1 ? x1 + xoffset : editor.settings.element_name.x);
   int y2 = (editor.settings.element_name.y == -1 ? y1 + yoffset : editor.settings.element_name.y);
-  char *text = "Element Settings";
-  int font2_nr = FONT_TITLE_1;
-  struct MenuPosInfo *pos = &editor.settings.headline;
-  int sx = SX + ALIGNED_XPOS(pos->x, getTextWidth(text, font2_nr), pos->align);
-  int sy = SY + pos->y;
 
   stick_element_properties_window = FALSE;
 
@@ -14673,7 +14672,7 @@ static void DrawPropertiesWindow(void)
   SetMainBackgroundImage(IMG_BACKGROUND_EDITOR);
   ClearField();
 
-  DrawText(sx, sy, text, font2_nr);
+  DrawSettingsHeadline("Element Settings");
 
   FrameCounter = 0;	// restart animation frame counter
 
