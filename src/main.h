@@ -3629,6 +3629,11 @@ struct EditorSettingsInfo
   struct XY tooltip;
 };
 
+struct EditorOptionalInfo
+{
+  struct MenuPosInfo headline;
+};
+
 struct EditorGadgetInfo
 {
   int normal_spacing;
@@ -3709,6 +3714,7 @@ struct EditorDrawingAreaInfo
 struct EditorInfo
 {
   struct EditorSettingsInfo settings;
+  struct EditorOptionalInfo optional;
   struct EditorGadgetInfo gadget;
   struct EditorButtonInfo button;
   struct EditorInputInfo input;

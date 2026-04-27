@@ -12371,6 +12371,9 @@ struct ConfigInfo image_config[] =
 
   { "editor.drawingarea.tile_size",			"16"				},
 
+  { "editor.optional.headline.x",			"-1"				},
+  { "editor.optional.headline.y",			"-1"				},
+  { "editor.optional.headline.align",			"center"			},
   { "editor.settings.headline.x",			"272"				},
   { "editor.settings.headline.y",			"16"				},
   { "editor.settings.headline.align",			"center"			},

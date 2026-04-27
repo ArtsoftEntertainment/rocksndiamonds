@@ -10919,6 +10919,17 @@ static void DrawSettingsHeadline(char *text)
   DrawText(sx, sy, text, font_nr);
 }
 
+static void DrawOptionalHeadline(char *text)
+{
+  int font_nr = FONT_TITLE_2;
+  struct MenuPosInfo *pos = &editor.optional.headline;
+  int sx = SX + ALIGNED_XPOS(pos->x, getTextWidth(text, font_nr), pos->align);
+  int sy = SY + pos->y;
+
+  if (pos->x != -1 && pos->y != -1)
+    DrawText(sx, sy, text, font_nr);
+}
+
 static void DrawEditModeWindowExt(boolean remap_toolbox_gadgets)
 {
   if (remap_toolbox_gadgets)
@@ -12265,6 +12276,8 @@ static void DrawDrawingWindowExt(boolean remap_toolbox_gadgets)
   SetMainBackgroundImage(IMG_UNDEFINED);
   ClearField();
 
+  DrawOptionalHeadline("Level Editor");
+
   UnmapLevelEditorFieldGadgets();
 
   AdjustDrawingAreaGadgets();
@@ -12980,6 +12993,7 @@ static void DrawLevelConfigWindow(void)
   SetMainBackgroundImage(IMG_BACKGROUND_EDITOR);
   ClearField();
 
+  DrawOptionalHeadline("Level Editor");
   DrawSettingsHeadline("Global Settings");
 
   DrawLevelConfigTabulatorGadgets();
@@ -14672,6 +14686,7 @@ static void DrawPropertiesWindow(void)
   SetMainBackgroundImage(IMG_BACKGROUND_EDITOR);
   ClearField();
 
+  DrawOptionalHeadline("Level Editor");
   DrawSettingsHeadline("Element Settings");
 
   FrameCounter = 0;	// restart animation frame counter
