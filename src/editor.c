@@ -10956,8 +10956,7 @@ static void ChangeEditModeWindow(int new_edit_mode)
   else
   {
     // store last drawing function when entering non-drawing screen ...
-    if (drawing_function != GADGET_ID_SINGLE_ITEMS)
-      last_level_drawing_function = drawing_function;
+    last_level_drawing_function = drawing_function;
 
     // ... and activate "single items" drawing mode on that screen
     ClickOnGadget(level_editor_gadget[GADGET_ID_SINGLE_ITEMS], MB_LEFTBUTTON);
