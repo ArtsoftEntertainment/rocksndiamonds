@@ -1759,22 +1759,16 @@ void HandleUserEvent(UserEvent *event)
 
 void HandleButton(int mx, int my, int button, int button_nr)
 {
-  static int old_mx = 0, old_my = 0;
   boolean button_hold = FALSE;
   boolean handle_gadgets = TRUE;
   int game_status_last = game_status;
 
   if (button_nr < 0)
   {
-    mx = old_mx;
-    my = old_my;
+    mx = gfx.mouse_x;
+    my = gfx.mouse_y;
     button_nr = -button_nr;
     button_hold = TRUE;
-  }
-  else
-  {
-    old_mx = mx;
-    old_my = my;
   }
 
 #if defined(PLATFORM_ANDROID)
