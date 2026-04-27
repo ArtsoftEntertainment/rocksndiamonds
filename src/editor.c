@@ -12273,7 +12273,7 @@ static void DrawDrawingWindowExt(boolean remap_toolbox_gadgets)
 {
   stick_element_properties_window = FALSE;
 
-  SetMainBackgroundImage(IMG_UNDEFINED);
+  SetMainBackgroundImage(IMG_BACKGROUND_EDITOR);
   ClearField();
 
   DrawOptionalHeadline("Level Editor");
