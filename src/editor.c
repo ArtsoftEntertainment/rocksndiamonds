@@ -12277,6 +12277,8 @@ static void DrawDrawingWindowExt(boolean remap_toolbox_gadgets)
   ClearField();
 
   DrawOptionalHeadline("Level Editor");
+  if (editor.settings.headline.y < 0)
+    DrawSettingsHeadline("Playfield");
 
   UnmapLevelEditorFieldGadgets();
 
