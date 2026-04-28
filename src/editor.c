@@ -12633,7 +12633,7 @@ static void DrawLevelConfigHelp(void)
   int xpos = ED_LEVEL_SETTINGS_X(0);
   int ypos = ED_LEVEL_SETTINGS_Y(0) - getFontHeight(font1_nr) - ED_GADGET_LINE_DISTANCE;
   int infotext_height = (IN_PIX_FIELD(INFOTEXT_XPOS - SX, INFOTEXT_YPOS - SY) ?
-			 SYSIZE - (INFOTEXT_YPOS - SY) - ED_GADGET_SMALL_DISTANCE : 0);
+			 SYSIZE - (INFOTEXT_YPOS - SY) + ED_GADGET_SMALL_DISTANCE : 0);
   tmi->x = xpos;
   tmi->y = ypos;
   tmi->width  = SXSIZE - tmi->x - xpos;
