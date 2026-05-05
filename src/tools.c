@@ -6004,24 +6004,24 @@ void CreateToolButtons(void)
 	if (id == TOOL_CTRL_ID_YES)
 	{
 	  x = 0;
-	  y = menu.request.height - 2 * menu.request.border_size - gfx->height;
+	  y = menu.request.height - 2 * border_size - gfx->height;
 	}
 	else if (id == TOOL_CTRL_ID_NO)
 	{
-	  x = menu.request.width  - 2 * menu.request.border_size - gfx->width;
-	  y = menu.request.height - 2 * menu.request.border_size - gfx->height;
+	  x = menu.request.width  - 2 * border_size - gfx->width;
+	  y = menu.request.height - 2 * border_size - gfx->height;
 	}
 	else if (id == TOOL_CTRL_ID_CONFIRM)
 	{
-	  x = (menu.request.width - 2 * menu.request.border_size - gfx->width) / 2;
-	  y = menu.request.height - 2 * menu.request.border_size - gfx->height;
+	  x = (menu.request.width - 2 * border_size - gfx->width) / 2;
+	  y = menu.request.height - 2 * border_size - gfx->height;
 	}
 	else if (id >= TOOL_CTRL_ID_PLAYER_1 && id <= TOOL_CTRL_ID_PLAYER_4)
 	{
 	  int player_nr = id - TOOL_CTRL_ID_PLAYER_1;
 
-	  x = (menu.request.width - 2 * menu.request.border_size - gfx->width) / 2;
-	  y = menu.request.height - 2 * menu.request.border_size - gfx->height * 2;
+	  x = (menu.request.width - 2 * border_size - gfx->width) / 2;
+	  y = menu.request.height - 2 * border_size - gfx->height * 2;
 
 	  x += (player_nr == 3 ? -1 : player_nr == 1 ? +1 : 0) * gfx->width;
 	  y += (player_nr == 0 ? -1 : player_nr == 2 ? +1 : 0) * gfx->height;
