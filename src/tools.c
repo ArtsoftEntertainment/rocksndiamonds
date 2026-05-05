@@ -5993,11 +5993,13 @@ void CreateToolButtons(void)
 
     if (global.use_envelope_request && !is_touch_button)
     {
+      int border_size = menu.request.border_size;
+
       setRequestPosition(&base_x, &base_y, TRUE);
 
       // check if request buttons are outside of envelope and fix, if needed
-      if (x < 0 || x + gfx->width  > menu.request.width ||
-	  y < 0 || y + gfx->height > menu.request.height)
+      if (x + border_size < 0 || x + border_size + gfx->width  > menu.request.width ||
+	  y + border_size < 0 || y + border_size + gfx->height > menu.request.height)
       {
 	if (id == TOOL_CTRL_ID_YES)
 	{
