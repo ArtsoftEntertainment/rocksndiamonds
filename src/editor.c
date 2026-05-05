@@ -9166,7 +9166,7 @@ static void CreateControlButtons(void)
 
       deco_xpos = (gd->width  - tile_size) / 2;
       deco_ypos = (gd->height - tile_size) / 2;
-      deco_shift = 1;
+      deco_shift = editor.gadget.element_shifting;
       deco_masked = gd->draw_masked;
     }
     else
@@ -9291,6 +9291,7 @@ static void CreateControlButtons(void)
     Bitmap *gd_bitmap = gd->bitmap;
     Bitmap *deco_bitmap;
     int deco_x, deco_y, deco_xpos, deco_ypos;
+    int deco_shift = editor.gadget.element_shifting;
     int gd_x1 = gd->src_x;
     int gd_y1 = gd->src_y;
     int gd_x2 = gd->src_x + gd->pressed_xoffset;
@@ -9323,7 +9324,7 @@ static void CreateControlButtons(void)
 		      GDI_DECORATION_DESIGN, deco_bitmap, deco_x, deco_y,
 		      GDI_DECORATION_POSITION, deco_xpos, deco_ypos,
 		      GDI_DECORATION_SIZE, tile_size, tile_size,
-		      GDI_DECORATION_SHIFTING, 1, 1,
+		      GDI_DECORATION_SHIFTING, deco_shift, deco_shift,
 		      GDI_EVENT_MASK, event_mask,
 		      GDI_CALLBACK_INFO, HandleEditorGadgetInfoText,
 		      GDI_CALLBACK_ACTION, HandleControlButtons,
@@ -9777,6 +9778,7 @@ static void CreateTextbuttonGadgets(void)
     int graphic = (is_tab_button ? IMG_EDITOR_TABBUTTON : IMG_EDITOR_TEXTBUTTON);
     int gadget_distance = (is_tab_button ? ED_GADGET_SMALL_DISTANCE : ED_GADGET_TEXT_DISTANCE);
     struct GraphicInfo *gd = &graphic_info[graphic];
+    int deco_shift = editor.gadget.text_shifting;
     int gd_x1 = gd->src_x;
     int gd_y1 = gd->src_y;
     int gd_x2 = gd->src_x + gd->pressed_xoffset;
@@ -9831,7 +9833,7 @@ static void CreateTextbuttonGadgets(void)
 		      GDI_ALT_DESIGN_UNPRESSED, gd->bitmap, gd_x1a, gd_y1a,
 		      GDI_BORDER_SIZE, border_xsize, border_ysize,
 		      GDI_DESIGN_WIDTH, gd->width,
-		      GDI_DECORATION_SHIFTING, 1, 1,
+		      GDI_DECORATION_SHIFTING, deco_shift, deco_shift,
 		      GDI_EVENT_MASK, event_mask,
 		      GDI_CALLBACK_INFO, HandleEditorGadgetInfoText,
 		      GDI_CALLBACK_ACTION, HandleTextbuttonGadgets,

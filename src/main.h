@@ -3644,6 +3644,9 @@ struct EditorGadgetInfo
   int tab_spacing;
 
   struct Rect separator_line;
+
+  int element_shifting;
+  int text_shifting;
 };
 
 struct EditorButtonInfo

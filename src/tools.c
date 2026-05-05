@@ -5975,6 +5975,7 @@ void CreateToolButtons(void)
     struct GadgetInfo *gi;
     Bitmap *deco_bitmap = None;
     int deco_x = 0, deco_y = 0, deco_xpos = 0, deco_ypos = 0;
+    int deco_shift = 0;
     unsigned int event_mask = GD_EVENT_RELEASED;
     boolean is_touch_button = toolbutton_info[i].is_touch_button;
     int base_x = (is_touch_button ? 0 : DX);
@@ -6038,6 +6039,7 @@ void CreateToolButtons(void)
 			    pos->size, &deco_bitmap, &deco_x, &deco_y);
       deco_xpos = (gfx->width  - pos->size) / 2;
       deco_ypos = (gfx->height - pos->size) / 2;
+      deco_shift = editor.gadget.element_shifting;
     }
 
     gi = CreateGadget(GDI_CUSTOM_ID, id,
@@ -6054,7 +6056,7 @@ void CreateToolButtons(void)
 		      GDI_DECORATION_DESIGN, deco_bitmap, deco_x, deco_y,
 		      GDI_DECORATION_POSITION, deco_xpos, deco_ypos,
 		      GDI_DECORATION_SIZE, pos->size, pos->size,
-		      GDI_DECORATION_SHIFTING, 1, 1,
+		      GDI_DECORATION_SHIFTING, deco_shift, deco_shift,
 		      GDI_DIRECT_DRAW, FALSE,
 		      GDI_OVERLAY_TOUCH_BUTTON, is_touch_button,
 		      GDI_EVENT_MASK, event_mask,

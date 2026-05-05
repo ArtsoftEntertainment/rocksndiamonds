@@ -12397,6 +12397,8 @@ struct ConfigInfo image_config[] =
   { "editor.gadget.line_spacing",			"4"				},
   { "editor.gadget.text_spacing",			"4"				},
   { "editor.gadget.separator_line.height",		"2"				},
+  { "editor.gadget.element_shifting",			"1"				},
+  { "editor.gadget.text_shifting",			"1"				},
 
   { "request.button.yes.x",				"2"				},
   { "request.button.yes.y",				"250"				},
