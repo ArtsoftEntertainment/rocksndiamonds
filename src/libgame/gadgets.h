@@ -88,43 +88,44 @@
 #define GDI_SELECTBOX_OPTIONS		20
 #define GDI_SELECTBOX_INDEX		21
 #define GDI_SELECTBOX_CHAR_UNSELECTABLE	22
-#define GDI_DESIGN_UNPRESSED		23
-#define GDI_DESIGN_PRESSED		24
-#define GDI_ALT_DESIGN_UNPRESSED	25
-#define GDI_ALT_DESIGN_PRESSED		26
-#define GDI_BORDER_SIZE			27
-#define GDI_BORDER_SIZE_SELECTBUTTON	28
-#define GDI_DESIGN_WIDTH		29
-#define GDI_DESIGN_HEIGHT		30
-#define GDI_DECORATION_DESIGN		31
-#define GDI_DECORATION_POSITION		32
-#define GDI_DECORATION_SIZE		33
-#define GDI_DECORATION_SHIFTING		34
-#define GDI_DECORATION_MASKED		35
-#define GDI_EVENT_MASK			36
-#define GDI_EVENT			37
-#define GDI_CALLBACK_INFO		38
-#define GDI_CALLBACK_ACTION		39
-#define GDI_AREA_SIZE			40
-#define GDI_ITEM_SIZE			41
-#define GDI_SCROLLBAR_ITEMS_MAX		42
-#define GDI_SCROLLBAR_ITEMS_VISIBLE	43
-#define GDI_SCROLLBAR_ITEM_POSITION	44
-#define GDI_WHEEL_AREA_X		45
-#define GDI_WHEEL_AREA_Y		46
-#define GDI_WHEEL_AREA_WIDTH		47
-#define GDI_WHEEL_AREA_HEIGHT		48
-#define GDI_INFO_TEXT			49
-#define GDI_ACTIVE			50
-#define GDI_DIRECT_DRAW			51
-#define GDI_OVERLAY_TOUCH_BUTTON	52
-#define GDI_CALLBACK_ACTION_ALWAYS	53
-#define GDI_COLOR_NR			54
-#define GDI_COLOR_TYPE			55
-#define GDI_COLOR_VALUE			56
-#define GDI_COLOR_VALUES		57
-#define GDI_COLOR_NAMES			58
-#define GDI_COLOR_COUNT			59
+#define GDI_DESIGN_BACKGROUND		23
+#define GDI_DESIGN_UNPRESSED		24
+#define GDI_DESIGN_PRESSED		25
+#define GDI_ALT_DESIGN_UNPRESSED	26
+#define GDI_ALT_DESIGN_PRESSED		27
+#define GDI_BORDER_SIZE			28
+#define GDI_BORDER_SIZE_SELECTBUTTON	29
+#define GDI_DESIGN_WIDTH		30
+#define GDI_DESIGN_HEIGHT		31
+#define GDI_DECORATION_DESIGN		32
+#define GDI_DECORATION_POSITION		33
+#define GDI_DECORATION_SIZE		34
+#define GDI_DECORATION_SHIFTING		35
+#define GDI_DECORATION_MASKED		36
+#define GDI_EVENT_MASK			37
+#define GDI_EVENT			38
+#define GDI_CALLBACK_INFO		39
+#define GDI_CALLBACK_ACTION		40
+#define GDI_AREA_SIZE			41
+#define GDI_ITEM_SIZE			42
+#define GDI_SCROLLBAR_ITEMS_MAX		43
+#define GDI_SCROLLBAR_ITEMS_VISIBLE	44
+#define GDI_SCROLLBAR_ITEM_POSITION	45
+#define GDI_WHEEL_AREA_X		46
+#define GDI_WHEEL_AREA_Y		47
+#define GDI_WHEEL_AREA_WIDTH		48
+#define GDI_WHEEL_AREA_HEIGHT		49
+#define GDI_INFO_TEXT			50
+#define GDI_ACTIVE			51
+#define GDI_DIRECT_DRAW			52
+#define GDI_OVERLAY_TOUCH_BUTTON	53
+#define GDI_CALLBACK_ACTION_ALWAYS	54
+#define GDI_COLOR_NR			55
+#define GDI_COLOR_TYPE			56
+#define GDI_COLOR_VALUE			57
+#define GDI_COLOR_VALUES		58
+#define GDI_COLOR_NAMES			59
+#define GDI_COLOR_COUNT			60
 
 // gadget deactivation hack
 #define GDI_ACTIVE_POS(a)		((a) < 0 ? POS_OFFSCREEN : (a))
@@ -303,6 +304,7 @@ struct GadgetInfo
   int font_active;			// font to use when active
   int font_unselectable;		// font to use when unselectable
   struct GadgetBorder border;		// gadget border design
+  struct GadgetDesign background;	// gadget background design
   struct GadgetDesign design[2];	// 0: normal; 1: pressed
   struct GadgetDesign alt_design[2];	// alternative design
   struct GadgetDecoration deco;		// decoration on top of gadget

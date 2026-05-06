@@ -1291,6 +1291,9 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 	ClearRectangleOnBackground(backbuffer, gi->x, gi->y,
 				   gi->width, gi->height);
 
+	if (gi->background.bitmap != NULL)
+	  DrawGadget_ScrollbarVertical(gi, &gi->background, 0, gi->height);
+
 	DrawGadget_ScrollbarVertical(gi, gd, gi->scrollbar.position, gi->scrollbar.size);
       }
       break;
@@ -1300,6 +1303,9 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 	// clear scrollbar area
 	ClearRectangleOnBackground(backbuffer, gi->x, gi->y,
 				   gi->width, gi->height);
+
+	if (gi->background.bitmap != NULL)
+	  DrawGadget_ScrollbarHorizontal(gi, &gi->background, 0, gi->width);
 
 	DrawGadget_ScrollbarHorizontal(gi, gd, gi->scrollbar.position, gi->scrollbar.size);
       }
@@ -1722,6 +1728,12 @@ static void HandleGadgetTags(struct GadgetInfo *gi, int first_tag, va_list ap)
 
       case GDI_SELECTBOX_CHAR_UNSELECTABLE:
 	gi->selectbox.char_unselectable = (char)va_arg(ap, int);
+	break;
+
+      case GDI_DESIGN_BACKGROUND:
+	gi->background.bitmap = va_arg(ap, Bitmap *);
+	gi->background.x = va_arg(ap, int);
+	gi->background.y = va_arg(ap, int);
 	break;
 
       case GDI_DESIGN_UNPRESSED:

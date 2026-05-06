@@ -4246,6 +4246,7 @@ static struct
 {
   int gadget_type_id;
   int graphic;
+  int graphic_background;
   int type;
   int gadget_id;
   char *infotext;
@@ -4254,6 +4255,7 @@ static struct
   {
     ED_SCROLLBAR_ID_AREA_HORIZONTAL,
     IMG_EDITOR_PLAYFIELD_SCROLLBAR_HORIZONTAL,
+    IMG_EDITOR_PLAYFIELD_SCROLLBAR_HORIZONTAL_BACKGROUND,
     GD_TYPE_SCROLLBAR_HORIZONTAL,
     GADGET_ID_SCROLL_HORIZONTAL,
     "Scroll level editing area horizontally"
@@ -4261,6 +4263,7 @@ static struct
   {
     ED_SCROLLBAR_ID_AREA_VERTICAL,
     IMG_EDITOR_PLAYFIELD_SCROLLBAR_VERTICAL,
+    IMG_EDITOR_PLAYFIELD_SCROLLBAR_VERTICAL_BACKGROUND,
     GD_TYPE_SCROLLBAR_VERTICAL,
     GADGET_ID_SCROLL_VERTICAL,
     "Scroll level editing area vertically"
@@ -4268,6 +4271,7 @@ static struct
   {
     ED_SCROLLBAR_ID_LIST_VERTICAL,
     IMG_EDITOR_PALETTE_SCROLLBAR,
+    IMG_EDITOR_PALETTE_SCROLLBAR_BACKGROUND,
     GD_TYPE_SCROLLBAR_VERTICAL,
     GADGET_ID_SCROLL_LIST_VERTICAL,
     "Scroll element list vertically"
@@ -4275,6 +4279,7 @@ static struct
   {
     ED_SCROLLBAR_ID_INFO_VERTICAL,
     IMG_EDITOR_INFOTEXT_SCROLLBAR,
+    IMG_EDITOR_INFOTEXT_SCROLLBAR_BACKGROUND,
     GD_TYPE_SCROLLBAR_VERTICAL,
     GADGET_ID_SCROLL_INFO_VERTICAL,
     "Scroll info text vertically"
@@ -9949,11 +9954,15 @@ static void CreateScrollbarGadgets(void)
     int id = scrollbar_info[i].gadget_id;
     int type_id = scrollbar_info[i].gadget_type_id;
     int graphic = scrollbar_info[i].graphic;
+    int graphic_background = scrollbar_info[i].graphic_background;
     struct GraphicInfo *gd = &graphic_info[graphic];
+    struct GraphicInfo *gd_bg = &graphic_info[graphic_background];
     int gd_x1 = gd->src_x;
     int gd_y1 = gd->src_y;
     int gd_x2 = gd->src_x + gd->pressed_xoffset;
     int gd_y2 = gd->src_y + gd->pressed_yoffset;
+    int gd_bg_x = gd_bg->src_x;
+    int gd_bg_y = gd_bg->src_y;
     struct GadgetInfo *gi;
     int items_max, items_visible, item_position;
     unsigned int event_mask = GD_EVENT_MOVING | GD_EVENT_OFF_BORDERS;
@@ -10007,6 +10016,7 @@ static void CreateScrollbarGadgets(void)
 		      GDI_WHEEL_AREA_WIDTH, scrollbar_pos[i].wheel_width,
 		      GDI_WHEEL_AREA_HEIGHT, scrollbar_pos[i].wheel_height,
 		      GDI_STATE, GD_BUTTON_UNPRESSED,
+		      GDI_DESIGN_BACKGROUND, gd_bg->bitmap, gd_bg_x, gd_bg_y,
 		      GDI_DESIGN_UNPRESSED, gd->bitmap, gd_x1, gd_y1,
 		      GDI_DESIGN_PRESSED, gd->bitmap, gd_x2, gd_y2,
 		      GDI_BORDER_SIZE, gd->border_size, gd->border_size,

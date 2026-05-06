@@ -7593,6 +7593,7 @@ struct ConfigInfo image_config[] =
   { "menu.scrollbar.active.ypos",			"10"				},
   { "menu.scrollbar.active.frames",			"1"				},
   { "menu.scrollbar.active.border_size",		"14"				},
+  { "menu.scrollbar.background",			UNDEFINED_FILENAME		},
 
   { "menu.info_level_solved",				UNDEFINED_FILENAME		},
   { "menu.info_level_solved.active",			UNDEFINED_FILENAME		},
@@ -8401,6 +8402,7 @@ struct ConfigInfo image_config[] =
   { "editor.palette.scrollbar.height",			"10"				},
   { "editor.palette.scrollbar.pressed_xoffset",		"-10"				},
   { "editor.palette.scrollbar.border_size",		"3"				},
+  { "editor.palette.scrollbar.background",		UNDEFINED_FILENAME		},
 
   { "editor.playfield.scroll_up",			"RocksDoor.png"			},
   { "editor.playfield.scroll_up.x",			"724"				},
@@ -8437,12 +8439,15 @@ struct ConfigInfo image_config[] =
   { "editor.playfield.scrollbar.height",		"16"				},
   { "editor.playfield.scrollbar.pressed_xoffset",	"-16"				},
   { "editor.playfield.scrollbar.border_size",		"3"				},
+  { "editor.playfield.scrollbar.background",		UNDEFINED_FILENAME		},
 
   { "editor.playfield.scrollbar_horizontal",		UNDEFINED_FILENAME		},
   { "editor.playfield.scrollbar_horizontal.clone_from",	"editor.playfield.scrollbar"	},
+  { "editor.playfield.scrollbar_horizontal.background",	UNDEFINED_FILENAME		},
 
   { "editor.playfield.scrollbar_vertical",		UNDEFINED_FILENAME		},
   { "editor.playfield.scrollbar_vertical.clone_from",	"editor.playfield.scrollbar"	},
+  { "editor.playfield.scrollbar_vertical.background",	UNDEFINED_FILENAME		},
 
   { "editor.infotext.scroll_up",			UNDEFINED_FILENAME		},
   { "editor.infotext.scroll_up.clone_from",		"editor.playfield.scroll_up"	},
@@ -8452,6 +8457,7 @@ struct ConfigInfo image_config[] =
 
   { "editor.infotext.scrollbar",			UNDEFINED_FILENAME		},
   { "editor.infotext.scrollbar.clone_from",		"editor.playfield.scrollbar"	},
+  { "editor.infotext.scrollbar.background",		UNDEFINED_FILENAME		},
 
   { "gfx.editor.button.prev_level",			"RocksDoor.png"			},
   { "gfx.editor.button.prev_level.x",			"724"				},

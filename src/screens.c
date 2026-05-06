@@ -11511,6 +11511,7 @@ static struct
 static struct
 {
   int gfx_unpressed, gfx_pressed;
+  int gfx_background;
   int x, y;
   int width, height;
   int type;
@@ -11520,6 +11521,7 @@ static struct
 {
   {
     IMG_MENU_SCROLLBAR, IMG_MENU_SCROLLBAR_ACTIVE,
+    IMG_MENU_SCROLLBAR_BACKGROUND,
     -1, -1,	// these values are not constant, but can change at runtime
     -1, -1,	// these values are not constant, but can change at runtime
     GD_TYPE_SCROLLBAR_VERTICAL,
@@ -11817,9 +11819,12 @@ static void CreateScreenScrollbars(void)
   for (i = 0; i < NUM_SCREEN_SCROLLBARS; i++)
   {
     Bitmap *gd_bitmap_unpressed, *gd_bitmap_pressed;
+    Bitmap *gd_bitmap_background;
     int gfx_unpressed, gfx_pressed;
+    int gfx_background;
     int x, y, width, height;
     int gd_x1, gd_x2, gd_y1, gd_y2;
+    int gd_bg_x, gd_bg_y;
     struct GadgetInfo *gi;
     int items_max, items_visible, item_position;
     int wheel_x = SX;
@@ -11854,6 +11859,11 @@ static void CreateScreenScrollbars(void)
     gd_x2 = graphic_info[gfx_pressed].src_x;
     gd_y2 = graphic_info[gfx_pressed].src_y;
 
+    gfx_background = scrollbar_info[i].gfx_background;
+    gd_bitmap_background = graphic_info[gfx_background].bitmap;
+    gd_bg_x = graphic_info[gfx_background].src_x;
+    gd_bg_y = graphic_info[gfx_background].src_y;
+
     gi = CreateGadget(GDI_CUSTOM_ID, id,
 		      GDI_CUSTOM_TYPE_ID, i,
 		      GDI_IMAGE_ID, gfx_unpressed,
@@ -11871,6 +11881,7 @@ static void CreateScreenScrollbars(void)
 		      GDI_WHEEL_AREA_WIDTH, wheel_width,
 		      GDI_WHEEL_AREA_HEIGHT, wheel_height,
 		      GDI_STATE, GD_BUTTON_UNPRESSED,
+		      GDI_DESIGN_BACKGROUND, gd_bitmap_background, gd_bg_x, gd_bg_y,
 		      GDI_DESIGN_UNPRESSED, gd_bitmap_unpressed, gd_x1, gd_y1,
 		      GDI_DESIGN_PRESSED, gd_bitmap_pressed, gd_x2, gd_y2,
 		      GDI_BORDER_SIZE, SC_BORDER_SIZE, SC_BORDER_SIZE,
