@@ -1222,30 +1222,30 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 				   gi->width, gi->height);
 
 	// upper part of gadget
-	BlitBitmapOnBackground(gd->bitmap, drawto,
-			       gd->x, gd->y,
-			       gi->width, gi->border.ysize,
-			       xpos, ypos);
+	BlitBitmapMasked(gd->bitmap, drawto,
+			 gd->x, gd->y,
+			 gi->width, gi->border.ysize,
+			 xpos, ypos);
 
 	// middle part of gadget
 	for (i = 0; i < num_steps; i++)
-	  BlitBitmapOnBackground(gd->bitmap, drawto,
-				 gd->x, gd->y + gi->border.ysize,
-				 gi->width, design_body,
-				 xpos, ypos + gi->border.ysize + i * design_body);
+	  BlitBitmapMasked(gd->bitmap, drawto,
+			   gd->x, gd->y + gi->border.ysize,
+			   gi->width, design_body,
+			   xpos, ypos + gi->border.ysize + i * design_body);
 
 	// remaining middle part of gadget
 	if (step_size_remain > 0)
-	  BlitBitmapOnBackground(gd->bitmap, drawto,
-				 gd->x,  gd->y + gi->border.ysize,
-				 gi->width, step_size_remain,
-				 xpos, ypos + gi->border.ysize + num_steps * design_body);
+	  BlitBitmapMasked(gd->bitmap, drawto,
+			   gd->x,  gd->y + gi->border.ysize,
+			   gi->width, step_size_remain,
+			   xpos, ypos + gi->border.ysize + num_steps * design_body);
 
 	// lower part of gadget
-	BlitBitmapOnBackground(gd->bitmap, drawto,
-			       gd->x, gd->y + design_full - gi->border.ysize,
-			       gi->width, gi->border.ysize,
-			       xpos, ypos + size_full - gi->border.ysize);
+	BlitBitmapMasked(gd->bitmap, drawto,
+			 gd->x, gd->y + design_full - gi->border.ysize,
+			 gi->width, gi->border.ysize,
+			 xpos, ypos + size_full - gi->border.ysize);
       }
       break;
 
@@ -1266,30 +1266,30 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 				   gi->width, gi->height);
 
 	// left part of gadget
-	BlitBitmapOnBackground(gd->bitmap, drawto,
-			       gd->x, gd->y,
-			       gi->border.xsize, gi->height,
-			       xpos, ypos);
+	BlitBitmapMasked(gd->bitmap, drawto,
+			 gd->x, gd->y,
+			 gi->border.xsize, gi->height,
+			 xpos, ypos);
 
 	// middle part of gadget
 	for (i = 0; i < num_steps; i++)
-	  BlitBitmapOnBackground(gd->bitmap, drawto,
-				 gd->x + gi->border.xsize, gd->y,
-				 design_body, gi->height,
-				 xpos + gi->border.xsize + i * design_body, ypos);
+	  BlitBitmapMasked(gd->bitmap, drawto,
+			   gd->x + gi->border.xsize, gd->y,
+			   design_body, gi->height,
+			   xpos + gi->border.xsize + i * design_body, ypos);
 
 	// remaining middle part of gadget
 	if (step_size_remain > 0)
-	  BlitBitmapOnBackground(gd->bitmap, drawto,
-				 gd->x + gi->border.xsize, gd->y,
-				 step_size_remain, gi->height,
-				 xpos + gi->border.xsize + num_steps * design_body, ypos);
+	  BlitBitmapMasked(gd->bitmap, drawto,
+			   gd->x + gi->border.xsize, gd->y,
+			   step_size_remain, gi->height,
+			   xpos + gi->border.xsize + num_steps * design_body, ypos);
 
 	// right part of gadget
-	BlitBitmapOnBackground(gd->bitmap, drawto,
-			       gd->x + design_full - gi->border.xsize, gd->y,
-			       gi->border.xsize, gi->height,
-			       xpos + size_full - gi->border.xsize, ypos);
+	BlitBitmapMasked(gd->bitmap, drawto,
+			 gd->x + design_full - gi->border.xsize, gd->y,
+			 gi->border.xsize, gi->height,
+			 xpos + size_full - gi->border.xsize, ypos);
       }
       break;
 
