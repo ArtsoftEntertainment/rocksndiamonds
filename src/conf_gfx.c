@@ -8438,6 +8438,12 @@ struct ConfigInfo image_config[] =
   { "editor.playfield.scrollbar.pressed_xoffset",	"-16"				},
   { "editor.playfield.scrollbar.border_size",		"3"				},
 
+  { "editor.playfield.scrollbar_horizontal",		UNDEFINED_FILENAME		},
+  { "editor.playfield.scrollbar_horizontal.clone_from",	"editor.playfield.scrollbar"	},
+
+  { "editor.playfield.scrollbar_vertical",		UNDEFINED_FILENAME		},
+  { "editor.playfield.scrollbar_vertical.clone_from",	"editor.playfield.scrollbar"	},
+
   { "editor.infotext.scroll_up",			UNDEFINED_FILENAME		},
   { "editor.infotext.scroll_up.clone_from",		"editor.playfield.scroll_up"	},
 
