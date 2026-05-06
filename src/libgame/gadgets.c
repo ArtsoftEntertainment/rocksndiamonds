@@ -726,6 +726,86 @@ static void DoGadgetCallbackAction(struct GadgetInfo *gi, boolean changed)
     gi->callback_action(gi);
 }
 
+static void DrawGadget_ScrollbarVertical(struct GadgetInfo *gi, struct GadgetDesign *gd,
+					  int position, int size)
+{
+  int xpos = gi->x;
+  int ypos = gi->y + position;
+  int design_full = gi->width;
+  int design_body = design_full - 2 * gi->border.ysize;
+  int size_full = size;
+  int size_body = size_full - 2 * gi->border.ysize;
+  int num_steps = size_body / design_body;
+  int step_size_remain = size_body - num_steps * design_body;
+  int i;
+
+  // upper part of gadget
+  BlitBitmapMasked(gd->bitmap, drawto,
+		   gd->x, gd->y,
+		   gi->width, gi->border.ysize,
+		   xpos, ypos);
+
+  // middle part of gadget
+  for (i = 0; i < num_steps; i++)
+    BlitBitmapMasked(gd->bitmap, drawto,
+		     gd->x, gd->y + gi->border.ysize,
+		     gi->width, design_body,
+		     xpos, ypos + gi->border.ysize + i * design_body);
+
+  // remaining middle part of gadget
+  if (step_size_remain > 0)
+    BlitBitmapMasked(gd->bitmap, drawto,
+		     gd->x,  gd->y + gi->border.ysize,
+		     gi->width, step_size_remain,
+		     xpos, ypos + gi->border.ysize + num_steps * design_body);
+
+  // lower part of gadget
+  BlitBitmapMasked(gd->bitmap, drawto,
+		   gd->x, gd->y + design_full - gi->border.ysize,
+		   gi->width, gi->border.ysize,
+		   xpos, ypos + size_full - gi->border.ysize);
+}
+
+static void DrawGadget_ScrollbarHorizontal(struct GadgetInfo *gi, struct GadgetDesign *gd,
+					   int position, int size)
+{
+  int xpos = gi->x + position;
+  int ypos = gi->y;
+  int design_full = gi->height;
+  int design_body = design_full - 2 * gi->border.xsize;
+  int size_full = size;
+  int size_body = size_full - 2 * gi->border.xsize;
+  int num_steps = size_body / design_body;
+  int step_size_remain = size_body - num_steps * design_body;
+  int i;
+
+  // left part of gadget
+  BlitBitmapMasked(gd->bitmap, drawto,
+		   gd->x, gd->y,
+		   gi->border.xsize, gi->height,
+		   xpos, ypos);
+
+  // middle part of gadget
+  for (i = 0; i < num_steps; i++)
+    BlitBitmapMasked(gd->bitmap, drawto,
+		     gd->x + gi->border.xsize, gd->y,
+		     design_body, gi->height,
+		     xpos + gi->border.xsize + i * design_body, ypos);
+
+  // remaining middle part of gadget
+  if (step_size_remain > 0)
+    BlitBitmapMasked(gd->bitmap, drawto,
+		     gd->x + gi->border.xsize, gd->y,
+		     step_size_remain, gi->height,
+		     xpos + gi->border.xsize + num_steps * design_body, ypos);
+
+  // right part of gadget
+  BlitBitmapMasked(gd->bitmap, drawto,
+		   gd->x + design_full - gi->border.xsize, gd->y,
+		   gi->border.xsize, gi->height,
+		   xpos + size_full - gi->border.xsize, ypos);
+}
+
 static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 {
   struct GadgetDesign *gd;
@@ -1207,89 +1287,21 @@ static void DrawGadget(struct GadgetInfo *gi, boolean pressed, boolean direct)
 
     case GD_TYPE_SCROLLBAR_VERTICAL:
       {
-	int i;
-	int xpos = gi->x;
-	int ypos = gi->y + gi->scrollbar.position;
-	int design_full = gi->width;
-	int design_body = design_full - 2 * gi->border.ysize;
-	int size_full = gi->scrollbar.size;
-	int size_body = size_full - 2 * gi->border.ysize;
-	int num_steps = size_body / design_body;
-	int step_size_remain = size_body - num_steps * design_body;
-
 	// clear scrollbar area
 	ClearRectangleOnBackground(backbuffer, gi->x, gi->y,
 				   gi->width, gi->height);
 
-	// upper part of gadget
-	BlitBitmapMasked(gd->bitmap, drawto,
-			 gd->x, gd->y,
-			 gi->width, gi->border.ysize,
-			 xpos, ypos);
-
-	// middle part of gadget
-	for (i = 0; i < num_steps; i++)
-	  BlitBitmapMasked(gd->bitmap, drawto,
-			   gd->x, gd->y + gi->border.ysize,
-			   gi->width, design_body,
-			   xpos, ypos + gi->border.ysize + i * design_body);
-
-	// remaining middle part of gadget
-	if (step_size_remain > 0)
-	  BlitBitmapMasked(gd->bitmap, drawto,
-			   gd->x,  gd->y + gi->border.ysize,
-			   gi->width, step_size_remain,
-			   xpos, ypos + gi->border.ysize + num_steps * design_body);
-
-	// lower part of gadget
-	BlitBitmapMasked(gd->bitmap, drawto,
-			 gd->x, gd->y + design_full - gi->border.ysize,
-			 gi->width, gi->border.ysize,
-			 xpos, ypos + size_full - gi->border.ysize);
+	DrawGadget_ScrollbarVertical(gi, gd, gi->scrollbar.position, gi->scrollbar.size);
       }
       break;
 
     case GD_TYPE_SCROLLBAR_HORIZONTAL:
       {
-	int i;
-	int xpos = gi->x + gi->scrollbar.position;
-	int ypos = gi->y;
-	int design_full = gi->height;
-	int design_body = design_full - 2 * gi->border.xsize;
-	int size_full = gi->scrollbar.size;
-	int size_body = size_full - 2 * gi->border.xsize;
-	int num_steps = size_body / design_body;
-	int step_size_remain = size_body - num_steps * design_body;
-
 	// clear scrollbar area
 	ClearRectangleOnBackground(backbuffer, gi->x, gi->y,
 				   gi->width, gi->height);
 
-	// left part of gadget
-	BlitBitmapMasked(gd->bitmap, drawto,
-			 gd->x, gd->y,
-			 gi->border.xsize, gi->height,
-			 xpos, ypos);
-
-	// middle part of gadget
-	for (i = 0; i < num_steps; i++)
-	  BlitBitmapMasked(gd->bitmap, drawto,
-			   gd->x + gi->border.xsize, gd->y,
-			   design_body, gi->height,
-			   xpos + gi->border.xsize + i * design_body, ypos);
-
-	// remaining middle part of gadget
-	if (step_size_remain > 0)
-	  BlitBitmapMasked(gd->bitmap, drawto,
-			   gd->x + gi->border.xsize, gd->y,
-			   step_size_remain, gi->height,
-			   xpos + gi->border.xsize + num_steps * design_body, ypos);
-
-	// right part of gadget
-	BlitBitmapMasked(gd->bitmap, drawto,
-			 gd->x + design_full - gi->border.xsize, gd->y,
-			 gi->border.xsize, gi->height,
-			 xpos + size_full - gi->border.xsize, ypos);
+	DrawGadget_ScrollbarHorizontal(gi, gd, gi->scrollbar.position, gi->scrollbar.size);
       }
       break;
 
