@@ -769,6 +769,10 @@ static void InitGlobalAnimGraphicInfo(void)
     int special = property_mapping[i].ext3_index;
     int graphic = property_mapping[i].artwork_index;
 
+    // if graphic was cloned, use cloned graphic
+    if (graphic_info[graphic].clone_from != -1)
+      graphic = graphic_info[graphic].clone_from;
+
     if (anim_nr < 0 || anim_nr >= NUM_GLOBAL_ANIM_TOKENS)
       continue;
 
