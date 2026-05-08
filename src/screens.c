@@ -1572,7 +1572,7 @@ static boolean visibleTextPos(struct TextPosInfo *pos)
   return (pos != NULL && pos->x != -1 && pos->y != -1);
 }
 
-static void InitializeMainControls(void)
+static void InitializeMainControls(boolean redraw_screen)
 {
   boolean local_team_mode = (!network.enabled && setup.team_mode);
   int size_first_level  = menu.main.text.first_level.size;
@@ -1679,10 +1679,7 @@ static void InitializeMainControls(void)
     {
       // calculate text size -- needed for text alignment
       boolean calculate_text_size = (text != NULL);
-
-      // needed for redrawing background under main menu text
-      if (pos_text->width > 0)
-	pos_text->width_old = pos_text->width;
+      int width_old = pos_text->width;
 
       if (pos_text->width == -1 || calculate_text_size)
 	pos_text->width = text_width;
@@ -1697,13 +1694,14 @@ static void InitializeMainControls(void)
 	  pos_text->y =
 	    pos_button->y + (pos_button->height - pos_text->height) / 2;
       }
+
+      // needed for redrawing background under main menu text
+      pos_text->width_old = (redraw_screen ? pos_text->width : width_old);
     }
 
     if (pos_input != NULL)		// (x/y may be -1/-1 here)
     {
-      // needed for redrawing background under main menu text
-      if (pos_input->width > 0)
-	pos_input->width_old = pos_input->width;
+      int width_old = pos_input->width;
 
       if (visibleTextPos(pos_text))
       {
@@ -1717,6 +1715,9 @@ static void InitializeMainControls(void)
 	pos_input->width = input_width;
       if (pos_input->height == -1)
 	pos_input->height = input_height;
+
+      // needed for redrawing background under main menu text
+      pos_input->width_old = (redraw_screen ? pos_input->width : width_old);
     }
   }
 }
@@ -2421,7 +2422,7 @@ void DrawMainMenu(void)
 
   ClearField();
 
-  InitializeMainControls();
+  InitializeMainControls(TRUE);
 
   DrawCursorAndText_Main(-1, FALSE, FALSE);
   DrawPreviewLevelInitial();
@@ -2711,7 +2712,7 @@ static void HandleMainMenu_ToggleTeamMode(boolean toggled_by_gadget)
 {
   setup.team_mode = !setup.team_mode;
 
-  InitializeMainControls();
+  InitializeMainControls(FALSE);
 
   if (!toggled_by_gadget)
   {
@@ -2770,7 +2771,7 @@ static void HandleMainMenu_SelectLevel(int step, int direction,
 
     level_nr = new_level_nr;
 
-    InitializeMainControls();
+    InitializeMainControls(FALSE);
 
     DrawCursorAndText_Main(MAIN_CONTROL_LEVEL_NUMBER, FALSE, FALSE);
     DrawCursorAndText_Main(MAIN_CONTROL_GAMES_PLAYED, FALSE, FALSE);
@@ -5592,7 +5593,7 @@ static void HandleTypeNameExt(boolean initialize, Key key)
     SetGameStatus(game_status_last_screen);
 
     if (game_status == GAME_MODE_MAIN)
-      InitializeMainControls();
+      InitializeMainControls(FALSE);
   }
 }
 
@@ -6502,7 +6503,7 @@ void DrawChoosePlayerName(void)
     player_name_current = player_name;
 
   // set text size for main name input (also used on name selection screen)
-  InitializeMainControls();
+  InitializeMainControls(TRUE);
 
   DrawChooseTree(&player_name_current);
 }
