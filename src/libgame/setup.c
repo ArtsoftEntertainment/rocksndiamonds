@@ -3086,6 +3086,7 @@ static struct TokenInfo levelinfo_tokens[] =
   { TYPE_BOOLEAN,	&ldi.handicap,				"handicap"			},
   { TYPE_BOOLEAN,	&ldi.time_limit,			"time_limit"			},
   { TYPE_BOOLEAN,	&ldi.skip_levels,			"skip_levels"			},
+  { TYPE_BOOLEAN,	&ldi.skip_intros,			"skip_intros"			},
   { TYPE_BOOLEAN,	&ldi.use_emc_tiles,			"use_emc_tiles"			},
   { TYPE_BOOLEAN,	&ldi.info_screens_from_main,		"info_screens_from_main"	},
   { TYPE_BOOLEAN,	&ldi.replay_with_old_engine,		"replay_with_old_engine"	},
@@ -3232,6 +3233,7 @@ static void setTreeInfoToDefaults(TreeInfo *ti, int type)
     ti->handicap = TRUE;
     ti->time_limit = TRUE;
     ti->skip_levels = FALSE;
+    ti->skip_intros = FALSE;
 
     ti->use_emc_tiles = FALSE;
     ti->info_screens_from_main = FALSE;
@@ -3329,6 +3331,7 @@ static void setTreeInfoToDefaultsFromParent(TreeInfo *ti, TreeInfo *parent)
     ti->handicap = parent->handicap;
     ti->time_limit = parent->time_limit;
     ti->skip_levels = parent->skip_levels;
+    ti->skip_intros = parent->skip_intros;
 
     ti->use_emc_tiles = parent->use_emc_tiles;
     ti->info_screens_from_main = parent->info_screens_from_main;
@@ -3412,6 +3415,7 @@ static TreeInfo *getTreeInfoCopy(TreeInfo *ti)
   ti_copy->handicap		= ti->handicap;
   ti_copy->time_limit		= ti->time_limit;
   ti_copy->skip_levels		= ti->skip_levels;
+  ti_copy->skip_intros		= ti->skip_intros;
 
   ti_copy->use_emc_tiles	= ti->use_emc_tiles;
   ti_copy->info_screens_from_main = ti->info_screens_from_main;

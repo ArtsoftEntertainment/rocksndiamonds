@@ -5232,6 +5232,10 @@ boolean ShowIntroOrStoryScreen_FromInitGame(void)
     if (is_global_intro_template && level.game_engine_type != GAME_ENGINE_TYPE_RND)
       return FALSE;
 
+    // skip intro screen when level set is configured to not show intro screens at all
+    if (leveldir_current->skip_intros)
+      return FALSE;
+
     levelset.level_intro_shown[level_nr] = TRUE;
 
     DrawInfoScreen_FromInitGame(INFO_MODE_INTRO);

@@ -1798,6 +1798,7 @@ struct TreeInfo
   boolean handicap;		// level set has no handicap when set to "false"
   boolean time_limit;		// level set has no time limit when set to "false"
   boolean skip_levels;		// levels can be skipped when set to "true"
+  boolean skip_intros;		// intros will be skipped when set to "true"
 
   boolean use_emc_tiles;	// use (swapped) V5/V6 EMC tiles when set to "true"
   boolean info_screens_from_main; // can invoke info screens from main menu
