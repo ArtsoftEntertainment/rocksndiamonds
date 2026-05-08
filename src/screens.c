@@ -1703,6 +1703,11 @@ static void InitializeMainControls(boolean redraw_screen)
     {
       int width_old = pos_input->width;
 
+      if (pos_input->width == -1)
+	pos_input->width = input_width;
+      if (pos_input->height == -1)
+	pos_input->height = input_height;
+
       if (visibleTextPos(pos_text))
       {
 	if (pos_input->x == -1)
@@ -1710,11 +1715,6 @@ static void InitializeMainControls(boolean redraw_screen)
 	if (pos_input->y == -1)
 	  pos_input->y = pos_text->y;
       }
-
-      if (pos_input->width == -1)
-	pos_input->width = input_width;
-      if (pos_input->height == -1)
-	pos_input->height = input_height;
 
       // needed for redrawing background under main menu text
       pos_input->width_old = (redraw_screen ? pos_input->width : width_old);
