@@ -1691,8 +1691,7 @@ static void InitializeMainControls(boolean redraw_screen)
 	if (pos_text->x == -1)
 	  pos_text->x = pos_button->x + pos_button->width;
 	if (pos_text->y == -1)
-	  pos_text->y =
-	    pos_button->y + (pos_button->height - pos_text->height) / 2;
+	  pos_text->y = pos_button->y + (pos_button->height - pos_text->height) / 2;
       }
 
       // needed for redrawing background under main menu text
