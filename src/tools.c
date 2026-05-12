@@ -4296,9 +4296,6 @@ static void DrawPlayerExt(struct PlayerInfo *player, int drawing_stage)
     if (!player->active || !IN_SCR_FIELD(SCREENX(last_jx), SCREENY(last_jy)))
       return;
 
-    if (element == EL_EXPLOSION)
-      return;
-
     InitPlayerGfxAnimation(player, action, move_dir);
 
     draw_player[pnr] = TRUE;
@@ -4338,6 +4335,10 @@ static void DrawPlayerExt(struct PlayerInfo *player, int drawing_stage)
     // ------------------------------------------------------------------------
     // draw things behind the player, if needed
     // ------------------------------------------------------------------------
+
+    // currently needed to prevent drawing exploded element (should be fixed)
+    if (element == EL_EXPLOSION)
+      return;
 
     if (Back[jx][jy])
     {
@@ -4483,6 +4484,7 @@ static void DrawPlayerExt(struct PlayerInfo *player, int drawing_stage)
 	DrawGraphicThruMask(sx, sy, graphic, frame);
     }
 
+    // needed for drawing player leaving exploding field
     if (player_is_moving && last_element == EL_EXPLOSION)
     {
       int element = (GfxElement[last_jx][last_jy] != EL_UNDEFINED ?
@@ -4494,6 +4496,20 @@ static void DrawPlayerExt(struct PlayerInfo *player, int drawing_stage)
 
       if (phase >= delay)
 	DrawGraphicThruMask(SCREENX(last_jx), SCREENY(last_jy), graphic, frame);
+    }
+
+    // needed for drawing player entering (or standing at) exploding field
+    if (element == EL_EXPLOSION)
+    {
+      int element = (GfxElement[jx][jy] != EL_UNDEFINED ?
+		     GfxElement[jx][jy] :  EL_EMPTY);
+      int graphic = el_act2img(element, ACTION_EXPLODING);
+      int delay = (game.emulation == EMU_SUPAPLEX ? 3 : 2);
+      int phase = ExplodePhase[jx][jy] - 1;
+      int frame = getGraphicAnimationFrame(graphic, phase - delay);
+
+      if (phase >= delay)
+	DrawGraphicThruMask(SCREENX(jx), SCREENY(jy), graphic, frame);
     }
   }
   else if (drawing_stage == DRAW_PLAYER_STAGE_FIELD_OVER_PLAYER)
