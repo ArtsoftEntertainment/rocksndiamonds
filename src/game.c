@@ -14002,7 +14002,7 @@ boolean MovePlayer(struct PlayerInfo *player, int dx, int dy)
     else if (old_jx == jx && old_jy != jy)
       player->MovDir = (old_jy < jy ? MV_DOWN : MV_UP);
 
-    TEST_DrawLevelField(jx, jy);	// for "crumbled sand"
+    // no field redraw here -- will be done later when redrawing players
 
     player->last_move_dir = player->MovDir;
     player->is_moving = TRUE;
