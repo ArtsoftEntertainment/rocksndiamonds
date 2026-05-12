@@ -4306,6 +4306,10 @@ static void DrawPlayerExt(struct PlayerInfo *player, int drawing_stage)
     // draw things in the field the player is leaving, if needed
     // ------------------------------------------------------------------------
 
+    // currently needed to prevent clearing exploding field (should be fixed)
+    if (last_element == EL_EXPLOSION)
+      return;
+
     if (!IN_SCR_FIELD(sx, sy))
       draw_player[pnr] = FALSE;
 
