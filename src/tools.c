@@ -4491,7 +4491,7 @@ static void DrawPlayerExt(struct PlayerInfo *player, int drawing_stage)
 		     GfxElement[last_jx][last_jy] :  EL_EMPTY);
       int graphic = el_act2img(element, ACTION_EXPLODING);
       int delay = (game.emulation == EMU_SUPAPLEX ? 3 : 2);
-      int phase = ExplodePhase[last_jx][last_jy] - 1;
+      int phase = ExplodePhase[last_jx][last_jy];
       int frame = getGraphicAnimationFrame(graphic, phase - delay);
 
       if (phase >= delay)
@@ -4505,7 +4505,7 @@ static void DrawPlayerExt(struct PlayerInfo *player, int drawing_stage)
 		     GfxElement[jx][jy] :  EL_EMPTY);
       int graphic = el_act2img(element, ACTION_EXPLODING);
       int delay = (game.emulation == EMU_SUPAPLEX ? 3 : 2);
-      int phase = ExplodePhase[jx][jy] - 1;
+      int phase = ExplodePhase[jx][jy];
       int frame = getGraphicAnimationFrame(graphic, phase - delay);
 
       if (phase >= delay)
