@@ -1028,6 +1028,12 @@
 #define PLAYERINFO(x, y)		(&stored_player[StorePlayer[x][y] - EL_PLAYER_1])
 #define SHIELD_ON(p)			((p)->shield_normal_time_left > 0)
 
+#define MAX_PLAYER_GRAPHICS()		((IMG_PLAYER_2 - IMG_PLAYER_1) * MAX_PLAYERS)
+#define IS_PLAYER_GRAPHIC(g)		((g) >= IMG_PLAYER_1 &&				\
+					 (g) <  IMG_PLAYER_1 + MAX_PLAYER_GRAPHICS())
+#define GET_PLAYER_SHIELDED_GRAPHIC(g)	(IS_PLAYER_GRAPHIC(g) ?				\
+					 (g) - IMG_PLAYER_1 + IMG_PLAYER_1_SHIELDED : (g))
+
 #define ENEMY_PROTECTED_FIELD(x, y)	(IS_PROTECTED(Tile[x][y]) ||			\
 					 IS_PROTECTED(Back[x][y]))
 #define EXPLOSION_PROTECTED_FIELD(x, y)	(IS_EXPLOSION_PROOF(Tile[x][y]))

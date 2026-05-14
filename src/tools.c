@@ -4183,7 +4183,14 @@ static int getPlayerGraphic(struct PlayerInfo *player, int move_dir)
     return graphic;
   }
   else
-    return el_act_dir2img(player->artwork_element, player->GfxAction, move_dir);
+  {
+    int graphic = el_act_dir2img(player->artwork_element, player->GfxAction, move_dir);
+
+    if (SHIELD_ON(player))
+      graphic = GET_PLAYER_SHIELDED_GRAPHIC(graphic);
+
+    return graphic;
+  }
 }
 
 static boolean equalGraphics(int graphic1, int graphic2)
