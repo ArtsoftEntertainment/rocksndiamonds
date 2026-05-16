@@ -10373,6 +10373,9 @@ static void CheckExit(int x, int y)
   Tile[x][y] = EL_EXIT_OPENING;
 
   PlayLevelSoundNearest(x, y, SND_CLASS_EXIT_OPENING);
+
+  if (level.exit_open_flash_playfield)
+    DrawFlashPlayfield();
 }
 
 static void CheckExitEM(int x, int y)
@@ -10398,6 +10401,9 @@ static void CheckExitEM(int x, int y)
   Tile[x][y] = EL_EM_EXIT_OPENING;
 
   PlayLevelSoundNearest(x, y, SND_CLASS_EM_EXIT_OPENING);
+
+  if (level.exit_open_flash_playfield)
+    DrawFlashPlayfield();
 }
 
 static void CheckExitSteel(int x, int y)
@@ -10423,6 +10429,9 @@ static void CheckExitSteel(int x, int y)
   Tile[x][y] = EL_STEEL_EXIT_OPENING;
 
   PlayLevelSoundNearest(x, y, SND_CLASS_STEEL_EXIT_OPENING);
+
+  if (level.exit_open_flash_playfield)
+    DrawFlashPlayfield();
 }
 
 static void CheckExitSteelEM(int x, int y)
@@ -10448,6 +10457,9 @@ static void CheckExitSteelEM(int x, int y)
   Tile[x][y] = EL_EM_STEEL_EXIT_OPENING;
 
   PlayLevelSoundNearest(x, y, SND_CLASS_EM_STEEL_EXIT_OPENING);
+
+  if (level.exit_open_flash_playfield)
+    DrawFlashPlayfield();
 }
 
 static void CheckExitSP(int x, int y)
@@ -10470,6 +10482,9 @@ static void CheckExitSP(int x, int y)
   Tile[x][y] = EL_SP_EXIT_OPENING;
 
   PlayLevelSoundNearest(x, y, SND_CLASS_SP_EXIT_OPENING);
+
+  if (level.exit_open_flash_playfield)
+    DrawFlashPlayfield();
 }
 
 static void CloseAllOpenTimegates(void)

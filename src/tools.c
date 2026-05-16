@@ -12513,6 +12513,68 @@ void SetLevelSetInfo(char *identifier, int level_nr)
   levelset.level_nr = level_nr;
 }
 
+static void DoFlashPlayfield(boolean init_bitmap, boolean init_flashing)
+{
+  static Bitmap *flash_bitmap = NULL;
+  static int fxsize = -1;
+  static int fysize = -1;
+  static int show_flash_count = 0;
+  int num_flash_frames = 16;
+
+  if (fxsize != gfx.sxsize ||
+      fysize != gfx.sysize ||
+      init_bitmap)
+  {
+    fxsize = gfx.sxsize;
+    fysize = gfx.sysize;
+
+    if (flash_bitmap != NULL)
+      FreeBitmap(flash_bitmap);
+
+    flash_bitmap = CreateBitmap(fxsize, fysize, DEFAULT_DEPTH);
+
+    FillRectangle(flash_bitmap, 0, 0, fxsize, fysize, WHITE_PIXEL);
+
+    if ((flash_bitmap->surface_masked = SDLGetNativeSurface(flash_bitmap->surface)) == NULL)
+      Fail("SDLGetNativeSurface() failed");
+
+    SDLCreateBitmapTextures(flash_bitmap);
+  }
+
+  if (init_bitmap)
+    return;
+
+  if (init_flashing)
+    show_flash_count = num_flash_frames;
+
+  if (show_flash_count > 0)
+  {
+    int alpha = show_flash_count * SDL_ALPHA_OPAQUE / num_flash_frames;
+
+    show_flash_count--;
+
+    SDLSetSurfaceAlpha(flash_bitmap->surface, TRUE, alpha);
+    SDLSetTextureAlpha(flash_bitmap->texture, TRUE, alpha);
+
+    BlitToScreen(flash_bitmap, 0, 0, fxsize, fysize, gfx.sx, gfx.sy);
+  }
+}
+
+void InitFlashPlayfield(void)
+{
+  DoFlashPlayfield(TRUE, FALSE);
+}
+
+void DrawFlashPlayfield(void)
+{
+  DoFlashPlayfield(FALSE, TRUE);
+}
+
+void UpdateFlashPlayfield(void)
+{
+  DoFlashPlayfield(FALSE, FALSE);
+}
+
 boolean CheckIfAllViewportsHaveChanged(void)
 {
   // if game status has not changed, viewports have not changed either

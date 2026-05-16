@@ -872,6 +872,7 @@ enum
   GADGET_ID_SB_OBJECTS_NEEDED,
   GADGET_ID_AUTO_EXIT_SOKOBAN,
   GADGET_ID_SOLVED_BY_ONE_PLAYER,
+  GADGET_ID_EXIT_OPEN_FLASH_PLAYFIELD,
   GADGET_ID_FINISH_DIG_COLLECT,
   GADGET_ID_KEEP_WALKABLE_CE,
   GADGET_ID_CONTINUOUS_SNAPPING,
@@ -1342,6 +1343,7 @@ enum
   ED_CHECKBUTTON_ID_SB_OBJECTS_NEEDED,
   ED_CHECKBUTTON_ID_AUTO_EXIT_SOKOBAN,
   ED_CHECKBUTTON_ID_SOLVED_BY_ONE_PLAYER,
+  ED_CHECKBUTTON_ID_EXIT_OPEN_FLASH_PLAYFIELD,
   ED_CHECKBUTTON_ID_FINISH_DIG_COLLECT,
   ED_CHECKBUTTON_ID_KEEP_WALKABLE_CE,
   ED_CHECKBUTTON_ID_CONTINUOUS_SNAPPING,
@@ -4653,6 +4655,14 @@ static struct
     &level.solved_by_one_player,
     NULL, NULL,
     "Only one player must enter exit",		"Level solved by first player in exit"
+  },
+  {
+    ED_CHECKBUTTON_ID_EXIT_OPEN_FLASH_PLAYFIELD,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(0),
+    GADGET_ID_EXIT_OPEN_FLASH_PLAYFIELD,	GADGET_ID_NONE,
+    &level.exit_open_flash_playfield,
+    NULL, NULL,
+    "Flash screen if exit is opening",		"Flash screen to show that exit is open"
   },
   {
     ED_CHECKBUTTON_ID_FINISH_DIG_COLLECT,
@@ -13774,7 +13784,16 @@ static boolean checkPropertiesConfig(int element)
       element == EL_DC_MAGIC_WALL ||
       element == EL_LANDMINE ||
       element == EL_DC_LANDMINE ||
-      element == EL_TRAP)
+      element == EL_TRAP ||
+      element == EL_EXIT_CLOSED ||
+      element == EL_EXIT_OPEN ||
+      element == EL_STEEL_EXIT_CLOSED ||
+      element == EL_STEEL_EXIT_OPEN ||
+      element == EL_EM_EXIT_CLOSED ||
+      element == EL_EM_EXIT_OPEN ||
+      element == EL_EM_STEEL_EXIT_CLOSED ||
+      element == EL_EM_STEEL_EXIT_OPEN ||
+      element == EL_SP_EXIT_CLOSED)
   {
     return TRUE;
   }
@@ -14409,6 +14428,17 @@ static void DrawPropertiesConfig(void)
       properties_element == EL_DC_LANDMINE ||
       properties_element == EL_TRAP)
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_USE_DIGGABLE_LANDMINES);
+
+  if (properties_element == EL_EXIT_CLOSED ||
+      properties_element == EL_EXIT_OPEN ||
+      properties_element == EL_STEEL_EXIT_CLOSED ||
+      properties_element == EL_STEEL_EXIT_OPEN ||
+      properties_element == EL_EM_EXIT_CLOSED ||
+      properties_element == EL_EM_EXIT_OPEN ||
+      properties_element == EL_EM_STEEL_EXIT_CLOSED ||
+      properties_element == EL_EM_STEEL_EXIT_OPEN ||
+      properties_element == EL_SP_EXIT_CLOSED)
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_EXIT_OPEN_FLASH_PLAYFIELD);
 
   if (IS_MM_MCDUFFIN(properties_element))
   {

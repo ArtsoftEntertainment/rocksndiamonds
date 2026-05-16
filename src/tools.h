@@ -309,6 +309,10 @@ void ResetFontStatus(void);
 
 void SetLevelSetInfo(char *, int);
 
+void InitFlashPlayfield(void);
+void DrawFlashPlayfield(void);
+void UpdateFlashPlayfield(void);
+
 void ToggleAudioSampleRateIfNeeded(void);
 void ToggleMenuMusicIfNeeded(void);
 void ToggleMenuSoundsIfNeeded(void);

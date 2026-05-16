@@ -446,6 +446,8 @@ void InitImageTextures(void)
 
   for (i = 0; texture_graphics[i] > -1; i++)
     CreateImageTextures(texture_graphics[i]);
+
+  InitFlashPlayfield();
 }
 
 void FreeAllTextures(void)

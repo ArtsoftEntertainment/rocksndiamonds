@@ -4063,6 +4063,7 @@ struct LevelInfo
   boolean sb_objects_needed;		// all Sokoban objects must be solved
   boolean auto_exit_sokoban;		// automatically finish solved Sokoban levels
   boolean solved_by_one_player;		// level is solved if one player enters exit
+  boolean exit_open_flash_playfield;	// flash playfield if exit is opening
   boolean finish_dig_collect;		// only finished dig/collect triggers ce action
   boolean keep_walkable_ce;		// keep walkable CE if it changes to the player
 

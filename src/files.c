@@ -1611,6 +1611,12 @@ static struct LevelFileConfigInfo chunk_config_ELEM[] =
   },
 
   {
+    EL_EXIT_OPEN,				-1,
+    TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
+    &li.exit_open_flash_playfield,		FALSE
+  },
+
+  {
     EL_MM_MCDUFFIN,				-1,
     TYPE_BOOLEAN,				CONF_VALUE_8_BIT(1),
     &li.mm_laser_red,				FALSE
@@ -8027,6 +8033,9 @@ static void LoadLevelFromFileStream_DC(File *file, struct LevelInfo *level, int 
 
   // Diamond Caves resets the shield time when collecting shields instead of adding it
   level->dc_limit_max_shield_time = TRUE;
+
+  // Diamond Caves causes the playfield to flash when the exit is opening
+  level->exit_open_flash_playfield = TRUE;
 
   // Diamond Caves II uses special behavior when digging (DC style) landmines
   level->use_diggable_landmines = TRUE;
