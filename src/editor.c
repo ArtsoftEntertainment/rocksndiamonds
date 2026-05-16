@@ -860,6 +860,7 @@ enum
   GADGET_ID_DC_AMOEBA_BEHAVIOR,
   GADGET_ID_DC_KEEP_WALL_CONTENT,
   GADGET_ID_DC_NO_TIMEOUT_WITH_SHIELD,
+  GADGET_ID_DC_LIMIT_MAX_SHIELD_TIME,
   GADGET_ID_USE_DIGGABLE_LANDMINES,
   GADGET_ID_USE_SPRING_BUG,
   GADGET_ID_USE_TIME_ORB_BUG,
@@ -1329,6 +1330,7 @@ enum
   ED_CHECKBUTTON_ID_DC_AMOEBA_BEHAVIOR,
   ED_CHECKBUTTON_ID_DC_KEEP_WALL_CONTENT,
   ED_CHECKBUTTON_ID_DC_NO_TIMEOUT_WITH_SHIELD,
+  ED_CHECKBUTTON_ID_DC_LIMIT_MAX_SHIELD_TIME,
   ED_CHECKBUTTON_ID_USE_DIGGABLE_LANDMINES,
   ED_CHECKBUTTON_ID_USE_SPRING_BUG,
   ED_CHECKBUTTON_ID_USE_TIME_ORB_BUG,
@@ -4555,6 +4557,14 @@ static struct
     &level.dc_no_timeout_with_shield,
     NULL, NULL,
     "Survive level timeout with shield",	"Use DC style behavior of level timeout"
+  },
+  {
+    ED_CHECKBUTTON_ID_DC_LIMIT_MAX_SHIELD_TIME,
+    ED_ELEMENT_SETTINGS_XPOS(0),		ED_ELEMENT_SETTINGS_YPOS(4),
+    GADGET_ID_DC_LIMIT_MAX_SHIELD_TIME,		GADGET_ID_NONE,
+    &level.dc_limit_max_shield_time,
+    NULL, NULL,
+    "Limit maximum shield duration",		"Reset shield time instead of adding it"
   },
   {
     ED_CHECKBUTTON_ID_USE_DIGGABLE_LANDMINES,
@@ -14305,7 +14315,10 @@ static void DrawPropertiesConfig(void)
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_DC_KEEP_WALL_CONTENT);
 
   if (IS_SHIELD(properties_element))
+  {
     MapCheckbuttonGadget(ED_CHECKBUTTON_ID_DC_NO_TIMEOUT_WITH_SHIELD);
+    MapCheckbuttonGadget(ED_CHECKBUTTON_ID_DC_LIMIT_MAX_SHIELD_TIME);
+  }
 
   if (level.game_engine_type == GAME_ENGINE_TYPE_RND &&
       COULD_MOVE_INTO_ACID(properties_element) &&

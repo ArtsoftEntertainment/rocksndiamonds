@@ -4049,6 +4049,7 @@ struct LevelInfo
   boolean dc_amoeba_behavior;		// DC style behavior (and speed) of EM style amoeba
   boolean dc_keep_wall_content;		// DC style behavior when exploding wall with content
   boolean dc_no_timeout_with_shield;	// DC style behavior of surviving timeout with shield
+  boolean dc_limit_max_shield_time;	// DC style behavior of limiting maximum shield time
   boolean use_diggable_landmines;	// DC style behavior when digging traps and (DC) landmines
   boolean use_spring_bug;		// for compatibility with old levels
   boolean use_time_orb_bug;		// for compatibility with old levels

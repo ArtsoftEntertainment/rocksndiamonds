@@ -15367,9 +15367,18 @@ static int DigField(struct PlayerInfo *player,
 					   level.shield_deadly_time :
 					   level.shield_normal_time);
 
-      player->shield_normal_time_left += shield_time;
-      if (element == EL_SHIELD_DEADLY)
-	player->shield_deadly_time_left += shield_time;
+      if (level.dc_limit_max_shield_time)
+      {
+	player->shield_normal_time_left = shield_time;
+	if (element == EL_SHIELD_DEADLY)
+	  player->shield_deadly_time_left = shield_time;
+      }
+      else
+      {
+	player->shield_normal_time_left += shield_time;
+	if (element == EL_SHIELD_DEADLY)
+	  player->shield_deadly_time_left += shield_time;
+      }
     }
     else if (element == EL_DYNAMITE ||
 	     element == EL_EM_DYNAMITE ||
