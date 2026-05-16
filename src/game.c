@@ -10508,9 +10508,10 @@ static void DrawTwinkleOnField(int x, int y)
 
     if (MovDelay[x][y] != 0)
     {
-      int frame = getGraphicAnimationFrame(IMG_TWINKLE_WHITE, 10 - MovDelay[x][y]);
+      int graphic = IMG_TWINKLE_WHITE;
+      int frame = getGraphicAnimationFrame(graphic, 10 - MovDelay[x][y]);
 
-      DrawGraphicThruMask(SCREENX(x), SCREENY(y), IMG_TWINKLE_WHITE, frame);
+      DrawGraphicThruMask(SCREENX(x), SCREENY(y), graphic, frame);
     }
   }
 }
