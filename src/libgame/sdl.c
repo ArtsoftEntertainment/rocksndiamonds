@@ -366,7 +366,7 @@ static boolean SDLHasAlpha(SDL_Surface *surface)
   return (blend_mode == SDL_BLENDMODE_BLEND);
 }
 
-static void SDLSetSurfaceAlpha(SDL_Surface *surface, boolean set, int alpha)
+void SDLSetSurfaceAlpha(SDL_Surface *surface, boolean set, int alpha)
 {
   SDL_BlendMode blend_mode = (set ? SDL_BLENDMODE_BLEND : SDL_BLENDMODE_NONE);
 
@@ -374,7 +374,7 @@ static void SDLSetSurfaceAlpha(SDL_Surface *surface, boolean set, int alpha)
   SDL_SetSurfaceAlphaMod(surface, alpha);
 }
 
-static void SDLSetTextureAlpha(SDL_Texture *texture, boolean set, int alpha)
+void SDLSetTextureAlpha(SDL_Texture *texture, boolean set, int alpha)
 {
   SDL_BlendMode blend_mode = (set ? SDL_BLENDMODE_BLEND : SDL_BLENDMODE_NONE);
 

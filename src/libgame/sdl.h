@@ -397,6 +397,8 @@ typedef struct UserEventInfo	UserEvent;
 
 // SDL function definitions
 
+void SDLSetSurfaceAlpha(SDL_Surface *, boolean, int);
+void SDLSetTextureAlpha(SDL_Texture *, boolean, int);
 void SDLSetAlpha(SDL_Surface *, boolean, int);
 const char *SDLGetRendererName(void);
 boolean SDLSetNativeSurface(SDL_Surface **);
