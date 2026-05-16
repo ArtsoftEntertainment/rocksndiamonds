@@ -10508,7 +10508,9 @@ static void DrawTwinkleOnField(int x, int y)
 
     if (MovDelay[x][y] != 0)
     {
-      int graphic = IMG_TWINKLE_WHITE;
+      int graphic_base = el2img(Tile[x][y]);
+      int graphic_twinkle = el_act2img(Tile[x][y], ACTION_TWINKLING);
+      int graphic = (graphic_twinkle != graphic_base ? graphic_twinkle : IMG_TWINKLE_WHITE);
       int frame = getGraphicAnimationFrame(graphic, 10 - MovDelay[x][y]);
 
       DrawGraphicThruMask(SCREENX(x), SCREENY(y), graphic, frame);
