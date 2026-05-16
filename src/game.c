@@ -13549,6 +13549,11 @@ void GameActions_RND(void)
 	PlayLevelSound(player->jx, player->jy, SND_SHIELD_DEADLY_ACTIVE);
       else if (player->shield_normal_time_left)
 	PlayLevelSound(player->jx, player->jy, SND_SHIELD_NORMAL_ACTIVE);
+
+      if (player->shield_deadly_time_left == FRAMES_PER_SECOND)
+	PlayLevelSound(player->jx, player->jy, SND_SHIELD_DEADLY_DEACTIVATING);
+      else if (player->shield_normal_time_left == FRAMES_PER_SECOND)
+	PlayLevelSound(player->jx, player->jy, SND_SHIELD_NORMAL_DEACTIVATING);
     }
   }
 
