@@ -43,6 +43,9 @@ static boolean special_cursor_enabled = FALSE;
 static boolean stop_processing_events = FALSE;
 static boolean is_global_anim_event = FALSE;
 
+static boolean quick_save_requested = FALSE;
+static boolean quick_load_requested = FALSE;
+
 
 // forward declarations for internal use
 static void ClearTouchInfo(void);
@@ -2542,9 +2545,9 @@ void HandleKey(Key key, int key_status)
   if (game_status == GAME_MODE_MAIN || game_status == GAME_MODE_PLAYING)
   {
     if (key == setup.shortcut.save_game)
-      TapeQuickSave();
+      quick_save_requested = TRUE;
     else if (key == setup.shortcut.load_game)
-      TapeQuickLoad();
+      quick_load_requested = TRUE;
     else if (key == setup.shortcut.restart_game)
       TapeRestartGame();
     else if (key == setup.shortcut.pause_before_end)
@@ -2769,6 +2772,20 @@ void HandleNoEvent(void)
 
 void HandleEventActions(void)
 {
+  // deferred tape save/load: executed after all events are processed so that
+  // stored_player[].action is in its final state before the snapshot is taken,
+  // matching what TapeRecordAction() will record in the same game frame
+  if (quick_save_requested)
+  {
+    TapeQuickSave();
+    quick_save_requested = FALSE;
+  }
+  if (quick_load_requested)
+  {
+    TapeQuickLoad();
+    quick_load_requested = FALSE;
+  }
+
   // if (button_status && game_status != GAME_MODE_PLAYING)
   if (button_status && (game_status != GAME_MODE_PLAYING ||
 			tape.pausing ||
