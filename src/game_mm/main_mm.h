@@ -49,6 +49,7 @@ extern int			TILESIZE_VAR;
 #define MINI_TILEX		(TILEX / 2)
 #define MINI_TILEY		(TILEY / 2)
 
+extern int			WIN_XSIZE, WIN_YSIZE;
 extern int			SCR_FIELDX, SCR_FIELDY;
 
 #define MAX_BUF_XSIZE		SCR_FIELDX

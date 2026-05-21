@@ -21,7 +21,7 @@ struct EngineSnapshotInfo_MM engine_snapshot_mm;
 
 void InitGfxBuffers_MM(void)
 {
-  ReCreateBitmap(&drawto_mm, video.width, video.height);
+  ReCreateBitmap(&drawto_mm, WIN_XSIZE, WIN_YSIZE);
 }
 
 unsigned int InitEngineRandom_MM(int seed)
