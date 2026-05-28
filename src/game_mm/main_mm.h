@@ -52,17 +52,10 @@ extern int			TILESIZE_VAR;
 extern int			WIN_XSIZE, WIN_YSIZE;
 extern int			SCR_FIELDX, SCR_FIELDY;
 
-#define MAX_BUF_XSIZE		SCR_FIELDX
-#define MAX_BUF_YSIZE		SCR_FIELDY
-
 // often used screen positions
 
 extern int			SX, SY;
 extern int			SXSIZE, SYSIZE;
-
-#define FXSIZE			(MAX_BUF_XSIZE * TILEX_VAR)
-#define FYSIZE			(MAX_BUF_YSIZE * TILEY_VAR)
-
 extern int			REAL_SX, REAL_SY;
 extern int			FULL_SXSIZE, FULL_SYSIZE;
 
