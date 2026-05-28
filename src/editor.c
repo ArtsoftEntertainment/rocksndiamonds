@@ -8976,8 +8976,6 @@ static void DrawElementBorder(int dest_x, int dest_y, int width, int height, boo
 
 static void DrawEditorLevelBorderLine(int x, int y, int xsize, int ysize)
 {
-  int xsize_tile = MAX(ed_tilesize, xsize);
-  int ysize_tile = MAX(ed_tilesize, ysize);
   int xsize_full = xsize + 1;
   int ysize_full = ysize + 1;
   int xsize_thin = (xsize < ed_tilesize ? 1 : xsize);
@@ -8987,7 +8985,6 @@ static void DrawEditorLevelBorderLine(int x, int y, int xsize, int ysize)
   if (line_color == BLACK_PIXEL)		// black => transparent
     return;
 
-  FillRectangle(drawto, SX + x, SY + y, xsize_tile, ysize_tile, BLACK_PIXEL);
   FillRectangle(drawto, SX + x, SY + y, xsize_full, ysize_full, line_color);
   FillRectangle(drawto, SX + x, SY + y, xsize_thin, ysize_thin, BLACK_PIXEL);
 }
