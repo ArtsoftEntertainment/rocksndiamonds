@@ -58,16 +58,13 @@ extern int			SCR_FIELDX, SCR_FIELDY;
 // often used screen positions
 
 extern int			SX, SY;
+extern int			SXSIZE, SYSIZE;
 
-#define SXSIZE			(SCR_FIELDX * TILEX_VAR)
-#define SYSIZE			(SCR_FIELDY * TILEY_VAR)
 #define FXSIZE			(MAX_BUF_XSIZE * TILEX_VAR)
 #define FYSIZE			(MAX_BUF_YSIZE * TILEY_VAR)
 
 extern int			REAL_SX, REAL_SY;
-
-#define FULL_SXSIZE		(2 + SXSIZE + 2)
-#define FULL_SYSIZE		(2 + SYSIZE + 2)
+extern int			FULL_SXSIZE, FULL_SYSIZE;
 
 
 // ----------------------------------------------------------------------------
