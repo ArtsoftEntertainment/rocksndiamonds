@@ -4832,6 +4832,8 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
 
   if (button == MB_MENU_INITIALIZE)
   {
+    ResetDelayCounter(&intro_delay);
+
     if (position_set_by_scrollbar)
     {
       int items_max = screen_gadget[SCREEN_CTRL_ID_SCROLL_VERTICAL]->scrollbar.items_max;
@@ -4977,8 +4979,6 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
     }
 
     DrawInfoScreen_GenericScreen(screen_nr, num_screens, use_global_screens);
-
-    ResetDelayCounter(&intro_delay);
 
     return;
   }
