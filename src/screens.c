@@ -4983,7 +4983,8 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
     return;
   }
 
-  if (info_mode == INFO_MODE_INTRO && DelayReached(&intro_delay))
+  // automatically leave intro screen after delay (but only if intro screen available)
+  if (info_mode == INFO_MODE_INTRO && num_screens > 0 && DelayReached(&intro_delay))
     button = MB_MENU_CHOICE;
 
   if (info_mode == INFO_MODE_LEVEL && ABS(dx) == 1)
