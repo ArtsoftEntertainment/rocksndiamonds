@@ -7750,6 +7750,9 @@ struct ConfigInfo image_config[] =
   { "menu.button_switch_ecs_aga",			UNDEFINED_FILENAME		},
   { "menu.button_switch_ecs_aga.active",		UNDEFINED_FILENAME		},
 
+  { "menu.button_switch_sound_set",			UNDEFINED_FILENAME		},
+  { "menu.button_switch_sound_set.active",		UNDEFINED_FILENAME		},
+
   { "menu.button_switch_team_mode",			UNDEFINED_FILENAME		},
   { "menu.button_switch_team_mode.active",		UNDEFINED_FILENAME		},
 
@@ -9965,6 +9968,9 @@ struct ConfigInfo image_config[] =
 
   { "main.button.switch_ecs_aga.x",			"-1"				},
   { "main.button.switch_ecs_aga.y",			"-1"				},
+
+  { "main.button.switch_sound_set.x",			"-1"				},
+  { "main.button.switch_sound_set.y",			"-1"				},
 
   { "main.button.switch_team_mode.x",			"-1"				},
   { "main.button.switch_team_mode.y",			"-1"				},

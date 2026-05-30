@@ -283,20 +283,21 @@
 #define SCREEN_CTRL_ID_LEVELSET_INFO		16
 #define SCREEN_CTRL_ID_LEVEL_INFO		17
 #define SCREEN_CTRL_ID_SWITCH_ECS_AGA		18
-#define SCREEN_CTRL_ID_SWITCH_TEAM_MODE		19
-#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE		20
-#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE		21
-#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE2		22
-#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE2		23
+#define SCREEN_CTRL_ID_SWITCH_SOUND_SET		19
+#define SCREEN_CTRL_ID_SWITCH_TEAM_MODE		20
+#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE		21
+#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE		22
+#define SCREEN_CTRL_ID_TOUCH_PREV_PAGE2		23
+#define SCREEN_CTRL_ID_TOUCH_NEXT_PAGE2		24
 
-#define NUM_SCREEN_MENUBUTTONS			24
+#define NUM_SCREEN_MENUBUTTONS			25
 
-#define SCREEN_CTRL_ID_SCROLL_UP		24
-#define SCREEN_CTRL_ID_SCROLL_DOWN		25
-#define SCREEN_CTRL_ID_SCROLL_VERTICAL		26
-#define SCREEN_CTRL_ID_NETWORK_SERVER		27
+#define SCREEN_CTRL_ID_SCROLL_UP		25
+#define SCREEN_CTRL_ID_SCROLL_DOWN		26
+#define SCREEN_CTRL_ID_SCROLL_VERTICAL		27
+#define SCREEN_CTRL_ID_NETWORK_SERVER		28
 
-#define NUM_SCREEN_GADGETS			28
+#define NUM_SCREEN_GADGETS			29
 
 #define SC_ID_SCROLL_UP				0
 #define SC_ID_SCROLL_DOWN			1
@@ -11449,6 +11450,14 @@ static struct
     FALSE, "switch old/new graphics"
   },
   {
+    IMG_MENU_BUTTON_SWITCH_SOUND_SET, IMG_MENU_BUTTON_SWITCH_SOUND_SET_ACTIVE, -1,
+    &menu.main.button.switch_sound_set, &setup.prefer_lowpass_sounds,
+    SCREEN_CTRL_ID_SWITCH_SOUND_SET,
+    SCREEN_MASK_MAIN,
+    GD_EVENT_RELEASED | GD_EVENT_OFF_BORDERS,
+    FALSE, "switch old/new sounds"
+  },
+  {
     IMG_MENU_BUTTON_SWITCH_TEAM_MODE, IMG_MENU_BUTTON_SWITCH_TEAM_MODE_ACTIVE, -1,
     &menu.main.button.switch_team_mode, &setup.team_mode,
     SCREEN_CTRL_ID_SWITCH_TEAM_MODE,
@@ -12171,6 +12180,12 @@ static void HandleScreenGadgets(struct GadgetInfo *gi)
 
     case SCREEN_CTRL_ID_SWITCH_ECS_AGA:
       setup.prefer_aga_graphics = !setup.prefer_aga_graphics;
+      SaveSetupIfNeeded();
+      DrawMainMenu();
+      break;
+
+    case SCREEN_CTRL_ID_SWITCH_SOUND_SET:
+      setup.prefer_lowpass_sounds = !setup.prefer_lowpass_sounds;
       SaveSetupIfNeeded();
       DrawMainMenu();
       break;
