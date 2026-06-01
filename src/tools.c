@@ -12516,6 +12516,7 @@ void SetLevelSetInfo(char *identifier, int level_nr)
 #define FLASH_PLAYFIELD_MODE_INIT_BITMAP		1
 #define FLASH_PLAYFIELD_MODE_INIT_FLASHING		2
 #define FLASH_PLAYFIELD_MODE_DRAW_FLASHING		3
+#define FLASH_PLAYFIELD_MODE_FREE_TEXTURES		4
 
 static void DoFlashPlayfield(int mode)
 {
@@ -12524,6 +12525,13 @@ static void DoFlashPlayfield(int mode)
   static int fysize = -1;
   static int show_flash_count = 0;
   int num_flash_frames = 16;
+
+  if (mode == FLASH_PLAYFIELD_MODE_FREE_TEXTURES)
+  {
+    SDLFreeBitmapTextures(flash_bitmap);
+
+    return;
+  }
 
   if (fxsize != gfx.sxsize ||
       fysize != gfx.sysize ||
@@ -12577,6 +12585,11 @@ void DrawFlashPlayfield(void)
 void UpdateFlashPlayfield(void)
 {
   DoFlashPlayfield(FLASH_PLAYFIELD_MODE_DRAW_FLASHING);
+}
+
+void FreeFlashPlayfieldTextures(void)
+{
+  DoFlashPlayfield(FLASH_PLAYFIELD_MODE_FREE_TEXTURES);
 }
 
 boolean CheckIfAllViewportsHaveChanged(void)

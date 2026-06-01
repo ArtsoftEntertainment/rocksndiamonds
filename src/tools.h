@@ -312,6 +312,7 @@ void SetLevelSetInfo(char *, int);
 void InitFlashPlayfield(void);
 void DrawFlashPlayfield(void);
 void UpdateFlashPlayfield(void);
+void FreeFlashPlayfieldTextures(void);
 
 void ToggleAudioSampleRateIfNeeded(void);
 void ToggleMenuMusicIfNeeded(void);
