@@ -12513,7 +12513,11 @@ void SetLevelSetInfo(char *identifier, int level_nr)
   levelset.level_nr = level_nr;
 }
 
-static void DoFlashPlayfield(boolean init_bitmap, boolean init_flashing)
+#define FLASH_PLAYFIELD_MODE_INIT_BITMAP		1
+#define FLASH_PLAYFIELD_MODE_INIT_FLASHING		2
+#define FLASH_PLAYFIELD_MODE_DRAW_FLASHING		3
+
+static void DoFlashPlayfield(int mode)
 {
   static Bitmap *flash_bitmap = NULL;
   static int fxsize = -1;
@@ -12523,7 +12527,7 @@ static void DoFlashPlayfield(boolean init_bitmap, boolean init_flashing)
 
   if (fxsize != gfx.sxsize ||
       fysize != gfx.sysize ||
-      init_bitmap)
+      mode == FLASH_PLAYFIELD_MODE_INIT_BITMAP)
   {
     fxsize = gfx.sxsize;
     fysize = gfx.sysize;
@@ -12541,10 +12545,10 @@ static void DoFlashPlayfield(boolean init_bitmap, boolean init_flashing)
     SDLCreateBitmapTextures(flash_bitmap);
   }
 
-  if (init_bitmap)
+  if (mode == FLASH_PLAYFIELD_MODE_INIT_BITMAP)
     return;
 
-  if (init_flashing)
+  if (mode == FLASH_PLAYFIELD_MODE_INIT_FLASHING)
     show_flash_count = num_flash_frames;
 
   if (show_flash_count > 0)
@@ -12562,17 +12566,17 @@ static void DoFlashPlayfield(boolean init_bitmap, boolean init_flashing)
 
 void InitFlashPlayfield(void)
 {
-  DoFlashPlayfield(TRUE, FALSE);
+  DoFlashPlayfield(FLASH_PLAYFIELD_MODE_INIT_BITMAP);
 }
 
 void DrawFlashPlayfield(void)
 {
-  DoFlashPlayfield(FALSE, TRUE);
+  DoFlashPlayfield(FLASH_PLAYFIELD_MODE_INIT_FLASHING);
 }
 
 void UpdateFlashPlayfield(void)
 {
-  DoFlashPlayfield(FALSE, FALSE);
+  DoFlashPlayfield(FLASH_PLAYFIELD_MODE_DRAW_FLASHING);
 }
 
 boolean CheckIfAllViewportsHaveChanged(void)
