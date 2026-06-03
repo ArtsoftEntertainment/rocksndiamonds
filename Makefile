@@ -32,8 +32,8 @@ MAKE = make
 # JOYSTICK = -DNO_JOYSTICK
 
 # path for cross-compiling (only needed for non-native Windows build)
-CROSS_PATH_WIN32 = /usr/local/cross-tools/i686-w64-mingw32
-CROSS_PATH_WIN64 = /usr/local/cross-tools/x86_64-w64-mingw32
+CROSS_PATH_WIN32 = /usr/local/i686-w64-mingw32
+CROSS_PATH_WIN64 = /usr/local/x86_64-w64-mingw32
 
 
 # -----------------------------------------------------------------------------
