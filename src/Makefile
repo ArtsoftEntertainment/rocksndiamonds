@@ -117,6 +117,23 @@ SYS_CFLAGS := -DTARGET_SDL2 $(shell sdl2-config --cflags)
 SYS_LDFLAGS := $(SDL_LIBS) $(shell sdl2-config --libs) -lm -lz
 endif
 
+ifeq ($(shell uname -s),Darwin)		# compiling on Mac OS X
+ifdef BUILD_DIST			# distribution build
+
+CC = $(BUILD_PATH_MAC)/SDL2-CURRENT/build-scripts/clang-fat.sh
+FRAMEWORKS_DIR = $(BUILD_PATH_MAC)/frameworks
+
+SDL2_CFLAGS = -F$(FRAMEWORKS_DIR) -I$(FRAMEWORKS_DIR)/SDL2.framework/Headers -I$(FRAMEWORKS_DIR)/SDL2_image.framework/Headers -I$(FRAMEWORKS_DIR)/SDL2_mixer.framework/Headers -I$(FRAMEWORKS_DIR)/SDL2_net.framework/Headers -D_THREAD_SAFE
+SDL2_LDFLAGS = -F$(FRAMEWORKS_DIR) -framework SDL2 -framework SDL2_image -framework SDL2_mixer -framework SDL2_net -Wl,-rpath,@executable_path/../Frameworks
+
+SYS_CFLAGS := -DTARGET_SDL2 $(SDL2_CFLAGS)
+SYS_LDFLAGS := $(SDL2_LDFLAGS) -lm -lz
+
+PROGNAME = $(PROGBASE)
+
+endif
+endif
+
 
 # -----------------------------------------------------------------------------
 # configuring compile-time definitions
@@ -148,8 +165,10 @@ OPTIONS := $(OPTIONS) -DTESTING
 endif
 
 ifdef BUILD_DIST			# distribution build
+ifeq ($(shell uname -s),Linux)		# compiling on Linux
 SYS_LDFLAGS := $(shell echo $(SYS_LDFLAGS) |	\
 		       sed -e "s%-rpath,[^ ]*%-rpath,'\$$ORIGIN/lib'%")
+endif
 OPTIONS = -O2 -Wall
 endif
 
@@ -250,6 +269,8 @@ GAME_MM = $(GAME_MM_DIR)/game_mm.a
 RNDLIBS = $(GAME_BD) $(GAME_EM) $(GAME_SP) $(GAME_MM) $(LIBGAME)
 AUTOCONF = conf_gfx.h conf_snd.h conf_mus.h
 
+ARCH_DIRS = arm64 x64
+
 ICONBASE = windows_icon
 ICON_BASEPATH = ../build-projects/windows/icons
 
@@ -274,6 +295,11 @@ ifdef BUILD_DIST
 endif
 ifeq ($(PLATFORM),emscripten)
 	(cd .. ; $(FILE_PACKAGER) $(DATA_FILE) $(FILE_PACKAGER_ARGS))
+endif
+ifeq ($(shell uname -s),Darwin)		# compiling on Mac OS X
+ifdef BUILD_DIST			# distribution build
+	mv $(PROGNAME) ..
+endif
 endif
 
 libgame_dir:
@@ -356,6 +382,7 @@ clean-obj:
 	$(MAKE) -C $(GAME_MM_DIR) clean
 	$(RM) $(OBJS)
 	$(RM) $(RNDLIBS)
+	$(RM) -rf $(ARCH_DIRS)
 
 clean-ico:
 	$(RM) $(ICONBASE).ico

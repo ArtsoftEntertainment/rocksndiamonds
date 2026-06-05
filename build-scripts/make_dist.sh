@@ -706,13 +706,28 @@ build_finalize_mac__set_library_paths ()
     done
 }
 
+build_finalize_mac__codesign_bundle ()
+{
+    BUNDLE_DIR=$1
+
+    CMD_CODESIGN="codesign --force --deep --sign -"
+
+    for i in "$BUNDLE_DIR/Contents/Frameworks"/*.framework; do
+	$CMD_CODESIGN "$i"
+    done
+
+    $CMD_CODESIGN "$BUNDLE_DIR"
+}
+
 build_finalize_mac ()
 {
-    build_finalize_mac__set_library_paths "$PROGRAM_BINARY"
+    # build_finalize_mac__set_library_paths "$PROGRAM_BINARY"
 
     mv "$PROGRAM_BINARY" "$PROGRAM_NAME.app/Contents/MacOS"
     mv * "$PROGRAM_NAME.app/Contents/Resources"
     touch "$PROGRAM_NAME.app"
+
+    build_finalize_mac__codesign_bundle "$PROGRAM_NAME.app"
 }
 
 build_finalize_emscripten ()
