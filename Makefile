@@ -130,7 +130,7 @@ levelsketch_images: all
 # distribution targets
 # -----------------------------------------------------------------------------
 
-MAKE_DIST = ./Scripts/make_dist.sh
+MAKE_DIST = ./build-scripts/make_dist.sh
 
 dist-clean:
 	@$(MAKE_CMD) dist-clean

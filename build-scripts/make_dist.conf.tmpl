@@ -1,0 +1,80 @@
+# =============================================================================
+# make_dist.conf
+# -----------------------------------------------------------------------------
+# configuration settings for building and uploading distribution packages
+#
+# (use format "<token> = <value>" for all configuration file entries)
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# settings for execution mode
+# -----------------------------------------------------------------------------
+
+# set to "1" to activate debug output
+mode.debug = 0
+
+# set to "1" for test mode, "0" for production mode
+mode.test = 0
+
+
+# -----------------------------------------------------------------------------
+# settings for Git access
+# -----------------------------------------------------------------------------
+
+build.git.hostname = <HOSTNAME>
+build.git.username = <USERNAME>
+
+build.git.branch = master
+
+
+# -----------------------------------------------------------------------------
+# settings for building
+# -----------------------------------------------------------------------------
+
+build.linux.hostname = <HOSTNAME>
+build.linux.username = <USERNAME>
+
+build.win32.hostname = <HOSTNAME>
+build.win32.username = <USERNAME>
+
+build.win64.hostname = <HOSTNAME>
+build.win64.username = <USERNAME>
+
+build.mac.hostname = <HOSTNAME>
+build.mac.username = <USERNAME>
+
+build.android.hostname = <HOSTNAME>
+build.android.username = <USERNAME>
+
+build.emscripten.hostname = <HOSTNAME>
+build.emscripten.username = <USERNAME>
+
+
+# -----------------------------------------------------------------------------
+# settings for uploading
+# -----------------------------------------------------------------------------
+
+upload.releases.hostname = <HOSTNAME>
+upload.releases.username = <USERNAME>
+
+upload.releases.path = <PATH>
+
+
+# -----------------------------------------------------------------------------
+# settings for deployment
+# -----------------------------------------------------------------------------
+
+deploy.emscripten.hostname = <HOSTNAME>
+deploy.emscripten.username = <USERNAME>
+
+deploy.emscripten.path = <PATH>
+
+
+# -----------------------------------------------------------------------------
+# settings for custom editions
+# -----------------------------------------------------------------------------
+
+edition.basename = rocksndiamonds
+
+edition.with_src = true
+edition.with_txt = true
