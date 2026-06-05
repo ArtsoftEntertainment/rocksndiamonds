@@ -29,3 +29,6 @@ src/conf_act.c
 # ignore compiled executable files
 rocksndiamonds
 rocksndiamonds.exe
+
+# ignore local configuration files
+build-scripts/make_dist.conf
