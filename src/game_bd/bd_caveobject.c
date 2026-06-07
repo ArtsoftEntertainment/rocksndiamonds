@@ -31,7 +31,7 @@ char *gd_object_get_bdcff(const GdObject *object)
 {
   char *str = NULL;
   int j;
-  const char *type;
+  const char *type = NULL;
 
   switch (object->type)
   {

@@ -20,8 +20,10 @@
 #include "main.h"
 
 
+#if 0
 static int num_clients = 0;
 static boolean run_server_only_once = FALSE;
+#endif
 
 struct NetworkServerPlayerInfo
 {
@@ -465,7 +467,10 @@ static void RemovePlayer(struct NetworkServerPlayerInfo *player)
   }
 
   free(player);
+
+#if 0
   num_clients--;
+#endif
 
 #if 0	// do not terminate network server if last player disconnected
   if (run_server_only_once && num_clients == 0)
@@ -519,7 +524,10 @@ static void AddPlayer(TCPsocket fd)
   }
 
   player->number = number;
+
+#if 0
   num_clients++;
+#endif
 
   initNetworkBufferForWriting(write_buffer, OP_YOUR_NUMBER, 0);
 
@@ -843,8 +851,10 @@ void NetworkServer(int port, int serveronly)
   if (serveronly)
     signal(SIGINT, ExitNetworkServer);
 
+#if 0
   if (!serveronly)
     run_server_only_once = TRUE;
+#endif
 
 #if defined(PLATFORM_UNIX)
 #if defined(PLATFORM_NEXT)

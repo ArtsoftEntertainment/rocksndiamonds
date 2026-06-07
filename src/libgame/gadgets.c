@@ -43,7 +43,9 @@ static int gadget_screen_border_right = -1;
 static int gadget_screen_border_bottom = -1;
 
 static void (*PlayGadgetSoundActivating)(void) = NULL;
+#if 0
 static void (*PlayGadgetSoundSelecting)(void) = NULL;
+#endif
 
 
 // Color picker by Brooke Tilley (pixlark) from https://github.com/pixlark/ColorPicker
@@ -510,7 +512,9 @@ void InitGadgetsSoundCallback(void (*activating_function)(void),
 			      void (*selecting_function)(void))
 {
   PlayGadgetSoundActivating = activating_function;
+#if 0
   PlayGadgetSoundSelecting = selecting_function;
+#endif
 }
 
 void InitGadgetScreenBorders(int border_right, int border_bottom)

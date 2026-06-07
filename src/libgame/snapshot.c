@@ -21,7 +21,9 @@ static ListNode *snapshot_list = NULL;
 static ListNode *snapshot_current = NULL;
 
 static int num_snapshots = 0;
+#if DEBUG_SNAPSHOTS
 static int num_snapshot_buffers = 0;
+#endif
 static int num_snapshot_bytes = 0;
 static int next_snapshot_key = 0;
 
@@ -43,7 +45,9 @@ void SaveSnapshotBuffer(ListNode **snapshot_buffers, void *buffer, int size)
 
   addNodeToList(snapshot_buffers, NULL, bi);
 
+#if DEBUG_SNAPSHOTS
   num_snapshot_buffers++;
+#endif
   num_snapshot_bytes += size;
 }
 
@@ -66,7 +70,9 @@ static void FreeSnapshotBuffer(void *bi_raw)
 {
   struct SnapshotNodeInfo *bi = (struct SnapshotNodeInfo *)bi_raw;
 
+#if DEBUG_SNAPSHOTS
   num_snapshot_buffers--;
+#endif
   num_snapshot_bytes -= bi->size;
 
   checked_free(bi->buffer_copy);
@@ -120,7 +126,9 @@ void FreeSnapshotList(void)
   FreeSnapshotList_UpToNode(NULL);
 
   num_snapshots = 0;
+#if DEBUG_SNAPSHOTS
   num_snapshot_buffers = 0;
+#endif
   num_snapshot_bytes = 0;
   next_snapshot_key = 0;
 
