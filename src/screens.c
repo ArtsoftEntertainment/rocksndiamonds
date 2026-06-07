@@ -4995,7 +4995,9 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
   }
   else if (button == MB_MENU_LEAVE || (dx < 0 && screen_nr == 0))
   {
-    PlaySound(SND_MENU_ITEM_SELECTING);
+    // do not play menu item selection sound on intro screen
+    if (info_mode != INFO_MODE_INTRO)
+      PlaySound(SND_MENU_ITEM_SELECTING);
 
     // if escaping from level info screen on game start, go back to main menu
     if (info_screens_from_game)
@@ -5019,7 +5021,9 @@ void HandleInfoScreen_Generic(int mx, int my, int dx, int dy, int button)
   }
   else if ((mx >= 0 && my >= 0 && button == MB_MENU_CHOICE) || dx)
   {
-    PlaySound(SND_MENU_ITEM_SELECTING);
+    // do not play menu item selection sound on intro screen
+    if (info_mode != INFO_MODE_INTRO)
+      PlaySound(SND_MENU_ITEM_SELECTING);
 
     screen_nr += (dx < 0 ? -1 : +1);
     start_pos = 0;
