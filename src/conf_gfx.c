@@ -1477,7 +1477,6 @@ struct ConfigInfo image_config[] =
   { "bdx_rocket.ypos",					"14"				},
   { "bdx_rocket.frames",				"8"				},
   { "bdx_rocket.delay",					"4"				},
-  { "bdx_rocket.vertical",				"true"				},
   { "bdx_rocket.right",					"RocksBD.png"			},
   { "bdx_rocket.right.xpos",				"0"				},
   { "bdx_rocket.right.ypos",				"14"				},
