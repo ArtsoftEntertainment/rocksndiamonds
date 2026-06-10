@@ -622,6 +622,9 @@ void SDLInitVideoDisplay(void)
   if (!strEqual(setup.system.sdl_renderdriver, ARG_DEFAULT))
     SDL_SetHint(SDL_HINT_RENDER_DRIVER, setup.system.sdl_renderdriver);
 
+  // prevent Windows systems from upscaling the program Window
+  SDL_SetHint(SDL_HINT_WINDOWS_DPI_AWARENESS, "permonitorv2");
+
   // initialize SDL video
   if (SDL_InitSubSystem(SDL_INIT_VIDEO) < 0)
     Fail("SDL_InitSubSystem() failed: %s", SDL_GetError());
