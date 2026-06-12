@@ -2636,7 +2636,8 @@ void gd_cave_iterate(GdCave *cave, GdDirection player_move, boolean player_fire,
 	    // hammered explodes during hammering (by a nearby explosion)
 	    if (new_elem != O_NONE)
 	    {
-	      store_dir(cave, x, y, GD_MV_DOWN, new_elem);
+	      // (do not use "store_dir()" here, to prevent movement animation for new element)
+	      store(cave, x, y + 1, new_elem);
 
 	      // and if walls reappear, remember it in array
               // y + 1 is down
