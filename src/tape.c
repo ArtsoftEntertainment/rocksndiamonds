@@ -2718,7 +2718,7 @@ static void HandleTapeButtonsExt(int id)
       break;
 
     case TAPE_CTRL_ID_PAUSE:
-      TapeTogglePause(TAPE_TOGGLE_MANUAL);
+      TapeTogglePause(TAPE_TOGGLE_MANUAL | TAPE_TOGGLE_PLAY_PAUSE);
 
       break;
 
