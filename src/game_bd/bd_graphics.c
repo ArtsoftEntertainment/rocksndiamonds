@@ -734,7 +734,7 @@ static void gd_drawcave_crumbled(Bitmap *dest, GdGame *game, int x, int y, boole
   int tile_crm = get_dirt_element(tile, dir_to, TRUE);
   int animcycle = game->animcycle;
   int itercycle = MIN(game->itercycle * 8 / game->itermax, 7);
-  int frame = (is_digging ? itercycle : animcycle);
+  int frame = (draw_last == O_CLOCK ? 7 - itercycle : is_digging ? itercycle : animcycle);
   struct GraphicInfo_BD *gfx = &graphic_info_bd_object[tile_gfx][frame];
   struct GraphicInfo_BD *crm = &graphic_info_bd_object[tile_crm][frame];
   int dirs[] = { GD_MV_UP, GD_MV_LEFT, GD_MV_RIGHT, GD_MV_DOWN };
