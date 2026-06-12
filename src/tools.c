@@ -11506,7 +11506,7 @@ void InitGraphicInfo_BD(void)
                      i == O_BITER_SWITCH_2_CRUMBLED         ||
                      i == O_BITER_SWITCH_3_CRUMBLED         ||
                      i == O_BITER_SWITCH_4_CRUMBLED         ?
-                     graphic = el_act2crm(effective_element, effective_action) :
+                     el_act2crm(effective_element, effective_action) :
                      i == O_DIRT_DIGGING_LEFT_CRUMBLED   ||
                      i == O_DIRT_DIGGING_RIGHT_CRUMBLED  ||
                      i == O_DIRT_DIGGING_UP_CRUMBLED     ||
@@ -11515,7 +11515,7 @@ void InitGraphicInfo_BD(void)
                      i == O_DIRT2_DIGGING_RIGHT_CRUMBLED ||
                      i == O_DIRT2_DIGGING_UP_CRUMBLED    ||
                      i == O_DIRT2_DIGGING_DOWN_CRUMBLED ?
-                     graphic = el_act_dir2crm(effective_element, effective_action, direction) :
+                     el_act_dir2crm(effective_element, effective_action, direction) :
                      direction == MV_NONE ?
                      el_act2img(effective_element, effective_action) :
                      el_act_dir2img(effective_element, effective_action, direction));
